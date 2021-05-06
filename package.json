@@ -1,0 +1,27 @@
+{
+  "name": "complex-data",
+  "version": "2.0.0",
+  "description": "a complex data",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MarAngle/complex-data.git"
+  },
+  "dependencies": {
+    "complex-func": "^2.0.3"
+  },
+  "devDependencies": {
+    "webpack": "^5.36.1",
+    "webpack-cli": "^4.6.0",
+    "ant-design-vue-pro": "^3.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "complex",
+    "data"
+  ],
+  "author": "MarAngle",
+  "license": "ISC"
+}
