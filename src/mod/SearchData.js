@@ -79,7 +79,10 @@ class SearchData extends ComplexData {
     for (let n in this.form[type].mainlist) {
       let pitem = this.form[type].mainlist[n]
       if (!limit.getLimit(pitem.prop)) {
-        let targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
+        let targetdata
+        if (pitem.edit && pitem.edit.getValueData) {
+          targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
+        }
         _func.setPropByStr(this.form[type].form.data, pitem.prop, targetdata, true)
       }
     }
