@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import _func from 'complex-func'
 import ComplexData from './../data/ComplexData'
 
@@ -81,7 +80,7 @@ class SearchData extends ComplexData {
       let pitem = this.form[type].mainlist[n]
       if (!limit.getLimit(pitem.prop)) {
         let targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
-        Vue.set(this.form[type].form.data, pitem.prop, targetdata)
+        _func.setPropByStr(this.form[type].form.data, pitem.prop, targetdata, true)
       }
     }
     if (syncPost) {
