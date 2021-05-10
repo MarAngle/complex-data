@@ -14,7 +14,11 @@ class SimpleData {
     return `${this.selfName()}:${content}`
   }
   printInfo (content, type = 'error', nextContent, nextType = type) {
-    console[type](this.getPrintInfo(content))
+    content = this.getPrintInfo(content)
+    if (type === 'error') {
+      content = new Error(content)
+    }
+    console[type](content)
     if (nextContent) {
       console[nextType](nextContent)
     }
