@@ -128,8 +128,10 @@ class PaginationData extends SimpleData {
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleName('Reseted'),
-      data: () => {
-        this.reset()
+      data: (resetModule) => {
+        if (target.analyzeResetModule(resetModule, 'pagination') !== false) {
+          this.reset()
+        }
       }
     })
   }

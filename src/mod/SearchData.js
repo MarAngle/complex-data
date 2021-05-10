@@ -106,8 +106,10 @@ class SearchData extends ComplexData {
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleName('Reseted'),
-      data: () => {
-        this.reset()
+      data: (resetModule) => {
+        if (target.analyzeResetModule(resetModule, 'search') !== false) {
+          this.reset()
+        }
       }
     })
   }
