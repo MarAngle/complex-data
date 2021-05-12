@@ -1,3 +1,4 @@
+import _func from 'complex-func'
 import instrcution from './../utils/instrcution'
 import install from './../utils/install'
 
@@ -10,21 +11,18 @@ class SimpleData {
     }
     this.$setModuleName()
   }
-  getPrintInfo (content) {
-    return `${this.selfName()}:${content}`
+  buildPrintMsg (content) {
+    return `${this._selfName()}:${content}`
   }
-  printInfo (content, type = 'error', nextContent, nextType = type) {
-    content = this.getPrintInfo(content)
-    if (type === 'error') {
-      content = new Error(content)
-    }
-    console[type](content)
-    if (nextContent) {
-      console[nextType](nextContent)
-    }
+  printMsg (content, type = 'error', option) {
+    content = this.buildPrintMsg(content)
+    _func.printMsgAct(content, type, option)
   }
-  selfName () {
+  _selfName () {
     return `[CLASS:${this.constructor.name}]`
+  }
+  toString () {
+    return this._selfName()
   }
   $setModuleName () {
     this.$LocalTempData.module.name = this.$LocalTempData.module.id.getData()
@@ -46,17 +44,17 @@ class SimpleData {
         ],
         method: [
           {
-            prop: 'getPrintInfo',
+            prop: 'buildPrintMsg',
             type: 'function',
             describe: '输出信息生成函数'
           },
           {
-            prop: 'printInfo',
+            prop: 'printMsg',
             type: 'function',
             describe: '信息输出函数'
           },
           {
-            prop: 'selfName',
+            prop: '_selfName',
             type: 'function',
             describe: '名称获取函数'
           }

@@ -85,7 +85,7 @@ class UpdateData extends DefaultData {
       checkCb.then(() => {
         this.nextDo(offset)
       }, err => {
-        this.printInfo('stop next', 'log', err)
+        this.printMsg('stop next!', 'log', { data: err })
       })
     } else if (checkCb) {
       this.nextDo(offset)

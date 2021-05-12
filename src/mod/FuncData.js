@@ -89,7 +89,7 @@ class FuncData extends SimpleData {
           data.id = this.buildId()
         }
         if (this.data.has(data.id) && !data.repalce) {
-          this.printInfo(`存在当前值:${data.id}`)
+          this.printMsg(`存在当前值:${data.id}`)
         } else {
           this.pushData(data)
           if (data.immediate) {
@@ -98,10 +98,10 @@ class FuncData extends SimpleData {
           return data.id
         }
       } else {
-        this.printInfo(`设置(${data.id || '-'})未定义func`)
+        this.printMsg(`设置(${data.id || '-'})未定义func`)
       }
     } else {
-      this.printInfo(`设置data参数需要object或者function`)
+      this.printMsg(`设置data参数需要object或者function`)
     }
     return false
   }
@@ -118,7 +118,7 @@ class FuncData extends SimpleData {
         this.off(id)
       }
     } else {
-      this.printInfo(`不存在当前值(${id})`)
+      this.printMsg(`不存在当前值(${id})`)
     }
   }
   // 删除生命周期指定函数
@@ -135,8 +135,8 @@ class FuncData extends SimpleData {
   destroy() {
     this.reset()
   }
-  selfName () {
-    return `${super.selfName()}[生命周期:${this.name}]`
+  _selfName () {
+    return `${super._selfName()}[生命周期:${this.name}]`
   }
   static initInstrcution() {
     if (this.instrcutionShow()) {

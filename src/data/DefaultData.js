@@ -48,10 +48,10 @@ class DefaultData extends SimpleData {
       if (this[n]) {
         let type = _func.getType(this[n])
         if (type !== 'function') {
-          this.printInfo(`自定义函数${n}存在同名属性，未生效!`)
+          this.printMsg(`自定义函数${n}存在同名属性，未生效!`)
           build = false
         } else {
-          this.printInfo(`method:${n}已被改写!`, 'warn')
+          this.printMsg(`method:${n}已被改写!`, 'warn')
         }
       }
       if (build) {
@@ -76,7 +76,7 @@ class DefaultData extends SimpleData {
   }
   onLife (name, data) {
     if (this.$LocalTempData.AutoCreateLifeNameList.indexOf(name) > -1) {
-      this.printInfo(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
+      this.printMsg(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
     }
     return this.getModule('life').on(name, data)
   }
@@ -91,7 +91,7 @@ class DefaultData extends SimpleData {
   // 触发生命周期
   triggerCreateLife (env, lifeName, ...args) {
     if (!env) {
-      this.printInfo('triggerCreateLife函数需要传递env参数')
+      this.printMsg('triggerCreateLife函数需要传递env参数')
     }
     if (env != this.constructor.name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)
@@ -131,7 +131,7 @@ class DefaultData extends SimpleData {
     if (extraData) {
       let fg = this.getModule('extra').initData(extraData)
       if (!fg) {
-        this.printInfo(`设置ExtrData出错`)
+        this.printMsg(`设置ExtrData出错`)
       }
     }
   }
@@ -151,11 +151,11 @@ class DefaultData extends SimpleData {
   resetExtra () {
     this.getModule('extra').reset()
   }
-  selfName () {
+  _selfName () {
     let parent = this.getParent()
     let pre
-    if (parent && parent.selfName) {
-      pre = `(${parent.selfName()})-`
+    if (parent && parent._selfName) {
+      pre = `(${parent._selfName()})-`
     }
     if (!pre) {
       pre = ``

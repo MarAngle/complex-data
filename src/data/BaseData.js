@@ -80,10 +80,10 @@ class BaseData extends DefaultData {
       if (this.getModule('update')[method]) {
         this.getModule('update')[method](payload)
       } else {
-        this.printInfo(`更新模块不存在${method}方法`)
+        this.printMsg(`更新模块不存在${method}方法`)
       }
     } else if (!hideError) {
-      this.printInfo(`未定义更新模块`)
+      this.printMsg(`未定义更新模块`)
     }
   }
   // 自动加载或者更新数据
@@ -153,7 +153,7 @@ class BaseData extends DefaultData {
         }
       }
       this.triggerPromise('load', {
-        errmsg: this.getPrintInfo(`promise模块无load数据(load状态:${loadStatus.value})`)
+        errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`)
       }).then(res => {
         resolve(res)
       }, err => {
@@ -177,7 +177,7 @@ class BaseData extends DefaultData {
         }
       }
       this.triggerPromise('update', {
-        errmsg: this.getPrintInfo(`promise模块无update数据(update状态:${updateStatus.value})`)
+        errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`)
       }).then(res => {
         resolve(res)
       }, err => {
@@ -233,7 +233,7 @@ class BaseData extends DefaultData {
           reject(err)
         })
       } else {
-        this.printInfo(next.msg)
+        this.printMsg(next.msg)
         reject({ status: 'fail', code: next.code })
       }
     })
@@ -250,7 +250,7 @@ class BaseData extends DefaultData {
           reject(err)
         })
       } else {
-        this.printInfo(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
+        this.printMsg(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
         reject({ status: 'fail', code: 'clash' })
       }
     })
