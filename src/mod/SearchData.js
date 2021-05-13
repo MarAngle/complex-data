@@ -20,7 +20,7 @@ class SearchData extends ComplexData {
   constructor (initdata) {
     super(initdata)
     this.triggerCreateLife('SearchData', 'beforeCreate', initdata)
-    this.show = false
+    this.init = false
     this.title = {
       show: false,
       data: ''
@@ -30,18 +30,23 @@ class SearchData extends ComplexData {
     this.post = {}
     if (initdata) {
       this.initSearchData(initdata)
-      this.initFormData()
     }
     this.triggerCreateLife('SearchData', 'created')
   }
-
   initSearchData({
     title,
     menu
   }) {
-    this.show = true
+    this.setInit(true)
     this.initTitle(title)
     this.initMenu(menu)
+    this.initFormData()
+  }
+  setInit(data) {
+    this.init = data
+  }
+  getInit() {
+    return this.init
   }
   initTitle(title) {
     if (title) {
@@ -50,54 +55,66 @@ class SearchData extends ComplexData {
     }
   }
   initMenu(menu = {}) {
-    if (!menu.list) {
-      menu.list = []
+    if (this.getInit()) {
+      if (!menu.list) {
+        menu.list = []
+      }
+      if (!menu.type) {
+        menu.type = 'default'
+      }
+      if (menu.type == 'default') {
+        menu.list = defaultMenu.concat(menu.list)
+      }
+      this.menu = menu.list
     }
-    if (!menu.type) {
-      menu.type = 'default'
-    }
-    if (menu.type == 'default') {
-      menu.list = defaultMenu.concat(menu.list)
-    }
-    this.menu = menu.list
   }
   initFormData(type = 'build') {
-    this.form[type] = {
-      modlist: [],
-      mainlist: [],
-      form: {
-        data: {}
+    if (this.getInit()) {
+      this.form[type] = {
+        modlist: [],
+        mainlist: [],
+        form: {
+          data: {}
+        }
       }
+      this.form[type].modlist = this.getDictionaryModList('build')
+      this.form[type].mainlist = this.getDictionaryPageListByModList('build', this.form[type].modlist)
+      this.resetFormData('init')
     }
-    this.form[type].modlist = this.getDictionaryModList('build')
-    this.form[type].mainlist = this.getDictionaryPageListByModList('build', this.form[type].modlist)
-    this.resetFormData('init')
   }
   // 重置检索值
   resetFormData(from = 'init', option = {}, syncPost = true, type = 'build') {
-    let limit = _func.getLimitData(option.limit)
-    for (let n in this.form[type].mainlist) {
-      let pitem = this.form[type].mainlist[n]
-      if (!limit.getLimit(pitem.prop)) {
-        let targetdata
-        if (pitem.edit && pitem.edit.getValueData) {
-          targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
+    if (this.getInit()) {
+      let limit = _func.getLimitData(option.limit)
+      for (let n in this.form[type].mainlist) {
+        let pitem = this.form[type].mainlist[n]
+        if (!limit.getLimit(pitem.prop)) {
+          let targetdata
+          if (pitem.edit && pitem.edit.getValueData) {
+            targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
+          }
+          _func.setPropByStr(this.form[type].form.data, pitem.prop, targetdata, true)
         }
-        _func.setPropByStr(this.form[type].form.data, pitem.prop, targetdata, true)
       }
-    }
-    if (syncPost) {
-      this.setData(type)
+      if (syncPost) {
+        this.setData(type)
+      }
     }
   }
   setData(type = 'build') {
-    this.post[type] = this.getEditData(this.form[type].form.data, this.form[type].modlist, 'build')
+    if (this.getInit()) {
+      this.post[type] = this.getEditData(this.form[type].form.data, this.form[type].modlist, 'build')
+    }
   }
   getData(type = 'build', deep = true) {
-    if (deep) {
-      return _func.deepClone(this.post[type], deep)
+    if (this.getInit()) {
+      if (deep) {
+        return _func.deepClone(this.post[type], deep)
+      } else {
+        return this.post[type]
+      }
     } else {
-      return this.post[type]
+      return {}
     }
   }
   reset() {

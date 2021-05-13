@@ -4,7 +4,10 @@ import BaseData from './BaseData'
 import DictionaryList from './../mod/DictionaryList'
 
 class ComplexData extends BaseData {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     initdata.data = utils.formatData(initdata.data, {
       list: [],
       current: {}

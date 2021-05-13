@@ -2,7 +2,10 @@ import _func from 'complex-func'
 import ComplexDataWithSearch from './../data/ComplexDataWithSearch'
 
 class InfoData extends ComplexDataWithSearch {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     super(initdata)
     this.triggerCreateLife('InfoData', 'beforeCreate', initdata)
     this.triggerCreateLife('InfoData', 'created')

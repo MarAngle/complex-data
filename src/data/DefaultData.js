@@ -6,7 +6,10 @@ import ParentData from './../mod/ParentData'
 import LifeData from './../mod/LifeData'
 
 class DefaultData extends SimpleData {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     super()
     this.module = new ModuleData({
       life: new LifeData(),

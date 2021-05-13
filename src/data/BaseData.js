@@ -6,7 +6,10 @@ import UpdateData from './../mod/UpdateData'
 import PromiseData from './../mod/PromiseData'
 
 class BaseData extends DefaultData {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     super(initdata)
     this.triggerCreateLife('BaseData', 'beforeCreate', initdata)
     this.setModule('option', new OptionData())

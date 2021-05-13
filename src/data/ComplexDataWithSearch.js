@@ -2,7 +2,10 @@ import ComplexData from './ComplexData'
 import SearchData from './../mod/SearchData'
 
 class ComplexDataWithSearch extends ComplexData {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     super(initdata)
     this.triggerCreateLife('ComplexDataWithSearch', 'beforeCreate', initdata)
     this._initComplexDataWithSearch(initdata)
@@ -22,6 +25,9 @@ class ComplexDataWithSearch extends ComplexData {
   }
   getSearch (type, deep) {
     return this.getModule('search').getData(type, deep)
+  }
+  getSearchInit () {
+    return this.getModule('search').getInit()
   }
   static initInstrcution() {
     if (this.instrcutionShow()) {

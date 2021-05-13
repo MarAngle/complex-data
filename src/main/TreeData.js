@@ -2,7 +2,10 @@ import _func from 'complex-func'
 import ListData from './ListData'
 
 class TreeData extends ListData {
-  constructor (initdata = {}) {
+  constructor (initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     super(initdata)
     this.triggerCreateLife('TreeData', 'beforeCreate', initdata)
     this.triggerCreateLife('TreeData', 'created')

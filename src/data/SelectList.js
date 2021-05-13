@@ -5,7 +5,10 @@ import OptionData from './../mod/OptionData'
 
 // 本地选择器数据
 class SelectList extends DefaultData {
-  constructor(initdata = {}) {
+  constructor(initdata) {
+    if (!initdata) {
+      initdata = {}
+    }
     initdata.data = utils.formatData(initdata.data, {
       list: []
     })
