@@ -1,19 +1,22 @@
-import SimpleData from './data/SimpleData'
-import DefaultData from './data/DefaultData'
 import BaseData from './data/BaseData'
 import ComplexData from './data/ComplexData'
 import ComplexDataWithSearch from './data/ComplexDataWithSearch'
+import DefaultData from './data/DefaultData'
 import SelectList from './data/SelectList'
+import SimpleData from './data/SimpleData'
 
 import ChoiceData from './mod/ChoiceData'
 import DictionaryData from './mod/DictionaryData'
 import DictionaryList from './mod/DictionaryList'
 import EmptyData from './mod/EmptyData'
 import ExtraData from './mod/ExtraData'
+import FuncData from './mod/FuncData'
 import IdData from './mod/IdData'
 import InstrcutionData from './mod/InstrcutionData'
 import InterfaceData from './mod/InterfaceData'
+import LayoutData from './mod/LayoutData'
 import LifeData from './mod/LifeData'
+import ModuleData from './mod/ModuleData'
 import OptionData from './mod/OptionData'
 import PaginationData from './mod/PaginationData'
 import ParentData from './mod/ParentData'
@@ -26,59 +29,29 @@ import UpdateData from './mod/UpdateData'
 import ListData from './main/ListData'
 import InfoData from './main/InfoData'
 import TreeData from './main/TreeData'
+
 import option from './option'
-// // -----
-// const _data = require.context('./data', false, /\.js$/)
-// const _mod = require.context('./mod', false, /\.js$/)
-// let maindata = {}
-// let mainmod = {}
-// function LoadProp (data, _prop) {
-//   let jslist = _prop.keys()
-//   jslist.forEach(item => {
-//     let moditem = _prop(item)
-//     let modname = item.replace(/^\.\/(.*)\.\w+$/, '$1')
-//     if (!data[modname]) {
-//       data[modname] = moditem.default
-//     } else {
-//       console.error('auto mod load is repeat')
-//     }
-//   })
-// }
-// function countProp (data, url) {
-// let importurl = ``
-// let exportlist = ``
-// for (let n in data) {
-//   exportlist = exportlist + `
-// ${n},`
-//   importurl = importurl + `
-// import ${n} from './${url}/${n}'`
-// }
-// exportlist += ``
-// console.log(importurl)
-// console.log(exportlist)
-// }
-// LoadProp(maindata, _data)
-// LoadProp(mainmod, _mod)
-// countProp(maindata, 'data')
-// countProp(mainmod, 'mod')
-// // -----
+import './buildText'
 
 export {
-  SimpleData,
-  DefaultData,
   BaseData,
   ComplexData,
   ComplexDataWithSearch,
+  DefaultData,
   SelectList,
+  SimpleData,
   ChoiceData,
   DictionaryData,
   DictionaryList,
   EmptyData,
   ExtraData,
+  FuncData,
   IdData,
   InstrcutionData,
   InterfaceData,
+  LayoutData,
   LifeData,
+  ModuleData,
   OptionData,
   PaginationData,
   ParentData,
