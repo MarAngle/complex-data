@@ -26,12 +26,13 @@ import StatusData from './mod/StatusData'
 import StatusDataItem from './mod/StatusDataItem'
 import UpdateData from './mod/UpdateData'
 
-import ListData from './main/ListData'
 import InfoData from './main/InfoData'
+import ListData from './main/ListData'
 import TreeData from './main/TreeData'
 
 import option from './option'
-import './buildText'
+
+// import './buildText'
 
 export {
   BaseData,
@@ -60,8 +61,8 @@ export {
   StatusData,
   StatusDataItem,
   UpdateData,
-  ListData,
   InfoData,
+  ListData,
   TreeData,
   option
 }

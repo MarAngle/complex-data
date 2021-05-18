@@ -1,22 +1,22 @@
-import FuncData from '../mod/FuncData'
-import LayoutData from '../mod/LayoutData'
-import ModuleData from '../mod/ModuleData'
 import {
-  SimpleData,
-  DefaultData,
   BaseData,
   ComplexData,
   ComplexDataWithSearch,
+  DefaultData,
   SelectList,
+  SimpleData,
   ChoiceData,
   DictionaryData,
   DictionaryList,
   EmptyData,
   ExtraData,
+  FuncData,
   IdData,
   InstrcutionData,
   InterfaceData,
+  LayoutData,
   LifeData,
+  ModuleData,
   OptionData,
   PaginationData,
   ParentData,
@@ -25,8 +25,8 @@ import {
   StatusData,
   StatusDataItem,
   UpdateData,
-  ListData,
   InfoData,
+  ListData,
   TreeData
 } from './../../index'
 import instrcution from './data'

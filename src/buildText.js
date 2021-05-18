@@ -29,9 +29,9 @@ exportlist += `
   }
   for (let n in data) {
     exportlist = exportlist + `
-    ${n},`
+  ${n},`
     importurl = importurl + `
-  import ${n} from './${url}/${n}'`
+import ${n} from './${url}/${n}'`
   }
 }
 LoadProp(maindata, _data)
