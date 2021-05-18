@@ -37,21 +37,6 @@ class InfoData extends ComplexDataWithSearch {
       return this.data.current
     }
   }
-  static initInstrcution() {
-    if (this.instrcutionShow()) {
-      const instrcutionData = {
-        extend: 'ComplexDataWithSearch',
-        describe: '信息模块',
-        build: [],
-        data: [],
-        method: []
-      }
-      instrcutionData.prop = this.name
-      this.buildInstrcution(instrcutionData)
-    }
-  }
 }
-
-InfoData.initInstrcution()
 
 export default InfoData

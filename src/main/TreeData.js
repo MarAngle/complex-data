@@ -52,21 +52,6 @@ class TreeData extends ListData {
     }
     return false
   }
-  static initInstrcution() {
-    if (this.instrcutionShow()) {
-      const instrcutionData = {
-        extend: 'ListData',
-        describe: '树形数据',
-        build: [],
-        data: [],
-        method: []
-      }
-      instrcutionData.prop = this.name
-      this.buildInstrcution(instrcutionData)
-    }
-  }
 }
-
-TreeData.initInstrcution()
 
 export default TreeData
