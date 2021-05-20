@@ -89,7 +89,7 @@ class OptionData extends SimpleData {
   // 获取设置
   getData (prop) {
     if (prop) {
-      return _func.getPropByStr(this.data, prop)
+      return _func.getProp(this.data, prop)
     } else {
       return this.data
     }

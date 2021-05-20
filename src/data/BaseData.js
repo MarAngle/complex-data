@@ -306,7 +306,7 @@ class BaseData extends DefaultData {
     }
   }
   analyzeResetModule(resetModule = {}, prop) {
-    return _func.getPropByStr(resetModule, prop)
+    return _func.getProp(resetModule, prop)
   }
   // 销毁回调操作
   destroy (...args) {

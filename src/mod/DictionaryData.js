@@ -92,7 +92,7 @@ class DictionaryData extends DefaultData {
         let showprop = this.getInterface('showprop', type)
         if (showprop) {
           if (data && _func.getType(data) == 'object') {
-            return _func.getPropByStr(data, showprop)
+            return _func.getProp(data, showprop)
           } else {
             return undefined
           }

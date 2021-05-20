@@ -297,7 +297,7 @@ class DictionaryList extends DefaultData {
       let targettype = ditem.getInterface('type', type)
       if (!isOther) {
         let originprop = ditem.getInterface('originprop', type)
-        let origindata = _func.getPropByStr(originitem, originprop)
+        let origindata = _func.getProp(originitem, originprop)
         let targetdata
         if (ditem.dictionary) {
           depth++
@@ -319,7 +319,7 @@ class DictionaryList extends DefaultData {
           depth: depth,
           type: type
         })
-        _func.setStrPropByType(targetitem, ditem.prop, targetdata, ditem.getInterface('type', type), true)
+        _func.setPropByType(targetitem, ditem.prop, targetdata, ditem.getInterface('type', type), true)
       } else {
         if (targetitem[ditem.prop] === undefined) {
           let targetdata
@@ -378,7 +378,7 @@ class DictionaryList extends DefaultData {
         targetItem: formData,
         originitem: originitem
       })
-      _func.setPropByStr(formData, ditem.prop, target, true)
+      _func.setProp(formData, ditem.prop, target, true)
     }
     return formData
   }
@@ -415,7 +415,7 @@ class DictionaryList extends DefaultData {
           type: type
         })
         let originprop = ditem.getInterface('originprop', type)
-        _func.setStrPropByType(editData, originprop, targetdata, ditem.type)
+        _func.setPropByType(editData, originprop, targetdata, ditem.type)
       }
     }
     return editData

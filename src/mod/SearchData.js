@@ -93,7 +93,7 @@ class SearchData extends ComplexData {
           if (pitem.edit && pitem.edit.getValueData) {
             targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
           }
-          _func.setPropByStr(this.form[type].form.data, pitem.prop, targetdata, true)
+          _func.setProp(this.form[type].form.data, pitem.prop, targetdata, true)
         }
       }
       if (syncPost) {
