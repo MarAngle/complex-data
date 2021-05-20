@@ -112,7 +112,7 @@ class UpdateData extends DefaultData {
     target.onLife('reseted', {
       id: this.$getModuleName('Reseted'),
       data: (resetModule) => {
-        if (target.analyzeResetModule(resetModule, 'update') !== false) {
+        if (target.parseResetModule(resetModule, 'update') !== false) {
           this.reset()
         }
       }

@@ -10,7 +10,7 @@ class TreeData extends ListData {
     this.triggerCreateLife('TreeData', 'beforeCreate', initdata)
     this.triggerCreateLife('TreeData', 'created')
   }
-  analyzeDictionaryData(dictionaryData) {
+  parseDictionaryData(dictionaryData) {
     if (dictionaryData) {
       if (!dictionaryData.option) {
         dictionaryData.option = {}

@@ -72,13 +72,13 @@ class DictionaryList extends DefaultData {
     }
   }
   // 加载默认初始值.子类自动按照父类来源设置
-  analyzeOptionFromParent (optiondata, parentData, isChildren) {
+  parseOptionFromParent (optiondata, parentData, isChildren) {
     if (isChildren && !optiondata.originfrom && parentData.originfrom) {
       optiondata.originfrom = parentData.originfrom
     }
   }
   // 分析传参
-  analyzeInitData (initdata) {
+  parseInitData (initdata) {
     return initdata
   }
   // 生成字典列表
@@ -87,7 +87,7 @@ class DictionaryList extends DefaultData {
       this.data.clear()
     }
     if (initdata) {
-      initdata = this.analyzeInitData(initdata)
+      initdata = this.parseInitData(initdata)
       // 触发update生命周期
       this.triggerLife('beforeUpdate', this, initdata, payload)
       this.setParent(initdata.parent)
@@ -96,7 +96,7 @@ class DictionaryList extends DefaultData {
       for (let n in initdata.list) {
         let ditemOption = initdata.list[n]
         // 判断是否为一级，不为一级需要将一级的默认属性添加
-        this.analyzeOptionFromParent(ditemOption, initdata.parent, isChildren)
+        this.parseOptionFromParent(ditemOption, initdata.parent, isChildren)
         let ditem = this.getItem(ditemOption.prop)
         let act = {
           build: true,
@@ -154,7 +154,7 @@ class DictionaryList extends DefaultData {
       }
     }
   }
-  analyzeBuildData (ditem, originOption) {
+  parseBuildData (ditem, originOption) {
     let initdata = originOption.dictionary
     let type = ''
     if (this.option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initdata === undefined) {
@@ -172,9 +172,9 @@ class DictionaryList extends DefaultData {
   }
   // 创建字典的字典列表
   buildItemDictionary (ditem, originOption, isChildren = true) {
-    let type = this.analyzeBuildData(ditem, originOption)
+    let type = this.parseBuildData(ditem, originOption)
     if (type == 'build') {
-      let initdata = this.analyzeInitData(originOption.dictionary)
+      let initdata = this.parseInitData(originOption.dictionary)
       if (!initdata.option) {
         initdata.option = {}
       }

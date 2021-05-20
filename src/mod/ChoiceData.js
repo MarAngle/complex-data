@@ -168,7 +168,7 @@ class ChoiceData extends DefaultData {
     target.onLife('reseted', {
       id: this.$getModuleName('Reseted'),
       data: (resetModule) => {
-        if (target.analyzeResetModule(resetModule, 'choice') !== false) {
+        if (target.parseResetModule(resetModule, 'choice') !== false) {
           this.reset(true)
         }
       }

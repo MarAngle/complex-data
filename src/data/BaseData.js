@@ -305,7 +305,7 @@ class BaseData extends DefaultData {
       args[0] = {}
     }
   }
-  analyzeResetModule(resetModule = {}, prop) {
+  parseResetModule(resetModule = {}, prop) {
     return _func.getProp(resetModule, prop)
   }
   // 销毁回调操作
@@ -320,7 +320,7 @@ class BaseData extends DefaultData {
     this.formatResetModule(args)
     this.triggerLife('beforeReset', ...args)
     // 重置状态
-    if (this.analyzeResetModule(args[0], 'status') !== false) {
+    if (this.parseResetModule(args[0], 'status') !== false) {
       this.resetStatus(args[0])
     }
     this.triggerLife('reseted', ...args)

@@ -29,11 +29,11 @@ class ComplexData extends BaseData {
     this.onLife('reseted', {
       id: 'AutoComplexDataReseted',
       data: (resetModule) => {
-        if (this.analyzeResetModule(resetModule, 'data') !== false) {
-          if (this.analyzeResetModule(resetModule, 'data.list') !== false) {
+        if (this.parseResetModule(resetModule, 'data') !== false) {
+          if (this.parseResetModule(resetModule, 'data.list') !== false) {
             this.resetDataList()
           }
-          if (this.analyzeResetModule(resetModule, 'data.current') !== false) {
+          if (this.parseResetModule(resetModule, 'data.current') !== false) {
             this.resetDataCurrent()
           }
         }
@@ -51,7 +51,7 @@ class ComplexData extends BaseData {
       if (dictionaryOption.constructor === DictionaryList) {
         this.setModule('dictionary', dictionaryOption)
       } else {
-        dictionaryOption = this.analyzeDictionaryOption(dictionaryOption, 'init')
+        dictionaryOption = this.parseDictionaryOption(dictionaryOption, 'init')
         if (!dictionaryOption.parent) {
           dictionaryOption.parent = this
         }
@@ -59,7 +59,7 @@ class ComplexData extends BaseData {
       }
     }
   }
-  analyzeDictionaryOption (dictionaryOption, from) {
+  parseDictionaryOption (dictionaryOption, from) {
     return dictionaryOption
   }
   /**
@@ -72,7 +72,7 @@ class ComplexData extends BaseData {
       if (dictionaryOption.constructor === DictionaryList) {
         this.setModule('dictionary', dictionaryOption)
       } else {
-        dictionaryOption = this.analyzeDictionaryOption(dictionaryOption, 'rebuild')
+        dictionaryOption = this.parseDictionaryOption(dictionaryOption, 'rebuild')
         if (!dictionaryOption.parent) {
           dictionaryOption.parent = this
         }
