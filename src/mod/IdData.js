@@ -45,7 +45,7 @@ class IdData {
       return function () {
         let current = start.toString()
         if (current.length < minsize) {
-          current = _func.fillStr(current, interval, minsize, 'head')
+          current = _func.fillString(current, minsize, interval, 'start')
         } else if (maxsize && current.length > maxsize) {
           if (maxaction == 'cut') {
             current.length = maxsize
