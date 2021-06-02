@@ -300,27 +300,27 @@ class BaseData extends DefaultData {
     }))
   }
   // 将第一个传参的第一个参数无值时转换为空对象
-  formatResetModule(args) {
+  formatResetOption(args) {
     if (!args[0]) {
       args[0] = {}
     }
   }
-  parseResetModule(resetModule = {}, prop) {
-    return _func.getProp(resetModule, prop)
+  parseResetOption(resetOption = {}, prop) {
+    return _func.getProp(resetOption, prop)
   }
   // 销毁回调操作
   destroy (...args) {
-    this.formatResetModule(args)
+    this.formatResetOption(args)
     this.triggerLife('beforeDestroy', ...args)
     this.reset(...args)
     this.triggerLife('destroyed', ...args)
   }
   // 重置回调操作=>不清楚额外数据以及生命周期函数
   reset (...args) {
-    this.formatResetModule(args)
+    this.formatResetOption(args)
     this.triggerLife('beforeReset', ...args)
     // 重置状态
-    if (this.parseResetModule(args[0], 'status') !== false) {
+    if (this.parseResetOption(args[0], 'status') !== false) {
       this.resetStatus(args[0])
     }
     this.triggerLife('reseted', ...args)

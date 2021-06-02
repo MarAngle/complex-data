@@ -167,8 +167,8 @@ class ChoiceData extends DefaultData {
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleName('Reseted'),
-      data: (resetModule) => {
-        if (target.parseResetModule(resetModule, 'choice') !== false) {
+      data: (resetOption) => {
+        if (target.parseResetOption(resetOption, 'choice') !== false) {
           this.reset(true)
         }
       }
