@@ -40,7 +40,7 @@ class IdData {
       let step = item.step || 1
       let interval = item.interval || '0'
       let minsize = item.minsize || 6
-      let maxsize = item.maxsize || false
+      let maxsize = item.maxsize || 0
       let maxaction = item.maxaction || 'cut'
       return function () {
         let current = start.toString()
@@ -48,7 +48,7 @@ class IdData {
           current = _func.fillString(current, minsize, interval, 'start')
         } else if (maxsize && current.length > maxsize) {
           if (maxaction == 'cut') {
-            current.length = maxsize
+            current = current.slice(0, maxsize)
           } else if (maxaction == 'restart') {
             start = 0
           } else {

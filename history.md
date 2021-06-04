@@ -2,6 +2,7 @@
 - 适配新版func,函数名称替换
 - analyze=>parse作为分析相关字段名称
 - resetModule=>resetOption
+- IdData优化判断修复string.length只读的BUG
 
 ### 2.0.8
 - 数据类继承链条的初始化参数为否时格式化为空对象
