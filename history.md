@@ -1,4 +1,4 @@
-### 2.0.9ing
+### 2.0.9
 - 适配新版func,函数名称替换
 - analyze=>parse作为分析相关字段名称
 - resetModule=>resetOption
