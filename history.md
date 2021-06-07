@@ -3,6 +3,7 @@
 - analyze=>parse作为分析相关字段名称
 - resetModule=>resetOption
 - IdData优化判断修复string.length只读的BUG
+- Update优化，修复clear时正在进行的trigger操作会重新启动的BUG
 
 ### 2.0.8
 - 数据类继承链条的初始化参数为否时格式化为空对象

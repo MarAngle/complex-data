@@ -1,13 +1,17 @@
 import _func from 'complex-func'
 import DefaultData from './../data/DefaultData'
 /**
- * 需要设置methods: trigger
+ * 需要设置methods: trigger,其中的next必须需要调用
 */
 
 class UpdateData extends DefaultData {
   constructor (initdata = {}) {
     super(initdata)
     this.triggerCreateLife('UpdateData', 'beforeCreate', initdata)
+    this.load = {
+      update: false, // 更新状态判断值，true说明update正在进行中
+      operate: false // 触发操作判断值。true说明trigger正在进行中
+    }
     this.current = {
       num: 0
     }
@@ -42,8 +46,12 @@ class UpdateData extends DefaultData {
     return this.getOffset(offset, this.getNum())
   }
   // 清除定时器
-  clear () {
-    if (this.timer) {
+  clear (next) {
+    if (!next) {
+      // 不存在下一步时设置更新状态为停止更新
+      this.load.update = false
+    }
+    if (this.timer !== undefined) {
       clearTimeout(this.timer)
       this.timer = undefined
     }
@@ -53,6 +61,8 @@ class UpdateData extends DefaultData {
     if (offset === undefined) {
       offset = this.offset.start
     }
+    // 设置更新状态为更新中
+    this.load.update = true
     this.nextDo(offset)
   }
   // 自动开始，当前存在定时器不操作，不存在时则开始
@@ -63,13 +73,19 @@ class UpdateData extends DefaultData {
   }
   // nextDo
   nextDo (offset) {
-    this.clear()
-    if (offset === undefined) {
-      offset = this.offset.data
+    if (this.load.update) {
+      this.clear(true)
+      if (offset === undefined) {
+        offset = this.offset.data
+      }
+      this.timer = setTimeout(() => {
+        // 准备开始trigger操作
+        this.operate = true
+        this.trigger(this.next.bind(this), this.getNum())
+      }, this.triggerGetOffset(offset))
+    } else {
+      this.clear()
     }
-    this.timer = setTimeout(() => {
-      this.trigger(this.getNum(), this.next.bind(this))
-    }, this.triggerGetOffset(offset))
   }
   // 检查下一步是否继续，next判断
   check (currentnum) {
@@ -77,21 +93,28 @@ class UpdateData extends DefaultData {
   }
   // 继续进行下一次回调
   next (offset) {
-    let checkCb = this.check(this.getNum())
-    if (offset === undefined) {
-      offset = this.offset.data
-    }
-    if (_func.isPromise(checkCb)) {
-      checkCb.then(() => {
-        this.nextDo(offset)
-      }, err => {
-        this.printMsg('stop next!', 'log', { data: err })
-      })
-    } else if (checkCb) {
-      this.nextDo(offset)
+    if (this.load.update) {
+      this.operate = false
+      if (offset !== false) {
+        let checkCb = this.check(this.getNum())
+        if (offset === undefined) {
+          offset = this.offset.data
+        }
+        if (_func.isPromise(checkCb)) {
+          checkCb.then(() => {
+            this.nextDo(offset)
+          }, err => {
+            this.printMsg('stop next!', 'log', { data: err })
+          })
+        } else if (checkCb) {
+          this.nextDo(offset)
+        }
+      } else {
+        this.clear()
+      }
     }
   }
-  // 获取当前次数，包括以设置被删除的数量
+  // 获取当前次数，包括已设置被删除的数量
   getNum () {
     return this.current.num
   }
