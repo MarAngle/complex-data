@@ -53,41 +53,29 @@ class BaseData extends DefaultData {
   triggerPromise (prop, option = {}) {
     return this.getModule('promise').triggerData(prop, option)
   }
-
   // 更新相关操作
-  setUpdateOffset (offset) {
-    this.triggerUpdateMethod('setOffset', offset)
+  setUpdateOffset (...args) {
+    this.triggerModuleMethod('update', 'setOffset', args)
   }
   // 开始更新
-  startUpdate (payload) {
-    this.triggerUpdateMethod('start', payload)
+  startUpdate (...args) {
+    this.triggerModuleMethod('update', 'start', args)
   }
   // 自动更新
-  autoStartUpdate (payload) {
-    this.triggerUpdateMethod('autoStart', payload)
+  autoStartUpdate (...args) {
+    this.triggerModuleMethod('update', 'autoStart', args)
   }
   // 触发下一次定时
-  nextUpdate (payload) {
-    this.triggerUpdateMethod('next', payload)
+  nextUpdate (...args) {
+    this.triggerModuleMethod('update', 'next', args)
   }
   // 清除更新
-  clearUpdate (payload) {
-    this.triggerUpdateMethod('clear', payload)
+  clearUpdate (...args) {
+    this.triggerModuleMethod('update', 'clear', args)
   }
   // 重置更新
-  resetUpdate (payload) {
-    this.triggerUpdateMethod('reset', payload)
-  }
-  triggerUpdateMethod (method, payload, hideError) {
-    if (this.getModule('update')) {
-      if (this.getModule('update')[method]) {
-        this.getModule('update')[method](payload)
-      } else {
-        this.printMsg(`更新模块不存在${method}方法`)
-      }
-    } else if (!hideError) {
-      this.printMsg(`未定义更新模块`)
-    }
+  resetUpdate (...args) {
+    this.triggerModuleMethod('update', 'reset', args)
   }
   // 自动加载或者更新数据
   autoLoadData (next, ...args) {

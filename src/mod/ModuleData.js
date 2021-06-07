@@ -35,6 +35,30 @@ class ModuleData extends SimpleData {
   getData(prop) {
     return this.data[prop]
   }
+  triggerMethod(prop, method, args) {
+    let mod = this.getData(prop)
+    if (mod) {
+      let type = typeof mod[method]
+      if (type === 'function') {
+        return mod[method](...args)
+      } else {
+        this.printMsg(`${prop}模块${method}属性为${type}，函数触发失败！`)
+      }
+    } else {
+      this.printMsg(`不存在${prop}模块`)
+    }
+  }
+  _selfName () {
+    let parent = this.getParent()
+    let pre
+    if (parent && parent._selfName) {
+      pre = `(${parent._selfName()})-`
+    }
+    if (!pre) {
+      pre = ``
+    }
+    return `{${pre}[${this.constructor.name}]}`
+  }
 }
 
 export default ModuleData

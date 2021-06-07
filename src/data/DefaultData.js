@@ -72,6 +72,9 @@ class DefaultData extends SimpleData {
   getModule(prop) {
     return this.module.getData(prop)
   }
+  triggerModuleMethod(prop, method, args) {
+    return this.module.triggerMethod(prop, method, args)
+  }
   // 生命周期函数
   // 设置生命周期函数
   initLife (data, reset) {
