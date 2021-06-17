@@ -127,16 +127,16 @@ class BaseData extends DefaultData {
   */
   loadData (force, ...args) {
     return new Promise((resolve, reject) => {
+      if (force === true) {
+        force = {}
+      }
       let loadStatus = this.getStatus('load')
       if (loadStatus.value == 'unload') {
         this.triggerGetData(...args)
       } else if (loadStatus.value == 'loading') {
         // 直接then
-        if (force) {
-          // force = { ing: true }
-          if (typeof force == 'object' && force.ing) {
-            this.triggerGetData(...args)
-          }
+        if (force && force.ing) {
+          this.triggerGetData(...args)
         }
       } else if (loadStatus.value == 'loaded') {
         if (force) {
@@ -144,7 +144,8 @@ class BaseData extends DefaultData {
         }
       }
       this.triggerPromise('load', {
-        errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`)
+        errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+        correct: force ? force.correct : undefined
       }).then(res => {
         resolve(res)
       }, err => {
@@ -158,6 +159,9 @@ class BaseData extends DefaultData {
   */
   loadUpdateData (force, ...args) {
     return new Promise((resolve, reject) => {
+      if (force === true) {
+        force = {}
+      }
       let updateStatus = this.getStatus('update')
       if (updateStatus.value == 'updated') {
         this.triggerUpdateData(...args)
@@ -168,7 +172,8 @@ class BaseData extends DefaultData {
         }
       }
       this.triggerPromise('update', {
-        errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`)
+        errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`),
+        correct: force ? force.correct : undefined
       }).then(res => {
         resolve(res)
       }, err => {

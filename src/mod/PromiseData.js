@@ -25,10 +25,26 @@ class PromiseData extends SimpleData {
   }
   triggerData (prop, option = {}) {
     return new Promise((resolve, reject) => {
+      if (option.correct === undefined) {
+        option.correct = 'reload' // '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
+      }
       let data = this.getData(prop)
       if (data) {
         data.then(res => {
-          resolve(res)
+          // 判断Promise一致性，一致则说明就的Promise期间生成了新的Promise
+          let currentData = this.getData(prop)
+          if (data === currentData || !option.correct) {
+            resolve(res)
+          } else if (option.correct == 'reload') {
+            this.triggerData(prop, option).then(res => {
+              resolve(res)
+            }, err => {
+              reject(err)
+            })
+          } else {
+            // reject
+            reject({ status: 'fail', code: 'promiseRepeat' })
+          }
         }, err => {
           reject(err)
         })
