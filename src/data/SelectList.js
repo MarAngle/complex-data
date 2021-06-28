@@ -3,7 +3,7 @@ import utils from './../utils/index'
 import DefaultData from './DefaultData'
 import OptionData from './../mod/OptionData'
 
-// 本地选择器数据
+// 选择器数据
 class SelectList extends DefaultData {
   constructor(initdata) {
     if (!initdata) {
@@ -20,11 +20,13 @@ class SelectList extends DefaultData {
         label: 'label'
       },
       unhit: {
-        value: undefined, // value值默认设置，true为设置为第一个选项,其他遍历选项
-        deep: true, // 深拷贝判断值
-        deepOption: undefined // 深拷贝设置值
+        // 对应设置值将会在设置unhit数据时生效
+        value: undefined, // value值默认设置，存在值则会通过getItem获取对应的值对象
+        deep: true, // 深拷贝判断值,复制值对象时是否进行深copy
+        deepOption: undefined // 深拷贝设置值，deep==true时生效
       },
       undef: {
+        // 对应设置值将会在设置undef数据时生效
         unhit: true, // 复制unhit
         value: undefined, // 同上
         deep: true, // 深拷贝判断值
@@ -75,13 +77,11 @@ class SelectList extends DefaultData {
       }
       for (let n = 0; n < dataList.length; n++) {
         let dataItem = dataList[n]
-        if (dataItem.filter) {
-          let type = _func.getType(dataItem.filter)
+        if (dataItem._filter) {
+          let type = _func.getType(dataItem._filter)
           if (type != 'array') {
-            dataItem.filter = [ dataItem.filter ]
+            dataItem._filter = [ dataItem._filter ]
           }
-        } else {
-          dataItem.filter = false
         }
       }
       this.data.list = dataList
@@ -122,10 +122,6 @@ class SelectList extends DefaultData {
       let deepOption = unhitOption.deepOption
       let value = unhitOption.value
       if (!this.checkUndef(value)) {
-        if (value === true) {
-          // 可能为空
-          value = this.getItemByIndex(0).value
-        }
         this.unhitData = this.getItem(value, { deep, deepOption })
       }
     }
@@ -143,10 +139,7 @@ class SelectList extends DefaultData {
       } else {
         let value = undefOption.value
         if (!this.checkUndef(value)) {
-          if (value === true) {
-            value = this.getItemByIndex(0).value
-          }
-          this.undefData = this.getItem(value, deepOption)
+          this.undefData = this.getItem(value, { deepOption })
         }
       }
     }
@@ -163,8 +156,8 @@ class SelectList extends DefaultData {
       return this.format.data(value)
     }
   }
-  // 获取未命中默认值
-  getUnhitData() {
+  // 获取未命中默认值,通过重置函数实现自定义
+  getUnhitData(value) {
     return this.unhitData
   }
   // 获取未定义默认值
@@ -198,10 +191,10 @@ class SelectList extends DefaultData {
         for (let n in this.data.list) {
           let item = this.data.list[n]
           let push = false
-          if (!item.filter) {
+          if (!item._filter) {
             push = true
           } else {
-            if (item.filter.indexOf(payload.filter) > -1) {
+            if (item._filter.indexOf(payload.filter) > -1) {
               push = true
             }
           }
@@ -259,7 +252,7 @@ class SelectList extends DefaultData {
       }
     }
     if (!res) {
-      res = this.getUnhitData()
+      res = this.getUnhitData(value)
     }
     res = this.formatItemByDeep(res, payload)
     return res
