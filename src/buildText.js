@@ -1,3 +1,4 @@
+import _func from 'complex-func'
 // -----
 let importurl = ''
 let exportlist = ''
@@ -8,13 +9,11 @@ const _main = require.context('./main', false, /\.js$/)
 let maindata = {}
 let mainmod = {}
 let mainmain = {}
-function LoadProp (data, _prop) {
-  let jslist = _prop.keys()
-  jslist.forEach(item => {
-    let moditem = _prop(item)
-    let modname = item.replace(/^\.\/(.*)\.\w+$/, '$1')
-    if (!data[modname]) {
-      data[modname] = moditem.default
+function LoadProp (data, contents) {
+  _func.LoadContents(contents, function(item, path) {
+    let name = path.replace(/^\.\/(.*)\.\w+$/, '$1')
+    if (!data[name]) {
+      data[name] = item.default
     } else {
       console.error('auto mod load is repeat')
     }
