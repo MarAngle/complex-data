@@ -1,16 +1,12 @@
-function loadContents(contents, fn) {
-  let contentList = contents.keys()
-  contentList.forEach((path, index) => {
-    fn(contents(path), path, index)
-  })
-}
+import _func from 'complex-func'
+
 function buildLoadContent(contents, countUrl) {
   // -----
   let importurl = ''
   let exportlist = ''
   let maindata = {}
   function LoadProp (data, contents) {
-    loadContents(contents, function(item, path) {
+    _func.loadContents(contents, function(item, path) {
       let name = path.replace(/^\.\/(.*)\.\w+$/, '$1')
       if (!data[name]) {
         data[name] = item.default
@@ -41,8 +37,10 @@ import ${n} from './${url}/${n}'`
   // -----
 }
 const dataContent = require.context('./src/data', false, /\.js$/)
-buildLoadContent(dataContent, 'src/data')
 const modContent = require.context('./src/mod', false, /\.js$/)
-buildLoadContent(modContent, 'src/mod')
 const mainContent = require.context('./src/main', false, /\.js$/)
-buildLoadContent(mainContent, 'src/main')
+if (_func.getEnv() == 'development') {
+  buildLoadContent(modContent, 'src/mod')
+  buildLoadContent(dataContent, 'src/data')
+  buildLoadContent(mainContent, 'src/main')
+}
