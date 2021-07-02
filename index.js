@@ -32,7 +32,7 @@ import TreeData from './src/main/TreeData'
 
 import option from './src/option'
 
-import './buildContentImport'
+// import './buildContentImport'
 
 export {
   BaseData,
