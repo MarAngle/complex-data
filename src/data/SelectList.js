@@ -66,25 +66,27 @@ class SelectList extends DefaultData {
       let dataType = _func.getType(list)
       let dataOption
       let dataList
-      if (dataType == 'array') {
-        dataList = list
-      } else {
+      if (dataType === 'object') {
         dataList = list.list
         dataOption = list.option
+      } else if (dataType === 'array') {
+        dataList = list
       }
-      if (dataOption) {
-        dataList = _func.formatList(dataList, dataOption)
-      }
-      for (let n = 0; n < dataList.length; n++) {
-        let dataItem = dataList[n]
-        if (dataItem._filter) {
-          let type = _func.getType(dataItem._filter)
-          if (type != 'array') {
-            dataItem._filter = [ dataItem._filter ]
+      if (dataList) {
+        if (dataOption) {
+          dataList = _func.formatList(dataList, dataOption)
+        }
+        for (let n = 0; n < dataList.length; n++) {
+          let dataItem = dataList[n]
+          if (dataItem._filter) {
+            let type = _func.getType(dataItem._filter)
+            if (type != 'array') {
+              dataItem._filter = [ dataItem._filter ]
+            }
           }
         }
+        this.data.list = dataList
       }
-      this.data.list = dataList
     }
   }
   // 加载格式化设置
