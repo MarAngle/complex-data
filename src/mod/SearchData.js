@@ -33,6 +33,14 @@ class SearchData extends ComplexData {
     }
     this.triggerCreateLife('SearchData', 'created')
   }
+  /**
+   * 加载SearchData
+   * @param {object} option 参数
+   * @param {string} [option.title] 标题参数
+   * @param {object} [option.menu] 菜单参数
+   * @param {'default' | 'add'} [option.menu.type] 菜单类型
+   * @param {object[]} [option.menu.list] 菜单列表
+   */
   initSearchData({
     title,
     menu
@@ -42,18 +50,36 @@ class SearchData extends ComplexData {
     this.initMenu(menu)
     this.initFormData()
   }
+  /**
+   * 设置加载判断值
+   * @param {boolean} data 判断值
+   */
   setInit(data) {
     this.init = data
   }
+  /**
+   * 获取加载判断值
+   * @returns {boolean}
+   */
   getInit() {
     return this.init
   }
+  /**
+   * 加载标题
+   * @param {string} [title] 标题
+   */
   initTitle(title) {
     if (title) {
       this.title.data = title
       this.title.show = true
     }
   }
+  /**
+   * 加载菜单
+   * @param {*} [menu] 菜单参数
+   * @param {'default' | 'add'} [menu.type] 菜单类型
+   * @param {object[]} [menu.list] 菜单列表
+   */
   initMenu(menu = {}) {
     if (this.getInit()) {
       if (!menu.list) {
@@ -68,6 +94,10 @@ class SearchData extends ComplexData {
       this.menu = menu.list
     }
   }
+  /**
+   * 加载form
+   * @param {string} type modtype
+   */
   initFormData(type = 'build') {
     if (this.getInit()) {
       this.form[type] = {
@@ -82,7 +112,13 @@ class SearchData extends ComplexData {
       this.resetFormData('init')
     }
   }
-  // 重置检索值
+  /**
+   * 重置检索值
+   * @param {'init' | 'reset'} from 请求来源
+   * @param {object} option 设置项
+   * @param {boolean} syncPost 同步到post[type]中
+   * @param {string} type modtype
+   */
   resetFormData(from = 'init', option = {}, syncPost = true, type = 'build') {
     if (this.getInit()) {
       let limit = _func.getLimitData(option.limit)
@@ -101,11 +137,21 @@ class SearchData extends ComplexData {
       }
     }
   }
+  /**
+   * 设置对应type的数据
+   * @param {string} [type = 'build'] modtype
+   */
   setData(type = 'build') {
     if (this.getInit()) {
       this.post[type] = this.getEditData(this.form[type].form.data, this.form[type].modlist, 'build')
     }
   }
+  /**
+   * 获取当前检索数据
+   * @param {string} [type = 'build'] modtype
+   * @param {boolean | object} [deep = true] 是否深拷贝
+   * @returns {object}
+   */
   getData(type = 'build', deep = true) {
     if (this.getInit()) {
       if (deep) {
@@ -117,9 +163,16 @@ class SearchData extends ComplexData {
       return {}
     }
   }
+  /**
+   * 重置form
+   */
   reset() {
     this.resetFormData('reset')
   }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleId('Reseted'),
@@ -130,6 +183,10 @@ class SearchData extends ComplexData {
       }
     })
   }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
   uninstall(target) {
     target.offLife('reseted', this.$getModuleId('Reseted'))
   }

@@ -56,14 +56,26 @@ class DictionaryList extends DefaultData {
       this.option.setData('tree', option.tree)
     }
   }
-  // 获取构建设置项
+  /**
+   * 获取构建设置项
+   * @returns {object}
+   */
   getBuildOption () {
     let buildOption = this.option.getData('build')
     return buildOption
   }
+  /**
+   * 设置LayoutData
+   * @param {object} data LayoutData参数
+   */
   setLayout (data) {
     this.layout = new LayoutData(data)
   }
+  /**
+   * 获取布局数据
+   * @param {string} [prop] 属性
+   * @returns {object | LayoutData}
+   */
   getLayout (prop) {
     if (prop) {
       return this.layout.getData(prop)
@@ -71,17 +83,30 @@ class DictionaryList extends DefaultData {
       return this.layout
     }
   }
-  // 加载默认初始值.子类自动按照父类来源设置
+  /**
+   * 加载默认初始值.子类自动按照父类来源设置
+   * @param {object} optiondata DictionaryData初始化参数
+   * @param {*} parentData 父元素
+   * @param {*} isChildren 是否是子类
+   */
   parseOptionFromParent (optiondata, parentData, isChildren) {
     if (isChildren && !optiondata.originfrom && parentData.originfrom) {
       optiondata.originfrom = parentData.originfrom
     }
   }
-  // 分析传参
+  /**
+   * 分析传参
+   * @param {object} initdata 传参
+   * @returns {object}
+   */
   parseInitData (initdata) {
     return initdata
   }
-  // 生成字典列表
+  /**
+   * 生成字典列表
+   * @param {*} initdata 列表传参
+   * @param {object} [payload] 设置项
+   */
   initDictionaryData (initdata, payload = {}) { // type init push replace
     if (payload.type == 'init') {
       this.data.clear()
@@ -137,6 +162,10 @@ class DictionaryList extends DefaultData {
       type: payload.type
     })
   }
+  /**
+   * 加载propData数据
+   * @param {object} [initdata] 设置项
+   */
   initPropData (initdata = {}) {
     let list = ['id', 'parentId', 'children']
     for (let n in list) {
@@ -154,6 +183,12 @@ class DictionaryList extends DefaultData {
       }
     }
   }
+  /**
+   * 解析字典初始化数据,获取子字典创建模式
+   * @param {DictionaryData} ditem 对应字典实例
+   * @param {object} originOption 字典初始化数据
+   * @returns {'' | 'self' | 'build'}
+   */
   parseBuildData (ditem, originOption) {
     let initdata = originOption.dictionary
     let type = ''
@@ -170,7 +205,12 @@ class DictionaryList extends DefaultData {
     }
     return type
   }
-  // 创建字典的字典列表
+  /**
+   * 创建字典的子字典列表
+   * @param {DictionaryData} ditem 对应字典实例
+   * @param {object} originOption 字典初始化数据
+   * @param {boolean} isChildren 是否子类
+   */
   buildItemDictionary (ditem, originOption, isChildren = true) {
     let type = this.parseBuildData(ditem, originOption)
     if (type == 'build') {
@@ -512,6 +552,10 @@ class DictionaryList extends DefaultData {
     }
     return editData
   }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
   install (target) {
     this.onLife('updated', {
       id: target.$getModuleId('dictionaryListUpdated'),
@@ -520,6 +564,10 @@ class DictionaryList extends DefaultData {
       }
     })
   }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
   uninstall (target) {
     this.offLife('updated', target.$getModuleId('dictionaryListUpdated'))
   }
