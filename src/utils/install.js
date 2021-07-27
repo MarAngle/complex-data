@@ -13,6 +13,11 @@ const autoId = new IdData({
   ]
 })
 
+/**
+ * 获取id
+ * @param {string} name 名称
+ * @returns {string}
+ */
 install.getId = function(name = '') {
   let id = 'Auto' + name + autoId.getData()
   return id
