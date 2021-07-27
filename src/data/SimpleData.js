@@ -8,7 +8,6 @@ class SimpleData {
         id: install.getId(this.constructor.name)
       }
     }
-    this.$setModuleName()
   }
   buildPrintMsg (content) {
     return `${this._selfName()}:${content}`
@@ -23,11 +22,8 @@ class SimpleData {
   toString () {
     return this._selfName()
   }
-  $setModuleName () {
-    this.$LocalTempData.module.name = this.$LocalTempData.module.id.getData()
-  }
-  $getModuleName (data = '') {
-    return this.$LocalTempData.module.name + data
+  $getModuleId (data = '') {
+    return this.$LocalTempData.module.id + data
   }
 }
 

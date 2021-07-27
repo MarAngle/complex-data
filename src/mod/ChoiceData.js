@@ -166,7 +166,7 @@ class ChoiceData extends DefaultData {
   }
   install (target) {
     target.onLife('reseted', {
-      id: this.$getModuleName('Reseted'),
+      id: this.$getModuleId('Reseted'),
       data: (resetOption) => {
         if (target.parseResetOption(resetOption, 'choice') !== false) {
           this.reset(true)
@@ -175,7 +175,7 @@ class ChoiceData extends DefaultData {
     })
   }
   uninstall(target) {
-    target.offLife('reseted', this.$getModuleName('Reseted'))
+    target.offLife('reseted', this.$getModuleId('Reseted'))
   }
 }
 

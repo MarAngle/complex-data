@@ -422,14 +422,14 @@ class DictionaryList extends DefaultData {
   }
   install (target) {
     this.onLife('updated', {
-      id: target.$getModuleName('dictionaryListUpdated'),
+      id: target.$getModuleId('dictionaryListUpdated'),
       data: (...args) => {
         target.triggerLife('dictionaryListUpdated', ...args)
       }
     })
   }
   uninstall (target) {
-    this.offLife('updated', target.$getModuleName('dictionaryListUpdated'))
+    this.offLife('updated', target.$getModuleId('dictionaryListUpdated'))
   }
 }
 
