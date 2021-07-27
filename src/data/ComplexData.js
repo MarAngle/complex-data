@@ -24,7 +24,9 @@ class ComplexData extends BaseData {
     this._initComplexDataLife()
     this.triggerCreateLife('ComplexData', 'created')
   }
-  // 加载生命周期函数
+  /**
+   * 加载生命周期函数
+   */
   _initComplexDataLife() {
     this.onLife('reseted', {
       id: 'AutoComplexDataReseted',
@@ -40,12 +42,20 @@ class ComplexData extends BaseData {
       }
     })
   }
+  /**
+   * 加载ComplexData
+   * @param {object} option 设置项
+   * @param {object} [option.dictionary] DictionaryList初始化参数或实例
+   */
   _initComplexData ({
     dictionary
   }) {
     this.initDictionary(dictionary)
   }
-  // 设置字典列表
+  /**
+   * 设置字典列表
+   * @param {object} [dictionaryOption] DictionaryList初始化参数或实例
+   */
   initDictionary (dictionaryOption) {
     if (dictionaryOption) {
       if (dictionaryOption.constructor === DictionaryList) {
@@ -59,6 +69,12 @@ class ComplexData extends BaseData {
       }
     }
   }
+  /**
+   * 解析dictionaryOption
+   * @param {object} dictionaryOption DictionaryList初始化参数或实例
+   * @param {'init' | 'rebuild'} from 时机
+   * @returns {object}
+   */
   parseDictionaryOption (dictionaryOption, from) {
     return dictionaryOption
   }
@@ -82,46 +98,121 @@ class ComplexData extends BaseData {
       }
     }
   }
+  /**
+   * 获取字典对象
+   * @param {*} data 值
+   * @param {'prop' | 'id'} from 获取类型
+   * @returns {DictionaryData}
+   */
   getDictionaryItem(data, from) {
     return this.getModule('dictionary').getItem(data, from)
   }
-  // 设置字典唯一值
+  /**
+   * 设置字典值
+   * @param {*} data 值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   */
   setDictionaryPropData (data, target, prop) {
     this.getModule('dictionary').setPropData(data, target, prop)
   }
-  // 获取字典唯一值
+  /**
+   * 获取字典值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   * @returns {*}
+   */
   getDictionaryPropData (target, prop) {
     return this.getModule('dictionary').getPropData(target, prop)
   }
+  /**
+   * 获取符合模块要求的字典列表
+   * @param {string} mod 模块名称
+   * @returns {DictionaryData[]}
+   */
   getDictionaryModList (mod) {
     return this.getModule('dictionary').getModList(mod)
   }
+  /**
+   * 获取符合模块要求的字典page列表
+   * @param {string} mod 模块名称
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
   getDictionaryPageList (mod, payload) {
     return this.getModule('dictionary').getPageList(mod, payload)
   }
+  /**
+   * 将模块列表根据payload转换为页面需要数据的列表
+   * @param {string} mod 模块名称
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
   getDictionaryPageListByModList (mod, modlist, payload) {
     return this.getModule('dictionary').getPageListByModList(mod, modlist, payload)
   }
+  /**
+   * 根据模块列表生成对应的form对象
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {string} mod 模块名称
+   * @param {*} originitem 初始化数据
+   * @returns {object}
+   */
   getDictionaryFormData(modlist, mod, originitem) {
     return this.getModule('dictionary').getFormData(modlist, mod, originitem)
   }
-  // 根据源数据格式化对象
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originitem 源数据
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
   formatItem (originitem, type = 'list', option) {
     return this.getModule('dictionary').formatItem(originitem, type, option)
   }
-  // 根据源数据更新数据
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetitem 目标数据
+   * @param {object} originitem 源数据
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
   updateItem (targetitem, originitem, type = 'info', option) {
     return this.getModule('dictionary').updateItem(targetitem, originitem, type, option)
   }
-  // 格式化列表数据
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetlist 目标列表
+   * @param {object[]} originlist 源数据列表
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   */
   formatListData (targetlist, originlist, type, option) {
     this.getModule('dictionary').formatListData(targetlist, originlist, type, option)
   }
-  // 格式化列表数据
+  /**
+   * 格式化列表数据为treeList
+   * @param {object[]} targetlist 目标列表treeList
+   * @param {object[]} originlist 源数据列表
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   */
   formatTreeData (targetlist, originlist, type, option) {
     this.getModule('dictionary').formatTreeData(targetlist, originlist, type, option)
   }
-  // 格式化独立数据
+  /**
+   * 根据源数据格式化生成对象并更新到targetitem中
+   * @param {object} targetitem 目标数据
+   * @param {object} originitem 源数据
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 更新设置项
+   */
   formatItemData (targetitem, originitem, type, option = {}) {
     if (!option.type) {
       option.type = 'add'
@@ -129,15 +220,25 @@ class ComplexData extends BaseData {
     let item = this.formatItem(originitem, type)
     _func.updateData(targetitem, item, option)
   }
-  // 格式化Form数据
+  /**
+   * 基于formdata和模块列表返回编辑完成的数据
+   * @param {object} formData form数据
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {string} type modtype
+   * @returns {object}
+   */
   getEditData (formData, modlist, type) {
     return this.getModule('dictionary').getEditData(formData, modlist, type)
   }
-  // 重置data.list
+  /**
+   * 重置data.list
+   */
   resetDataList() {
     _func.clearArray(this.data.list)
   }
-  // 重置data.list
+  /**
+   * 重置data.current
+   */
   resetDataCurrent() {
     for (let n in this.data.current) {
       delete this.data.current[n]

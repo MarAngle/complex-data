@@ -198,19 +198,39 @@ class DictionaryList extends DefaultData {
     payload.type = payload.type || 'replace'
     this.initDictionaryData(initdata, payload)
   }
+  /**
+   * 设置字典值
+   * @param {*} data 值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   */
   setPropData (data, target = 'data', prop = 'id') {
     this.propData[prop][target] = data
   }
+  /**
+   * 获取字典值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   * @returns {*}
+   */
   getPropData (target = 'data', prop = 'id') {
     return this.propData[prop][target]
   }
 
-  // 获取列表MAP
+  /**
+   * 获取列表MAP
+   * @returns {Map<DictionaryData>}
+   */
   getList () {
     return this.data
   }
 
-  // 获取字典
+  /**
+   * 获取字典对象
+   * @param {*} data 值
+   * @param {'prop' | 'id'} from 获取类型
+   * @returns {DictionaryData}
+   */
   getItem (data, from = 'prop') {
     if (from == 'prop') {
       return this.data.get(data)
@@ -222,18 +242,40 @@ class DictionaryList extends DefaultData {
       }
     }
   }
-  // 根据源数据格式化对象
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originitem 源数据
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
   formatItem (originitem, type = 'list', option, depth) {
     let targetitem = {}
     this.updateItem(targetitem, originitem, type, option, depth)
     return targetitem
   }
-  // 根据源数据更新数据
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetitem 目标数据
+   * @param {object} originitem 源数据
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
   updateItem (targetitem, originitem, type = 'info', option, depth) {
     this.formatData(targetitem, originitem, type, option, depth)
     return targetitem
   }
-  // 格式化列表数据
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetlist 目标列表
+   * @param {object[]} originlist 源数据列表
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   */
   formatListData (targetlist, originlist, type = 'list', option = {}, depth) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
@@ -243,7 +285,13 @@ class DictionaryList extends DefaultData {
       targetlist.push(item)
     }
   }
-  // 格式化列表数据
+  /**
+   * 格式化列表数据为treeList
+   * @param {object[]} targetlist 目标列表treeList
+   * @param {object[]} originlist 源数据列表
+   * @param {string} [type] 来源originfrom
+   * @param {object} [option] 设置项
+   */
   formatTreeData (targetlist, originlist, type = 'list', option = {}) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
@@ -254,7 +302,15 @@ class DictionaryList extends DefaultData {
     }
   }
 
-  // 根据字典格式化数据
+  /**
+   * 根据字典格式化数据
+   * @param {object} targetitem 目标数据
+   * @param {object} originitem 源数据
+   * @param {string} type 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
   formatData (targetitem, originitem = {}, type, option, depth) {
     if (!option) {
       option = this.getBuildOption()
@@ -269,12 +325,12 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 格式化数据
-   * @param {*} ditem 字典
-   * @param {*} originitem 原数据
-   * @param {*} targetitem 格式化对象
-   * @param {*} type mod
-   * @param {*} option 设置
-   * @param {*} depth 深度
+   * @param {DictionaryData} ditem 字典
+   * @param {object} targetitem 目标数据
+   * @param {object} originitem 源数据
+   * @param {string} type 来源originfrom
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
    */
   formatDataNext (ditem, targetitem, originitem, type, option, depth = 0) {
     let build = false
@@ -342,11 +398,21 @@ class DictionaryList extends DefaultData {
       }
     }
   }
-  // 获取符合模块要求的字典列表
+  /**
+   * 获取符合模块要求的字典列表
+   * @param {string} mod 模块名称
+   * @returns {DictionaryData[]}
+   */
   getModList (mod) {
     return this.getModListNext([], this.data, mod)
   }
-  // next
+  /**
+   * 从dataMap获取符合模块要求的字典列表
+   * @param {DictionaryData[]} modList 返回的字典列表
+   * @param {Map<DictionaryData>} dataMap 字典Map
+   * @param {string} mod 模块名称
+   * @returns {DictionaryData[]}
+   */
   getModListNext (modList, dataMap, mod) {
     for (let ditem of dataMap.values()) {
       let fg = ditem.isMod(mod)
@@ -356,11 +422,23 @@ class DictionaryList extends DefaultData {
     }
     return modList
   }
+  /**
+   * 获取符合模块要求的字典page列表
+   * @param {string} mod 模块名称
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
   getPageList (mod, payload) {
     let modList = this.getModList(mod)
     return this.getPageListByModList(mod, modList, payload)
   }
-  // 将模块列表转换为页面需要数据的列表
+  /**
+   * 将模块列表根据payload转换为页面需要数据的列表
+   * @param {string} mod 模块名称
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
   getPageListByModList (mod, modlist, payload = {}) {
     let pagelist = []
     for (let n in modlist) {
@@ -370,6 +448,13 @@ class DictionaryList extends DefaultData {
     }
     return pagelist
   }
+  /**
+   * 根据模块列表生成对应的form对象
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {string} mod 模块名称
+   * @param {*} originitem 初始化数据
+   * @returns {object}
+   */
   getFormData(modlist, mod, originitem) {
     let formData = {}
     for (let n in modlist) {
@@ -382,6 +467,13 @@ class DictionaryList extends DefaultData {
     }
     return formData
   }
+  /**
+   * 基于formdata和模块列表返回编辑完成的数据
+   * @param {object} formData form数据
+   * @param {DictionaryData[]} modlist 模块列表
+   * @param {string} type modtype
+   * @returns {object}
+   */
   getEditData(formData, modlist, type) {
     let editData = {}
     for (let n in modlist) {

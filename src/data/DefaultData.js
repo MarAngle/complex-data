@@ -62,7 +62,7 @@ class DefaultData extends SimpleData {
       }
     }
   }
-  // 模块加载相关
+  /* --模块加载相关-- */
   initModule(data) {
     return this.module.initData(data)
   }
@@ -75,7 +75,7 @@ class DefaultData extends SimpleData {
   triggerModuleMethod(prop, method, args) {
     return this.module.triggerMethod(prop, method, args)
   }
-  // 生命周期函数
+  /* --生命周期函数-- */
   // 设置生命周期函数
   initLife (data, reset) {
     this.getModule('life').initData(data, reset)
@@ -121,8 +121,7 @@ class DefaultData extends SimpleData {
   destroyLife () {
     this.getModule('life').destroy()
   }
-  //
-  // --- 父数据相关 --- //
+  /* --父数据相关-- */
   // 设置父实例
   setParent (data) {
     this.getModule('parent').setData(data)
@@ -131,7 +130,7 @@ class DefaultData extends SimpleData {
   getParent (n) {
     return this.getModule('parent').getData(n)
   }
-  // --额外数据相关--*/
+  /* --额外数据相关-- */
   // 加载额外数据
   initExtra (extraData) {
     if (extraData) {

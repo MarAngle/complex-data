@@ -16,6 +16,12 @@ class BaseData extends DefaultData {
     this._initBaseData(initdata)
     this.triggerCreateLife('BaseData', 'created')
   }
+  /**
+   * 加载BaseData
+   * @param {object} option 设置项
+   * @param {object} [option.status] StatusData初始化参数
+   * @param {object} [option.update] UpdateData初始化参数
+   */
   _initBaseData ({
     status,
     update
@@ -35,15 +41,21 @@ class BaseData extends DefaultData {
   setStatus (data, prop = 'operate', act) {
     this.getModule('status').setData(prop, data, act)
   }
-  // 获取对应状态的值
+  /**
+   * 获取对应状态的值
+   * @param {string} prop 对应状态
+   * @returns {*}
+   */
   getStatus (prop = 'operate') {
     return this.getModule('status').getData(prop)
   }
-  // 恢复状态
+  /**
+   * 恢复状态
+   */
   resetStatus () {
     this.getModule('status').reset()
   }
-  // promise相关函数
+  /* --promise相关函数-- */
   setPromise (prop, promisedata) {
     return this.getModule('promise').setData(prop, promisedata)
   }
@@ -53,31 +65,43 @@ class BaseData extends DefaultData {
   triggerPromise (prop, option = {}) {
     return this.getModule('promise').triggerData(prop, option)
   }
-  // 更新相关操作
+  /* --更新相关操作-- */
   setUpdateOffset (...args) {
     this.triggerModuleMethod('update', 'setOffset', args)
   }
-  // 开始更新
+  /**
+   * 开始更新
+   */
   startUpdate (...args) {
     this.triggerModuleMethod('update', 'start', args)
   }
-  // 自动更新
+  /**
+   * 自动更新
+   */
   autoStartUpdate (...args) {
     this.triggerModuleMethod('update', 'autoStart', args)
   }
-  // 触发下一次定时
+  /**
+   * 触发下一次定时
+   */
   nextUpdate (...args) {
     this.triggerModuleMethod('update', 'next', args)
   }
-  // 清除更新
+  /**
+   * 清除更新
+   */
   clearUpdate (...args) {
     this.triggerModuleMethod('update', 'clear', args)
   }
-  // 重置更新
+  /**
+   * 重置更新
+   */
   resetUpdate (...args) {
     this.triggerModuleMethod('update', 'reset', args)
   }
-  // 自动加载或者更新数据
+  /**
+   * 自动加载或者更新数据
+   */
   autoLoadData (next, ...args) {
     return new Promise((resolve, reject) => {
       if (next === undefined || next === true) {
@@ -121,9 +145,12 @@ class BaseData extends DefaultData {
       }
     })
   }
-  /*
-  数据相关函数定义
-  加载判断load是否加载成功和强制判断值
+ /**
+  * 数据相关函数定义
+  * 加载判断load是否加载成功和强制判断值
+  * @param {boolean | object} [force] 强制加载判断值，ing属性为ing强制更新判断值
+  * @param  {...any} args 参数
+  * @returns {Promise}
   */
   loadData (force, ...args) {
     return new Promise((resolve, reject) => {
@@ -153,9 +180,12 @@ class BaseData extends DefaultData {
       })
     })
   }
-  /*
-  实现更新函数
-  加载判断当前更新状态
+ /**
+  * 实现更新函数
+  * 加载判断当前更新状态
+  * @param {*} force 更新判断值
+  * @param  {...any} args 参数
+  * @returns {Promise}
   */
   loadUpdateData (force, ...args) {
     return new Promise((resolve, reject) => {
@@ -182,7 +212,12 @@ class BaseData extends DefaultData {
     })
   }
 
-  // 触发目标函数并伴随对应的操作值变动--未发现对应函数时报错
+  /**
+   * 触发目标函数并伴随对应的操作值变动--未发现对应函数时报错
+   * @param {string} target 目标函数名称
+   * @param  {...any} args 参数
+   * @returns {Promise}
+   */
   triggerMethod (target, ...args) {
     return new Promise((resolve, reject) => {
       let next = {
@@ -235,7 +270,12 @@ class BaseData extends DefaultData {
     })
   }
 
-  // 触发目标函数并伴随对应的操作值变动--未发现对应函数时报错
+  /**
+   * 可操作状态下触发目标函数并伴随对应的操作值变动
+   * @param {string} target 目标函数
+   * @param  {...any} args 参数
+   * @returns {Promise}
+   */
   triggerMethodByOperate (target, ...args) {
     return new Promise((resolve, reject) => {
       let operate = this.getStatus()
@@ -252,7 +292,11 @@ class BaseData extends DefaultData {
     })
   }
 
-  // 触发加载数据操作
+  /**
+   * 触发加载数据操作
+   * @param  {...any} args 参数
+   * @returns {Promise}
+   */
   triggerGetData (...args) {
     return this.setPromise('load', new Promise((resolve, reject) => {
       // 触发生命周期加载前事件
@@ -272,7 +316,11 @@ class BaseData extends DefaultData {
       })
     }))
   }
-  // 触发更新数据操作
+  /**
+   * 触发更新数据操作
+   * @param  {...any} args 参数
+   * @returns {Promise}
+   */
   triggerUpdateData (...args) {
     return this.setPromise('update', new Promise((resolve, reject) => {
       this.setStatus('updating', 'update')
@@ -292,23 +340,38 @@ class BaseData extends DefaultData {
       })
     }))
   }
-  // 将第一个传参的第一个参数无值时转换为空对象
+  /**
+   * 将第一个传参的第一个参数无值时转换为空对象
+   * @param {*[]} args 参数列表
+   */
   formatResetOption(args) {
     if (!args[0]) {
       args[0] = {}
     }
   }
+  /**
+   * 获取reset操作对应prop时机时的重置操作判断
+   * @param {object} [resetOption]
+   * @param {*} [prop] 当前的reset操作的时机
+   * @returns {boolean}
+   */
   parseResetOption(resetOption = {}, prop) {
     return _func.getProp(resetOption, prop)
   }
-  // 销毁回调操作
+  /**
+   * 销毁回调操作
+   * @param  {...any} args 参数
+   */
   destroy (...args) {
     this.formatResetOption(args)
     this.triggerLife('beforeDestroy', ...args)
     this.reset(...args)
     this.triggerLife('destroyed', ...args)
   }
-  // 重置回调操作=>不清楚额外数据以及生命周期函数
+  /**
+   * 重置回调操作=>不清楚额外数据以及生命周期函数
+   * @param  {...any} args 参数
+   */
   reset (...args) {
     this.formatResetOption(args)
     this.triggerLife('beforeReset', ...args)
