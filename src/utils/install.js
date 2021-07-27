@@ -15,7 +15,6 @@ const autoId = new IdData({
 
 install.getId = function(name = '') {
   let id = 'AutoInstall' + name + autoId.getData()
-  console.log(id)
   return id
 }
 
