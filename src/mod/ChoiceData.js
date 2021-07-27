@@ -31,18 +31,34 @@ class ChoiceData extends DefaultData {
     this.checkInit(initdata)
     this.triggerCreateLife('ChoiceData', 'created')
   }
+  /**
+   * 检查是否加载
+   * @param {object} [initdata] 参数
+   */
   checkInit(initdata = {}) {
     if (initdata.show) {
       this.setShow(true)
       this.initChoiceData(initdata)
     }
   }
+  /**
+   * 设置显示
+   * @param {boolean} [data = false] 显示值
+   */
   setShow(data = false) {
     this.status.show = data
   }
+  /**
+   * 获取是否显示
+   * @returns {boolean}
+   */
   getShow() {
     return this.status.show
   }
+  /**
+   * 设置设置项
+   * @param {object} [initdata] 参数
+   */
   initChoiceData(initdata = {}) {
     if (initdata.reset) {
       for (let n in initdata.reset) {
@@ -64,9 +80,18 @@ class ChoiceData extends DefaultData {
       }
     }
   }
+  /**
+   * 获取UI设置项
+   * @returns {object}
+   */
   getOption() {
     return this.option
   }
+  /**
+   * 获取数据
+   * @param {'id' | 'list'} [prop] 存在prop获取data[prop]，否则获取{id, list}
+   * @returns {string[] | object[] | {id, list}}
+   */
   getData(prop) {
     if (prop) {
       return this.data[prop]
@@ -74,6 +99,13 @@ class ChoiceData extends DefaultData {
       return this.data
     }
   }
+  /**
+   * 根据id/idProp从totalList获取对应的数据并从totalList删除对应数据
+   * @param {string} id id属性值
+   * @param {object[]} totalList 全数据列表
+   * @param {string} idProp id属性
+   * @returns {object}
+   */
   formatItemFromList(id, totalList, idProp = 'id') {
     for (let n = 0; n < totalList.length; n++) {
       let item = totalList[n]
@@ -84,7 +116,13 @@ class ChoiceData extends DefaultData {
     }
     return new EmptyData('ChoiceData空选项数据')
   }
-  // 数据变更=>id作为唯一基准
+  /**
+   * 数据变更=>id作为唯一基准
+   * @param {string[]} idList ID列表
+   * @param {object[]} currentList ITEM列表
+   * @param {'auto' | 'force'} [check = 'auto'] 检查判断值,auto在长度相等时直接认为格式符合，否则进行格式化判断
+   * @param {string} idProp id的属性
+   */
   changeData(idList, currentList = [], check = 'auto', idProp) {
     // check 'auto'/'force'
     if (check == 'force' || idList.length != currentList.length) {
@@ -105,7 +143,12 @@ class ChoiceData extends DefaultData {
       this.setData(idList, currentList)
     }
   }
-  // 添加选择
+  /**
+   * 添加选择
+   * @param {string[]} idList 要添加的ID列表
+   * @param {object[]} list 要添加的ITEM列表
+   * @param {string} idProp id属性
+   */
   addData(idList, list = [], idProp) {
     let currentIdList = this.data.id
     for (let i = 0; i < idList.length; i++) {
@@ -116,15 +159,31 @@ class ChoiceData extends DefaultData {
     }
     this.changeData(idList, list, idProp)
   }
+  /**
+   * 设置选项列表数据
+   * @param {string[]} idList ID列表
+   * @param {object[]} list ITEM列表
+   */
   setData(idList, list) {
     this.data.id = idList
     this.data.list = list
   }
+  /**
+   * 根据option, defaultOption自动判断重置与否
+   * @param {object | string} [option] 参数
+   * @param {object | string} [defaultOption] 默认参数
+   */
   autoReset(option, defaultOption) {
     option = this.formatResetOption(option, defaultOption)
     let force = this.checkReset(option)
     this.reset(force)
   }
+  /**
+   * 根据defaultOption格式化option
+   * @param {object | string} [option] 参数
+   * @param {object | string} [defaultOption = 'load'] 默认参数
+   * @returns {object}
+   */
   formatResetOption(option, defaultOption = 'load') {
     if (!option) {
       option = defaultOption
@@ -136,6 +195,13 @@ class ChoiceData extends DefaultData {
     }
     return option
   }
+  /**
+   * 检查是否进行重置
+   * @param {object} [option] 重置参数
+   * @param {boolean | string} [option.from] 当前操作
+   * @param {string} [option.act] 当前操作分支操作
+   * @returns {boolean}
+   */
   checkReset(option = {}) {
     let from = option.from
     let reset
@@ -159,6 +225,10 @@ class ChoiceData extends DefaultData {
     }
     return reset
   }
+  /**
+   * 重置操作
+   * @param {boolean} force 重置判断值
+   */
   reset(force) {
     if (force) {
       this.setData([], [])
