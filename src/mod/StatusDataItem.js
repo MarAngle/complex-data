@@ -38,7 +38,11 @@ class StatusDataItem extends SimpleData {
       }
     }
   }
-  // 加载判断值
+  /**
+   * 设置当前值
+   * @param {string} prop 指定的属性值
+   * @param {'init' | 'reset'} [act] 操作判断值
+   */
   setData (prop, act) {
     if (this.list[prop]) {
       let build = true
@@ -57,12 +61,19 @@ class StatusDataItem extends SimpleData {
       console.error(`当前加载判断值${prop}不存在`)
     }
   }
-
+  /**
+   * 重置计算值
+   */
   resetTarget () {
     if (this.option.type == 'count') {
       this.option.data.num = 0
     }
   }
+  /**
+   * 判断是否需要计算以及下一步操作
+   * @param {string} prop 属性值
+   * @returns {boolean}
+   */
   triggerTarget (prop) {
     let fg = true
     if (this.option.type == 'count') {
@@ -77,7 +88,11 @@ class StatusDataItem extends SimpleData {
     }
     return fg
   }
-
+  /**
+   * 获取值
+   * @param {string} [prop] 整个或者属性值
+   * @returns {*}
+   */
   getData (prop) {
     if (prop) {
       return this.current[prop]
@@ -85,6 +100,9 @@ class StatusDataItem extends SimpleData {
       return this.current
     }
   }
+  /**
+   * 重置
+   */
   reset () {
     this.setData(this.default, 'reset')
   }

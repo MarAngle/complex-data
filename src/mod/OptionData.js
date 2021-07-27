@@ -7,11 +7,18 @@ class OptionData extends SimpleData {
     this.data = {}
     this.initStruct(structData)
   }
-  // 加载结构
+  /**
+   * 加载结构
+   * @param {object} [structData] 结构数据
+   */
   initStruct (structData = {}) {
     this.data = structData
   }
-  // 添加结构
+  /**
+   * 添加结构
+   * @param {string} prop 结构属性名
+   * @param {*} structData 对应结构数据
+   */
   addStruct (prop, structData) {
     if (this.data[prop] === undefined) {
       this.data[prop] = structData
@@ -19,7 +26,10 @@ class OptionData extends SimpleData {
       this.printMsg(`当前存在${prop}属性，无法构建对应的结构，将会导致数据内存地址的变更，请确认后重试!`)
     }
   }
-  // 加载设置
+  /**
+   * 加载设置
+   * @param {object} data 设置总数据
+   */
   initData (data = {}) {
     if (_func.getType(data) == 'object') {
       for (let n in data) {
@@ -30,11 +40,22 @@ class OptionData extends SimpleData {
     }
   }
 
-  // 设置数据
+  /**
+   * 设置数据
+   * @param {string} prop 指定属性名
+   * @param {*} optiondata 指定属性的设置参数数据
+   * @param {string} type 操作来源
+   */
   setData (prop, optiondata, type) {
     this.setDataNext(this.data, prop, optiondata, type)
   }
-  // 检查数据格式
+  /**
+   * 检查数据格式
+   * @param {*} target 被设置的数据
+   * @param {*} option 要设置的数据
+   * @param {string} type 操作来源
+   * @returns { target, option, fg }
+   */
   checkData (target, option, type) {
     let check = {
       target: _func.getType(target),
@@ -70,7 +91,13 @@ class OptionData extends SimpleData {
       return check
     }
   }
-  // 设置数据next
+  /**
+   * 设置数据next
+   * @param {object} data 被设置的数据主数据
+   * @param {string} prop 被设置的数据主数据的属性
+   * @param {*} option 要设置的数据
+   * @param {string} type 操作来源
+   */
   setDataNext (data, prop, optiondata, type) {
     let check = this.checkData(data[prop], optiondata, type)
     if (check.fg) {
@@ -86,7 +113,11 @@ class OptionData extends SimpleData {
       return false
     }
   }
-  // 获取设置
+  /**
+   * 获取设置
+   * @param {string} prop 属性
+   * @returns {*}
+   */
   getData (prop) {
     if (prop) {
       return _func.getProp(this.data, prop)
@@ -94,7 +125,10 @@ class OptionData extends SimpleData {
       return this.data
     }
   }
-  // 清除数据/结构>
+  /**
+   * 清除数据/结构>
+   * @param {string} [prop] 所有或者指定
+   */
   clearData (prop) {
     if (!prop) {
       this.data = {}

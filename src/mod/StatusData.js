@@ -74,12 +74,27 @@ class StatusData extends SimpleData {
       this.data[item.prop] = new StatusDataItem(item.data)
     }
   }
-  getData (mainprop, prop) {
-    return this.data[mainprop].getData(prop)
+  /**
+   * 获取指定status的prop属性
+   * @param {string} target 指定status
+   * @param {string} [prop] 获取整个或者属性值
+   * @returns {*}
+   */
+  getData (target, prop) {
+    return this.data[target].getData(prop)
   }
-  setData (mainprop, data, act) {
-    this.data[mainprop].setData(data, act)
+  /**
+   * 设置指定status的值
+   * @param {string} target 指定status
+   * @param {string} data 指定的属性值
+   * @param {'init' | 'reset'} [act] 操作判断值
+   */
+  setData (target, data, act) {
+    this.data[target].setData(data, act)
   }
+  /**
+   * 重置
+   */
   reset () {
     for (let n in this.data) {
       this.data[n].reset()

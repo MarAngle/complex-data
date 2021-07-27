@@ -36,16 +36,28 @@ class UpdateData extends DefaultData {
     this.offset.data = offset.data === undefined ? 1000 : offset.data
     this.offset.start = offset.start === undefined ? offset.data : offset.start
   }
-  // 获取间隔
+  /**
+   * 获取间隔
+   * @param {number} offset 间隔
+   * @param {number} currentnum 当前次数
+   * @returns {number}
+   */
   getOffset (offset, currentnum) {
     return offset
   }
-  // 触发获取间隔
+  /**
+   * 触发计数并获取间隔
+   * @param {number} offset 间隔
+   * @returns {number}
+   */
   triggerGetOffset (offset) {
     this.countNum()
     return this.getOffset(offset, this.getNum())
   }
-  // 清除定时器
+  /**
+   * 清除定时器
+   * @param {boolean} next 不存在下一步时设置更新状态为停止更新
+   */
   clear (next) {
     if (!next) {
       // 不存在下一步时设置更新状态为停止更新
@@ -56,7 +68,10 @@ class UpdateData extends DefaultData {
       this.timer = undefined
     }
   }
-  // 开始定时器
+  /**
+   * 开始定时器
+   * @param {number} offset 指定间隔，不存在读取默认
+   */
   start (offset) {
     if (offset === undefined) {
       offset = this.offset.start
@@ -65,13 +80,19 @@ class UpdateData extends DefaultData {
     this.load.update = true
     this.nextDo(offset)
   }
-  // 自动开始，当前存在定时器不操作，不存在时则开始
+  /**
+   * 自动开始，当前存在定时器不操作，不存在时则开始
+   * @param {number} offset 指定间隔，不存在读取默认
+   */
   autoStart (offset) {
     if (!this.timer) {
       this.start(offset)
     }
   }
-  // nextDo
+  /**
+   * 通过判断update判读是否继续更新
+   * @param {number} offset 指定间隔，不存在读取默认
+   */
   nextDo (offset) {
     if (this.load.update) {
       this.clear(true)
@@ -87,11 +108,18 @@ class UpdateData extends DefaultData {
       this.clear()
     }
   }
-  // 检查下一步是否继续，next判断
+  /**
+   * 检查下一步是否继续，next判断
+   * @param {number} currentnum 当前次数
+   * @returns {boolean}
+   */
   check (currentnum) {
     return true
   }
-  // 继续进行下一次回调
+  /**
+   * 继续进行下一次回调
+   * @param {number} offset 指定间隔，不存在读取默认
+   */
   next (offset) {
     if (this.load.update) {
       this.operate = false
@@ -114,23 +142,36 @@ class UpdateData extends DefaultData {
       }
     }
   }
-  // 获取当前次数，包括已设置被删除的数量
+  /**
+   * 获取当前次数，包括已设置被删除的数量
+   * @returns {number}
+   */
   getNum () {
     return this.current.num
   }
-  // 当前次数+1
+  /**
+   * 当前次数+1
+   */
   countNum () {
     this.current.num++
   }
-  // 重置当前次数
+  /**
+   * 重置当前次数
+   */
   resetNum () {
     this.current.num = 0
   }
-  // 重置
+  /**
+   * 重置
+   */
   reset () {
     this.clear()
     this.resetNum()
   }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleId('Reseted'),
@@ -141,6 +182,10 @@ class UpdateData extends DefaultData {
       }
     })
   }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
   uninstall(target) {
     target.offLife('reseted', this.$getModuleId('Reseted'))
   }

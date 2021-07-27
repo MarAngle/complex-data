@@ -7,6 +7,10 @@ class LayoutData extends SimpleData {
     super()
     this.initData(initdata)
   }
+  /**
+   * 加载
+   * @param {*} initdata 参数
+   */
   initData (initdata) {
     if (!initdata) {
       initdata = {
@@ -18,6 +22,11 @@ class LayoutData extends SimpleData {
     }
     this.data = new InterfaceData(initdata)
   }
+  /**
+   * 格式化布局数据
+   * @param {object} [data] 布局数据
+   * @returns {object}
+   */
   formatLayout(data) {
     if (!data) {
       data = {}
@@ -54,12 +63,26 @@ class LayoutData extends SimpleData {
     }
     return data
   }
+  /**
+   * 设置指定布局
+   * @param {string} prop 指定属性
+   * @param {*} data 布局数据
+   */
   setData (prop, data) {
     this.data.setData(prop, this.formatLayout(data))
   }
+  /**
+   * 获取指定布局
+   * @param {string} prop 指定属性
+   * @returns {*}
+   */
   getData (prop) {
     return this.data.getData(prop)
   }
+  /**
+   * 获取布局全数据
+   * @returns {object}
+   */
   getMain () {
     return this.data.getMain()
   }
