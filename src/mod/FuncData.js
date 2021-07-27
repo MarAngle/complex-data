@@ -21,17 +21,31 @@ class FuncData extends SimpleData {
       this.initData(initdata.data)
     }
   }
+  /**
+   * 加载
+   * @param {*} data 参数
+   */
   initData(data) {
     this.build(data)
   }
+  /**
+   * 设置名称
+   * @param {string} name 名称
+   */
   setName(name = '') {
     this.name = name
   }
-  // 计算ID
+  /**
+   * 计算ID
+   * @returns {string} ID
+   */
   buildId () {
     return lifeId.getData()
   }
-  // 设置生命周期对应函数回调
+  /**
+   * 设置生命周期对应函数回调
+   * @param {object} data 参数
+   */
   pushData(data) {
     if (data.index === undefined || data.index == 'end') {
       this.data.set(data.id, data)
@@ -58,6 +72,11 @@ class FuncData extends SimpleData {
       }
     }
   }
+  /**
+   * build
+   * @param {*} data
+   * @returns
+   */
   build(data) {
     let res = false
     if (data) {
@@ -73,6 +92,11 @@ class FuncData extends SimpleData {
     }
     return res
   }
+  /**
+   * 格式化数据
+   * @param {object| function} data 回调参数
+   * @returns {boolean}next
+   */
   formatData(data) {
     let dataType = typeof data
     let next = true
@@ -105,11 +129,20 @@ class FuncData extends SimpleData {
     }
     return false
   }
+  /**
+   * 触发函数
+   * @param  {...any} args 参数
+   */
   trigger(...args) {
     for (let id of this.data.keys()) {
       this.emit(id, ...args)
     }
   }
+  /**
+   * 触发指定id的回调
+   * @param {string} id id
+   * @param  {...any} args 参数
+   */
   emit(id, ...args) {
     let data = this.data.get(id)
     if (data && data.data) {
@@ -121,17 +154,29 @@ class FuncData extends SimpleData {
       this.printMsg(`不存在当前值(${id})`)
     }
   }
-  // 删除生命周期指定函数
+  /**
+   * 删除指定id的生命周期
+   * @param {string} id id
+   * @returns {boolean}
+   */
   off (id) {
     return this.data.delete(id)
   }
+  /**
+   * 清空所有回调
+   */
   clear() {
     this.data.clear()
   }
-  // 重置
+  /**
+   * 重置
+   */
   reset () {
     this.clear()
   }
+  /**
+   * 销毁
+   */
   destroy() {
     this.reset()
   }

@@ -53,7 +53,10 @@ class DictionaryData extends DefaultData {
       return this.layout
     }
   }
-  // 加载接口类型数据
+  /**
+   * 加载接口类型数据
+   * @param {*} initdata
+   */
   initInterface (initdata) {
     this.interface.label = new InterfaceData(initdata.label || initdata.name)
     this.interface.order = new InterfaceData(initdata.order)
@@ -73,19 +76,35 @@ class DictionaryData extends DefaultData {
     this.interface.type = new InterfaceData(dataType || 'string')
     this.interface.modtype = new InterfaceData('list')
   }
-  // 获取接口数据
+  /**
+   * 获取接口数据对象
+   * @param {string} target 对应的接口名称
+   * @returns {InterfaceData}
+   */
   getInterfaceData (target) {
     return this.interface[target]
   }
-  // 获取接口数据
+  /**
+   * 获取接口prop数据，不存在对应属性或值则获取默认值
+   * @param {string} target 对应的接口名称
+   * @param {string} [prop] 属性值
+   * @returns {*}
+   */
   getInterface (target, prop) {
     return this.interface[target].getData(prop)
   }
-  // 设置接口数据
+  /**
+   * 设置接口数据
+   * @param {string} target 对应的接口名称
+   * @param {string} prop 属性
+   * @param {*} data 值
+   */
   setInterface (target, prop, data) {
-    return this.interface[target].setData(prop, data)
+    this.interface[target].setData(prop, data)
   }
-  // 格式化func函数
+  /**
+   * 格式化func函数
+   */
   FormatFunc () {
     if (!this.func.defaultGetData) {
       this.func.defaultGetData = (data, { type }) => {
@@ -127,11 +146,19 @@ class DictionaryData extends DefaultData {
       }
     }
   }
-  // 判断是否来源
+  /**
+   * 判断是否存在来源
+   * @param {string} origin 来源
+   * @returns {boolean}
+   */
   isOrigin (origin) {
     return this.originfrom.indexOf(origin) > -1
   }
-  // 判断是否属于模块
+  /**
+   * 判断是否存在模块
+   * @param {string} mod 模块
+   * @returns {boolean}
+   */
   isMod (mod) {
     let fg = false
     if (this.mod[mod]) {
@@ -139,7 +166,13 @@ class DictionaryData extends DefaultData {
     }
     return fg
   }
-  // 触发可能存在的函数
+  /**
+   * 触发可能存在的func函数
+   * @param {string} funcname 函数名
+   * @param {*} origindata 数据
+   * @param {object} payload 参数
+   * @returns {*}
+   */
   triggerFunc (funcname, origindata, payload) {
     let itemFunc = this.getFunc(funcname)
     if (itemFunc) {
@@ -148,7 +181,12 @@ class DictionaryData extends DefaultData {
       return origindata
     }
   }
-  // 获取originprop
+  /**
+   * 获取originprop
+   * @param {string} prop prop值
+   * @param {string} type originfrom值
+   * @returns {string}
+   */
   getOriginProp (prop, type) {
     if (this.prop == prop) {
       return this.getInterface('originprop', type)
@@ -156,11 +194,22 @@ class DictionaryData extends DefaultData {
       return false
     }
   }
-  // 获取func函数
+  /**
+   * 获取func函数
+   * @param {string} funcname 函数名
+   * @returns {function}
+   */
   getFunc (funcname) {
     return this.func[funcname]
   }
-  // 获取编辑数据
+  /**
+   * 基于自身从originitem中获取对应属性的数据放返回
+   * @param {string} type modtype
+   * @param {object} option 参数
+   * @param {object} option.targetitem 目标数据
+   * @param {object} option.originitem 源formdata数据
+   * @returns {*}
+   */
   getFormData (type, { targetitem, originitem }) {
     let mod = this.mod[type]
     let target

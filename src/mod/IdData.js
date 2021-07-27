@@ -7,12 +7,21 @@ class IdData {
       this.initMain(initdata)
     }
   }
+  /**
+   * 加载IdData
+   * @param {object} option 参数
+   * @param {object[]} option.list 参数
+   */
   initMain ({ list }) {
     this.list = []
     for (let n in list) {
       this._initData(list[n])
     }
   }
+  /**
+   * 生成规则对象item
+   * @param {object | function} item 规则参数
+   */
   _initData (item) {
     if (item) {
       let type = _func.getType(item)
@@ -26,6 +35,11 @@ class IdData {
       }
     }
   }
+  /**
+   * 生成规则函数
+   * @param {*} item 基于规则参数生成函数
+   * @returns {function}
+   */
   buildFunc (item) {
     if (item.type == 'random') {
       return function () {
@@ -60,6 +74,10 @@ class IdData {
       }
     }
   }
+  /**
+   * 获取id
+   * @returns {string}
+   */
   getData () {
     let data = ''
     for (let n in this.list) {

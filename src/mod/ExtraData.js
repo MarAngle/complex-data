@@ -10,7 +10,11 @@ class ExtraData extends SimpleData {
   _initMain (data) {
     this.initData(data)
   }
-  // 加载数据
+  /**
+   * 加载数据
+   * @param {object} data 数据
+   * @returns {boolean}
+   */
   initData (data) {
     let dataType = _func.getType(data)
     if (dataType == 'object') {
@@ -22,11 +26,19 @@ class ExtraData extends SimpleData {
       return false
     }
   }
-  // 设置数据
+  /**
+   * 设置数据
+   * @param {string} prop 属性
+   * @param {*} data 数据
+   */
   setData (prop, data) {
     this.data[prop] = data
   }
-  // 获取数据
+  /**
+   * 获取数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
   getData (prop) {
     if (!prop) {
       return this.data
@@ -34,7 +46,10 @@ class ExtraData extends SimpleData {
       return this.data[prop]
     }
   }
-  // 清除数据
+  /**
+   * 清除数据
+   * @param {string} [prop] 指定清除的prop或者清除全部
+   */
   clearData (prop) {
     if (!prop) {
       this.data = {}
@@ -42,6 +57,9 @@ class ExtraData extends SimpleData {
       delete this.data[prop]
     }
   }
+  /**
+   * 重置，清除全部数据
+   */
   reset () {
     this.clearData()
   }

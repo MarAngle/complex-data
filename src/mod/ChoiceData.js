@@ -234,6 +234,10 @@ class ChoiceData extends DefaultData {
       this.setData([], [])
     }
   }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleId('Reseted'),
@@ -244,6 +248,10 @@ class ChoiceData extends DefaultData {
       }
     })
   }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
   uninstall(target) {
     target.offLife('reseted', this.$getModuleId('Reseted'))
   }
