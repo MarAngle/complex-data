@@ -26,6 +26,7 @@ import StatusData from './src/mod/StatusData'
 import StatusDataItem from './src/mod/StatusDataItem'
 import UpdateData from './src/mod/UpdateData'
 
+import SelectData from './src/main/SelectData'
 import InfoData from './src/main/InfoData'
 import ListData from './src/main/ListData'
 import TreeData from './src/main/TreeData'
@@ -61,6 +62,7 @@ export {
   StatusData,
   StatusDataItem,
   UpdateData,
+  SelectData,
   InfoData,
   ListData,
   TreeData,

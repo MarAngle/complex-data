@@ -51,17 +51,17 @@ class SelectList extends DefaultData {
     undefData
   }) {
     this._initOption(option)
-    this.initDataList(list)
-    this._initFormat(format)
-    this._initUnhitData(unhitData)
-    this._initUndefData(undefData)
+    this.setList(list)
+    this.setFormat(format)
+    this.setUnhitData(unhitData)
+    this.setUndefData(undefData)
   }
   // 加载设置
   _initOption(option = {}) {
     this.option.initData(option)
   }
   // 加载数据
-  initDataList(list) {
+  setList(list) {
     if (list) {
       let dataType = _func.getType(list)
       let dataOption
@@ -90,32 +90,28 @@ class SelectList extends DefaultData {
     }
   }
   // 加载格式化设置
-  _initFormat(format) {
+  setFormat(format) {
     if (format) {
       let formatType = _func.getType(format)
       if (formatType == 'object') {
         this.format = format
       } else if (formatType == 'number') {
-        this.format = {
-          type: 'number',
-          offset: this.format
-        }
+        this.format.type = 'number'
+        this.format.offset = this.format
       } else if (formatType == 'string') {
-        this.format = {
-          type: 'string',
-          head: this.format,
-          foot: ''
-        }
+        this.format.type = 'string'
+        this.format.head = this.format
+        this.format.foot = ''
       } else if (formatType == 'function') {
-        this.format = {
-          type: 'function',
-          data: this.format
-        }
+        this.format.type = 'function'
+        this.format.data = this.format
       }
+    } else {
+      this.format.type = false
     }
   }
   // 加载未命中数据
-  _initUnhitData(unhitData) {
+  setUnhitData(unhitData) {
     if (unhitData) {
       this.unhitData = unhitData
     } else {
@@ -129,7 +125,7 @@ class SelectList extends DefaultData {
     }
   }
   // 加载未定义数据， 默认等同于未命中数据
-  _initUndefData(undefData) {
+  setUndefData(undefData) {
     if (undefData) {
       this.undefData = undefData
     } else {
@@ -235,12 +231,12 @@ class SelectList extends DefaultData {
     return item
   }
   // 获取对象
-  getItem(value, payload = {}) {
+  getItem(value, option = {}) {
     let res
     if (this.checkUndef(value)) {
       res = this.getUndefData()
     } else {
-      let prop = payload.prop
+      let prop = option.prop
       if (!prop) {
         let propData = this.option.getData('prop')
         prop = propData.value
@@ -256,16 +252,16 @@ class SelectList extends DefaultData {
     if (!res) {
       res = this.getUnhitData(value)
     }
-    res = this.formatItemByDeep(res, payload)
+    res = this.formatItemByDeep(res, option)
     return res
   }
   // 根据index获取对象
-  getItemByIndex(index, payload = {}) {
+  getItemByIndex(index, option = {}) {
     let res = this.data.list[index]
     if (!res) {
       res = this.getUnhitData()
     }
-    res = this.formatItemByDeep(res, payload)
+    res = this.formatItemByDeep(res, option)
     return res
   }
 }

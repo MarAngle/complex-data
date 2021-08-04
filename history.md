@@ -1,3 +1,7 @@
+### 2.1.2-beta
+- SelectList优化
+- SelectData实现，load加载的Select数据对象
+
 ### 2.1.1
 - SelectList优化
 - Module唯一识别符优化
