@@ -1,4 +1,4 @@
-### 2.1.2-beta
+### 2.1.2
 - SelectList优化
 - SelectData实现，load加载的Select数据对象
 
