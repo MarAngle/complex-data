@@ -1,3 +1,6 @@
+### 2.1.3
+- getFormData更改为异步函数
+
 ### 2.1.2
 - SelectList优化
 - SelectData实现，load加载的Select数据对象

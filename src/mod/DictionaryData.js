@@ -211,7 +211,33 @@ class DictionaryData extends DefaultData {
    * @returns {*}
    */
   getFormData (type, { targetitem, originitem }) {
-    let mod = this.mod[type]
+    return new Promise((resolve, reject) => {
+      let mod = this.mod[type]
+      if (mod) {
+        if (mod.readyData) {
+          mod.readyData().then(() => {
+            resolve({ status: 'success', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+          }, () => {
+            resolve({ status: 'fail', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+          })
+        } else {
+          resolve({ status: 'success', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+        }
+      } else {
+        reject({ status: 'fail', code: 'noMod', msg: this.buildPrintMsg(`${type}对应的mod不存在`) })
+      }
+    })
+  }
+  /**
+   * 基于自身从originitem中获取对应属性的数据放返回
+   * @param {object} mod mod
+   * @param {string} type modtype
+   * @param {object} option 参数
+   * @param {object} option.targetitem 目标数据
+   * @param {object} option.originitem 源formdata数据
+   * @returns {*}
+   */
+  getFormDataNext (mod, type, { targetitem, originitem }) {
     let target
     if (originitem) {
       target = this.triggerFunc('edit', originitem[this.prop], {
@@ -219,7 +245,7 @@ class DictionaryData extends DefaultData {
         targetitem,
         originitem
       })
-      if (mod && mod.func && mod.func.edit) {
+      if (mod.func && mod.func.edit) {
         target = mod.func.edit(target, {
           type: type,
           targetitem,

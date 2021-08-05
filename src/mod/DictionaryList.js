@@ -481,7 +481,7 @@ class DictionaryList extends DefaultData {
    */
   getPageListByModList (mod, modlist, payload = {}) {
     let pagelist = []
-    for (let n in modlist) {
+    for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let pitem = ditem.getModData(mod, payload)
       pagelist.push(pitem)
@@ -496,16 +496,29 @@ class DictionaryList extends DefaultData {
    * @returns {object}
    */
   getFormData(modlist, mod, originitem) {
-    let formData = {}
-    for (let n in modlist) {
-      let ditem = modlist[n]
-      let target = ditem.getFormData(mod, {
-        targetItem: formData,
-        originitem: originitem
+    return new Promise((resolve) => {
+      let formData = {}
+      let size = modlist.length
+      let promiseList = []
+      for (let n = 0; n < size; n++) {
+        let ditem = modlist[n]
+        promiseList.push(ditem.getFormData(mod, {
+          targetItem: formData,
+          originitem: originitem
+        }))
+      }
+      _func.promiseAllFinished(promiseList).then(resList => {
+        for (let n = 0; n < resList.length; n++) {
+          let res = resList[n]
+          if (res.status == 'success') {
+            _func.setProp(formData, modlist[n].prop, res.data.data, true)
+          } else {
+            _func.setProp(formData, modlist[n].prop, undefined, true)
+          }
+        }
+        resolve({ status: 'success', data: formData })
       })
-      _func.setProp(formData, ditem.prop, target, true)
-    }
-    return formData
+    })
   }
   /**
    * 基于formdata和模块列表返回编辑完成的数据
@@ -516,7 +529,7 @@ class DictionaryList extends DefaultData {
    */
   getEditData(formData, modlist, type) {
     let editData = {}
-    for (let n in modlist) {
+    for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let add = true
       if (!ditem.mod[type].required) {
