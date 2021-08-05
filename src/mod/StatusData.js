@@ -14,7 +14,7 @@ class StatusData extends SimpleData {
     this._initList(list)
   }
   _initList (list = []) {
-    let defaultlist = config.SearchData.list
+    let defaultlist = config.StatusData.list
     let mainlist = defaultlist.concat(list)
     for (let n in mainlist) {
       let item = mainlist[n]
