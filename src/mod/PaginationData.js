@@ -1,12 +1,6 @@
 import _func from 'complex-func'
+import config from '../config'
 import SimpleData from './../data/SimpleData'
-
-let defaultdata = {
-  size: {
-    current: 8,
-    list: ['8', '20', '50', '100']
-  }
-}
 
 class PaginationData extends SimpleData {
   constructor (initdata) {
@@ -20,7 +14,7 @@ class PaginationData extends SimpleData {
         total: 1
       },
       size: {
-        current: 8,
+        current: config.PaginationData.size,
         list: []
       },
       num: {
@@ -66,8 +60,8 @@ class PaginationData extends SimpleData {
    */
   initSize(size) {
     if (!size) {
-      this.data.size.current = defaultdata.size.current
-      this.data.size.list = _func.deepClone(defaultdata.size.list)
+      this.data.size.current = config.PaginationData.size
+      this.data.size.list = _func.deepClone(config.PaginationData.sizeList)
     } else {
       let sizeType = _func.getType(size)
       if (sizeType != 'object') {
@@ -93,8 +87,8 @@ class PaginationData extends SimpleData {
       option.props = {}
     }
     option.props = {
-      showQuickJumper: props.jumper === undefined ? true : props.jumper,
-      showSizeChanger: props.size === undefined ? true : props.size
+      showQuickJumper: props.jumper === undefined ? config.PaginationData.jumperChange : props.jumper,
+      showSizeChanger: props.size === undefined ? config.PaginationData.sizeChange : props.size
     }
     this.option = {
       ...option

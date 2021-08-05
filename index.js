@@ -32,6 +32,7 @@ import ListData from './src/main/ListData'
 import TreeData from './src/main/TreeData'
 
 import option from './src/option'
+import config from './src/config'
 
 // import './buildContentImport'
 
@@ -66,5 +67,6 @@ export {
   InfoData,
   ListData,
   TreeData,
-  option
+  option,
+  config
 }

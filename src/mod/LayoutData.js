@@ -1,6 +1,7 @@
 import _func from 'complex-func'
 import InterfaceData from './InterfaceData'
 import SimpleData from './../data/SimpleData'
+import config from '../config'
 
 class LayoutData extends SimpleData {
   constructor (initdata) {
@@ -35,12 +36,12 @@ class LayoutData extends SimpleData {
       data.type = 'grid'
     }
     if (!data.grid) {
-      data.grid = 24
+      data.grid = config.LayoutData.grid
     }
     if (data.type == 'grid') {
       if (!data.label) {
         data.label = {
-          span: 8
+          span: config.LayoutData.label
         }
       } else if (_func.getType(data.label) !== 'object') {
         data.label = {
@@ -49,7 +50,7 @@ class LayoutData extends SimpleData {
       }
       if (!data.content) {
         data.content = {
-          span: 16
+          span: config.LayoutData.content
         }
       } else if (_func.getType(data.content) !== 'object') {
         data.content = {

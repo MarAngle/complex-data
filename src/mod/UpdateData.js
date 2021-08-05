@@ -1,4 +1,5 @@
 import _func from 'complex-func'
+import config from '../config'
 import DefaultData from './../data/DefaultData'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -17,8 +18,8 @@ class UpdateData extends DefaultData {
     }
     this.timer = undefined
     this.offset = {
-      start: 1000,
-      data: 1000
+      start: config.UpdateData.offset,
+      data: config.UpdateData.offset
     }
     this._initMain(initdata)
     this.triggerCreateLife('UpdateData', 'created')
@@ -33,7 +34,7 @@ class UpdateData extends DefaultData {
         data: offset
       }
     }
-    this.offset.data = offset.data === undefined ? 1000 : offset.data
+    this.offset.data = offset.data === undefined ? config.UpdateData.offset : offset.data
     this.offset.start = offset.start === undefined ? offset.data : offset.start
   }
   /**

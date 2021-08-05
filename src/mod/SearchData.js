@@ -1,20 +1,6 @@
 import _func from 'complex-func'
+import config from '../config'
 import ComplexData from './../data/ComplexData'
-
-const defaultMenu = [
-  {
-    type: 'primary',
-    icon: 'search',
-    name: '查询',
-    act: 'search'
-  },
-  {
-    type: 'default',
-    icon: 'reload',
-    name: '重置',
-    act: 'reset'
-  }
-]
 
 class SearchData extends ComplexData {
   constructor (initdata) {
@@ -89,6 +75,7 @@ class SearchData extends ComplexData {
         menu.type = 'default'
       }
       if (menu.type == 'default') {
+        let defaultMenu = _func.deepClone(config.SearchData.menu, true)
         menu.list = defaultMenu.concat(menu.list)
       }
       this.menu = menu.list
