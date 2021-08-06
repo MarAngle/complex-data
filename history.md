@@ -1,3 +1,7 @@
+### 2.1.5
+- 因为option中引用的complex-data和实际项目中引用的不一定是同一个，导致修改无法在正式环境中实现，因此将option设置项集成在complex-data中
+- 引用moment
+
 ### 2.1.4
 - 修复config错误引用的BUG
 

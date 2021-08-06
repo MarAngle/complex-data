@@ -33,6 +33,7 @@ import TreeData from './src/main/TreeData'
 
 import option from './src/option'
 import config from './src/config'
+import antdOption from './option-antd/index'
 
 // import './buildContentImport'
 
@@ -68,5 +69,6 @@ export {
   ListData,
   TreeData,
   option,
-  config
+  config,
+  antdOption
 }

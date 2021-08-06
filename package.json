@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "2.1.4",
+  "version": "2.1.5",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
@@ -8,11 +8,8 @@
     "url": "https://github.com/MarAngle/complex-data.git"
   },
   "dependencies": {
-    "complex-func": "~2.1.0"
-  },
-  "devDependencies": {
-    "webpack": "^5.36.1",
-    "webpack-cli": "^4.6.0"
+    "complex-func": "^2.1.0",
+    "moment": ">=2.24.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
