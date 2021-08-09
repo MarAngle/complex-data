@@ -495,7 +495,7 @@ class DictionaryList extends DefaultData {
    * @param {*} originitem 初始化数据
    * @returns {object}
    */
-  getFormData(modlist, mod, originitem) {
+  getFormData(modlist, mod, originitem, from) {
     return new Promise((resolve) => {
       let formData = {}
       let size = modlist.length
@@ -504,7 +504,8 @@ class DictionaryList extends DefaultData {
         let ditem = modlist[n]
         promiseList.push(ditem.getFormData(mod, {
           targetItem: formData,
-          originitem: originitem
+          originitem: originitem,
+          from: from
         }))
       }
       _func.promiseAllFinished(promiseList).then(resList => {

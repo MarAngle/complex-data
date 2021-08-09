@@ -237,7 +237,7 @@ class DictionaryData extends DefaultData {
    * @param {object} option.originitem 源formdata数据
    * @returns {*}
    */
-  getFormDataNext (mod, type, { targetitem, originitem }) {
+  getFormDataNext (mod, type, { targetitem, originitem, from = 'init' }) {
     let target
     if (originitem) {
       target = this.triggerFunc('edit', originitem[this.prop], {
@@ -253,7 +253,11 @@ class DictionaryData extends DefaultData {
         })
       }
     } else if (mod.getValueData) {
-      target = mod.getValueData('initdata')
+      if (from == 'reset') {
+        target = mod.getValueData('resetdata')
+      } else {
+        target = mod.getValueData('initdata')
+      }
     }
     return target
   }

@@ -159,8 +159,8 @@ class ComplexData extends BaseData {
    * @param {*} originitem 初始化数据
    * @returns {object}
    */
-  getDictionaryFormData(modlist, mod, originitem) {
-    return this.getModule('dictionary').getFormData(modlist, mod, originitem)
+  getDictionaryFormData(modlist, mod, originitem, from) {
+    return this.getModule('dictionary').getFormData(modlist, mod, originitem, from)
   }
   /**
    * 根据源数据格式化生成对象
