@@ -34,7 +34,7 @@ class SearchData extends ComplexData {
     this.setInit(true)
     this.initTitle(title)
     this.initMenu(menu)
-    this.initFormData()
+    this.initSearchFormData()
   }
   /**
    * 设置加载判断值
@@ -85,7 +85,7 @@ class SearchData extends ComplexData {
    * 加载form
    * @param {string} type modtype
    */
-  initFormData(modType = 'build') {
+  initSearchFormData(modType = 'build') {
     if (this.getInit()) {
       this.form[modType] = {
         modlist: [],
@@ -96,31 +96,35 @@ class SearchData extends ComplexData {
       }
       this.form[modType].modlist = this.getDictionaryModList('build')
       this.form[modType].mainlist = this.getDictionaryPageListByModList('build', this.form[modType].modlist)
-      this.resetFormData('init')
+      this.resetSearchFormData('init')
     }
   }
   /**
    * 重置检索值
    * @param {'init' | 'reset'} from 请求来源
    * @param {object} option 设置项
-   * @param {boolean} syncPost 同步到post[type]中
-   * @param {string} modType modtype
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @param {string} [option.sync] 同步操作，默认异步操作
+   * @param {boolean} copyToPost 同步到post[modType]中
+   * @param {string} modType modType
    */
-  resetFormData(from = 'init', option = {}, syncPost = true, modType = 'build') {
+  resetSearchFormData(from = 'init', option = {}, copyToPost = true, modType = 'build') {
     if (this.getInit()) {
-      let limit = _func.getLimitData(option.limit)
-      for (let n in this.form[modType].mainlist) {
-        let pitem = this.form[modType].mainlist[n]
-        if (!limit.getLimit(pitem.prop)) {
-          let targetdata
-          if (pitem.edit && pitem.edit.getValueData) {
-            targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
-          }
-          _func.setProp(this.form[modType].form.data, pitem.prop, targetdata, true)
+      let modlist = this.form[modType].modlist
+      let data = this.buildDictionaryFormData(modType, modlist, null, {
+        form: this.form[modType].form.data,
+        from: from,
+        limit: option.limit,
+        sync: option.sync
+      })
+      if (copyToPost) {
+        if (option.sync) {
+          this.setData(modType)
+        } else {
+          data.then(() => {
+            this.setData(modType)
+          })
         }
-      }
-      if (syncPost) {
-        this.setData(modType)
       }
     }
   }
@@ -154,7 +158,7 @@ class SearchData extends ComplexData {
    * 重置form
    */
   reset() {
-    this.resetFormData('reset')
+    this.resetSearchFormData('reset')
   }
   /**
    * 模块加载

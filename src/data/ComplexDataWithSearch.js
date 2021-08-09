@@ -36,7 +36,7 @@ class ComplexDataWithSearch extends ComplexData {
    * @param {string} [type = build] modtype
    */
   resetSearch (option, syncPost, type) {
-    this.getModule('search').resetFormData('reset', option, syncPost, type)
+    this.getModule('search').resetSearchFormData('reset', option, syncPost, type)
   }
   /**
    * 获取当前检索数据

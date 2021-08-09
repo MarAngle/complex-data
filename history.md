@@ -2,6 +2,7 @@
 - getFormData整体逻辑优化
 - 准备重构全局form相关函数
 - modType参数名称优化
+- SearchData统一函数到DictionaryKList中
 
 ### 2.1.6
 - devDependencies
