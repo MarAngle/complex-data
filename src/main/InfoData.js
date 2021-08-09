@@ -13,14 +13,14 @@ class InfoData extends ComplexDataWithSearch {
   /**
    * 格式化信息数据，以origindata为基准更新data.current
    * @param {object} origindata 格式化数据的源数据
-   * @param {string} type originfrom
+   * @param {string} originfromType originfromType
    * @param {object} option 设置项
    */
-  formatData (origindata = {}, type = 'list', option = {}) {
+  formatData (origindata = {}, originfromType = 'list', option = {}) {
     if (!option.type) {
       option.type = 'add'
     }
-    this.updateItem(this.data.current, origindata, type, option)
+    this.updateItem(this.data.current, origindata, originfromType, option)
   }
   /**
    * 数据重新拉取

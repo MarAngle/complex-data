@@ -76,11 +76,11 @@ class ListData extends ComplexDataWithSearch {
    * 格式化列表数据
    * @param {object[]} datalist 源数据列表
    * @param {number} [totalnum] 总数
-   * @param {string} [type] originfrom
+   * @param {string} [originfromType] originfromType
    * @param {object} [option] 参数
    */
-  formatData (datalist = [], totalnum, type, option) {
-    this.formatListData(this.data.list, datalist, type, option)
+  formatData (datalist = [], totalnum, originfromType, option) {
+    this.formatListData(this.data.list, datalist, originfromType, option)
     this.setPageData(totalnum, 'num')
   }
   /**

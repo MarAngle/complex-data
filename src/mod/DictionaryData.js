@@ -148,11 +148,11 @@ class DictionaryData extends DefaultData {
   }
   /**
    * 判断是否存在来源
-   * @param {string} origin 来源
+   * @param {string} originfromType 来源
    * @returns {boolean}
    */
-  isOrigin (origin) {
-    return this.originfrom.indexOf(origin) > -1
+  isOrigin (originfromType) {
+    return this.originfrom.indexOf(originfromType) > -1
   }
   /**
    * 判断是否存在模块
@@ -184,12 +184,12 @@ class DictionaryData extends DefaultData {
   /**
    * 获取originprop
    * @param {string} prop prop值
-   * @param {string} type originfrom值
+   * @param {string} originfromType originfromType值
    * @returns {string}
    */
-  getOriginProp (prop, type) {
+  getOriginProp (prop, originfromType) {
     if (this.prop == prop) {
-      return this.getInterface('originprop', type)
+      return this.getInterface('originprop', originfromType)
     } else {
       return false
     }

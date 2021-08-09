@@ -285,43 +285,43 @@ class DictionaryList extends DefaultData {
   /**
    * 根据源数据格式化生成对象
    * @param {object} originitem 源数据
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatItem (originitem, type = 'list', option, depth) {
+  formatItem (originitem, originfromType = 'list', option, depth) {
     let targetitem = {}
-    this.updateItem(targetitem, originitem, type, option, depth)
+    this.updateItem(targetitem, originitem, originfromType, option, depth)
     return targetitem
   }
   /**
    * 根据源数据更新数据
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  updateItem (targetitem, originitem, type = 'info', option, depth) {
-    this.formatData(targetitem, originitem, type, option, depth)
+  updateItem (targetitem, originitem, originfromType = 'info', option, depth) {
+    this.formatData(targetitem, originitem, originfromType, option, depth)
     return targetitem
   }
   /**
    * 格式化列表数据
    * @param {object[]} targetlist 目标列表
    * @param {object[]} originlist 源数据列表
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    */
-  formatListData (targetlist, originlist, type = 'list', option = {}, depth) {
+  formatListData (targetlist, originlist, originfromType = 'list', option = {}, depth) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
     }
     for (let n in originlist) {
-      let item = this.formatItem(originlist[n], type, option.build, depth)
+      let item = this.formatItem(originlist[n], originfromType, option.build, depth)
       targetlist.push(item)
     }
   }
@@ -329,15 +329,15 @@ class DictionaryList extends DefaultData {
    * 格式化列表数据为treeList
    * @param {object[]} targetlist 目标列表treeList
    * @param {object[]} originlist 源数据列表
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    */
-  formatTreeData (targetlist, originlist, type = 'list', option = {}) {
+  formatTreeData (targetlist, originlist, originfromType = 'list', option = {}) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
     }
     for (let n in originlist) {
-      let item = this.formatItem(originlist[n], type, option.build)
+      let item = this.formatItem(originlist[n], originfromType, option.build)
       targetlist.push(item)
     }
   }
@@ -346,12 +346,12 @@ class DictionaryList extends DefaultData {
    * 根据字典格式化数据
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
-   * @param {string} type 来源originfrom
+   * @param {string} originfromType 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatData (targetitem, originitem = {}, type, option, depth) {
+  formatData (targetitem, originitem = {}, originfromType, option, depth) {
     if (!option) {
       option = this.getBuildOption()
     }
@@ -359,7 +359,7 @@ class DictionaryList extends DefaultData {
       option = _func.getLimitData(option)
     }
     for (let ditem of this.data.values()) {
-      this.formatDataNext(ditem, targetitem, originitem, type, option, depth)
+      this.formatDataNext(ditem, targetitem, originitem, originfromType, option, depth)
     }
     return targetitem
   }
@@ -368,11 +368,11 @@ class DictionaryList extends DefaultData {
    * @param {DictionaryData} ditem 字典
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
-   * @param {string} type 来源originfrom
+   * @param {string} originfromType 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    */
-  formatDataNext (ditem, targetitem, originitem, type, option, depth = 0) {
+  formatDataNext (ditem, targetitem, originitem, originfromType, option, depth = 0) {
     let build = false
     let isOther = false
     if (!option) {
@@ -381,55 +381,55 @@ class DictionaryList extends DefaultData {
     if (!option.getLimit) {
       option = _func.getLimitData(option)
     }
-    if (ditem.isOrigin(type)) {
+    if (ditem.isOrigin(originfromType)) {
       // 当前字典存在对应模块直接按照build模式进行
       build = true
-    } else if (option.getLimit(type)) {
+    } else if (option.getLimit(originfromType)) {
       // 理论上设置为允许值可在此时构建出对应字段，通过vue.set进行赋值，解决数据不能双向绑定和提前构建对象结构，双向绑定问题通过vue.set解决，对象结构暂不考虑，因此此处暂时不做处理
       build = false
       isOther = false
     }
     if (build) {
-      let targettype = ditem.getInterface('type', type)
+      let targetType = ditem.getInterface('type', originfromType)
       if (!isOther) {
-        let originprop = ditem.getInterface('originprop', type)
+        let originprop = ditem.getInterface('originprop', originfromType)
         let origindata = _func.getProp(originitem, originprop)
         let targetdata
         if (ditem.dictionary) {
           depth++
-          if (targettype == 'array') {
+          if (targetType == 'array') {
             if (origindata && origindata.length > 0) {
               targetdata = []
-              this.formatListData(targetdata, origindata, type, { build: option }, depth)
+              this.formatListData(targetdata, origindata, originfromType, { build: option }, depth)
               origindata = targetdata
             } else {
               origindata = []
             }
           } else {
-            origindata = ditem.dictionary.formatData({}, origindata, type, option, depth)
+            origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, depth)
           }
         }
         targetdata = ditem.formatOrigin(origindata, {
           targetitem: targetitem,
           originitem: originitem,
           depth: depth,
-          type: type
+          type: originfromType
         })
-        _func.setPropByType(targetitem, ditem.prop, targetdata, ditem.getInterface('type', type), true)
+        _func.setPropByType(targetitem, ditem.prop, targetdata, ditem.getInterface('type', originfromType), true)
       } else {
         if (targetitem[ditem.prop] === undefined) {
           let targetdata
           if (ditem.dictionary) {
             depth++
-            if (targettype == 'array') {
+            if (targetType == 'array') {
               targetdata = []
             } else {
-              targetdata = ditem.dictionary.formatData({}, {}, type, option, depth)
+              targetdata = ditem.dictionary.formatData({}, {}, originfromType, option, depth)
             }
           } else {
-            if (targettype == 'object') {
+            if (targetType == 'object') {
               targetdata = {}
-            } else if (targettype == 'array') {
+            } else if (targetType == 'array') {
               targetdata = []
             }
           }

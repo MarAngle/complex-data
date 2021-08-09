@@ -170,70 +170,70 @@ class ComplexData extends BaseData {
   /**
    * 根据源数据格式化生成对象
    * @param {object} originitem 源数据
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatItem (originitem, type = 'list', option) {
-    return this.getModule('dictionary').formatItem(originitem, type, option)
+  formatItem (originitem, originfromType = 'list', option) {
+    return this.getModule('dictionary').formatItem(originitem, originfromType, option)
   }
   /**
    * 根据源数据更新数据
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  updateItem (targetitem, originitem, type = 'info', option) {
-    return this.getModule('dictionary').updateItem(targetitem, originitem, type, option)
+  updateItem (targetitem, originitem, originfromType = 'info', option) {
+    return this.getModule('dictionary').updateItem(targetitem, originitem, originfromType, option)
   }
   /**
    * 格式化列表数据
    * @param {object[]} targetlist 目标列表
    * @param {object[]} originlist 源数据列表
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    * @param {number} [depth] 深度
    */
-  formatListData (targetlist, originlist, type, option) {
-    this.getModule('dictionary').formatListData(targetlist, originlist, type, option)
+  formatListData (targetlist, originlist, originfromType, option) {
+    this.getModule('dictionary').formatListData(targetlist, originlist, originfromType, option)
   }
   /**
    * 格式化列表数据为treeList
    * @param {object[]} targetlist 目标列表treeList
    * @param {object[]} originlist 源数据列表
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
    */
-  formatTreeData (targetlist, originlist, type, option) {
-    this.getModule('dictionary').formatTreeData(targetlist, originlist, type, option)
+  formatTreeData (targetlist, originlist, originfromType, option) {
+    this.getModule('dictionary').formatTreeData(targetlist, originlist, originfromType, option)
   }
   /**
    * 根据源数据格式化生成对象并更新到targetitem中
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
-   * @param {string} [type] 来源originfrom
+   * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 更新设置项
    */
-  formatItemData (targetitem, originitem, type, option = {}) {
+  formatItemData (targetitem, originitem, originfromType, option = {}) {
     if (!option.type) {
       option.type = 'add'
     }
-    let item = this.formatItem(originitem, type)
+    let item = this.formatItem(originitem, originfromType)
     _func.updateData(targetitem, item, option)
   }
   /**
    * 基于formdata和模块列表返回编辑完成的数据
    * @param {object} formData form数据
    * @param {DictionaryData[]} modlist 模块列表
-   * @param {string} type modtype
+   * @param {string} modType modType
    * @returns {object}
    */
-  getEditData (formData, modlist, type) {
-    return this.getModule('dictionary').getEditData(formData, modlist, type)
+  getEditData (formData, modlist, modType) {
+    return this.getModule('dictionary').getEditData(formData, modlist, modType)
   }
   /**
    * 重置data.list
