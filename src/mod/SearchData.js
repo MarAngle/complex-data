@@ -111,7 +111,7 @@ class SearchData extends ComplexData {
   resetSearchFormData(from = 'init', option = {}, copyToPost = true, modType = 'build') {
     if (this.getInit()) {
       let modlist = this.form[modType].modlist
-      let data = this.buildDictionaryFormData(modType, modlist, null, {
+      let data = this.buildDictionaryFormData(modlist, modType, null, {
         form: this.form[modType].form.data,
         from: from,
         limit: option.limit,

@@ -164,7 +164,7 @@ class ComplexData extends BaseData {
    * @param {string} [option.sync] 同步操作，默认异步操作
    * @returns {object | Promise<{ status, data}>}
    */
-  buildDictionaryFormData(modlist, modType, originitem, option) {
+  buildDictionaryFormData (modlist, modType, originitem, option) {
     return this.getModule('dictionary').buildFormData(modlist, modType, originitem, option)
   }
   /**
