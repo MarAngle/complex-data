@@ -135,32 +135,37 @@ class ComplexData extends BaseData {
   }
   /**
    * 获取符合模块要求的字典page列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageList (mod, payload) {
-    return this.getModule('dictionary').getPageList(mod, payload)
+  getDictionaryPageList (modType, payload) {
+    return this.getModule('dictionary').getPageList(modType, payload)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {DictionaryData[]} modlist 模块列表
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageListByModList (mod, modlist, payload) {
-    return this.getModule('dictionary').getPageListByModList(mod, modlist, payload)
+  getDictionaryPageListByModList (modType, modlist, payload) {
+    return this.getModule('dictionary').getPageListByModList(modType, modlist, payload)
   }
   /**
    * 根据模块列表生成对应的form对象
    * @param {DictionaryData[]} modlist 模块列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {*} originitem 初始化数据
-   * @returns {object}
+   * @param {object} option 设置项
+   * @param {object} [option.form] 目标form数据
+   * @param {string} [option.from] 调用来源
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @param {string} [option.sync] 同步操作，默认异步操作
+   * @returns {object | Promise<{ status, data}>}
    */
-  getDictionaryFormData(modlist, mod, originitem, from) {
-    return this.getModule('dictionary').getFormData(modlist, mod, originitem, from)
+  buildDictionaryFormData(modlist, modType, originitem, option) {
+    return this.getModule('dictionary').buildFormData(modlist, modType, originitem, option)
   }
   /**
    * 根据源数据格式化生成对象

@@ -85,17 +85,17 @@ class SearchData extends ComplexData {
    * 加载form
    * @param {string} type modtype
    */
-  initFormData(type = 'build') {
+  initFormData(modType = 'build') {
     if (this.getInit()) {
-      this.form[type] = {
+      this.form[modType] = {
         modlist: [],
         mainlist: [],
         form: {
           data: {}
         }
       }
-      this.form[type].modlist = this.getDictionaryModList('build')
-      this.form[type].mainlist = this.getDictionaryPageListByModList('build', this.form[type].modlist)
+      this.form[modType].modlist = this.getDictionaryModList('build')
+      this.form[modType].mainlist = this.getDictionaryPageListByModList('build', this.form[modType].modlist)
       this.resetFormData('init')
     }
   }
@@ -104,47 +104,47 @@ class SearchData extends ComplexData {
    * @param {'init' | 'reset'} from 请求来源
    * @param {object} option 设置项
    * @param {boolean} syncPost 同步到post[type]中
-   * @param {string} type modtype
+   * @param {string} modType modtype
    */
-  resetFormData(from = 'init', option = {}, syncPost = true, type = 'build') {
+  resetFormData(from = 'init', option = {}, syncPost = true, modType = 'build') {
     if (this.getInit()) {
       let limit = _func.getLimitData(option.limit)
-      for (let n in this.form[type].mainlist) {
-        let pitem = this.form[type].mainlist[n]
+      for (let n in this.form[modType].mainlist) {
+        let pitem = this.form[modType].mainlist[n]
         if (!limit.getLimit(pitem.prop)) {
           let targetdata
           if (pitem.edit && pitem.edit.getValueData) {
             targetdata = from == 'init' ? pitem.edit.getValueData('initdata') : pitem.edit.getValueData('resetdata')
           }
-          _func.setProp(this.form[type].form.data, pitem.prop, targetdata, true)
+          _func.setProp(this.form[modType].form.data, pitem.prop, targetdata, true)
         }
       }
       if (syncPost) {
-        this.setData(type)
+        this.setData(modType)
       }
     }
   }
   /**
    * 设置对应type的数据
-   * @param {string} [type = 'build'] modtype
+   * @param {string} [modType = 'build'] modtype
    */
-  setData(type = 'build') {
+  setData(modType = 'build') {
     if (this.getInit()) {
-      this.post[type] = this.getEditData(this.form[type].form.data, this.form[type].modlist, 'build')
+      this.post[modType] = this.getEditData(this.form[modType].form.data, this.form[modType].modlist, 'build')
     }
   }
   /**
    * 获取当前检索数据
-   * @param {string} [type = 'build'] modtype
+   * @param {string} [modType = 'build'] modtype
    * @param {boolean | object} [deep = true] 是否深拷贝
    * @returns {object}
    */
-  getData(type = 'build', deep = true) {
+  getData(modType = 'build', deep = true) {
     if (this.getInit()) {
       if (deep) {
-        return _func.deepClone(this.post[type], deep)
+        return _func.deepClone(this.post[modType], deep)
       } else {
-        return this.post[type]
+        return this.post[modType]
       }
     } else {
       return {}

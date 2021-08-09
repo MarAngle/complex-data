@@ -159,9 +159,9 @@ class DictionaryData extends DefaultData {
    * @param {string} mod 模块
    * @returns {boolean}
    */
-  isMod (mod) {
+  isMod (modType) {
     let fg = false
-    if (this.mod[mod]) {
+    if (this.mod[modType]) {
       fg = true
     }
     return fg
@@ -204,50 +204,52 @@ class DictionaryData extends DefaultData {
   }
   /**
    * 基于自身从originitem中获取对应属性的数据放返回
-   * @param {string} type modtype
+   * @param {string} modType modtype
    * @param {object} option 参数
    * @param {object} option.targetitem 目标数据
    * @param {object} option.originitem 源formdata数据
+   * @param {string} option.from 调用来源
    * @returns {*}
    */
-  getFormData (type, { targetitem, originitem }) {
+  getFormData (modType, option) {
     return new Promise((resolve, reject) => {
-      let mod = this.mod[type]
+      let mod = this.mod[modType]
       if (mod) {
         if (mod.readyData) {
           mod.readyData().then(() => {
-            resolve({ status: 'success', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+            resolve({ status: 'success', data: this.getFormDataNext(mod, modType, option) })
           }, () => {
-            resolve({ status: 'fail', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+            resolve({ status: 'fail', data: this.getFormDataNext(mod, modType, option) })
           })
         } else {
-          resolve({ status: 'success', data: this.getFormDataNext(mod, type, { targetitem, originitem }) })
+          resolve({ status: 'success', data: this.getFormDataNext(mod, modType, option) })
         }
       } else {
-        reject({ status: 'fail', code: 'noMod', msg: this.buildPrintMsg(`${type}对应的mod不存在`) })
+        reject({ status: 'fail', code: 'noMod', msg: this.buildPrintMsg(`${modType}对应的mod不存在`) })
       }
     })
   }
   /**
    * 基于自身从originitem中获取对应属性的数据放返回
    * @param {object} mod mod
-   * @param {string} type modtype
+   * @param {string} modType modtype
    * @param {object} option 参数
    * @param {object} option.targetitem 目标数据
    * @param {object} option.originitem 源formdata数据
+   * @param {string} [option.from] 调用来源
    * @returns {*}
    */
-  getFormDataNext (mod, type, { targetitem, originitem, from = 'init' }) {
+  getFormDataNext (mod, modType, { targetitem, originitem, from = 'init' }) {
     let target
     if (originitem) {
       target = this.triggerFunc('edit', originitem[this.prop], {
-        type: type,
+        type: modType,
         targetitem,
         originitem
       })
       if (mod.func && mod.func.edit) {
         target = mod.func.edit(target, {
-          type: type,
+          type: modType,
           targetitem,
           originitem
         })

@@ -443,19 +443,19 @@ class DictionaryList extends DefaultData {
    * @param {string} mod 模块名称
    * @returns {DictionaryData[]}
    */
-  getModList (mod) {
-    return this.getModListNext([], this.data, mod)
+  getModList (modType) {
+    return this.getModListNext([], this.data, modType)
   }
   /**
    * 从dataMap获取符合模块要求的字典列表
    * @param {DictionaryData[]} modList 返回的字典列表
    * @param {Map<DictionaryData>} dataMap 字典Map
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @returns {DictionaryData[]}
    */
-  getModListNext (modList, dataMap, mod) {
+  getModListNext (modList, dataMap, modType) {
     for (let ditem of dataMap.values()) {
-      let fg = ditem.isMod(mod)
+      let fg = ditem.isMod(modType)
       if (fg) {
         modList.push(ditem)
       }
@@ -464,26 +464,26 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 获取符合模块要求的字典page列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageList (mod, payload) {
-    let modList = this.getModList(mod)
-    return this.getPageListByModList(mod, modList, payload)
+  getPageList (modType, payload) {
+    let modList = this.getModList(modType)
+    return this.getPageListByModList(modType, modList, payload)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {DictionaryData[]} modlist 模块列表
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageListByModList (mod, modlist, payload = {}) {
+  getPageListByModList (modType, modlist, payload = {}) {
     let pagelist = []
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
-      let pitem = ditem.getModData(mod, payload)
+      let pitem = ditem.getModData(modType, payload)
       pagelist.push(pitem)
     }
     return pagelist
@@ -491,24 +491,36 @@ class DictionaryList extends DefaultData {
   /**
    * 根据模块列表生成对应的form对象
    * @param {DictionaryData[]} modlist 模块列表
-   * @param {string} mod 模块名称
+   * @param {string} modType 模块名称
    * @param {*} originitem 初始化数据
-   * @returns {object}
+   * @param {object} option 设置项
+   * @param {object} [option.form] 目标form数据
+   * @param {string} [option.from] 调用来源
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @param {string} [option.sync] 同步操作，默认异步操作
+   * @returns {object | Promise<{ status, data}>}
    */
-  getFormData(modlist, mod, originitem, from) {
-    return new Promise((resolve) => {
-      let formData = {}
-      let size = modlist.length
-      let promiseList = []
-      for (let n = 0; n < size; n++) {
-        let ditem = modlist[n]
-        promiseList.push(ditem.getFormData(mod, {
+  buildFormData(modlist, modType, originitem, option = {}) {
+    let formData = option.form || {}
+    let promiseList = []
+    let sync = option.sync || false
+    let from = option.from
+    let limit = _func.getLimitData(option.limit)
+    let size = modlist.length
+    for (let n = 0; n < size; n++) {
+      let ditem = modlist[n]
+      if (!limit.getLimit(ditem.prop)) {
+        promiseList.push(ditem.getFormData(modType, {
           targetItem: formData,
           originitem: originitem,
-          from: from
+          from: from,
+          sync: sync
         }))
       }
-      _func.promiseAllFinished(promiseList).then(resList => {
+    }
+    let promise = _func.promiseAllFinished(promiseList)
+    if (sync) {
+      promise.then(resList => {
         for (let n = 0; n < resList.length; n++) {
           let res = resList[n]
           if (res.status == 'success') {
@@ -517,23 +529,37 @@ class DictionaryList extends DefaultData {
             _func.setProp(formData, modlist[n].prop, undefined, true)
           }
         }
+      })
+      return formData
+    } else {
+      return new Promise((resolve) => {
+        promise.then(resList => {
+          for (let n = 0; n < resList.length; n++) {
+            let res = resList[n]
+            if (res.status == 'success') {
+              _func.setProp(formData, modlist[n].prop, res.data.data, true)
+            } else {
+              _func.setProp(formData, modlist[n].prop, undefined, true)
+            }
+          }
+        })
         resolve({ status: 'success', data: formData })
       })
-    })
+    }
   }
   /**
    * 基于formdata和模块列表返回编辑完成的数据
    * @param {object} formData form数据
    * @param {DictionaryData[]} modlist 模块列表
-   * @param {string} type modtype
+   * @param {string} modType modType
    * @returns {object}
    */
-  getEditData(formData, modlist, type) {
+  getEditData(formData, modlist, modType) {
     let editData = {}
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let add = true
-      if (!ditem.mod[type].required) {
+      if (!ditem.mod[modType].required) {
         /*
           存在check则进行check判断
           此时赋值存在2种情况
@@ -543,7 +569,7 @@ class DictionaryList extends DefaultData {
         add = ditem.triggerFunc('check', formData[ditem.prop], {
           targetitem: editData,
           originitem: formData,
-          type: type
+          type: modType
         })
         // empty状态下传递数据 或者 checkFg为真时传递数据 也就是非post状态的非真数据不传递
         if (!add) {
@@ -552,15 +578,15 @@ class DictionaryList extends DefaultData {
       }
       if (add) {
         let targetdata = formData[ditem.prop]
-        if (ditem.mod[type].trim) {
+        if (ditem.mod[modType].trim) {
           targetdata = _func.trimData(targetdata)
         }
         targetdata = ditem.triggerFunc('unedit', targetdata, {
           targetitem: editData,
           originitem: formData,
-          type: type
+          type: modType
         })
-        let originprop = ditem.getInterface('originprop', type)
+        let originprop = ditem.getInterface('originprop', modType)
         _func.setPropByType(editData, originprop, targetdata, ditem.type)
       }
     }
