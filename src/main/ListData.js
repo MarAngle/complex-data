@@ -12,6 +12,7 @@ class ListData extends ComplexDataWithSearch {
     this.triggerCreateLife('ListData', 'beforeCreate', initdata)
     this.setModule('choice', new ChoiceData(initdata.choice))
     this._initListData(initdata)
+    this._initListDataLife()
     this.triggerCreateLife('ListData', 'created')
   }
   _initListData ({ pagination }) {
@@ -27,6 +28,26 @@ class ListData extends ComplexDataWithSearch {
     } else {
       this.setModule('pagination', null)
     }
+  }
+  /**
+   * 加载生命周期函数
+   */
+   _initListDataLife() {
+    // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
+    this.onLife('beforeReload', {
+      id: 'AutoListDataBeforeReload',
+      data: (option) => {
+        if (this.getModule('pagination' && option.page)) {
+          if (option.page === true) {
+            this.setPageData(1, 'page')
+          } else {
+            this.setPageData(option.page.data, option.page.prop)
+          }
+        }
+        // 根据设置和传值自动进行当前选项的重置操作
+        this.autoChoiceReset(option.choice, 'reload')
+      }
+    })
   }
   /**
    * 获取分页器数据
@@ -82,38 +103,6 @@ class ListData extends ComplexDataWithSearch {
   formatData (datalist = [], totalnum, originfromType, option) {
     this.formatListData(this.data.list, datalist, originfromType, option)
     this.setPageData(totalnum, 'num')
-  }
-  /**
-   * 数据重新拉取
-   * @param {boolean | { prop, data }} page 分页器操作
-   * @param {boolean | object} [choice] 选项重置判断值
-   * @param {boolean | object} force 强制更新判断值
-   * @param  {...any} args 参数列表
-   * @returns {Promise}
-   */
-  reloadData (page, choice, force, ...args) {
-    return new Promise((resolve, reject) => {
-      let type = _func.getType(page)
-      if (this.getModule('pagination') && page) {
-        if (type != 'object') {
-          page = {
-            prop: 'page',
-            data: 1
-          }
-        }
-        if (page.prop && page.data) {
-          this.setPageData(page.data, page.prop)
-        }
-      }
-      // 根据设置和传值自动进行当前选项的重置操作
-      this.autoChoiceReset(choice, 'reload')
-      this.loadData(force, ...args).then(res => {
-        resolve(res)
-      }, err => {
-        console.error(err)
-        reject(err)
-      })
-    })
   }
   /**
    * 根据option, defaultOption自动判断重置与否

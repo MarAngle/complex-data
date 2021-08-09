@@ -22,22 +22,6 @@ class InfoData extends ComplexDataWithSearch {
     }
     this.updateItem(this.data.current, origindata, originfromType, option)
   }
-  /**
-   * 数据重新拉取
-   * @param {boolean}} force 强制更新判断值
-   * @param  {...any} args loadData=>getData参数列表
-   * @returns {Promise}
-   */
-  reloadData (force, ...args) {
-    return new Promise((resolve, reject) => {
-      this.loadData(force, ...args).then(res => {
-        resolve(res)
-      }, err => {
-        console.error(err)
-        reject(err)
-      })
-    })
-  }
   // --数据相关--*/
   /**
    * 获取对象

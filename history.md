@@ -1,3 +1,7 @@
+### 2.1.8
+- 将reloadData函数抽取到BaseData中，通过首参数option，在beforeReload生命周期中进行各个设置项的调整
+- 优化异步加载的生命周期回调参数
+
 ### 2.1.7
 - getFormData整体逻辑优化
 - 准备重构全局form相关函数

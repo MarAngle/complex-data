@@ -46,19 +46,19 @@ class DefaultData extends SimpleData {
   }
   // 挂载方法
   initMethods (methods) {
-    for (let n in methods) {
+    for (let prop in methods) {
       let build = true
-      if (this[n]) {
-        let type = _func.getType(this[n])
+      if (this[prop] !== undefined) {
+        let type = _func.getType(this[prop])
         if (type !== 'function') {
-          this.printMsg(`自定义函数${n}存在同名属性，未生效!`)
+          this.printMsg(`自定义函数${prop}存在同名属性，未生效!`)
           build = false
         } else {
-          this.printMsg(`method:${n}已被改写!`, 'warn')
+          this.printMsg(`method:${prop}已被改写!`, 'warn')
         }
       }
       if (build) {
-        this[n] = methods[n]
+        this[prop] = methods[prop]
       }
     }
   }

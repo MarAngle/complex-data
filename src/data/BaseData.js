@@ -149,7 +149,7 @@ class BaseData extends DefaultData {
   * 数据相关函数定义
   * 加载判断load是否加载成功和强制判断值
   * @param {boolean | object} [force] 强制加载判断值，ing属性为ing强制更新判断值
-  * @param  {...any} args 参数
+  * @param  {...any} args getData参数列表
   * @returns {Promise}
   */
   loadData (force, ...args) {
@@ -179,6 +179,65 @@ class BaseData extends DefaultData {
         reject(err)
       })
     })
+  }
+  /**
+   * 重载数据
+   * @param {object | boolean} [option] 设置项，布尔值则为force快捷赋值
+   * @param {object | boolean} [option.force] 强制重置参数
+   * @param {boolean} [option.sync] 同步函数
+   * @param {*} [option.prop] 其他参数
+   * @param  {...any} [args] getData参数列表
+   * @returns {}
+   */
+  reloadData (option, ...args) {
+    let optionType = _func.getType(option)
+    if (optionType === 'boolean') {
+      option = {
+        force: option
+      }
+    } else if (optionType !== 'object') {
+      option = {}
+    }
+    this.triggerLife('beforeReload', option, ...args)
+    // 同步判断值
+    let sync = option.sync
+    let force = option.force === undefined ? {} : option.force
+    let promise = this.loadData(force, ...args)
+    if (sync) {
+      promise.then((res) => {
+        // 触发生命周期重载完成事件
+        this.triggerLife('reloaded', {
+          res: res,
+          args: args
+        })
+      }, err => {
+        console.error(err)
+        // 触发生命周期重载失败事件
+        this.triggerLife('reloadFail', {
+          res: err,
+          args: args
+        })
+      })
+    } else {
+      return new Promise((resolve, reject) => {
+        promise.then(res => {
+          // 触发生命周期重载完成事件
+          this.triggerLife('reloaded', {
+            res: res,
+            args: args
+          })
+          resolve(res)
+        }, err => {
+          console.error(err)
+          // 触发生命周期重载失败事件
+          this.triggerLife('reloadFail', {
+            res: err,
+            args: args
+          })
+          reject(err)
+        })
+      })
+    }
   }
  /**
   * 实现更新函数
@@ -306,12 +365,18 @@ class BaseData extends DefaultData {
       this.triggerMethod(...args).then(res => {
         this.setStatus('loaded', 'load')
         // 触发生命周期加载完成事件
-        this.triggerLife('loaded', ...args)
+        this.triggerLife('loaded', {
+          res: res,
+          args: args
+        })
         resolve(res)
       }, err => {
         this.setStatus('unload', 'load')
         // 触发生命周期加载失败事件
-        this.triggerLife('loadFail', ...args)
+        this.triggerLife('loadFail', {
+          res: err,
+          args: args
+        })
         reject(err)
       })
     }))
@@ -330,12 +395,18 @@ class BaseData extends DefaultData {
       this.triggerMethod(...args).then(res => {
         this.setStatus('updated', 'update')
         // 触发生命周期更新完成事件
-        this.triggerLife('updated', ...args)
+        this.triggerLife('updated', {
+          res: res,
+          args: args
+        })
         resolve(res)
       }, err => {
         this.setStatus('updated', 'update')
         // 触发生命周期加载失败事件
-        this.triggerLife('updateFail', ...args)
+        this.triggerLife('updateFail', {
+          res: err,
+          args: args
+        })
         reject(err)
       })
     }))
