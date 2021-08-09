@@ -1,4 +1,4 @@
-### 2.1.7-beta
+### 2.1.7
 - getFormData整体逻辑优化
 - 准备重构全局form相关函数
 - modType参数名称优化
