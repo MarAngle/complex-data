@@ -1,3 +1,7 @@
+### 2.1.9
+- EditData创建生命周期BUG修复
+- 因代码转义，class的this.constructor.name名称将不会是定义的名称，为避免问题考虑优化方案
+
 ### 2.1.8
 - 将reloadData函数抽取到BaseData中，通过首参数option，在beforeReload生命周期中进行各个设置项的调整
 - 优化异步加载的生命周期回调参数

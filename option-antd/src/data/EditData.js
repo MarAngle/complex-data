@@ -7,8 +7,9 @@ import editTypeData from './data/editTypeData'
 class EditData extends BaseData {
   constructor(editdata, payload) {
     super(editdata)
+    this.triggerCreateLife('EditData', 'beforeCreate', editdata, payload)
     this._initMainByEditData(editdata, payload)
-    this.triggerCreateLife('EditData')
+    this.triggerCreateLife('EditData', 'created')
   }
   _initMainByEditData(editdata, payload = {}) {
     this.initMain(editdata, payload)
