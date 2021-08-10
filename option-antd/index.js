@@ -78,6 +78,7 @@ let antdOption = {
         if (data.type == 'edit') {
           ditem.mod[mod] = ditem.mod.edit
         } else {
+          data.prop = ditem.prop
           data.parent = ditem
           ditem.mod[mod] = new EditData(data, {})
         }

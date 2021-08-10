@@ -12,10 +12,10 @@ class EditData extends BaseData {
     this.triggerCreateLife('EditData', 'created')
   }
   _initMainByEditData(editdata, payload = {}) {
-    this.initMain(editdata, payload)
+    this.initMain(editdata)
     this.initSlot(editdata)
     this.initTips(editdata)
-    this.initType(editdata, payload)
+    this.initType(editdata)
   }
   initMain(editdata) {
     // this.label = parent.label // 名称设置=InterfaceData数据类型
@@ -82,7 +82,7 @@ class EditData extends BaseData {
       }
     }
   }
-  initType(editdata, payload) {
+  initType(editdata) {
     this.type = editdata.type || 'input'
     this.required = editdata.required || false
     // 组件事件监控
@@ -366,9 +366,9 @@ class EditData extends BaseData {
       this.option.name = editdata.option.name ? new InterfaceData(editdata.option.name) : this.placeholder
     } else if (this.type == 'slot') {
     }
-    this.buildRules(editdata, typeOption, payload)
+    this.buildRules(editdata, typeOption)
   }
-  buildRules(editdata, typeOption, payload) {
+  buildRules(editdata, typeOption) {
     this.autoTrigger = editdata.autoTrigger
     if (!this.autoTrigger) {
       if (typeOption.rule && typeOption.rule.autoTrigger) {
