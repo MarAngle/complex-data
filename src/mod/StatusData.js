@@ -49,4 +49,6 @@ class StatusData extends SimpleData {
   }
 }
 
+StatusData._name = 'StatusData'
+
 export default StatusData

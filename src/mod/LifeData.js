@@ -132,4 +132,6 @@ class LifeData extends SimpleData {
   }
 }
 
+LifeData._name = 'LifeData'
+
 export default LifeData

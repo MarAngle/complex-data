@@ -195,4 +195,6 @@ class PaginationData extends SimpleData {
   }
 }
 
+PaginationData._name = 'PaginationData'
+
 export default PaginationData

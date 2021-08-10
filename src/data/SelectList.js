@@ -266,4 +266,6 @@ class SelectList extends DefaultData {
   }
 }
 
+SelectList._name = 'SelectList'
+
 export default SelectList

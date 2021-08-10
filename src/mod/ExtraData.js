@@ -65,4 +65,6 @@ class ExtraData extends SimpleData {
   }
 }
 
+ExtraData._name = 'ExtraData'
+
 export default ExtraData

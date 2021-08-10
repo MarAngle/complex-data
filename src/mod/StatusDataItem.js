@@ -108,4 +108,6 @@ class StatusDataItem extends SimpleData {
   }
 }
 
+StatusDataItem._name = 'StatusDataItem'
+
 export default StatusDataItem

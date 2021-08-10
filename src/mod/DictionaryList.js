@@ -613,4 +613,6 @@ class DictionaryList extends DefaultData {
   }
 }
 
+DictionaryList._name = 'DictionaryList'
+
 export default DictionaryList

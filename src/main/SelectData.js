@@ -60,4 +60,6 @@ class SelectData extends BaseData {
   }
 }
 
+SelectData._name = 'SelectData'
+
 export default SelectData

@@ -56,4 +56,6 @@ class ComplexDataWithSearch extends ComplexData {
   }
 }
 
+ComplexDataWithSearch._name = 'ComplexDataWithSearch'
+
 export default ComplexDataWithSearch

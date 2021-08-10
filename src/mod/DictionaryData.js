@@ -274,4 +274,6 @@ class DictionaryData extends DefaultData {
   }
 }
 
+DictionaryData._name = 'DictionaryData'
+
 export default DictionaryData

@@ -192,4 +192,6 @@ class UpdateData extends DefaultData {
   }
 }
 
+UpdateData._name = 'UpdateData'
+
 export default UpdateData

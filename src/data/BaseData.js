@@ -454,4 +454,6 @@ class BaseData extends DefaultData {
   }
 }
 
+BaseData._name = 'BaseData'
+
 export default BaseData

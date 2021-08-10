@@ -5,7 +5,7 @@ class SimpleData {
   constructor() {
     this.$LocalTempData = {
       module: {
-        id: install.getId(this.constructor.name)
+        id: install.getId(this.constructor._name)
       }
     }
   }
@@ -34,7 +34,7 @@ class SimpleData {
    * @returns {string}
    */
   _selfName () {
-    return `[CLASS:${this.constructor.name}]`
+    return `[CLASS:${this.constructor._name}]`
   }
   toString () {
     return this._selfName()
@@ -48,5 +48,7 @@ class SimpleData {
     return this.$LocalTempData.module.id + data
   }
 }
+
+SimpleData._name = 'SimpleData'
 
 export default SimpleData

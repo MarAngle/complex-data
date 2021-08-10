@@ -76,4 +76,6 @@ class InterfaceData extends SimpleData {
   }
 }
 
+InterfaceData._name = 'InterfaceData'
+
 export default InterfaceData

@@ -89,4 +89,6 @@ class LayoutData extends SimpleData {
   }
 }
 
+LayoutData._name = 'LayoutData'
+
 export default LayoutData

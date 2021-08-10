@@ -464,7 +464,7 @@ class EditData extends BaseData {
     return this.value[prop]
   }
   _selfName () {
-    return `(${this.constructor.name})`
+    return `(${this.constructor._name})`
   }
   printMsg(info, type = 'error', option) {
     _func.printMsgAct(this._selfName() + ':' + info, type, option)
@@ -473,4 +473,7 @@ class EditData extends BaseData {
     return this._selfName()
   }
 }
+
+EditData._name = 'EditData'
+
 export default EditData

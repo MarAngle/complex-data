@@ -87,4 +87,6 @@ class IdData {
   }
 }
 
+IdData._name = 'IdData'
+
 export default IdData

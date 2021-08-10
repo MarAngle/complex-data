@@ -73,4 +73,6 @@ class TreeData extends ListData {
   }
 }
 
+TreeData._name = 'TreeData'
+
 export default TreeData

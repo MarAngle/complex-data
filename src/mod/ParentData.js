@@ -48,4 +48,6 @@ class ParentData extends SimpleData {
   }
 }
 
+ParentData._name = 'ParentData'
+
 export default ParentData

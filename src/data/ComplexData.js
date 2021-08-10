@@ -252,4 +252,6 @@ class ComplexData extends BaseData {
   }
 }
 
+ComplexData._name = 'ComplexData'
+
 export default ComplexData

@@ -96,10 +96,11 @@ class DefaultData extends SimpleData {
   }
   // 触发生命周期
   triggerCreateLife (env, lifeName, ...args) {
+    if (this.constructor._name == 'ListData') console.log(env, this.constructor._name, lifeName)
     if (!env) {
       this.printMsg('triggerCreateLife函数需要传递env参数')
     }
-    if (env != this.constructor.name) {
+    if (env != this.constructor._name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)
     }
     this.$LocalTempData.AutoCreateLifeNameList.push(lifeName)
@@ -165,8 +166,10 @@ class DefaultData extends SimpleData {
     if (!pre) {
       pre = ``
     }
-    return `{${pre}[${this.constructor.name}-${this.name}/${this.prop}]}`
+    return `{${pre}[${this.constructor._name}-${this.name}/${this.prop}]}`
   }
 }
+
+DefaultData._name = 'DefaultData'
 
 export default DefaultData

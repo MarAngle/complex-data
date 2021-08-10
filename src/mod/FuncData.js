@@ -185,4 +185,6 @@ class FuncData extends SimpleData {
   }
 }
 
+FuncData._name = 'FuncData'
+
 export default FuncData

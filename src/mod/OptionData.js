@@ -138,4 +138,6 @@ class OptionData extends SimpleData {
   }
 }
 
+OptionData._name = 'OptionData'
+
 export default OptionData

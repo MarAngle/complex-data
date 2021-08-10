@@ -257,4 +257,6 @@ class ChoiceData extends DefaultData {
   }
 }
 
+ChoiceData._name = 'ChoiceData'
+
 export default ChoiceData

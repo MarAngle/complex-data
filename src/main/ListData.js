@@ -162,4 +162,6 @@ class ListData extends ComplexDataWithSearch {
   }
 }
 
+ListData._name = 'ListData'
+
 export default ListData

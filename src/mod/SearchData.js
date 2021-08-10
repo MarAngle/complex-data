@@ -183,4 +183,6 @@ class SearchData extends ComplexData {
   }
 }
 
+SearchData._name = 'SearchData'
+
 export default SearchData

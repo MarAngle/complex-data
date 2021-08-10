@@ -37,4 +37,6 @@ class InfoData extends ComplexDataWithSearch {
   }
 }
 
+InfoData._name = 'InfoData'
+
 export default InfoData
