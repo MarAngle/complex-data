@@ -96,7 +96,6 @@ class DefaultData extends SimpleData {
   }
   // 触发生命周期
   triggerCreateLife (env, lifeName, ...args) {
-    if (this.constructor._name == 'ListData') console.log(env, this.constructor._name, lifeName)
     if (!env) {
       this.printMsg('triggerCreateLife函数需要传递env参数')
     }

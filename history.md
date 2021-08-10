@@ -1,4 +1,4 @@
-### 2.1.9-beta
+### 2.1.9
 - EditData创建生命周期BUG修复
 - 因代码转义，class的this.constructor.name名称将不会是定义的名称，为避免问题考虑优化方案
  - 解决方案，将class挂载_name属性
