@@ -1,3 +1,6 @@
+### 2.1.11-beta
+- EditData中的rule.required默认取值required
+
 ### 2.1.10
 - 修复EditData创建slot时本身prop为空的BUG
 

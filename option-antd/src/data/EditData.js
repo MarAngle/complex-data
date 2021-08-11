@@ -369,8 +369,9 @@ class EditData extends BaseData {
     this.buildRules(editdata, typeOption)
   }
   buildRules(editdata, typeOption) {
+    // 数组，对应事件触发时进行单独的rule判断
     this.autoTrigger = editdata.autoTrigger
-    if (!this.autoTrigger) {
+    if (this.autoTrigger === undefined) {
       if (typeOption.rule && typeOption.rule.autoTrigger) {
         this.autoTrigger = typeOption.rule.autoTrigger
       }
@@ -402,6 +403,9 @@ class EditData extends BaseData {
       let ruleList = data[prop]
       for (let n in ruleList) {
         let rule = ruleList[n]
+        if (rule.required === undefined) {
+          rule.required = this.required
+        }
         if (rule.message === undefined && message.isInit()) {
           rule.message = message.getData(prop)
         }
