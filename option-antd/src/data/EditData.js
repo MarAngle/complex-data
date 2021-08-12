@@ -2,7 +2,7 @@ import _func from 'complex-func'
 import BaseData from './../../../src/data/BaseData'
 import PaginationData from './../../../src/mod/PaginationData'
 import InterfaceData from './../../../src/mod/InterfaceData'
-import editTypeData from './data/editTypeData'
+import typeData from './data/typeData'
 
 class EditData extends BaseData {
   constructor(editdata, payload) {
@@ -66,7 +66,7 @@ class EditData extends BaseData {
     this.required = editdata.required || false
     // 组件事件监控
     this.on = editdata.on || {}
-    let typeOption = editTypeData.getData(this.type)
+    let typeOption = typeData.getData(this.type)
     // 宽度设置
     if (editdata.mainwidth) {
       let type = _func.getType(editdata.mainwidth)
@@ -347,10 +347,10 @@ class EditData extends BaseData {
       }
       // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
       let handleDisabledDate = this.option.disabledDate
-      this.option.disabledDate = (value) => {
+      this.option.disabledDate = (value, ...args) => {
         let isDisabled = false
-        if (handleDisabledDate(value)) {
-          isDisabled = handleDisabledDate(value)
+        if (handleDisabledDate) {
+          isDisabled = handleDisabledDate(value, ...args)
         }
         if (!isDisabled && value && this.option.limit) {
           isDisabled = typeOption.timeLimitCheck(value, this.option.limit)

@@ -1,7 +1,7 @@
 import _func from 'complex-func'
 import timeUtils from './timeUtils'
 
-let editTypeData = {
+let typeData = {
   data: {
     type_input: {
       defaultdata: '',
@@ -166,7 +166,7 @@ let editTypeData = {
   }
 }
 
-editTypeData.getData = function (type) {
+typeData.getData = function (type) {
   let prop = 'type_' + type
   if (this.data[prop]) {
     return this.data[prop]
@@ -176,4 +176,4 @@ editTypeData.getData = function (type) {
   }
 }
 
-export default editTypeData
+export default typeData

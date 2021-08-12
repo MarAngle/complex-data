@@ -5,8 +5,8 @@ _func.current.setCallback(function(currentDate, from) {
   _func.current.setData(moment(currentDate), 'moment')
 })
 _func.current.setOffset(1000 * 60)
-// 重要，此处函数基本赋值操作，this指向不确定，引用时不能使用this
 
+// 重要，此处函数基本赋值操作，this指向不确定，引用时不能使用this
 let secRate = 1000
 let minRate = secRate * 60
 let hourRate = minRate * 60
