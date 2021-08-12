@@ -179,18 +179,30 @@ const timeUtils = {
     if (!limitOption.current) {
       limitOption.current = null
     }
-    // if (limitOption.msg === undefined) {
-    //   limitOption.msg = `时间间隔最大为${limitOption.num}${timeOption[limitOption.type].name}!`
-    // }
+    if (limitOption.msg === undefined) {
+      limitOption.msg = `时间间隔最大为${limitOption.num}${timeOption[limitOption.type].name}!`
+    }
+    if (!limitOption.disabledNext) {
+      limitOption.disabledNext = function(value, strValue, msg) {
+        _func.clearArray(value)
+        _func.clearArray(strValue)
+        if (msg) {
+          _func.showmsg(msg, 'error')
+        }
+      }
+    }
     return limitOption
   },
   dateLimitCheck(value, limitOption) {
-    if (limitOption.current) {
-      let offset = timeUtils.getDateOffset(value, limitOption.current, limitOption.type)
-      if (limitOption.eq) {
-        return offset >= limitOption.num
+    return timeUtils.checkDateLimitByOption(value, limitOption.current, limitOption)
+  },
+  checkDateLimitByOption(start, end, option) {
+    if (start && end) {
+      let offset = timeUtils.getDateOffset(start, end, option.type)
+      if (option.eq) {
+        return offset >= option.num
       } else {
-        return offset > limitOption.num
+        return offset > option.num
       }
     } else {
       return false
@@ -209,7 +221,8 @@ const timeUtils = {
       let option = timeOption[type]
       let formatValue = moment(_func.fillString(value.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
       let currentValue = moment(_func.fillString(current.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
-      let offset = Math.abs(formatValue - currentValue) / option.rate
+      // let offset = Math.abs(formatValue - currentValue) / option.rate
+      let offset = Math.abs(formatValue.diff(currentValue)) / option.rate
       return offset
     } else {
       return 0

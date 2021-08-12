@@ -103,6 +103,7 @@ let typeData = {
     },
     type_dateRange: {
       defaultdata: [],
+      checkDateLimitByOption: timeUtils.checkDateLimitByOption,
       getDateOffset: timeUtils.getDateOffset,
       formatLimitOption: timeUtils.formatLimitOption,
       dateLimitCheck: timeUtils.dateLimitCheck,

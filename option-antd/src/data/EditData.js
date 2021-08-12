@@ -87,7 +87,7 @@ class EditData extends BaseData {
       this.width = typeOption.width
     }
     this.initValue(editdata, typeOption)
-    // 需要默认触发的函数
+    // 需要默认触发的函数=>数组，会默认接收对应事件的触发，主要为form的emit做基础，单独回调需要在事件中定义
     this.eventTriggerList = typeOption.eventList
     // 格式化占位符和检验规则
     if (typeOption.placeholder) {
@@ -317,23 +317,24 @@ class EditData extends BaseData {
       this.option.format = editdata.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
       this.option.formatedit = editdata.option.formatedit || this.option.format // 默认确认后的数据解析
       if (editdata.option.limit) {
-        this.option.limit = typeOption.timeOptionFormat(editdata.option.limit)
+        this.option.limit = typeOption.formatLimitOption(editdata.option.limit)
       }
-      // 提取出来，避免后期切换limit值时无法触发响应的操作
-      let handleCalendarChange = this.on.calendarChange
-      this.on.calendarChange = (...args) => {
-        if (this.option.limit) {
-          let value = args[0]
-          if (value && value.length == 1 && value[0]) {
-            this.option.limit.current = value[0]
-          } else {
-            this.option.limit.current = null
-          }
-        }
-        if (handleCalendarChange) {
-          handleCalendarChange(...args)
-        }
-      }
+      // 时间限制逻辑，因时间time可控性差，不通过disabled进行判断
+      // // 提取出来，避免后期切换limit值时无法触发响应的操作
+      // let handleCalendarChange = this.on.calendarChange
+      // this.on.calendarChange = (...args) => {
+      //   if (this.option.limit) {
+      //     let value = args[0]
+      //     if (value && value.length == 1 && value[0]) {
+      //       this.option.limit.current = value[0]
+      //     } else {
+      //       this.option.limit.current = null
+      //     }
+      //   }
+      //   if (handleCalendarChange) {
+      //     handleCalendarChange(...args)
+      //   }
+      // }
       if (editdata.option.disabledDate) {
         let type = _func.getType(editdata.option.disabledDate)
         if (type === 'object') {
@@ -345,48 +346,36 @@ class EditData extends BaseData {
           this.option.disabledDate = editdata.option.disabledDate
         }
       }
-      // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
-      let handleDisabledDate = this.option.disabledDate
-      this.option.disabledDate = (value, ...args) => {
-        let isDisabled = false
-        if (handleDisabledDate) {
-          isDisabled = handleDisabledDate(value, ...args)
-        }
-        if (!isDisabled && value && this.option.limit) {
-          isDisabled = typeOption.dateLimitCheck(value, this.option.limit)
-        }
-        return isDisabled
-      }
-      // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
-      let handleDisabledTime = this.option.disabledTime
-      if (handleDisabledTime) {
-        this.option.disabledTime = handleDisabledTime
-      }
+      // // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
+      // let handleDisabledDate = this.option.disabledDate
+      // this.option.disabledDate = (value, ...args) => {
+      //   let isDisabled = false
+      //   if (handleDisabledDate) {
+      //     isDisabled = handleDisabledDate(value, ...args)
+      //   }
+      //   if (!isDisabled && value && this.option.limit) {
+      //     isDisabled = typeOption.dateLimitCheck(value, this.option.limit)
+      //   }
+      //   return isDisabled
+      // }
+      // // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
+      // let handleDisabledTime = this.option.disabledTime
+      // if (handleDisabledTime) {
+      //   this.option.disabledTime = handleDisabledTime
+      // }
       // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
       let handleChange = this.on.change
-      this.on.change = (value, ...args) => {
-        if (this.option.limit) {
-          console.log(value, ...args)
+      this.on.change = (value, strValue, ...args) => {
+        if (this.option.limit && value && value.length == 2) {
+          let isDisabled = typeOption.checkDateLimitByOption(value[0], value[1], this.option.limit)
+          if (isDisabled && this.option.limit.disabledNext) {
+            this.option.limit.disabledNext(value, strValue, this.option.limit.msg)
+          }
         }
         if (handleChange) {
-          handleChange(value, ...args)
+          handleChange(value, strValue, ...args)
         }
       }
-      /**
-       * value: [moment, moment], partial: 'start'|'end'
-       */
-      // this.option.disabledTime = (value, partial) => {
-      //   let option = {}
-      //   if (this.option.showTime) {
-      //     if (this.option.limit && value && value.length == 2) {
-      //       typeOption.timeLimitCheck(option, value[0], value[1], partial, this.option.limit)
-      //     }
-      //   }
-      //   if (handleDisabledTime) {
-      //     handleDisabledTime(option, value, partial)
-      //   }
-      //   return option
-      // }
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment
         this.func.edit = (value) => {
           return typeOption.funcEdit(value, this.option.formatedit)
