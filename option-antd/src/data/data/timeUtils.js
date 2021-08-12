@@ -12,24 +12,33 @@ let minRate = secRate * 60
 let hourRate = minRate * 60
 let dayRate = hourRate * 24
 
-const timeRate = {
-  sec: secRate,
-  min: minRate,
-  hour: hourRate,
-  day: dayRate
-}
-
-const timeDict = {
-  day: 'YYYYMMDD',
-  hour: 'YYYYMMDDHH',
-  min: 'YYYYMMDDHHmm',
-  sec: 'YYYYMMDDHHmmss'
+const timeOption = {
+  sec: {
+    name: '秒',
+    rate: secRate,
+    format: 'YYYYMMDDHHmmss'
+  },
+  min: {
+    name: '分',
+    rate: minRate,
+    format: 'YYYYMMDDHHmm'
+  },
+  hour: {
+    name: '时',
+    rate: hourRate,
+    format: 'YYYYMMDDHH'
+  },
+  day: {
+    name: '天',
+    rate: dayRate,
+    format: 'YYYYMMDD'
+  }
 }
 
 const timeUtils = {
   getFormat: function (format = 'min') {
-    if (timeDict[format]) {
-      return timeDict[format]
+    if (timeOption[format]) {
+      return timeOption[format].format
     } else {
       return format
     }
@@ -164,20 +173,20 @@ const timeUtils = {
     } else {
       limitOption = editLimitOption
     }
-    if (!limitOption.target) {
-      limitOption.target = 'day'
+    if (!limitOption.type) {
+      limitOption.type = 'day'
     }
     if (!limitOption.current) {
       limitOption.current = null
+    }
+    if (limitOption.msg === undefined) {
+      limitOption.msg = `时间间隔最大为${limitOption.num}${timeOption[limitOption.type].name}!`
     }
     return limitOption
   },
   timeLimitCheck(value, limitOption) {
     if (limitOption.current) {
-      let format = timeDict[limitOption.target]
-      let formatValue = moment(_func.fillString(value.format(format), 14, 'end'), 'YYYYMMDDHHmmss')
-      let currentValue = moment(_func.fillString(limitOption.current.format(format), 14, 'end'), 'YYYYMMDDHHmmss')
-      let offset = Math.abs(formatValue - currentValue) / timeRate[limitOption.target]
+      let offset = timeUtils.getDateOffset(value, limitOption.current, limitOption.type)
       if (limitOption.eq) {
         return offset >= limitOption.num
       } else {
@@ -185,6 +194,17 @@ const timeUtils = {
       }
     } else {
       return false
+    }
+  },
+  getDateOffset(value, current, type) {
+    if (value && current) {
+      let option = timeOption[type]
+      let formatValue = moment(_func.fillString(value.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
+      let currentValue = moment(_func.fillString(current.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
+      let offset = Math.abs(formatValue - currentValue) / option.rate
+      return offset
+    } else {
+      return 0
     }
   }
 }

@@ -357,7 +357,28 @@ class EditData extends BaseData {
         }
         return isDisabled
       }
-      this.option.disabledTime = editdata.option.disabledTime
+      // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
+      let handleDisabledTime = this.option.disabledTime
+      if (handleDisabledTime) {
+        this.option.disabledTime = handleDisabledTime
+      }
+      /**
+       * value: [moment, moment], partial: 'start'|'end'
+       */
+      // this.option.disabledTime = (value, partial) => {
+      //   let option = {}
+      //   if (this.option.showTime) {
+      //     if (this.option.limit) {
+      //       if (partial == 'start') {
+
+      //       }
+      //     }
+      //   }
+      //   if (handleDisabledTime) {
+      //     handleDisabledTime(option, value, partial)
+      //   }
+      //   return option
+      // }
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment
         this.func.edit = (value) => {
           return typeOption.funcEdit(value, this.option.formatedit)
