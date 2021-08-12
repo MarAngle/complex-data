@@ -3,6 +3,7 @@ import BaseData from './../../../src/data/BaseData'
 import PaginationData from './../../../src/mod/PaginationData'
 import InterfaceData from './../../../src/mod/InterfaceData'
 import typeData from './data/typeData'
+import timeUtils from './data/timeUtils'
 
 class EditData extends BaseData {
   constructor(editdata, payload) {
@@ -284,15 +285,15 @@ class EditData extends BaseData {
       }
     } else if (this.type == 'date') {
       // DATEPICKER
-      this.option.showTime = typeOption.timeOptionFormat(editdata.option.showTime)
+      this.option.showTime = timeUtils.timeOptionFormat(editdata.option.showTime)
       this.option.format = editdata.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
       this.option.formatedit = editdata.option.formatedit || this.option.format // 默认确认后的数据解析
       if (editdata.option.disabledDate) {
         let type = _func.getType(editdata.option.disabledDate)
         if (type === 'object') {
-          let disabledDateOption = typeOption.timeCheckOptionFormat(editdata.option.disabledDate)
+          let disabledDateOption = timeUtils.timeCheckOptionFormat(editdata.option.disabledDate)
           this.option.disabledDate = function (value) {
-            return typeOption.timeCheck(value, disabledDateOption)
+            return timeUtils.timeCheck(value, disabledDateOption)
           }
         } else {
           this.option.disabledDate = editdata.option.disabledDate
@@ -301,24 +302,24 @@ class EditData extends BaseData {
       this.option.disabledTime = editdata.option.disabledTime
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment
         this.func.edit = (value) => {
-          return typeOption.funcEdit(value, this.option.formatedit)
+          return timeUtils.funcEdit(value, this.option.formatedit)
         }
       }
       if (this.func.unedit === undefined) { // 可设置为false实现moment对象的传递
         this.func.unedit = (value) => {
-          return typeOption.funcUnEdit(value, this.option.formatedit)
+          return timeUtils.funcUnEdit(value, this.option.formatedit)
         }
       }
     } else if (this.type == 'dateRange') {
       // DATERANGEPICKER
       this.setValueToArray()
-      this.option.showTime = typeOption.timeOptionFormat(editdata.option.showTime, true)
+      this.option.showTime = timeUtils.timeOptionFormat(editdata.option.showTime, true)
       this.option.separator = editdata.option.separator || '-' // 分隔符
       this.option.format = editdata.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
       this.option.formatedit = editdata.option.formatedit || this.option.format // 默认确认后的数据解析
       if (editdata.option.limit) {
         // 格式化时间限制参数
-        this.option.limit = typeOption.formatLimitOption(editdata.option.limit)
+        this.option.limit = timeUtils.formatLimitOption(editdata.option.limit)
       }
       // 时间限制逻辑，因时间time可控性差，不通过disabled进行判断
       // // 提取出来，避免后期切换limit值时无法触发响应的操作
@@ -340,9 +341,9 @@ class EditData extends BaseData {
       if (editdata.option.disabledDate) {
         let type = _func.getType(editdata.option.disabledDate)
         if (type === 'object') {
-          let disabledDateOption = typeOption.timeCheckOptionFormat(editdata.option.disabledDate)
+          let disabledDateOption = timeUtils.timeCheckOptionFormat(editdata.option.disabledDate)
           this.option.disabledDate = (value) => {
-            return typeOption.timeCheck(value, disabledDateOption)
+            return timeUtils.timeCheck(value, disabledDateOption)
           }
         } else {
           this.option.disabledDate = editdata.option.disabledDate
@@ -356,7 +357,7 @@ class EditData extends BaseData {
       //     isDisabled = handleDisabledDate(value, ...args)
       //   }
       //   if (!isDisabled && value && this.option.limit) {
-      //     isDisabled = typeOption.dateLimitCheck(value, this.option.limit)
+      //     isDisabled = timeUtils.dateLimitCheck(value, this.option.limit)
       //   }
       //   return isDisabled
       // }
@@ -369,7 +370,7 @@ class EditData extends BaseData {
       let handleChange = this.on.change
       this.on.change = (value, strValue, ...args) => {
         if (this.option.limit && value && value.length == 2) {
-          let isDisabled = typeOption.checkDateLimitByOption(value[0], value[1], this.option.limit)
+          let isDisabled = timeUtils.checkDateLimitByOption(value[0], value[1], this.option.limit)
           if (isDisabled && this.option.limit.disabledNext) {
             this.option.limit.disabledNext(value, strValue, this.option.limit.msg)
           }
@@ -380,12 +381,12 @@ class EditData extends BaseData {
       }
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment
         this.func.edit = (value) => {
-          return typeOption.funcEdit(value, this.option.formatedit)
+          return timeUtils.funcEdit(value, this.option.formatedit)
         }
       }
       if (this.func.unedit === undefined) { // 可设置为false实现moment对象的传递
         this.func.unedit = (value) => {
-          return typeOption.funcUnEdit(value, this.option.formatedit)
+          return timeUtils.funcUnEdit(value, this.option.formatedit)
         }
       }
     } else if (this.type == 'file') {

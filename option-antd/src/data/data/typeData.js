@@ -1,5 +1,4 @@
 import _func from 'complex-func'
-import timeUtils from './timeUtils'
 
 let typeData = {
   data: {
@@ -76,11 +75,6 @@ let typeData = {
     },
     type_date: {
       defaultdata: undefined,
-      timeOptionFormat: timeUtils.timeOptionFormat,
-      timeCheck: timeUtils.timeCheck,
-      funcEdit: timeUtils.funcEdit,
-      funcUnEdit: timeUtils.funcUnEdit,
-      timeCheckOptionFormat: timeUtils.timeCheckOptionFormat,
       placeholder: function (label) {
         let data = {}
         label.map((labeldata, prop) => {
@@ -103,16 +97,6 @@ let typeData = {
     },
     type_dateRange: {
       defaultdata: [],
-      checkDateLimitByOption: timeUtils.checkDateLimitByOption,
-      getDateOffset: timeUtils.getDateOffset,
-      formatLimitOption: timeUtils.formatLimitOption,
-      dateLimitCheck: timeUtils.dateLimitCheck,
-      timeLimitCheck: timeUtils.timeLimitCheck,
-      timeOptionFormat: timeUtils.timeOptionFormat,
-      timeCheck: timeUtils.timeCheck,
-      funcEdit: timeUtils.funcEditRange,
-      funcUnEdit: timeUtils.funcUnEditRange,
-      timeCheckOptionFormat: timeUtils.timeCheckOptionFormat,
       placeholder: function (label) {
         let data = {
           default: [`开始时间`, `结束时间`]
