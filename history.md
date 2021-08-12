@@ -1,4 +1,4 @@
-### 2.1.11
+### 2.1.12
 - EditData中的rule.required默认取值required
 - 删除innerWidth选项
 - 删除mainwidth/width默认值
