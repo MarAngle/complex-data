@@ -317,6 +317,7 @@ class EditData extends BaseData {
       this.option.format = editdata.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
       this.option.formatedit = editdata.option.formatedit || this.option.format // 默认确认后的数据解析
       if (editdata.option.limit) {
+        // 格式化时间限制参数
         this.option.limit = typeOption.formatLimitOption(editdata.option.limit)
       }
       // 时间限制逻辑，因时间time可控性差，不通过disabled进行判断
@@ -335,6 +336,7 @@ class EditData extends BaseData {
       //     handleCalendarChange(...args)
       //   }
       // }
+      // 不可用时间格式化
       if (editdata.option.disabledDate) {
         let type = _func.getType(editdata.option.disabledDate)
         if (type === 'object') {
@@ -363,7 +365,7 @@ class EditData extends BaseData {
       // if (handleDisabledTime) {
       //   this.option.disabledTime = handleDisabledTime
       // }
-      // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
+      // 通过监控change事件，实现时间限制操作，disabledNext为限制后的重置操作
       let handleChange = this.on.change
       this.on.change = (value, strValue, ...args) => {
         if (this.option.limit && value && value.length == 2) {

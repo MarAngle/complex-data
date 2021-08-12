@@ -163,6 +163,11 @@ const timeUtils = {
     }
     return disabled
   },
+  /**
+   * 格式化时间限制设置
+   * @param {object} editLimitOption
+   * @returns {object}
+   */
   formatLimitOption(editLimitOption) {
     let type = _func.getType(editLimitOption)
     let limitOption
@@ -193,9 +198,22 @@ const timeUtils = {
     }
     return limitOption
   },
+  /**
+   * 检查value时间是否能通过时间限制
+   * @param {*} value 时间
+   * @param {*} limitOption 时间限制参数
+   * @returns {boolean}
+   */
   dateLimitCheck(value, limitOption) {
     return timeUtils.checkDateLimitByOption(value, limitOption.current, limitOption)
   },
+  /**
+   * 根据option检查开始结束时间是否不符合要求
+   * @param {*} start 开始时间
+   * @param {*} end 结束时间
+   * @param {*} option 时间限制参数
+   * @returns {boolean}
+   */
   checkDateLimitByOption(start, end, option) {
     if (start && end) {
       let offset = timeUtils.getDateOffset(start, end, option.type)
@@ -218,6 +236,13 @@ const timeUtils = {
     //   let offset = timeUtils.getDateOffset(start, end, limitOption)
     // }
   },
+  /**
+   * 根据type获取时间间隔
+   * @param {*} value 时间1
+   * @param {*} current 时间2
+   * @param {string} type 类型
+   * @returns {number}
+   */
   getDateOffset(value, current, type) {
     if (value && current) {
       let option = timeOption[type]

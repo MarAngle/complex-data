@@ -1,3 +1,7 @@
+### 2.1.14-beta
+- 函数注释
+- 考虑typeData和timeUtils解绑
+
 ### 2.1.13
 - 添加时间范围的限制字段，实现可选时间的limit限制，暂时存在time选择时的错误问题，考虑showTime状态下的数据选择问题
   - 因time相关的disabledTime可控性差，难以通过不可选模式进行时间限制，因此通过change事件进行事件限制
