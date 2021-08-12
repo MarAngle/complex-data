@@ -25,23 +25,6 @@ class EditData extends BaseData {
     this.disabled = new InterfaceData(editdata.disabled || false)
     this.option = {}
     this.value = {}
-    // 宽度设置
-    if (editdata.mainwidth) {
-      let type = _func.getType(editdata.mainwidth)
-      if (type == 'number') {
-        this.mainwidth = editdata.mainwidth + 'px'
-      } else {
-        this.mainwidth = editdata.mainwidth
-      }
-    }
-    if (editdata.width) {
-      let type = _func.getType(editdata.width)
-      if (type == 'number') {
-        this.width = editdata.width + 'px'
-      } else {
-        this.width = editdata.width
-      }
-    }
   }
   // slot格式化编辑数据
   initSlot (editdata) { // label / front / end
@@ -84,6 +67,25 @@ class EditData extends BaseData {
     // 组件事件监控
     this.on = editdata.on || {}
     let typeOption = editTypeData.getData(this.type)
+    // 宽度设置
+    if (editdata.mainwidth) {
+      let type = _func.getType(editdata.mainwidth)
+      if (type == 'number') {
+        this.mainwidth = editdata.mainwidth + 'px'
+      } else {
+        this.mainwidth = editdata.mainwidth
+      }
+    }
+    if (editdata.width) {
+      let type = _func.getType(editdata.width)
+      if (type == 'number') {
+        this.width = editdata.width + 'px'
+      } else {
+        this.width = editdata.width
+      }
+    } else if (editdata.width === undefined && typeOption.width) {
+      this.width = typeOption.width
+    }
     this.initValue(editdata, typeOption)
     // 需要默认触发的函数
     this.eventTriggerList = typeOption.eventList

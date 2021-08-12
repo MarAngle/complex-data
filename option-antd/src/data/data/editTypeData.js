@@ -48,6 +48,7 @@ let editTypeData = {
       }
     },
     type_switch: {
+      width: 'auto',
       defaultdata: false,
       eventList: ['change']
     },
@@ -129,6 +130,7 @@ let editTypeData = {
       }
     },
     type_file: {
+      width: 'auto',
       defaultdata: undefined,
       placeholder: function (label) {
         let data = {}
@@ -151,6 +153,7 @@ let editTypeData = {
       }
     },
     type_button: {
+      width: 'auto',
       defaultdata: undefined,
       eventList: ['click'],
       placeholder: function (label) {

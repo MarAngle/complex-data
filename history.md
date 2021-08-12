@@ -1,6 +1,6 @@
 ### 2.1.13-beta
 - 添加时间范围的限制字段，实现可选时间的limit限制，暂时存在time选择时的错误问题，考虑showTime状态下的数据选择问题
-- 准备优化type的width默认值，避免button/switch等模块width=100%时可能出现的未预期拉伸情况
+- 优化type的width默认值，避免button/switch等模块width=100%时可能出现的未预期拉伸情况,und情况下默认为auto
 
 ### 2.1.12
 - EditData中的rule.required默认取值required
