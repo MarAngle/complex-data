@@ -353,14 +353,24 @@ class EditData extends BaseData {
           isDisabled = handleDisabledDate(value, ...args)
         }
         if (!isDisabled && value && this.option.limit) {
-          isDisabled = typeOption.timeLimitCheck(value, this.option.limit)
+          isDisabled = typeOption.dateLimitCheck(value, this.option.limit)
         }
         return isDisabled
       }
-      // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
+      // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
       let handleDisabledTime = this.option.disabledTime
       if (handleDisabledTime) {
         this.option.disabledTime = handleDisabledTime
+      }
+      // 提取disabledTime，避免后期切换limit值或者disabledTime时无法触发响应的操作
+      let handleChange = this.on.change
+      this.on.change = (value, ...args) => {
+        if (this.option.limit) {
+          console.log(value, ...args)
+        }
+        if (handleChange) {
+          handleChange(value, ...args)
+        }
       }
       /**
        * value: [moment, moment], partial: 'start'|'end'
@@ -368,10 +378,8 @@ class EditData extends BaseData {
       // this.option.disabledTime = (value, partial) => {
       //   let option = {}
       //   if (this.option.showTime) {
-      //     if (this.option.limit) {
-      //       if (partial == 'start') {
-
-      //       }
+      //     if (this.option.limit && value && value.length == 2) {
+      //       typeOption.timeLimitCheck(option, value[0], value[1], partial, this.option.limit)
       //     }
       //   }
       //   if (handleDisabledTime) {

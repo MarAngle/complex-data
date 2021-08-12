@@ -179,12 +179,12 @@ const timeUtils = {
     if (!limitOption.current) {
       limitOption.current = null
     }
-    if (limitOption.msg === undefined) {
-      limitOption.msg = `时间间隔最大为${limitOption.num}${timeOption[limitOption.type].name}!`
-    }
+    // if (limitOption.msg === undefined) {
+    //   limitOption.msg = `时间间隔最大为${limitOption.num}${timeOption[limitOption.type].name}!`
+    // }
     return limitOption
   },
-  timeLimitCheck(value, limitOption) {
+  dateLimitCheck(value, limitOption) {
     if (limitOption.current) {
       let offset = timeUtils.getDateOffset(value, limitOption.current, limitOption.type)
       if (limitOption.eq) {
@@ -195,6 +195,14 @@ const timeUtils = {
     } else {
       return false
     }
+  },
+  timeLimitCheck(option, start, end, partial, limitOption) {
+    // if (start && end) {
+    //   if (limitOption) {
+
+    //   }
+    //   let offset = timeUtils.getDateOffset(start, end, limitOption)
+    // }
   },
   getDateOffset(value, current, type) {
     if (value && current) {
