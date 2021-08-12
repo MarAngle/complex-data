@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "2.1.11-beta",
+  "version": "2.1.11",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
