@@ -314,16 +314,46 @@ class EditData extends BaseData {
       this.option.separator = editdata.option.separator || '-' // 分隔符
       this.option.format = editdata.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
       this.option.formatedit = editdata.option.formatedit || this.option.format // 默认确认后的数据解析
+      if (editdata.option.limit) {
+        this.option.limit = typeOption.timeOptionFormat(editdata.option.limit)
+      }
+      // 提取出来，避免后期切换limit值时无法触发响应的操作
+      let handleCalendarChange = this.on.calendarChange
+      this.on.calendarChange = (...args) => {
+        if (this.option.limit) {
+          let value = args[0]
+          if (value && value.length == 1 && value[0]) {
+            this.option.limit.current = value[0]
+          } else {
+            this.option.limit.current = null
+          }
+        }
+        if (handleCalendarChange) {
+          handleCalendarChange(...args)
+        }
+      }
       if (editdata.option.disabledDate) {
         let type = _func.getType(editdata.option.disabledDate)
         if (type === 'object') {
           let disabledDateOption = typeOption.timeCheckOptionFormat(editdata.option.disabledDate)
-          this.option.disabledDate = function (value) {
+          this.option.disabledDate = (value) => {
             return typeOption.timeCheck(value, disabledDateOption)
           }
         } else {
           this.option.disabledDate = editdata.option.disabledDate
         }
+      }
+      // 提取disabledDate，避免后期切换limit值或者disabledDate时无法触发响应的操作
+      let handleDisabledDate = this.option.disabledDate
+      this.option.disabledDate = (value) => {
+        let isDisabled = false
+        if (handleDisabledDate(value)) {
+          isDisabled = handleDisabledDate(value)
+        }
+        if (!isDisabled && value && this.option.limit) {
+          isDisabled = typeOption.timeLimitCheck(value, this.option.limit)
+        }
+        return isDisabled
       }
       this.option.disabledTime = editdata.option.disabledTime
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment

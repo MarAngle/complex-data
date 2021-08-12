@@ -102,6 +102,8 @@ let editTypeData = {
     },
     type_dateRange: {
       defaultdata: [],
+      formatLimitOption: timeUtils.formatLimitOption,
+      timeLimitCheck: timeUtils.timeLimitCheck,
       timeOptionFormat: timeUtils.timeOptionFormat,
       timeCheck: timeUtils.timeCheck,
       funcEdit: timeUtils.funcEditRange,

@@ -7,16 +7,29 @@ _func.current.setCallback(function(currentDate, from) {
 _func.current.setOffset(1000 * 60)
 // 重要，此处函数基本赋值操作，this指向不确定，引用时不能使用this
 
+let secRate = 1000
+let minRate = secRate * 60
+let hourRate = minRate * 60
+let dayRate = hourRate * 24
+
+const timeRate = {
+  sec: secRate,
+  min: minRate,
+  hour: hourRate,
+  day: dayRate
+}
+
+const timeDict = {
+  day: 'YYYYMMDD',
+  hour: 'YYYYMMDDHH',
+  min: 'YYYYMMDDHHmm',
+  sec: 'YYYYMMDDHHmmss'
+}
+
 const timeUtils = {
-  formatDict: {
-    day: 'YYYYMMDD',
-    hour: 'YYYYMMDDHH',
-    min: 'YYYYMMDDHHmm',
-    sec: 'YYYYMMDDHHmmss'
-  },
   getFormat: function (format = 'min') {
-    if (timeUtils.formatDict[format]) {
-      return timeUtils.formatDict[format]
+    if (timeDict[format]) {
+      return timeDict[format]
     } else {
       return format
     }
@@ -140,6 +153,39 @@ const timeUtils = {
       }
     }
     return disabled
+  },
+  formatLimitOption(editLimitOption) {
+    let type = _func.getType(editLimitOption)
+    let limitOption
+    if (type !== 'object') {
+      limitOption = {
+        num: editLimitOption
+      }
+    } else {
+      limitOption = editLimitOption
+    }
+    if (!limitOption.target) {
+      limitOption.target = 'day'
+    }
+    if (!limitOption.current) {
+      limitOption.current = null
+    }
+    return limitOption
+  },
+  timeLimitCheck(value, limitOption) {
+    if (limitOption.current) {
+      let format = timeDict[limitOption.target]
+      let formatValue = moment(_func.fillString(value.format(format), 14, 'end'), 'YYYYMMDDHHmmss')
+      let currentValue = moment(_func.fillString(limitOption.current.format(format), 14, 'end'), 'YYYYMMDDHHmmss')
+      let offset = Math.abs(formatValue - currentValue) / timeRate[limitOption.target]
+      if (limitOption.eq) {
+        return offset >= limitOption.num
+      } else {
+        return offset > limitOption.num
+      }
+    } else {
+      return false
+    }
   }
 }
 
