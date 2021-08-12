@@ -1,5 +1,8 @@
 ### 2.1.11-beta
 - EditData中的rule.required默认取值required
+- 删除innerWidth选项
+- 删除mainwidth/width默认值
+- LayoutData优化
 
 ### 2.1.10
 - 修复EditData创建slot时本身prop为空的BUG

@@ -38,28 +38,22 @@ class LayoutData extends SimpleData {
     if (!data.grid) {
       data.grid = config.LayoutData.grid
     }
-    if (data.type == 'grid') {
-      if (!data.label) {
-        data.label = {
-          span: config.LayoutData.label
-        }
-      } else if (_func.getType(data.label) !== 'object') {
-        data.label = {
-          span: data.label
-        }
+    if (!data.label) {
+      data.label = {
+        span: config.LayoutData.label
       }
-      if (!data.content) {
-        data.content = {
-          span: config.LayoutData.content
-        }
-      } else if (_func.getType(data.content) !== 'object') {
-        data.content = {
-          span: data.content
-        }
+    } else if (_func.getType(data.label) !== 'object') {
+      data.label = {
+        span: data.label
       }
-    } else if (data.type == 'width') {
-      if (!data.width) {
-        data.width = undefined
+    }
+    if (!data.content) {
+      data.content = {
+        span: config.LayoutData.content
+      }
+    } else if (_func.getType(data.content) !== 'object') {
+      data.content = {
+        span: data.content
       }
     }
     return data

@@ -33,8 +33,6 @@ class EditData extends BaseData {
       } else {
         this.mainwidth = editdata.mainwidth
       }
-    } else {
-      this.mainwidth = 'auto'
     }
     if (editdata.width) {
       let type = _func.getType(editdata.width)
@@ -43,8 +41,6 @@ class EditData extends BaseData {
       } else {
         this.width = editdata.width
       }
-    } else {
-      this.width = '100px'
     }
   }
   // slot格式化编辑数据
@@ -102,7 +98,6 @@ class EditData extends BaseData {
     if (!editdata.option) {
       editdata.option = {}
     }
-    this.option.innerWidth = editdata.option.innerWidth
     // 插槽重置
     if (editdata.option.slot && this.slot.type == 'auto') {
       this.slot.type = editdata.option.slot
