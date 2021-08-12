@@ -200,9 +200,11 @@ const timeUtils = {
     if (start && end) {
       let offset = timeUtils.getDateOffset(start, end, option.type)
       if (option.eq) {
-        return offset >= option.num
-      } else {
+        // eq(可相等)情况下限制条件会在相等时判断为否，通过限制判断
         return offset > option.num
+      } else {
+        // 不可相等（默认）情况下，相等时判断为否，不通过判断
+        return offset >= option.num
       }
     } else {
       return false

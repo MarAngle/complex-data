@@ -1,6 +1,10 @@
-### 2.1.13-beta
+### 2.1.13
 - 添加时间范围的限制字段，实现可选时间的limit限制，暂时存在time选择时的错误问题，考虑showTime状态下的数据选择问题
+  - 因time相关的disabledTime可控性差，难以通过不可选模式进行时间限制，因此通过change事件进行事件限制
+  - 暂时判断：eq(可相等)情况下限制条件会在相等时判断为否，通过限制判断，不可相等（默认）情况下，相等时判断为否，不通过判断
+  - 考虑当type=day时，时间的限制条件以及eq的逻辑问题
 - 优化type的width默认值，避免button/switch等模块width=100%时可能出现的未预期拉伸情况,und情况下默认为auto
+
 
 ### 2.1.12
 - EditData中的rule.required默认取值required
