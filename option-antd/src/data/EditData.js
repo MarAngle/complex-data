@@ -111,8 +111,8 @@ class EditData extends BaseData {
     if (this.type == 'input') {
       // INPUT
       this.option.type = editdata.option.type || 'text'
-      this.option.maxLength = editdata.option.maxLength || 20
-      this.option.hideClear = editdata.option.hideClear || false
+      this.option.maxLength = editdata.option.maxLength || typeOption.option.maxLength
+      this.option.hideClear = editdata.option.hideClear || typeOption.option.hideClear
     } else if (this.type == 'inputNumber') {
       // INPUTNUMBER
       this.option.max = editdata.option.max === undefined ? Infinity : editdata.option.max

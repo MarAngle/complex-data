@@ -1,4 +1,5 @@
 import typeData from './option-antd/src/option/typeData'
+import timeUtils from './option-antd/src/option/timeUtils'
 
 let config = {
   LayoutData: {
@@ -90,7 +91,8 @@ let config = {
   },
   antd: {
     EditData: {
-      typeData: typeData
+      typeData: typeData,
+      timeUtils: timeUtils
     }
   }
 }

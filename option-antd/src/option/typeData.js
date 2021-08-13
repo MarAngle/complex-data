@@ -2,6 +2,10 @@ import _func from 'complex-func'
 
 let typeData = {
   type_input: {
+    option: {
+      maxLength: 20,
+      hideClear: false
+    },
     defaultdata: '',
     placeholder: function (label) {
       let data = {}
