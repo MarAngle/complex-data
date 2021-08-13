@@ -1,7 +1,7 @@
 import _func from 'complex-func'
 import InterfaceData from './InterfaceData'
 import SimpleData from './../data/SimpleData'
-import config from '../config'
+import config from '../../config'
 
 class LayoutData extends SimpleData {
   constructor (initdata) {

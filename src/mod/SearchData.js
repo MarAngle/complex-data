@@ -1,5 +1,5 @@
 import _func from 'complex-func'
-import config from '../config'
+import config from '../../config'
 import ComplexData from './../data/ComplexData'
 
 class SearchData extends ComplexData {

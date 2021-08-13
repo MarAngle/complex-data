@@ -1,5 +1,5 @@
 import _func from 'complex-func'
-import config from '../config'
+import config from '../../config'
 import SimpleData from './../data/SimpleData'
 
 class PaginationData extends SimpleData {

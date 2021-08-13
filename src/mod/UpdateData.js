@@ -1,5 +1,5 @@
 import _func from 'complex-func'
-import config from '../config'
+import config from '../../config'
 import DefaultData from './../data/DefaultData'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用

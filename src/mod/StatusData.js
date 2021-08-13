@@ -1,4 +1,4 @@
-import config from '../config'
+import config from '../../config'
 import SimpleData from './../data/SimpleData'
 import StatusDataItem from './StatusDataItem'
 
