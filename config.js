@@ -1,3 +1,4 @@
+import typeData from './option-antd/src/option/typeData'
 
 let config = {
   LayoutData: {
@@ -86,6 +87,11 @@ let config = {
   },
   UpdateData: {
     offset: 10000
+  },
+  antd: {
+    EditData: {
+      typeData: typeData
+    }
   }
 }
 
