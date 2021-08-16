@@ -11,9 +11,11 @@ class DefaultData extends SimpleData {
       initdata = {}
     }
     super()
+    this.name = initdata.name || ''
+    this.prop = initdata.prop || ''
+    this.func = {}
+    // 模块
     this.module = new ModuleData({
-      life: new LifeData(),
-      parent: new ParentData(),
       extra: new ExtraData()
     }, this)
     // 创建生命周期的名称列表-自动
@@ -22,12 +24,10 @@ class DefaultData extends SimpleData {
     this.initDefaultData(initdata)
     this.triggerCreateLife('DefaultData', 'created')
   }
-  initDefaultData ({ name, prop, data, life, parent, extra, func, methods }) {
-    this.name = name || ''
-    this.prop = prop || ''
+  initDefaultData ({ data, life, parent, extra, func, methods }) {
     this._initData(data)
-    this.initLife(life, false)
-    this.setParent(parent)
+    this.initLife(life)
+    this.initParent(parent)
     this.initExtra(extra)
     this.initFunc(func)
     this.initMethods(methods)
@@ -38,8 +38,10 @@ class DefaultData extends SimpleData {
     }
   }
   // 加载func中的函数
-  initFunc (func) {
-    this.func = {}
+  initFunc (func, reset) {
+    if (reset) {
+      this.func = {}
+    }
     for (let n in func) {
       this.func[n] = func[n].bind(this)
     }
@@ -64,10 +66,10 @@ class DefaultData extends SimpleData {
   }
   /* --模块加载相关-- */
   initModule(data) {
-    return this.module.initData(data)
+    this.module.initData(data)
   }
   setModule(prop, data) {
-    return this.module.setData(prop, data)
+    this.module.setData(prop, data)
   }
   getModule(prop) {
     return this.module.getData(prop)
@@ -77,8 +79,10 @@ class DefaultData extends SimpleData {
   }
   /* --生命周期函数-- */
   // 设置生命周期函数
-  initLife (data, reset) {
-    this.getModule('life').initData(data, reset)
+  initLife (data) {
+    if (data || data === undefined) {
+      this.setModule('life', new LifeData(data))
+    }
   }
   onLife (name, data) {
     if (this.$LocalTempData.AutoCreateLifeNameList.indexOf(name) > -1) {
@@ -122,6 +126,12 @@ class DefaultData extends SimpleData {
     this.getModule('life').destroy()
   }
   /* --父数据相关-- */
+  // 设置父实例
+  initParent (data) {
+    if (data || data === undefined) {
+      this.setModule('parent', new ParentData(data))
+    }
+  }
   // 设置父实例
   setParent (data) {
     this.getModule('parent').setData(data)
