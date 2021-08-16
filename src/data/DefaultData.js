@@ -6,38 +6,43 @@ import ParentData from './../mod/ParentData'
 import LifeData from './../mod/LifeData'
 
 class DefaultData extends SimpleData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
     super()
-    this.name = initdata.name || ''
-    this.prop = initdata.prop || ''
+    this.name = initOption.name || ''
+    this.prop = initOption.prop || ''
     this.func = {}
-    // 模块
+    // 模块,默认加载life/extra
     this.module = new ModuleData({
+      life: new LifeData(initOption.life),
       extra: new ExtraData()
     }, this)
     // 创建生命周期的名称列表-自动
     this.$LocalTempData.AutoCreateLifeNameList = []
-    this.triggerCreateLife('DefaultData', 'beforeCreate', initdata)
-    this.initDefaultData(initdata)
+    this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
+    this.setData(initOption.data)
+    this.initParent(initOption.parent)
+    this.initExtra(initOption.extra)
+    this.initFunc(initOption.func)
+    this.initMethods(initOption.methods)
     this.triggerCreateLife('DefaultData', 'created')
   }
-  initDefaultData ({ data, life, parent, extra, func, methods }) {
-    this._initData(data)
-    this.initLife(life)
-    this.initParent(parent)
-    this.initExtra(extra)
-    this.initFunc(func)
-    this.initMethods(methods)
-  }
-  _initData(data) {
+  /**
+   * 加载data
+   * @param {*} [data]
+   */
+  setData(data) {
     if (data) {
       this.data = data
     }
   }
-  // 加载func中的函数
+  /**
+   * 加载func中的函数
+   * @param {object} [func] 函数对象
+   * @param {*} [reset] 是否重置
+   */
   initFunc (func, reset) {
     if (reset) {
       this.func = {}
@@ -46,17 +51,20 @@ class DefaultData extends SimpleData {
       this.func[n] = func[n].bind(this)
     }
   }
-  // 挂载方法
+  /**
+   * 挂载方法
+   * @param {*} methods 函数对象
+   */
   initMethods (methods) {
     for (let prop in methods) {
       let build = true
       if (this[prop] !== undefined) {
         let type = _func.getType(this[prop])
         if (type !== 'function') {
-          this.printMsg(`自定义函数${prop}存在同名属性，未生效!`)
+          this.printMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
           build = false
         } else {
-          this.printMsg(`method:${prop}已被改写!`, 'warn')
+          this.printMsg(`initMethods:${prop}函数已被改写!`, 'warn')
         }
       }
       if (build) {
@@ -65,40 +73,76 @@ class DefaultData extends SimpleData {
     }
   }
   /* --模块加载相关-- */
+  /**
+   * 加载模块
+   * @param {*} data 模块实例对象
+   */
   initModule(data) {
     this.module.initData(data)
   }
+  /**
+   * 设置模块
+   * @param {string} prop 模块名称
+   * @param {object} data 模块实例
+   */
   setModule(prop, data) {
     this.module.setData(prop, data)
   }
+  /**
+   * 获取模块
+   * @param {string} prop 模块名称
+   * @returns {object} 模块实例
+   */
   getModule(prop) {
     return this.module.getData(prop)
   }
+  /**
+   * 触发指定模块的指定函数
+   * @param {string} prop 模块名称
+   * @param {string} method 函数名称
+   * @param {*[]} args 参数
+   * @returns {*}
+   */
   triggerModuleMethod(prop, method, args) {
     return this.module.triggerMethod(prop, method, args)
   }
   /* --生命周期函数-- */
-  // 设置生命周期函数
-  initLife (data) {
-    if (data || data === undefined) {
-      this.setModule('life', new LifeData(data))
-    }
-  }
+  /**
+   * 设置生命周期回调函数
+   * @param {string} name 对应生命周期
+   * @param {*} data 回调对象
+   * @returns {*}
+   */
   onLife (name, data) {
     if (this.$LocalTempData.AutoCreateLifeNameList.indexOf(name) > -1) {
       this.printMsg(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
     }
     return this.getModule('life').on(name, data)
   }
-  // 触发特定的生命周期函数
+  /**
+   * 触发生命周期指定id函数
+   * @param {string} name 生命周期
+   * @param {string} id 指定ID
+   * @param  {...any} args 参数
+   */
   emitLife (name, id, ...args) {
     this.getModule('life').emit(name, id, ...args)
   }
-  // 清楚指定类型指定name的生命周期回调
+  /**
+   * 删除生命周期指定函数
+   * @param {string} name 生命周期
+   * @param {string} id 指定ID
+   * @returns {boolean}
+   */
   offLife (name, id) {
     this.getModule('life').off(name, id)
   }
-  // 触发生命周期
+  /**
+   * 触发创造生命周期
+   * @param {string} env 当前调用对象名称
+   * @param {string} lifeName 生命周期
+   * @param  {*[]} args 参数
+   */
   triggerCreateLife (env, lifeName, ...args) {
     if (!env) {
       this.printMsg('triggerCreateLife函数需要传递env参数')
@@ -109,19 +153,30 @@ class DefaultData extends SimpleData {
     this.$LocalTempData.AutoCreateLifeNameList.push(lifeName)
     this.triggerLife(lifeName, this, ...args)
   }
-  // 触发生命周期
+  /**
+   * 触发生命周期
+   * @param {string} name 生命周期
+   * @param  {...any} args 参数
+   */
   triggerLife (name, ...args) {
     this.getModule('life').trigger(name, ...args)
   }
-  // 清楚指定类型的所有生命周期回调
+  /**
+   * 清除生命周期
+   * @param {string} name 生命周期
+   */
   clearLife (name) {
     this.getModule('life').clear(name)
   }
-  // 生命周期重置
+  /**
+   * 生命周期重置
+   */
   resetLife () {
     this.getModule('life').reset()
   }
-  // 生命周期重置
+  /**
+   * 生命周期销毁
+   */
   destroyLife () {
     this.getModule('life').destroy()
   }
@@ -141,7 +196,10 @@ class DefaultData extends SimpleData {
     return this.getModule('parent').getData(n)
   }
   /* --额外数据相关-- */
-  // 加载额外数据
+  /**
+   * 加载额外数据
+   * @param {object} [extraData] 额外数据对象
+   */
   initExtra (extraData) {
     if (extraData) {
       let fg = this.getModule('extra').initData(extraData)
@@ -150,19 +208,33 @@ class DefaultData extends SimpleData {
       }
     }
   }
-  // 设置额外数据
+  /**
+   * 设置额外数据
+   * @param {string} prop 属性
+   * @param {*} data 数据
+   */
   setExtra (prop, data) {
     this.getModule('extra').setData(prop, data)
   }
-  // 获取额外数据
+  /**
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
   getExtra (prop) {
     return this.getModule('extra').getData(prop)
   }
-  // 清除额外数据
+  /**
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
   clearExtra (prop) {
     this.getModule('extra').clearData(prop)
   }
-  // 重置额外数据
+  /**
+   * 重置额外数据，清除全部数据
+   */
   resetExtra () {
     this.getModule('extra').reset()
   }
