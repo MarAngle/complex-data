@@ -2,28 +2,28 @@ import _func from 'complex-func'
 import SimpleData from './../data/SimpleData'
 
 class InterfaceData extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
     this.init = false
     this.data = {
       default: undefined
     }
-    if (initdata) {
-      this.initMain(initdata)
+    if (initOption) {
+      this.initMain(initOption)
     }
   }
   /**
    * 加载
-   * @param {*} initdata 参数
+   * @param {*} initOption 参数
    */
-  initMain (initdata) {
-    if (initdata !== undefined) {
-      let type = _func.getType(initdata)
+  initMain (initOption) {
+    if (initOption !== undefined) {
+      let type = _func.getType(initOption)
       if (type !== 'object') {
-        this.data.default = initdata
+        this.data.default = initOption
       } else {
-        for (let n in initdata) {
-          this.setData(n, initdata[n])
+        for (let n in initOption) {
+          this.setData(n, initOption[n])
         }
       }
       this.init = true

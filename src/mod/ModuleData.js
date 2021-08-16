@@ -2,10 +2,10 @@ import _func from 'complex-func'
 import SimpleData from './../data/SimpleData'
 
 class ModuleData extends SimpleData {
-  constructor (initdata, parent) {
+  constructor (initOption, parent) {
     super()
     this.data = {}
-    this.initData(initdata)
+    this.initData(initOption)
     this.setParent(parent)
   }
   /**
@@ -24,12 +24,12 @@ class ModuleData extends SimpleData {
   }
   /**
    * 加载
-   * @param {object} initdata 参数
+   * @param {object} initOption 参数
    */
-  initData(initdata) {
-    if (initdata && _func.getType(initdata) == 'object') {
-      for (let n in initdata) {
-        this.setData(n, initdata[n])
+  initData(initOption) {
+    if (initOption && _func.getType(initOption) == 'object') {
+      for (let n in initOption) {
+        this.setData(n, initOption[n])
       }
     }
   }

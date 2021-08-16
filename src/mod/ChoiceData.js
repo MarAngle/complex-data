@@ -4,13 +4,16 @@ import DefaultData from './../data/DefaultData'
 import EmptyData from './EmptyData'
 
 class ChoiceData extends DefaultData {
-  constructor (initdata = {}) {
-    initdata.data = utils.formatData(initdata.data, {
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
+    }
+    initOption.data = utils.formatData(initOption.data, {
       id: [],
       list: []
     })
-    super(initdata)
-    this.triggerCreateLife('ChoiceData', 'beforeCreate', initdata)
+    super(initOption)
+    this.triggerCreateLife('ChoiceData', 'beforeCreate', initOption)
     this.status = {
       show: false
     }
@@ -28,17 +31,17 @@ class ChoiceData extends DefaultData {
       }
     }
     this.option = {}
-    this.checkInit(initdata)
+    this.checkInit(initOption)
     this.triggerCreateLife('ChoiceData', 'created')
   }
   /**
    * 检查是否加载
-   * @param {object} [initdata] 参数
+   * @param {object} [initOption] 参数
    */
-  checkInit(initdata = {}) {
-    if (initdata.show) {
+  checkInit(initOption = {}) {
+    if (initOption.show) {
       this.setShow(true)
-      this.initChoiceData(initdata)
+      this.initChoiceData(initOption)
     }
   }
   /**
@@ -57,26 +60,26 @@ class ChoiceData extends DefaultData {
   }
   /**
    * 设置设置项
-   * @param {object} [initdata] 参数
+   * @param {object} [initOption] 参数
    */
-  initChoiceData(initdata = {}) {
-    if (initdata.reset) {
-      for (let n in initdata.reset) {
-        if (typeof initdata.reset[n] == 'object') {
+  initChoiceData(initOption = {}) {
+    if (initOption.reset) {
+      for (let n in initOption.reset) {
+        if (typeof initOption.reset[n] == 'object') {
           if (typeof this.resetOption[n] != 'object') {
             this.resetOption[n] = {}
           }
-          for (let i in initdata.reset[n]) {
-            this.resetOption[n][i] = initdata.reset[n][i]
+          for (let i in initOption.reset[n]) {
+            this.resetOption[n][i] = initOption.reset[n][i]
           }
         } else {
-          this.resetOption[n] = initdata.reset[n]
+          this.resetOption[n] = initOption.reset[n]
         }
       }
     }
-    if (initdata.option) {
+    if (initOption.option) {
       this.option = {
-        ...initdata.option
+        ...initOption.option
       }
     }
   }

@@ -14,12 +14,12 @@ let lifeId = new IdData({
 })
 
 class FuncData extends SimpleData {
-  constructor (initdata = {}) {
+  constructor (initOption = {}) {
     super()
     this.data = new Map()
-    this.setName(initdata.name)
-    if (initdata.data) {
-      this.initData(initdata.data)
+    this.setName(initOption.name)
+    if (initOption.data) {
+      this.initData(initOption.data)
     }
   }
   /**

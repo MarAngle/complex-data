@@ -1,19 +1,19 @@
 import SimpleData from './../data/SimpleData'
 
 class PromiseData extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
     this.data = {}
-    if (initdata) {
-      this.initMain(initdata)
+    if (initOption) {
+      this.initMain(initOption)
     }
   }
   /**
    * 加载
-   * @param {*} initdata 参数
+   * @param {*} initOption 参数
    */
-  initMain (initdata = {}) {
-    this.initData(initdata.data)
+  initMain (initOption = {}) {
+    this.initData(initOption.data)
   }
   /**
    * 加载数据

@@ -3,13 +3,17 @@ import BaseData from './../data/BaseData'
 import SelectList from './../data/SelectList'
 
 class SelectData extends BaseData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    super(initdata)
-    this.triggerCreateLife('SelectData', 'beforeCreate', initdata)
-    this._initSelectData(initdata)
+    super(initOption)
+    this.triggerCreateLife('SelectData', 'beforeCreate', initOption)
+    this.setModule('select', new SelectList({
+      name: this.name,
+      prop: this.prop,
+      ...initOption.select
+    }))
     this._initSelectDataLife()
     this.triggerCreateLife('SelectData', 'created')
   }
@@ -25,20 +29,6 @@ class SelectData extends BaseData {
         }
       }
     })
-  }
-  /**
-   * 加载SelectData
-   * @param {object} option 设置项
-   * @param {object} [option.select] SelectList初始化参数或实例
-   */
-  _initSelectData ({
-    select
-  }) {
-    this.setModule('select', new SelectList({
-      name: this.name,
-      prop: this.prop,
-      ...select
-    }))
   }
   /**
    * 清空select

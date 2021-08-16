@@ -5,9 +5,9 @@ import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
 class DictionaryList extends DefaultData {
-  constructor (initdata, payload = {}) {
-    super(initdata)
-    this.triggerCreateLife('DictionaryList', 'beforeCreate', initdata, payload)
+  constructor (initOption, payload = {}) {
+    super(initOption)
+    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
     this.option = new OptionData({
       isChildren: false,
       build: _func.getLimitData(),
@@ -31,15 +31,15 @@ class DictionaryList extends DefaultData {
       }
     }
     this.data = new Map()
-    if (initdata) {
-      this.initMain(initdata, payload)
+    if (initOption) {
+      this.initMain(initOption, payload)
     }
-    this.triggerCreateLife('DictionaryList', 'beforeCreate', initdata)
+    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
   }
-  initMain (initdata, payload = {}) {
+  initMain (initOption, payload = {}) {
     payload.type = payload.type || 'init'
-    this.initOption(initdata.option)
-    this.initDictionaryData(initdata, payload)
+    this.initOption(initOption.option)
+    this.initDictionaryData(initOption, payload)
   }
   initOption (option = {}) {
     if (option.isChildren !== undefined) {
@@ -96,32 +96,32 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 分析传参
-   * @param {object} initdata 传参
+   * @param {object} initOption 传参
    * @returns {object}
    */
-  parseInitData (initdata) {
-    return initdata
+  parseInitOption (initOption) {
+    return initOption
   }
   /**
    * 生成字典列表
-   * @param {*} initdata 列表传参
+   * @param {*} initOption 列表传参
    * @param {object} [payload] 设置项
    */
-  initDictionaryData (initdata, payload = {}) { // type init push replace
+  initDictionaryData (initOption, payload = {}) { // type init push replace
     if (payload.type == 'init') {
       this.data.clear()
     }
-    if (initdata) {
-      initdata = this.parseInitData(initdata)
+    if (initOption) {
+      initOption = this.parseInitOption(initOption)
       // 触发update生命周期
-      this.triggerLife('beforeUpdate', this, initdata, payload)
-      this.setParent(initdata.parent)
-      this.setLayout(initdata.layout)
+      this.triggerLife('beforeUpdate', this, initOption, payload)
+      this.setParent(initOption.parent)
+      this.setLayout(initOption.layout)
       let isChildren = this.option.getData('isChildren')
-      for (let n in initdata.list) {
-        let ditemOption = initdata.list[n]
+      for (let n in initOption.list) {
+        let ditemOption = initOption.list[n]
         // 判断是否为一级，不为一级需要将一级的默认属性添加
-        this.parseOptionFromParent(ditemOption, initdata.parent, isChildren)
+        this.parseOptionFromParent(ditemOption, initOption.parent, isChildren)
         let ditem = this.getItem(ditemOption.prop)
         let act = {
           build: true,
@@ -155,7 +155,7 @@ class DictionaryList extends DefaultData {
           this.buildItemDictionary(ditem, ditemOption)
         }
       }
-      this.initPropData(initdata)
+      this.initPropData(initOption)
     }
     // 触发update生命周期
     this.triggerLife('updated', {
@@ -164,13 +164,13 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 加载propData数据
-   * @param {object} [initdata] 设置项
+   * @param {object} [initOption] 设置项
    */
-  initPropData (initdata = {}) {
+  initPropData (initOption = {}) {
     let list = ['id', 'parentId', 'children']
     for (let n in list) {
       let prop = list[n]
-      let data = initdata[prop]
+      let data = initOption[prop]
       if (data) {
         let type = _func.getType(data)
         if (type == 'object') {
@@ -190,17 +190,17 @@ class DictionaryList extends DefaultData {
    * @returns {'' | 'self' | 'build'}
    */
   parseBuildData (ditem, originOption) {
-    let initdata = originOption.dictionary
+    let initOption = originOption.dictionary
     let type = ''
-    if (this.option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initdata === undefined) {
-      initdata = 'self'
+    if (this.option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
+      initOption = 'self'
     }
-    if (initdata == 'self') {
+    if (initOption == 'self') {
       type = 'self'
       if (originOption.type === undefined) {
         ditem.setInterface('type', 'default', 'array')
       }
-    } else if (initdata) {
+    } else if (initOption) {
       type = 'build'
     }
     return type
@@ -214,19 +214,19 @@ class DictionaryList extends DefaultData {
   buildItemDictionary (ditem, originOption, isChildren = true) {
     let type = this.parseBuildData(ditem, originOption)
     if (type == 'build') {
-      let initdata = this.parseInitData(originOption.dictionary)
-      if (!initdata.option) {
-        initdata.option = {}
+      let initOption = this.parseInitOption(originOption.dictionary)
+      if (!initOption.option) {
+        initOption.option = {}
       }
-      if (initdata.option.isChildren === undefined) {
-        initdata.option.isChildren = isChildren
+      if (initOption.option.isChildren === undefined) {
+        initOption.option.isChildren = isChildren
       }
       // 默认加载本级的build设置
-      if (!initdata.option.build) {
-        initdata.option.build = this.getBuildOption()
+      if (!initOption.option.build) {
+        initOption.option.build = this.getBuildOption()
       }
-      initdata.parent = ditem
-      ditem.dictionary = new DictionaryList(initdata, {
+      initOption.parent = ditem
+      ditem.dictionary = new DictionaryList(initOption, {
         layout: this.getLayout()
       })
     } else if (type == 'self') {
@@ -234,9 +234,9 @@ class DictionaryList extends DefaultData {
     }
   }
   // 重新创建字典列表
-  rebuildData (initdata, payload = {}) {
+  rebuildData (initOption, payload = {}) {
     payload.type = payload.type || 'replace'
-    this.initDictionaryData(initdata, payload)
+    this.initDictionaryData(initOption, payload)
   }
   /**
    * 设置字典值

@@ -5,19 +5,19 @@ import LayoutData from './LayoutData'
 import option from './../option'
 
 class DictionaryData extends DefaultData {
-  constructor (initdata, payload = {}) {
-    super(initdata)
-    this.triggerCreateLife('DictionaryData', 'beforeCreate', initdata, payload)
+  constructor (initOption, payload = {}) {
+    super(initOption)
+    this.triggerCreateLife('DictionaryData', 'beforeCreate', initOption, payload)
     this.interface = {}
     this.mod = {}
-    this._initDictionary(initdata, payload)
+    this._initDictionary(initOption, payload)
     this.triggerCreateLife('DictionaryData', 'created')
   }
-  _initDictionary (initdata, payload = {}) {
-    this.initMain(initdata)
-    this.initInterface(initdata)
-    this.setLayout(initdata.layout, payload.layout)
-    option.format(this, initdata.mod)
+  _initDictionary (initOption, payload = {}) {
+    this.initMain(initOption)
+    this.initInterface(initOption)
+    this.setLayout(initOption.layout, payload.layout)
+    option.format(this, initOption.mod)
     this.FormatFunc()
   }
   // 获取moddata=>该数据为页面需要的数据格式,从外部定义
@@ -26,10 +26,10 @@ class DictionaryData extends DefaultData {
   }
   /**
    * 加载基本数据
-   * @param {*} initdata
+   * @param {*} initOption
    */
-  initMain (initdata) {
-    this.originfrom = initdata.originfrom
+  initMain (initOption) {
+    this.originfrom = initOption.originfrom
     if (!this.originfrom) {
       this.originfrom = ['list']
     }
@@ -55,22 +55,22 @@ class DictionaryData extends DefaultData {
   }
   /**
    * 加载接口类型数据
-   * @param {*} initdata
+   * @param {*} initOption
    */
-  initInterface (initdata) {
-    this.interface.label = new InterfaceData(initdata.label || initdata.name)
-    this.interface.order = new InterfaceData(initdata.order)
-    this.interface.showprop = new InterfaceData(initdata.showprop)
-    this.interface.showtype = new InterfaceData(initdata.showtype)
+  initInterface (initOption) {
+    this.interface.label = new InterfaceData(initOption.label || initOption.name)
+    this.interface.order = new InterfaceData(initOption.order)
+    this.interface.showprop = new InterfaceData(initOption.showprop)
+    this.interface.showtype = new InterfaceData(initOption.showtype)
     // prop/originprop
-    this.interface.originprop = new InterfaceData(initdata.originprop || this.prop)
+    this.interface.originprop = new InterfaceData(initOption.originprop || this.prop)
     // --- 不存在prop时默认以originprop为主，此时以默认为基准=>prop为单一字段
     if (!this.prop) {
       this.prop = this.getInterface('originprop')
     }
     // 数据格式判断，暂时判断为存在showprop则自动设置为object，暂时不考虑存在showprop{ prop: '' }情况下对应prop的情况
-    let dataType = initdata.type
-    if (!dataType && initdata.showprop) {
+    let dataType = initOption.type
+    if (!dataType && initOption.showprop) {
       dataType = 'object'
     }
     this.interface.type = new InterfaceData(dataType || 'string')

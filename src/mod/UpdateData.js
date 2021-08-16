@@ -6,9 +6,9 @@ import DefaultData from './../data/DefaultData'
 */
 
 class UpdateData extends DefaultData {
-  constructor (initdata = {}) {
-    super(initdata)
-    this.triggerCreateLife('UpdateData', 'beforeCreate', initdata)
+  constructor (initOption = {}) {
+    super(initOption)
+    this.triggerCreateLife('UpdateData', 'beforeCreate', initOption)
     this.load = {
       update: false, // 更新状态判断值，true说明update正在进行中
       operate: false // 触发操作判断值。true说明trigger正在进行中
@@ -21,11 +21,11 @@ class UpdateData extends DefaultData {
       start: config.UpdateData.offset,
       data: config.UpdateData.offset
     }
-    this._initMain(initdata)
+    this._initMain(initOption)
     this.triggerCreateLife('UpdateData', 'created')
   }
-  _initMain (initdata = {}) {
-    this.setOffset(initdata.offset)
+  _initMain (initOption = {}) {
+    this.setOffset(initOption.offset)
   }
   setOffset (offset) {
     let type = _func.getType(offset)

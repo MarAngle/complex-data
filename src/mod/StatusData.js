@@ -3,10 +3,10 @@ import SimpleData from './../data/SimpleData'
 import StatusDataItem from './StatusDataItem'
 
 class StatusData extends SimpleData {
-  constructor (initdata = {}) {
+  constructor (initOption = {}) {
     super()
     this.data = {}
-    this._initMain(initdata)
+    this._initMain(initOption)
   }
   _initMain ({
     list

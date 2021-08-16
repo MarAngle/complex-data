@@ -3,9 +3,9 @@ import config from '../../config'
 import ComplexData from './../data/ComplexData'
 
 class SearchData extends ComplexData {
-  constructor (initdata) {
-    super(initdata)
-    this.triggerCreateLife('SearchData', 'beforeCreate', initdata)
+  constructor (initOption) {
+    super(initOption)
+    this.triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.init = false
     this.title = {
       show: false,
@@ -14,8 +14,8 @@ class SearchData extends ComplexData {
     this.menu = []
     this.form = {}
     this.post = {}
-    if (initdata) {
-      this.initSearchData(initdata)
+    if (initOption) {
+      this.initSearchData(initOption)
     }
     this.triggerCreateLife('SearchData', 'created')
   }

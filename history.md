@@ -2,6 +2,7 @@
 - 实现类优化，尽可能将属性在constructor中赋值
 - 考虑简化module，实现直接调用
 - 考虑module的可选加载，在简化的数据中优化性能
+- initdata => initOption
 
 ### 2.1.14
 - 函数注释

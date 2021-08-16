@@ -3,7 +3,7 @@ import config from '../../config'
 import SimpleData from './../data/SimpleData'
 
 class PaginationData extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
     this.status = {
       init: false
@@ -24,20 +24,20 @@ class PaginationData extends SimpleData {
     this.option = {
       props: {}
     }
-    this.initMain(initdata)
+    this.initMain(initOption)
   }
   /**
    * 加载
-   * @param {*} initdata 参数
+   * @param {*} initOption 参数
    */
-  initMain (initdata) {
-    if (initdata) {
-      if (initdata === true) {
-        initdata = {}
+  initMain (initOption) {
+    if (initOption) {
+      if (initOption === true) {
+        initOption = {}
       }
       this.setInit(true)
-      this.initSize(initdata.size)
-      this.initOption(initdata.props, initdata.option)
+      this.initSize(initOption.size)
+      this.initOption(initOption.props, initOption.option)
     }
   }
   /**

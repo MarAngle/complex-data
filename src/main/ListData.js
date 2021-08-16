@@ -4,19 +4,16 @@ import PaginationData from './../mod/PaginationData'
 import ChoiceData from './../mod/ChoiceData'
 
 class ListData extends ComplexDataWithSearch {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    super(initdata)
-    this.triggerCreateLife('ListData', 'beforeCreate', initdata)
-    this.setModule('choice', new ChoiceData(initdata.choice))
-    this._initListData(initdata)
+    super(initOption)
+    this.triggerCreateLife('ListData', 'beforeCreate', initOption)
+    this.setModule('choice', new ChoiceData(initOption.choice))
+    this._initPagination(initOption.pagination)
     this._initListDataLife()
     this.triggerCreateLife('ListData', 'created')
-  }
-  _initListData ({ pagination }) {
-    this._initPagination(pagination)
   }
   /**
    * 加载分页器

@@ -18,12 +18,12 @@ const dict = {
 }
 
 class InstrcutionData {
-  constructor(initdata, instrcutionMap) {
+  constructor(initOption, instrcutionMap) {
     this.build = {}
     this.data = {}
     this.method = {}
-    if (initdata) {
-      this.initData(initdata, instrcutionMap)
+    if (initOption) {
+      this.initData(initOption, instrcutionMap)
     }
   }
   initData({ prop, describe, extend, build = [], data = [], method = [] }, instrcutionMap) {

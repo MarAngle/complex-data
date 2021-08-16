@@ -4,24 +4,24 @@ import SimpleData from './../data/SimpleData'
 import config from '../../config'
 
 class LayoutData extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
-    this.initData(initdata)
+    this.initData(initOption)
   }
   /**
    * 加载
-   * @param {*} initdata 参数
+   * @param {*} initOption 参数
    */
-  initData (initdata) {
-    if (!initdata) {
-      initdata = {
+  initData (initOption) {
+    if (!initOption) {
+      initOption = {
         default: undefined
       }
     }
-    for (let n in initdata) {
-      initdata[n] = this.formatLayout(initdata[n])
+    for (let n in initOption) {
+      initOption[n] = this.formatLayout(initOption[n])
     }
-    this.data = new InterfaceData(initdata)
+    this.data = new InterfaceData(initOption)
   }
   /**
    * 格式化布局数据

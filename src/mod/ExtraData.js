@@ -5,9 +5,6 @@ class ExtraData extends SimpleData {
   constructor (data = {}) {
     super()
     this.data = {}
-    this._initMain(data)
-  }
-  _initMain (data) {
     this.initData(data)
   }
   /**

@@ -21,24 +21,24 @@ destroyed
 */
 
 class LifeData extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
     this.data = {}
-    if (initdata) {
-      this.initData(initdata)
+    if (initOption) {
+      this.initData(initOption)
     }
   }
   /**
    * 加载生命周期状态列表
-   * @param {object} [data] 生命周期参数
+   * @param {object} [initOption] 生命周期参数
    * @param {boolean} [reset = true] 是否重置
    */
-  initData (data = {}, reset = true) {
+  initData (initOption = {}, reset = true) {
     if (reset) {
       this.reset()
     }
-    for (let n in data) {
-      let item = data[n]
+    for (let n in initOption) {
+      let item = initOption[n]
       this.on(n, item)
     }
   }

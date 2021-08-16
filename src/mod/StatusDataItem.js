@@ -1,9 +1,9 @@
 import SimpleData from './../data/SimpleData'
 
 class StatusDataItem extends SimpleData {
-  constructor (initdata) {
+  constructor (initOption) {
     super()
-    if (!initdata || !initdata.list || initdata.list.length <= 0) {
+    if (!initOption || !initOption.list || initOption.list.length <= 0) {
       console.error(`StatusDataItem需要设置初始化数据,并设置列表`)
     }
     this.option = {
@@ -14,11 +14,11 @@ class StatusDataItem extends SimpleData {
       value: '',
       label: ''
     }
-    this._initList(initdata.list)
-    let current = initdata.current || initdata.list[0].value
+    this._initList(initOption.list)
+    let current = initOption.current || initOption.list[0].value
     this.setData(current, 'init')
-    this.default = initdata.default || current // value值
-    this._initOption(initdata.option)
+    this.default = initOption.default || current // value值
+    this._initOption(initOption.option)
   }
   _initList (list) {
     for (let n in list) {

@@ -1,10 +1,10 @@
 import _func from 'complex-func'
 
 class IdData {
-  constructor (initdata) {
+  constructor (initOption) {
     this.list = []
-    if (initdata) {
-      this.initMain(initdata)
+    if (initOption) {
+      this.initMain(initOption)
     }
   }
   /**

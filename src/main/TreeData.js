@@ -2,29 +2,29 @@ import _func from 'complex-func'
 import ListData from './ListData'
 
 class TreeData extends ListData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    super(initdata)
-    this.triggerCreateLife('TreeData', 'beforeCreate', initdata)
+    super(initOption)
+    this.triggerCreateLife('TreeData', 'beforeCreate', initOption)
     this.triggerCreateLife('TreeData', 'created')
   }
   /**
-   * 解析dictionaryData初始化数据
-   * @param {object} dictionaryData dictionaryData初始化数据
+   * 解析dictionaryOption初始化数据
+   * @param {object} dictionaryOption dictionaryOption初始化数据
    * @returns {object}
    */
-  parseDictionaryData(dictionaryData) {
-    if (dictionaryData) {
-      if (!dictionaryData.option) {
-        dictionaryData.option = {}
+   parseDictionaryOption(dictionaryOption) {
+    if (dictionaryOption) {
+      if (!dictionaryOption.option) {
+        dictionaryOption.option = {}
       }
-      if (dictionaryData.option.tree === undefined) {
-        dictionaryData.option.tree = true
+      if (dictionaryOption.option.tree === undefined) {
+        dictionaryOption.option.tree = true
       }
     }
-    return dictionaryData
+    return dictionaryOption
   }
   // --数据相关--*/
   /**
