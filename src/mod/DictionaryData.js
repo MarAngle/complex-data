@@ -7,11 +7,9 @@ import option from './../option'
 class DictionaryData extends DefaultData {
   constructor (initOption, payload = {}) {
     super(initOption)
-    this.triggerCreateLife('DictionaryData', 'beforeCreate', initOption, payload)
     this.interface = {}
     this.mod = {}
     this._initDictionary(initOption, payload)
-    this.triggerCreateLife('DictionaryData', 'created')
   }
   _initDictionary (initOption, payload = {}) {
     this.initMain(initOption)

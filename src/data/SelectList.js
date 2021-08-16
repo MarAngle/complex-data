@@ -13,7 +13,6 @@ class SelectList extends DefaultData {
       list: []
     })
     super(initOption)
-    this.triggerCreateLife('SelectList', 'beforeCreate', initOption)
     this.option = new OptionData({
       prop: {
         value: 'value',
@@ -45,7 +44,6 @@ class SelectList extends DefaultData {
     this.setFormat(initOption.format)
     this.setUnhitData(initOption.unhitData)
     this.setUndefData(initOption.undefData)
-    this.triggerCreateLife('SelectList', 'created')
   }
   // 加载设置
   _initOption(option = {}) {

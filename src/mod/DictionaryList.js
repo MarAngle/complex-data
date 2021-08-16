@@ -1,10 +1,10 @@
 import _func from 'complex-func'
-import DefaultData from './../data/DefaultData'
+import DefaultDataWithLife from './../data/DefaultDataWithLife'
 import DictionaryData from './DictionaryData'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
-class DictionaryList extends DefaultData {
+class DictionaryList extends DefaultDataWithLife {
   constructor (initOption, payload = {}) {
     super(initOption)
     this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)

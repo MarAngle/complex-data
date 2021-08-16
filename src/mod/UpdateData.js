@@ -1,11 +1,11 @@
 import _func from 'complex-func'
 import config from '../../config'
-import DefaultData from './../data/DefaultData'
+import DefaultDataWithLife from './../data/DefaultDataWithLife'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
 */
 
-class UpdateData extends DefaultData {
+class UpdateData extends DefaultDataWithLife {
   constructor (initOption = {}) {
     super(initOption)
     this.triggerCreateLife('UpdateData', 'beforeCreate', initOption)

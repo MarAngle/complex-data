@@ -1,11 +1,11 @@
 import _func from 'complex-func'
-import DefaultData from './DefaultData'
+import DefaultDataWithLife from './DefaultDataWithLife'
 import OptionData from './../mod/OptionData'
 import StatusData from './../mod/StatusData'
 import UpdateData from './../mod/UpdateData'
 import PromiseData from './../mod/PromiseData'
 
-class BaseData extends DefaultData {
+class BaseData extends DefaultDataWithLife {
   constructor (initOption) {
     if (!initOption) {
       initOption = {}

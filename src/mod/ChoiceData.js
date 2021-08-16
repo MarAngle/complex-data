@@ -13,7 +13,6 @@ class ChoiceData extends DefaultData {
       list: []
     })
     super(initOption)
-    this.triggerCreateLife('ChoiceData', 'beforeCreate', initOption)
     this.status = {
       show: false
     }
@@ -32,7 +31,6 @@ class ChoiceData extends DefaultData {
     }
     this.option = {}
     this.checkInit(initOption)
-    this.triggerCreateLife('ChoiceData', 'created')
   }
   /**
    * 检查是否加载
