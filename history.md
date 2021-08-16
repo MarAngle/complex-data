@@ -1,4 +1,4 @@
-### 2.1.15-beta
+### 2.1.15
 - 实现类优化，尽可能将属性在constructor中赋值
 - parent可选加载，在简化的数据中优化性能
 - initdata => initOption

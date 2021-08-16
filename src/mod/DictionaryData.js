@@ -9,9 +9,6 @@ class DictionaryData extends DefaultData {
     super(initOption)
     this.interface = {}
     this.mod = {}
-    this._initDictionary(initOption, payload)
-  }
-  _initDictionary (initOption, payload = {}) {
     this.initMain(initOption)
     this.initInterface(initOption)
     this.setLayout(initOption.layout, payload.layout)
