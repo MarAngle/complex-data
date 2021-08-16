@@ -2,25 +2,17 @@ import ComplexData from './ComplexData'
 import SearchData from './../mod/SearchData'
 
 class ComplexDataWithSearch extends ComplexData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    super(initdata)
-    this.triggerCreateLife('ComplexDataWithSearch', 'beforeCreate', initdata)
-    this._initComplexDataWithSearch(initdata)
+    super(initOption)
+    this.triggerCreateLife('ComplexDataWithSearch', 'beforeCreate', initOption)
+    if (initOption.search) {
+      initOption.search.parent = this
+    }
+    this.setModule('search', new SearchData(initOption.search))
     this.triggerCreateLife('ComplexDataWithSearch', 'created')
-  }
-  /**
-   * 加载ComplexDataWithSearch
-   * @param {object} option 设置项
-   * @param {object} [option.search] SearchData初始化参数或实例
-   */
-  _initComplexDataWithSearch ({ search }) {
-    if (search) {
-      search.parent = this
-    }
-    this.setModule('search', new SearchData(search))
   }
   /**
    * 设置对应type的数据

@@ -22,7 +22,7 @@ class DefaultData extends SimpleData {
     // 创建生命周期的名称列表-自动
     this.$LocalTempData.AutoCreateLifeNameList = []
     this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
-    this.setData(initOption.data)
+    this._initData(initOption.data)
     this.initParent(initOption.parent)
     this.initExtra(initOption.extra)
     this.initFunc(initOption.func)
@@ -33,7 +33,7 @@ class DefaultData extends SimpleData {
    * 加载data
    * @param {*} [data]
    */
-  setData(data) {
+  _initData(data) {
     if (data) {
       this.data = data
     }
@@ -111,7 +111,7 @@ class DefaultData extends SimpleData {
    * 设置生命周期回调函数
    * @param {string} name 对应生命周期
    * @param {*} data 回调对象
-   * @returns {*}
+   * @returns {string | string} id/idList
    */
   onLife (name, data) {
     if (this.$LocalTempData.AutoCreateLifeNameList.indexOf(name) > -1) {

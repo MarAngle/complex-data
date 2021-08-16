@@ -68,7 +68,7 @@ class LifeData extends SimpleData {
    * 设置生命周期回调
    * @param {string} name 生命周期名称
    * @param {*} data FuncData参数
-   * @returns {boolean}
+   * @returns {string | string} id/idList
    */
   on (name, data) {
     let funcItem = this.get(name, true)

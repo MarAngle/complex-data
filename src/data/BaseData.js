@@ -6,31 +6,19 @@ import UpdateData from './../mod/UpdateData'
 import PromiseData from './../mod/PromiseData'
 
 class BaseData extends DefaultData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    super(initdata)
-    this.triggerCreateLife('BaseData', 'beforeCreate', initdata)
+    super(initOption)
+    this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.setModule('option', new OptionData())
-    this._initBaseData(initdata)
-    this.triggerCreateLife('BaseData', 'created')
-  }
-  /**
-   * 加载BaseData
-   * @param {object} option 设置项
-   * @param {object} [option.status] StatusData初始化参数
-   * @param {object} [option.update] UpdateData初始化参数
-   */
-  _initBaseData ({
-    status,
-    update
-  }) {
-    this.setModule('status', new StatusData(status))
+    this.setModule('status', new StatusData(initOption.status))
     this.setModule('promise', new PromiseData())
-    if (update) {
-      this.setModule('update', new UpdateData(update))
+    if (initOption.update) {
+      this.setModule('update', new UpdateData(initOption.update))
     }
+    this.triggerCreateLife('BaseData', 'created')
   }
   /**
    * 设置状态
@@ -440,7 +428,7 @@ class BaseData extends DefaultData {
     this.triggerLife('destroyed', ...args)
   }
   /**
-   * 重置回调操作=>不清楚额外数据以及生命周期函数
+   * 重置回调操作=>不清除额外数据以及生命周期函数
    * @param  {...any} args 参数
    */
   reset (...args) {

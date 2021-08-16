@@ -1,6 +1,7 @@
 import _func from 'complex-func'
 import SimpleData from './../data/SimpleData'
 import IdData from './IdData'
+
 let lifeId = new IdData({
   list: [
     {
@@ -75,22 +76,22 @@ class FuncData extends SimpleData {
   /**
    * build
    * @param {*} data
-   * @returns
+   * @returns {string} id
    */
   build(data) {
-    let res = false
+    let resId
     if (data) {
       let isArray = _func.isArray(data)
       if (isArray) {
-        res = []
+        resId = []
         for (let n = 0; n < data.length; n++) {
-          res.push(this.formatData(data[n]))
+          resId.push(this.formatData(data[n]))
         }
       } else {
-        res = this.formatData(data)
+        resId = this.formatData(data)
       }
     }
-    return res
+    return resId
   }
   /**
    * 格式化数据
@@ -98,13 +99,13 @@ class FuncData extends SimpleData {
    * @returns {boolean}next
    */
   formatData(data) {
-    let dataType = typeof data
+    let dataType = _func.getType(data)
     let next = true
-    if (dataType == 'function') {
+    if (dataType === 'function') {
       data = {
         data: data
       }
-    } else if (dataType != 'object') {
+    } else if (dataType !== 'object') {
       next = false
     }
     if (next) {
@@ -127,7 +128,7 @@ class FuncData extends SimpleData {
     } else {
       this.printMsg(`设置data参数需要object或者function`)
     }
-    return false
+    return undefined
   }
   /**
    * 触发函数

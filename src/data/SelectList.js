@@ -5,15 +5,15 @@ import OptionData from './../mod/OptionData'
 
 // 选择器数据
 class SelectList extends DefaultData {
-  constructor(initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor(initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    initdata.data = utils.formatData(initdata.data, {
+    initOption.data = utils.formatData(initOption.data, {
       list: []
     })
-    super(initdata)
-    this.triggerCreateLife('SelectList', 'beforeCreate', initdata)
+    super(initOption)
+    this.triggerCreateLife('SelectList', 'beforeCreate', initOption)
     this.option = new OptionData({
       prop: {
         value: 'value',
@@ -40,21 +40,12 @@ class SelectList extends DefaultData {
     this.format = {
       type: false
     }
-    this._initSelectList(initdata)
+    this._initOption(initOption.option)
+    this.setList(initOption.list)
+    this.setFormat(initOption.format)
+    this.setUnhitData(initOption.unhitData)
+    this.setUndefData(initOption.undefData)
     this.triggerCreateLife('SelectList', 'created')
-  }
-  _initSelectList({
-    list,
-    option,
-    format,
-    unhitData,
-    undefData
-  }) {
-    this._initOption(option)
-    this.setList(list)
-    this.setFormat(format)
-    this.setUnhitData(unhitData)
-    this.setUndefData(undefData)
   }
   // 加载设置
   _initOption(option = {}) {

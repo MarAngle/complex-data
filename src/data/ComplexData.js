@@ -4,23 +4,17 @@ import BaseData from './BaseData'
 import DictionaryList from './../mod/DictionaryList'
 
 class ComplexData extends BaseData {
-  constructor (initdata) {
-    if (!initdata) {
-      initdata = {}
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
     }
-    initdata.data = utils.formatData(initdata.data, {
+    initOption.data = utils.formatData(initOption.data, {
       list: [],
       current: {}
     })
-    super(initdata)
-    this.triggerCreateLife('ComplexData', 'beforeCreate', initdata)
-    /*
-    build: {
-      limit: [] // 存在值则对应的模块在非对象模块时不参与构建整个数据
-    }
-    */
-    this.setModule('dictionary', new DictionaryList())
-    this._initComplexData(initdata)
+    super(initOption)
+    this.triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this.setModule('dictionary', new DictionaryList(initOption.dictionary))
     this._initComplexDataLife()
     this.triggerCreateLife('ComplexData', 'created')
   }
@@ -42,16 +36,6 @@ class ComplexData extends BaseData {
         }
       }
     })
-  }
-  /**
-   * 加载ComplexData
-   * @param {object} option 设置项
-   * @param {object} [option.dictionary] DictionaryList初始化参数或实例
-   */
-  _initComplexData ({
-    dictionary
-  }) {
-    this.initDictionary(dictionary)
   }
   /**
    * 设置字典列表
