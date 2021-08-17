@@ -1,6 +1,7 @@
 ### 2.1.16-beta
 - width === undefined
 - format设置项默认值config
+- 添加scrollWidth默认值
 
 ### 2.1.15
 - 实现类优化，尽可能将属性在constructor中赋值

@@ -93,6 +93,7 @@ let config = {
     format: {
       list: {
         width: 100,
+        scrollWidth: 100,
         ellipsis: true,
         autoText: true
       }

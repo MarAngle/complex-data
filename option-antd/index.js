@@ -17,6 +17,9 @@ let antdOption = {
           if (data.width === undefined) {
             data.width = config.antd.format.list.width
           }
+          if (!data.scrollWidth) {
+            data.scrollWidth = config.antd.format.list.scrollWidth
+          }
           if (data.ellipsis === undefined) {
             data.ellipsis = config.antd.format.list.ellipsis
           }
