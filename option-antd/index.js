@@ -1,6 +1,7 @@
 import EditData from './src/data/EditData'
 import _func from 'complex-func'
 import option from './../src/option'
+import config from '../config'
 
 let antdOption = {
   data: {
@@ -13,14 +14,14 @@ let antdOption = {
           if (!data.align) {
             data.align = 'center'
           }
-          if (!data.width) {
-            data.width = 100
+          if (data.width === undefined) {
+            data.width = config.antd.format.list.width
           }
           if (data.ellipsis === undefined) {
-            data.ellipsis = true
+            data.ellipsis = config.antd.format.list.ellipsis
           }
           if (data.autoText === undefined) {
-            data.autoText = true
+            data.autoText = config.antd.format.list.autoText
           }
           if (data.customCell) {
             let type = _func.getType(data.customCell)

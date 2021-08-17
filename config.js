@@ -90,6 +90,13 @@ let config = {
     offset: 10000
   },
   antd: {
+    format: {
+      list: {
+        width: 100,
+        ellipsis: true,
+        autoText: true
+      }
+    },
     EditData: {
       typeData: typeData,
       timeUtils: timeUtils

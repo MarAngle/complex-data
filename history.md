@@ -1,3 +1,7 @@
+### 2.1.16-beta
+- width === undefined
+- format设置项默认值config
+
 ### 2.1.15
 - 实现类优化，尽可能将属性在constructor中赋值
 - parent可选加载，在简化的数据中优化性能
