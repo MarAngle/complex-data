@@ -1,4 +1,4 @@
-### 2.1.16-beta
+### 2.1.16
 - width === undefined
 - format设置项默认值config
 - 添加scrollWidth默认值

@@ -4,6 +4,8 @@ import DictionaryData from './DictionaryData'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
+const propList = ['id', 'parentId', 'children']
+
 class DictionaryList extends DefaultDataWithLife {
   constructor (initOption, payload = {}) {
     super(initOption)
@@ -167,9 +169,8 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [initOption] 设置项
    */
   initPropData (initOption = {}) {
-    let list = ['id', 'parentId', 'children']
-    for (let n in list) {
-      let prop = list[n]
+    for (let n in propList) {
+      let prop = propList[n]
       let data = initOption[prop]
       if (data) {
         let type = _func.getType(data)

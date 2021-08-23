@@ -15,14 +15,14 @@ class IdData {
   initMain ({ list }) {
     this.list = []
     for (let n in list) {
-      this._initData(list[n])
+      this.initRuleData(list[n])
     }
   }
   /**
    * 生成规则对象item
    * @param {object | function} item 规则参数
    */
-  _initData (item) {
+  initRuleData (item) {
     if (item) {
       let type = _func.getType(item)
       if (type == 'function') {
