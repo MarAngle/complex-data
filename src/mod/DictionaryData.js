@@ -7,52 +7,17 @@ import option from './../option'
 class DictionaryData extends DefaultData {
   constructor (initOption, payload = {}) {
     super(initOption)
-    this.interface = {}
     this.mod = {}
-    this.initMain(initOption)
-    this.initInterface(initOption)
-    this.setLayout(initOption.layout, payload.layout)
-    option.format(this, initOption.mod)
-    this.FormatFunc()
-  }
-  // 获取moddata=>该数据为页面需要的数据格式,从外部定义
-  getModData (modprop, payload = {}) {
-    return option.unformat(this, modprop, payload)
-  }
-  /**
-   * 加载基本数据
-   * @param {*} initOption
-   */
-  initMain (initOption) {
-    this.originfrom = initOption.originfrom
-    if (!this.originfrom) {
+    let originfromType = _func.getType(initOption.originfrom)
+    if (originfromType === 'array') {
+      this.originfrom = initOption.originfrom
+    } else if (initOption.originfrom && originfromType === 'string') {
+      this.originfrom = [initOption.originfrom]
+    } else {
       this.originfrom = ['list']
     }
-    let fromtype = _func.getType(this.originfrom)
-    if (fromtype != 'array') {
-      this.originfrom = [this.originfrom]
-    }
-  }
-  setLayout (layoutOption, parentLayoutOption) {
-    let option = layoutOption || parentLayoutOption
-    if (option && option.constructor === LayoutData) {
-      this.layout = option
-    } else {
-      this.layout = new LayoutData(option)
-    }
-  }
-  getLayout (prop) {
-    if (prop) {
-      return this.layout.getData(prop)
-    } else {
-      return this.layout
-    }
-  }
-  /**
-   * 加载接口类型数据
-   * @param {*} initOption
-   */
-  initInterface (initOption) {
+    // 加载接口数据
+    this.interface = {}
     this.interface.label = new InterfaceData(initOption.label || initOption.name)
     this.interface.order = new InterfaceData(initOption.order)
     this.interface.showprop = new InterfaceData(initOption.showprop)
@@ -70,6 +35,28 @@ class DictionaryData extends DefaultData {
     }
     this.interface.type = new InterfaceData(dataType || 'string')
     this.interface.modtype = new InterfaceData('list')
+    this.setLayout(initOption.layout, payload.layout)
+    option.format(this, initOption.mod)
+    this.FormatFunc()
+  }
+  // 获取moddata=>该数据为页面需要的数据格式,从外部定义
+  getModData (modprop, payload = {}) {
+    return option.unformat(this, modprop, payload)
+  }
+  setLayout (layoutOption, parentLayoutOption) {
+    let option = layoutOption || parentLayoutOption
+    if (option && option.constructor === LayoutData) {
+      this.layout = option
+    } else {
+      this.layout = new LayoutData(option)
+    }
+  }
+  getLayout (prop) {
+    if (prop) {
+      return this.layout.getData(prop)
+    } else {
+      return this.layout
+    }
   }
   /**
    * 获取接口数据对象
@@ -163,17 +150,17 @@ class DictionaryData extends DefaultData {
   }
   /**
    * 触发可能存在的func函数
-   * @param {string} funcname 函数名
-   * @param {*} origindata 数据
+   * @param {string} funcName 函数名
+   * @param {*} originData 数据
    * @param {object} payload 参数
    * @returns {*}
    */
-  triggerFunc (funcname, origindata, payload) {
-    let itemFunc = this.getFunc(funcname)
+  triggerFunc (funcName, originData, payload) {
+    let itemFunc = this.func[funcName]
     if (itemFunc) {
-      return itemFunc(origindata, payload)
+      return itemFunc(originData, payload)
     } else {
-      return origindata
+      return originData
     }
   }
   /**
@@ -188,14 +175,6 @@ class DictionaryData extends DefaultData {
     } else {
       return false
     }
-  }
-  /**
-   * 获取func函数
-   * @param {string} funcname 函数名
-   * @returns {function}
-   */
-  getFunc (funcname) {
-    return this.func[funcname]
   }
   /**
    * 基于自身从originitem中获取对应属性的数据放返回
@@ -261,11 +240,11 @@ class DictionaryData extends DefaultData {
 
   /**
    * 从数据源获取数据
-   * @param {*} origindata 数据源数据
+   * @param {*} originData 数据源数据
    * @param {*} payload originitem(接口数据源数据)/targetitem(目标本地数据)/type(数据来源的接口)
    */
-  formatOrigin (origindata, payload) {
-    return this.triggerFunc('format', origindata, payload)
+  formatOrigin (originData, payload) {
+    return this.triggerFunc('format', originData, payload)
   }
 }
 

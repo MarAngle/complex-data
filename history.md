@@ -2,6 +2,7 @@
 - width === undefined
 - format设置项默认值config
 - 添加scrollWidth默认值
+- 优化DictionaryData的加载，减少判断，合并函数
 
 ### 2.1.15
 - 实现类优化，尽可能将属性在constructor中赋值
