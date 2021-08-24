@@ -35,7 +35,7 @@ import TreeData from './src/main/TreeData'
 import option from './src/option'
 import antdOption from './option-antd/index'
 
-import './buildContentImport'
+// import './buildContentImport'
 
 export {
   BaseData,
