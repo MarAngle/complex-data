@@ -1,6 +1,6 @@
 import _func from 'complex-func'
-import SimpleData from './../data/SimpleData'
 import IdData from './IdData'
+import SimpleData from './../data/SimpleData'
 
 let lifeId = new IdData({
   list: [

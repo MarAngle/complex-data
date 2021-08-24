@@ -2,6 +2,7 @@ import BaseData from './src/data/BaseData'
 import ComplexData from './src/data/ComplexData'
 import ComplexDataWithSearch from './src/data/ComplexDataWithSearch'
 import DefaultData from './src/data/DefaultData'
+import DefaultDataWithLife from './src/data/DefaultDataWithLife'
 import SelectList from './src/data/SelectList'
 import SimpleData from './src/data/SimpleData'
 
@@ -26,21 +27,22 @@ import StatusData from './src/mod/StatusData'
 import StatusDataItem from './src/mod/StatusDataItem'
 import UpdateData from './src/mod/UpdateData'
 
-import SelectData from './src/main/SelectData'
 import InfoData from './src/main/InfoData'
 import ListData from './src/main/ListData'
+import SelectData from './src/main/SelectData'
 import TreeData from './src/main/TreeData'
 
 import option from './src/option'
 import antdOption from './option-antd/index'
 
-// import './buildContentImport'
+import './buildContentImport'
 
 export {
   BaseData,
   ComplexData,
   ComplexDataWithSearch,
   DefaultData,
+  DefaultDataWithLife,
   SelectList,
   SimpleData,
   ChoiceData,
@@ -63,9 +65,9 @@ export {
   StatusData,
   StatusDataItem,
   UpdateData,
-  SelectData,
   InfoData,
   ListData,
+  SelectData,
   TreeData,
   option,
   antdOption

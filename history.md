@@ -1,3 +1,6 @@
+### 2.1.17-beta
+- 优化引用加载顺序
+
 ### 2.1.16
 - width === undefined
 - format设置项默认值config

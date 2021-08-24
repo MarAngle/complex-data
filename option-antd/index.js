@@ -1,6 +1,6 @@
 import EditData from './src/data/EditData'
 import _func from 'complex-func'
-import option from './../src/option'
+import complexOption from './../src/option'
 import config from '../config'
 
 let antdOption = {
@@ -125,7 +125,7 @@ antdOption.init = function(data = {}) {
       }
     }
   }
-  option.setData(this.data)
+  complexOption.setData(this.data)
 }
 
 export default antdOption

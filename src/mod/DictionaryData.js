@@ -1,8 +1,8 @@
 import _func from 'complex-func'
+import complexOption from './../option'
 import DefaultData from './../data/DefaultData'
 import InterfaceData from './InterfaceData'
 import LayoutData from './LayoutData'
-import option from './../option'
 
 class DictionaryData extends DefaultData {
   constructor (initOption, payload = {}) {
@@ -36,12 +36,12 @@ class DictionaryData extends DefaultData {
     this.interface.type = new InterfaceData(dataType || 'string')
     this.interface.modtype = new InterfaceData('list')
     this.setLayout(initOption.layout, payload.layout)
-    option.format(this, initOption.mod)
+    complexOption.format(this, initOption.mod)
     this.FormatFunc()
   }
   // 获取moddata=>该数据为页面需要的数据格式,从外部定义
   getModData (modprop, payload = {}) {
-    return option.unformat(this, modprop, payload)
+    return complexOption.unformat(this, modprop, payload)
   }
   setLayout (layoutOption, parentLayoutOption) {
     let option = layoutOption || parentLayoutOption

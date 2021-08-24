@@ -1,9 +1,9 @@
 import _func from 'complex-func'
+import typeData from './../option/typeData'
+import timeUtils from './../option/timeUtils'
 import BaseData from './../../../src/data/BaseData'
 import PaginationData from './../../../src/mod/PaginationData'
 import InterfaceData from './../../../src/mod/InterfaceData'
-import typeData from './../option/typeData'
-import timeUtils from './../option/timeUtils'
 
 class EditData extends BaseData {
   constructor(editdata, payload) {
