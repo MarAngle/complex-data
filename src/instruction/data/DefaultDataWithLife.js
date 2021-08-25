@@ -2,7 +2,7 @@ import DefaultDataWithLife from './../../data/DefaultDataWithLife.js'
 
 DefaultDataWithLife.initInstrcution = function() {
   const instrcutionData = {
-    extend: 'SimpleData',
+    extend: 'DefaultData',
     describe: '实现life数据的加载',
     build: [
       {

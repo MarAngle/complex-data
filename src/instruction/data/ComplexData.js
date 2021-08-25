@@ -12,7 +12,18 @@ ComplexData.initInstrcution = function() {
           {
             prop: 'data',
             extend: true,
-            describe: '默认传递list[]和current{}'
+            data: [
+              {
+                prop: 'data',
+                type: 'array',
+                describe: 'list[]'
+              },
+              {
+                prop: 'current',
+                type: 'object',
+                describe: 'current{}'
+              }
+            ]
           },
           {
             prop: 'dictionary',

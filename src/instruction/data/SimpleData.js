@@ -8,7 +8,7 @@ SimpleData.initInstrcution = function() {
       {
         prop: '$LocalTempData',
         type: 'object',
-        describe: '全局缓存保存字段',
+        describe: '缓存属性，保存一些函数必须但无需暴露的数据',
         data: [
           {
             prop: 'moduleId',

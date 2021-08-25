@@ -27,25 +27,27 @@ DefaultData.initInstrcution = function() {
             prop: 'data',
             type: 'object',
             required: false,
-            describe: 'data属性赋值'
+            describe: 'data属性赋值，此处赋值存在则直接赋值，不存在不赋值'
           },
           {
             prop: 'parent',
             type: 'object',
             required: false,
-            describe: '父数据'
+            class: 'ParentData',
+            describe: '父数据，不存在则不加载父数据类到module，后期可通过initParent重新加载父数据类到module'
           },
           {
             prop: 'extra',
             type: 'object',
             required: false,
-            describe: 'extra数据'
+            class: 'ExtraData',
+            describe: '额外数据参数'
           },
           {
             prop: 'func',
             type: 'object',
             required: false,
-            describe: 'func函数，将会挂载到跟属性func上，this指向实例'
+            describe: 'func函数，将会挂载到根属性func上，this指向实例'
           },
           {
             prop: 'methods',
@@ -69,7 +71,7 @@ DefaultData.initInstrcution = function() {
       },
       {
         prop: 'data',
-        type: 'object',
+        type: '*',
         describe: 'data数据对象'
       },
       {

@@ -29,3 +29,5 @@ const mainContent = require.context('./main', false, /\.js$/)
 LoadProp(modContent)
 LoadProp(dataContent)
 LoadProp(mainContent)
+
+export default data
