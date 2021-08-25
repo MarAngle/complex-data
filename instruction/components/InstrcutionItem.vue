@@ -9,7 +9,7 @@
   }
   .InstrcutionItemInfo{
     .InstrcutionItemInfoItem{
-      margin: 5px 0;
+      padding: 5px 0;
       border-bottom: 1px #fff solid;
       display: flex;
       flex-direction: row;
@@ -33,6 +33,32 @@
   }
 }
 
+.desList{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  .desItem{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    .desItemTitle{
+      margin-right: 4px;
+    }
+    .desItemContent{
+      margin-right: 8px;
+      padding-right: 8px;
+      border-right: 2px #fff solid;
+    }
+    &:last-child {
+      .desItemContent{
+        border-right: none;
+      }
+    }
+  }
+}
+
 </style>
 <template>
   <div class="InstrcutionItem">
@@ -45,28 +71,25 @@
           <p>{{ data.prop }}</p>
         </div>
       </div>
-      <div class="InstrcutionItemInfoItem" v-if="checkShow(['build', 'data'])">
-        <div class="InstrcutionItemInfoItemLabel">
-          <h4>类型</h4>
-        </div>
-        <div class="InstrcutionItemInfoItemContent">
-          <p>{{ data.type || '-' }}</p>
-        </div>
-      </div>
       <div class="InstrcutionItemInfoItem">
         <div class="InstrcutionItemInfoItemLabel">
-          <h4>来源</h4>
+          <h4>DES</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
-          <p>{{ data.from || 'self' }}</p>
-        </div>
-      </div>
-      <div class="InstrcutionItemInfoItem" v-if="checkShow('build')">
-        <div class="InstrcutionItemInfoItemLabel">
-          <h4>必选</h4>
-        </div>
-        <div class="InstrcutionItemInfoItemContent">
-          <p>{{ data.required ? '是' : '否' }}</p>
+          <div class="desList">
+            <div class="desItem" v-if="checkShow(['build', 'data'])">
+              <p class="desItemTitle">类型:</p>
+              <p class="desItemContent">{{ data.type || '-' }}</p>
+            </div>
+            <div class="desItem">
+              <p class="desItemTitle">来源:</p>
+              <p class="desItemContent">{{ data.from || 'self' }}</p>
+            </div>
+            <div class="desItem" v-if="checkShow('build')">
+              <p class="desItemTitle">必选:</p>
+              <p class="desItemContent">{{ data.required ? '是' : '否' }}</p>
+            </div>
+          </div>
         </div>
       </div>
       <div class="InstrcutionItemInfoItem">
@@ -160,7 +183,6 @@ export default {
       return show
     },
     pageLoad () {
-      console.log(this.data)
     }
   }
 }
