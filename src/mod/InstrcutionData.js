@@ -127,7 +127,13 @@ class InstrcutionData {
       }
     } else {
       // 依赖选项跟属性以data为主，describe合并
-      data.describe = data.describe.concat(currentdata.describe)
+      if (data.describe && currentdata.describe) {
+        data.describe = data.describe.concat(currentdata.describe)
+      } else if (currentdata.describe) {
+        data.describe = currentdata.describe.slice()
+      } else {
+        data.describe = []
+      }
       if (currentdata.data) {
         if (!data.data) {
           data.data = {}
