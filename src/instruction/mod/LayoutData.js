@@ -11,12 +11,7 @@ LayoutData.initInstrcution = function() {
         describe: 'key=>取值value值',
         data: [
           {
-            prop: '[key]',
-            type: 'any',
-            describe: 'key的布局'
-          },
-          {
-            prop: '[value]',
+            prop: '[prop]',
             type: 'object',
             describe: '布局数据',
             data: [

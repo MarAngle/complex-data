@@ -14,12 +14,7 @@ StatusData.initInstrcution = function() {
             describe: '单独状态数据',
             data: [
               {
-                prop: '[key]',
-                type: 'string',
-                describe: '属性值'
-              },
-              {
-                prop: '[value]',
+                prop: '[index]',
                 type: 'object',
                 describe: 'StatusDataItem初始化参数'
               }

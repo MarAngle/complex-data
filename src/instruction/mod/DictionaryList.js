@@ -25,7 +25,7 @@ DictionaryList.initInstrcution = function() {
             describe: '字典构建数据',
             data: [
               {
-                prop: '[value]',
+                prop: '[index]',
                 type: 'object',
                 class: 'DictionaryData'
               }
@@ -41,7 +41,7 @@ DictionaryList.initInstrcution = function() {
           {
             prop: 'type',
             type: 'object',
-            describe: '构建类型[init/push/replace]'
+            describe: '构建类型 init | push | replace]'
           }
         ]
       }

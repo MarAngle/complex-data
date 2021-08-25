@@ -30,7 +30,8 @@ SearchData.initInstrcution = function() {
                 describe: '按钮列表数据',
                 data: [
                   {
-                    prop: '[value]',
+                    prop: '[index]',
+                    describe: '按钮数据',
                     data: [
                       {
                         prop: 'type'
@@ -45,7 +46,7 @@ SearchData.initInstrcution = function() {
                         prop: 'act'
                       },
                       {
-                        prop: '[...]'
+                        prop: '[prop]'
                       }
                     ]
                   }

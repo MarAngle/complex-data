@@ -11,12 +11,7 @@ LifeData.initInstrcution = function() {
         describe: '生命周期设置数据',
         data: [
           {
-            prop: '[key]',
-            type: 'string',
-            describe: '生命周期名称'
-          },
-          {
-            prop: '[value]',
+            prop: '[prop]',
             type: 'object/function',
             describe: '函数回调对象/函数'
           }

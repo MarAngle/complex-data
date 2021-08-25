@@ -44,47 +44,55 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'originfrom',
             type: 'string/array',
+            default: '["list"]',
             describe: '数据来源接口判断值，默认为[list]'
           },
           {
             prop: 'originprop',
             type: 'string/object',
-            describe: '数据来源接口对应的字段值，默认为prop'
+            class: 'InterfaceData',
+            describe: '数据来源接口对应的字段值，不存在则取prop'
           },
           {
             prop: 'prop',
             type: 'string',
-            describe: '本地唯一属性值，不存在时通过originprop的默认值为基准'
+            describe: '实例唯一属性值，不存在时取originprop的默认值'
           },
           {
             prop: 'type',
             type: 'string/object',
+            class: 'InterfaceData',
             describe: '保存的数据类型判断值，默认为string,存在showprop时的默认值为object'
           },
           {
             prop: 'modtype',
             type: 'string/object',
-            describe: '???'
+            class: 'InterfaceData',
+            describe: '???属性不明，等待验证'
           },
           {
             prop: 'label',
             type: 'string/object',
+            class: 'InterfaceData',
             describe: '名称取值，不存在时取name字段作为InterfaceData的默认值'
           },
           {
             prop: 'order',
             type: 'string/object',
-            describe: '排序判断值，占位，暂无用途'
+            class: 'InterfaceData',
+            describe: '暂未启用，排序判断值'
           },
           {
             prop: 'showprop',
             type: 'string/object',
+            class: 'InterfaceData',
             describe: '显示属性值，指定模块显示指定属性，object/array数据'
           },
           {
             prop: 'showtype',
             type: 'string/object',
-            describe: '显示类型属性值，指定模块通过此值判断类型，占位，暂未启用'
+            class: 'InterfaceData',
+            describe: '暂未启用，显示类型属性值，指定模块通过此值判断类型'
           },
           {
             prop: 'layout',
@@ -142,7 +150,7 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'layout',
             type: 'object',
-            describe: '???'
+            describe: '父类的layout数据，当本身参数无layout数据时以此数据为基准构建Layout'
           }
         ]
       }
@@ -151,12 +159,13 @@ DictionaryData.initInstrcution = function() {
       {
         prop: 'originfrom',
         type: 'string/array',
+        default: '["list"]',
         describe: '数据来源接口判断值，默认为[list]'
       },
       {
         prop: 'prop',
         extend: true,
-        describe: '本地唯一属性值，不存在时通过originprop的默认值为基准'
+        describe: '实例唯一属性值，不存在时取originprop的默认值'
       },
       {
         prop: 'layout',
@@ -171,7 +180,7 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'originprop',
             type: 'InterfaceData',
-            describe: '数据来源接口对应的字段值，默认为prop'
+            describe: '数据来源接口对应的字段值，不存在则取prop'
           },
           {
             prop: 'type',
@@ -181,7 +190,7 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'modtype',
             type: 'InterfaceData',
-            describe: '???'
+            describe: '???属性不明，等待验证'
           },
           {
             prop: 'label',
@@ -191,7 +200,7 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'order',
             type: 'InterfaceData',
-            describe: '排序判断值，占位，暂无用途'
+            describe: '暂未启用，排序判断值'
           },
           {
             prop: 'showprop',
@@ -201,7 +210,7 @@ DictionaryData.initInstrcution = function() {
           {
             prop: 'showtype',
             type: 'InterfaceData',
-            describe: '显示类型属性值，指定模块通过此值判断类型，占位，暂未启用'
+            describe: '暂未启用，显示类型属性值，指定模块通过此值判断类型'
           }
         ]
       },
