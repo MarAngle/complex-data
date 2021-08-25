@@ -1,4 +1,5 @@
 <style lang='less' scoped>
+
 .InstrcutionView{
   background-color: rgba(0, 0, 0, 0.06);
   padding: 0 5px;
@@ -14,6 +15,7 @@
       flex: auto;
     }
     .InstrcutionViewTargetMenu{
+      color: #1890ff;
       width: 50px;
       text-align: center;
       flex: none;

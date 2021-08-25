@@ -158,9 +158,9 @@ DictionaryData.initInstrcution = function() {
     data: [
       {
         prop: 'originfrom',
-        type: 'string/array',
+        type: 'array',
         default: '["list"]',
-        describe: '数据来源接口判断值，默认为[list]'
+        describe: '数据来源接口判断值'
       },
       {
         prop: 'prop',

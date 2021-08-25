@@ -3,12 +3,12 @@ import _func from 'complex-func'
 const dict = {
   base: ['prop', 'extend'],
   build: {
-    prop: ['type', 'required'],
+    prop: ['default', 'type', 'required'],
     class: true,
     data: true
   },
   data: {
-    prop: ['type'],
+    prop: ['default', 'type'],
     class: true,
     data: true
   },

@@ -88,6 +88,10 @@
               <p class="desItemTitle">类型:</p>
               <p class="desItemContent">{{ data.type || '-' }}</p>
             </div>
+            <div class="desItem" v-if="checkShow(['build', 'data'])">
+              <p class="desItemTitle">默认值:</p>
+              <p class="desItemContent">{{ data.default || '-' }}</p>
+            </div>
             <div class="desItem" v-if="checkShow('build')">
               <p class="desItemTitle">必选:</p>
               <p class="desItemContent">{{ data.required ? '是' : '否' }}</p>
