@@ -6,6 +6,7 @@
     width: calc(50% - 10px);
     margin: 0 5px;
   }
+  margin-bottom: 10px;
 }
 
 </style>
@@ -22,7 +23,7 @@
         <a-select-option v-for="val in select.type" :key="val.value" :value="val.value">{{ val.label }}</a-select-option>
       </a-select>
     </div>
-    <InstrcutionView v-if="maindata" :data="maindata" />
+    <InstrcutionView v-if="maindata" :data="maindata" :type="select.current.type" />
   </div>
 </template>
 

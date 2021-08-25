@@ -13,7 +13,8 @@ const dict = {
     data: true
   },
   method: {
-    prop: ['args', 'return']
+    prop: ['return'],
+    args: true
   }
 }
 
@@ -95,6 +96,16 @@ class InstrcutionData {
         item.data = {}
         this.setData(originitem.data, item.data, type)
       }
+      if (dictItem.args) {
+        let args = originitem.args || []
+        for (let i = 0; i < args.length; i++) {
+          const arg = args[i]
+          if (_func.getType(arg.describe) !== 'array') {
+            arg.describe = [arg.describe]
+          }
+        }
+        data[originitem.prop].args = args
+      }
     }
   }
   getData(type) {
@@ -156,6 +167,9 @@ class InstrcutionData {
       if (dictItem.data && origindata[n].data) {
         data[n].data = {}
         this.getDataNext(data[n].data, origindata[n].data, type)
+      }
+      if (dictItem.args) {
+        data[n].args = origindata[n].args
       }
     }
   }

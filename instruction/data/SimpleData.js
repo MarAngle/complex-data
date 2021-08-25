@@ -25,7 +25,7 @@ SimpleData.initInstrcution = function() {
         describe: '创建输出信息函数',
         args: [
           {
-            name: 'content',
+            prop: 'content',
             required: true,
             describe: '需要输出的信息，前缀会自动拼接_selfName'
           }
@@ -37,19 +37,19 @@ SimpleData.initInstrcution = function() {
         describe: '警告信息输出函数',
         args: [
           {
-            name: 'content',
+            prop: 'content',
             required: true,
             describe: '需要输出的信息'
           },
           {
-            name: 'type',
+            prop: 'type',
             required: false,
             default: 'error',
             type: 'error | warn | log',
             describe: 'console类型'
           },
           {
-            name: 'option',
+            prop: 'option',
             required: false,
             type: 'object',
             describe: '设置项'

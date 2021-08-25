@@ -99,7 +99,7 @@
           </div>
         </div>
       </div>
-      <div class="InstrcutionItemInfoItem" v-if="data.args" >
+      <div class="InstrcutionItemInfoItem" v-if="data.args && data.args.length > 0" >
         <div class="InstrcutionItemInfoItemLabel">
           <h4>参数</h4>
         </div>
