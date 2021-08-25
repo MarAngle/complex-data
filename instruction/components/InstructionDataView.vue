@@ -12,7 +12,7 @@
 <template>
   <div class="mainpage" >
     <div>
-      <p>说明:基于antd-select</p>
+      <p>说明:请勿在正式环境中引用</p>
     </div>
     <div class="selectList">
       <a-select class="selectItem" :value="select.current.target" @change="onTargetChange" placeholder="请选择数据" >

@@ -99,6 +99,24 @@
           </div>
         </div>
       </div>
+      <div class="InstrcutionItemInfoItem" v-if="data.args" >
+        <div class="InstrcutionItemInfoItemLabel">
+          <h4>参数</h4>
+        </div>
+        <div class="InstrcutionItemInfoItemContent">
+          <div class="InstrcutionItemInfoItemDataItem" v-for="(val, index) in data.args" :key="index">
+            <slot name="default" :target="val" />
+          </div>
+        </div>
+      </div>
+      <div class="InstrcutionItemInfoItem" v-if="data.return" >
+        <div class="InstrcutionItemInfoItemLabel">
+          <h4>返回值</h4>
+        </div>
+        <div class="InstrcutionItemInfoItemContent">
+          <p>{{ data.return }}</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -125,7 +143,6 @@ export default {
   },
   data () {
     return {
-      list: ['data', 'build', 'method']
     }
   },
   mounted () {
@@ -143,6 +160,7 @@ export default {
       return show
     },
     pageLoad () {
+      console.log(this.data)
     }
   }
 }

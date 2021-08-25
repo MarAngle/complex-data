@@ -13,7 +13,7 @@ const dict = {
     data: true
   },
   method: {
-    prop: []
+    prop: ['args', 'return']
   }
 }
 
@@ -61,12 +61,12 @@ class InstrcutionData {
     })
   }
   formatData(item, originitem, dictItem) {
-    for (let n in dict.base) {
-      let prop = dict.base[n]
-      item[prop] = originitem[prop]
+    for (let n = 0; n < dict.base.length; n++) {
+      let baseProp = dict.base[n]
+      item[baseProp] = originitem[baseProp]
     }
-    for (let n in dictItem.prop) {
-      let prop = dictItem.prop[n]
+    for (let i = 0; i < dictItem.prop.length; i++) {
+      let prop = dictItem.prop[i]
       item[prop] = originitem[prop]
     }
     if (_func.getType(originitem.describe) != 'array') {

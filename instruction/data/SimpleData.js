@@ -60,20 +60,14 @@ SimpleData.initInstrcution = function() {
         prop: '_selfName',
         type: 'function',
         describe: '获取名称函数',
-        return: {
-          name: '_selfName',
-          // eslint-disable-next-line no-template-curly-in-string
-          describe: '[CLASS:${this.constructor._name}]'
-        }
+        // eslint-disable-next-line no-template-curly-in-string
+        return: '[CLASS:${this.constructor._name}]'
       },
       {
         prop: '$getModuleId',
         type: 'function',
         describe: '获取唯一识别符函数',
-        return: {
-          name: 'moduleId',
-          describe: 'module加载判断的唯一识别符'
-        }
+        return: 'module加载判断的唯一识别符'
       }
     ]
   }
