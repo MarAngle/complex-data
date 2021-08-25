@@ -1,13 +1,4 @@
-import instrcution from './../data'
 import SimpleData from './../../data/SimpleData.js'
-
-SimpleData.buildInstrcution = function (instrcutionData) {
-  instrcution.build(instrcutionData)
-}
-
-SimpleData.getInstrcution = function (type) {
-  return instrcution.get(this.name, type)
-}
 
 SimpleData.initInstrcution = function() {
   const instrcutionData = {
