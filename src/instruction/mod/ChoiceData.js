@@ -16,57 +16,73 @@ ChoiceData.initInstrcution = function() {
             describe: 'choice加载显示判断值'
           },
           {
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'id',
+                type: 'array',
+                describe: 'id列表'
+              },
+              {
+                prop: 'list',
+                type: 'array',
+                describe: 'item列表'
+              }
+            ]
+          },
+          {
             prop: 'reset',
             type: 'object',
             required: false,
-            describe: '各个阶段重置判断值',
+            describe: '各操作阶段的选择重置判断值',
             data: [
               {
                 prop: 'load',
                 type: 'boolean',
-                describe: '加载重置'
+                describe: '加载时重置选择判断值'
               },
               {
                 prop: 'reload',
                 type: 'boolean',
-                describe: '重新加载重置'
+                describe: '重新加载时重置选择判断值'
               },
               {
                 prop: 'update',
                 type: 'boolean',
-                describe: '更新重置'
+                describe: '更新时重置选择判断值'
               },
               {
                 prop: 'search',
                 type: 'object/boolean',
-                describe: '加载重置',
+                describe: '检索变更时重置选择判断值',
                 data: [
                   {
                     prop: 'set',
                     type: 'boolean',
-                    describe: '检索重置'
+                    describe: '检索时重置选择判断值'
                   },
                   {
                     prop: 'reset',
                     type: 'boolean',
-                    describe: '检索重置重置'
+                    describe: '检索重置时重置选择判断值'
                   }
                 ]
               },
               {
                 prop: 'page',
                 type: 'object/boolean',
-                describe: '加载重置',
+                describe: '分页器数据变更时重置选择判断值',
                 data: [
                   {
                     prop: 'page',
                     type: 'boolean',
-                    describe: '分页切换'
+                    describe: '分页切换时重置选择判断值'
                   },
                   {
                     prop: 'size',
                     type: 'boolean',
-                    describe: 'size切换重置'
+                    describe: 'size切换时重置选择判断值'
                   }
                 ]
               }
@@ -76,7 +92,7 @@ ChoiceData.initInstrcution = function() {
             prop: 'option',
             type: 'object',
             required: false,
-            describe: 'choice列表中额外字段的接受，可根据组件自由定制'
+            describe: 'UI设置项，可根据组件自由定制'
           }
         ]
       }
@@ -94,7 +110,7 @@ ChoiceData.initInstrcution = function() {
           {
             prop: 'list',
             class: 'array',
-            describe: '数据列表'
+            describe: 'item列表'
           }
         ]
       },
@@ -118,49 +134,49 @@ ChoiceData.initInstrcution = function() {
           {
             prop: 'load',
             type: 'boolean',
-            describe: '加载重置'
+            describe: '加载时重置选择判断值'
           },
           {
             prop: 'reload',
             type: 'boolean',
-            describe: '重新加载重置'
+            describe: '重新加载时重置选择判断值'
           },
           {
             prop: 'update',
             type: 'boolean',
-            describe: '更新重置'
+            describe: '更新时重置选择判断值'
           },
           {
             prop: 'search',
             type: 'object',
-            describe: '加载重置',
+            describe: '检索变更时重置选择判断值',
             data: [
               {
                 prop: 'set',
                 type: 'boolean',
-                describe: '检索重置'
+                describe: '检索时重置选择判断值'
               },
               {
                 prop: 'reset',
                 type: 'boolean',
-                describe: '检索重置重置'
+                describe: '检索重置时重置选择判断值'
               }
             ]
           },
           {
             prop: 'page',
             type: 'object',
-            describe: '加载重置',
+            describe: '分页器数据变更时重置选择判断值',
             data: [
               {
                 prop: 'page',
                 type: 'boolean',
-                describe: '分页切换'
+                describe: '分页切换时重置选择判断值'
               },
               {
                 prop: 'size',
                 type: 'boolean',
-                describe: 'size切换重置'
+                describe: 'size切换时重置选择判断值'
               }
             ]
           }
@@ -169,12 +185,12 @@ ChoiceData.initInstrcution = function() {
       {
         prop: 'option',
         type: 'object',
-        describe: 'choice列表中额外字段的接受，可根据组件自由定制'
+        describe: 'UI设置项，可根据组件自由定制'
       }
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 

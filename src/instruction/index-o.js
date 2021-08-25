@@ -68,7 +68,7 @@ SimpleData.initInstrcution = function() {
       }
     ]
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -191,7 +191,7 @@ DefaultData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -260,7 +260,7 @@ BaseData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -323,7 +323,7 @@ ComplexData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -360,7 +360,7 @@ ComplexDataWithSearch.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -505,7 +505,7 @@ SelectList.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -517,7 +517,7 @@ InfoData.initInstrcution = function() {
     data: [],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -565,7 +565,7 @@ ListData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -577,7 +577,7 @@ TreeData.initInstrcution = function() {
     data: [],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -755,7 +755,7 @@ ChoiceData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1009,7 +1009,7 @@ DictionaryData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1138,7 +1138,7 @@ DictionaryList.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1163,7 +1163,7 @@ ExtraData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1204,7 +1204,7 @@ FuncData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1252,7 +1252,7 @@ InterfaceData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1311,7 +1311,7 @@ LayoutData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1347,7 +1347,7 @@ LifeData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1383,7 +1383,7 @@ ModuleData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1406,7 +1406,7 @@ OptionData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1550,7 +1550,7 @@ PaginationData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1575,7 +1575,7 @@ ParentData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1606,7 +1606,7 @@ PromiseData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1729,7 +1729,7 @@ SearchData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1770,7 +1770,7 @@ StatusData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
@@ -1841,7 +1841,7 @@ UpdateData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 

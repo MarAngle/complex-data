@@ -33,7 +33,7 @@ ComplexDataWithSearch.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 

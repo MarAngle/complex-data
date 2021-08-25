@@ -34,7 +34,7 @@ DefaultData.initInstrcution = function() {
             type: 'object',
             required: false,
             class: 'ParentData',
-            describe: '父数据，不存在则不加载父数据类到module，后期可通过initParent重新加载父数据类到module'
+            describe: '父实例，不存在则不加载父数据类到module，后期可通过initParent重新加载父数据类到module'
           },
           {
             prop: 'extra',
@@ -99,7 +99,7 @@ DefaultData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
