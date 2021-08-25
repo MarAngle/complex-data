@@ -3,7 +3,8 @@ import InstrcutionData from './../mod/InstrcutionData'
 
 let instrcution = {
   show: true,
-  data: new Map()
+  data: new Map(),
+  callback: new Map()
 }
 
 instrcution.setShow = function() {
@@ -23,7 +24,34 @@ instrcution.init = function() {
 
 instrcution.build = function(instrcutionData) {
   if (this.getShow()) {
-    this.data.set(instrcutionData.prop, new InstrcutionData(instrcutionData, this.data))
+    this.data.set(instrcutionData.prop, new InstrcutionData(instrcutionData, this))
+    this.triggerCallback(instrcutionData.prop)
+  }
+}
+
+instrcution.setCallback = function(prop, cb) {
+  let data = this.data.get(prop)
+  if (data) {
+    cb(data)
+  } else {
+    let list = this.callback.get(prop)
+    if (!list) {
+      list = []
+    }
+    list.push(cb)
+    this.callback.set(prop, list)
+  }
+}
+
+instrcution.triggerCallback = function(prop) {
+  let list = this.callback.get(prop)
+  if (list) {
+    let data = this.data.get(prop)
+    for (let i = 0; i < list.length; i++) {
+      const cb = list[i]
+      cb(data)
+    }
+    this.callback.set(prop, [])
   }
 }
 

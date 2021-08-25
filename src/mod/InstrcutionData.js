@@ -41,12 +41,9 @@ class InstrcutionData {
   getDataMap() {
     return this.dataMap
   }
-  getDataMapItem(prop) {
+  getDataMapItem(prop, cb) {
     let instrcutionMap = this.getDataMap()
-    if (prop && instrcutionMap.has(prop)) {
-      return instrcutionMap.get(prop)
-    }
-    return null
+    instrcutionMap.setCallback(prop, cb)
   }
   setProp(prop) {
     this.prop = prop
@@ -59,7 +56,9 @@ class InstrcutionData {
     }
   }
   setExtend(extend) {
-    this.extend = this.getDataMapItem(extend)
+    this.getDataMapItem(extend, (dataItem) => {
+      this.extend = dataItem
+    })
   }
   formatData(item, originitem, dictItem) {
     for (let n in dict.base) {
@@ -87,7 +86,9 @@ class InstrcutionData {
       let item = {}
       this.formatData(item, originitem, dictItem)
       if (dictItem.class && originitem.class) {
-        item.class = this.getDataMapItem(originitem.class)
+        this.getDataMapItem(originitem.class, (dataItem) => {
+          item.class = dataItem
+        })
       }
       data[originitem.prop] = item
       if (dictItem.data && originitem.data) {

@@ -77,7 +77,7 @@ SimpleData.initInstrcution = function() {
       }
     ]
   }
-  instrcutionData.prop = this.name
+  instrcutionData.prop = this._name
   this.buildInstrcution(instrcutionData)
 }
 
