@@ -40,9 +40,15 @@ ComplexData.initInstrcution = function() {
         extend: true,
         data: [
           {
-            prop: 'dictionary',
-            class: 'DictionaryList',
-            describe: '字典列表数据'
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'dictionary',
+                class: 'DictionaryList',
+                describe: '字典列表数据'
+              }
+            ]
           }
         ]
       },

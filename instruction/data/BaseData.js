@@ -30,24 +30,30 @@ BaseData.initInstrcution = function() {
         extend: true,
         data: [
           {
-            prop: 'option',
-            class: 'OptionData',
-            describe: '设置项数据'
-          },
-          {
-            prop: 'status',
-            class: 'StatusData',
-            describe: '状态数据'
-          },
-          {
-            prop: 'promise',
-            class: 'PromiseData',
-            describe: 'promise数据'
-          },
-          {
-            prop: 'update',
-            class: 'UpdateData',
-            describe: '更新数据'
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'option',
+                class: 'OptionData',
+                describe: '设置项数据'
+              },
+              {
+                prop: 'status',
+                class: 'StatusData',
+                describe: '状态数据'
+              },
+              {
+                prop: 'promise',
+                class: 'PromiseData',
+                describe: 'promise数据'
+              },
+              {
+                prop: 'update',
+                class: 'UpdateData',
+                describe: '更新数据'
+              }
+            ]
           }
         ]
       }

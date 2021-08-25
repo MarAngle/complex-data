@@ -30,14 +30,20 @@ ListData.initInstrcution = function() {
         extend: true,
         data: [
           {
-            prop: 'choice',
-            class: 'ChoiceData',
-            describe: '选择实例 '
-          },
-          {
-            prop: 'pagination',
-            class: 'PaginationData',
-            describe: '分页器实例'
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'choice',
+                class: 'ChoiceData',
+                describe: '选择实例 '
+              },
+              {
+                prop: 'pagination',
+                class: 'PaginationData',
+                describe: '分页器实例'
+              }
+            ]
           }
         ]
       }

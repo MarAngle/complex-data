@@ -37,9 +37,15 @@ DefaultDataWithLife.initInstrcution = function() {
         extend: true,
         data: [
           {
-            prop: 'life',
-            class: 'LifeData',
-            describe: '生命周期数据'
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'life',
+                class: 'LifeData',
+                describe: '生命周期数据'
+              }
+            ]
           }
         ]
       }

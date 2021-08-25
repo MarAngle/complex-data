@@ -24,9 +24,15 @@ ComplexDataWithSearch.initInstrcution = function() {
         extend: true,
         data: [
           {
-            prop: 'search',
-            class: 'SearchData',
-            describe: '检索数据'
+            prop: 'data',
+            extend: true,
+            data: [
+              {
+                prop: 'search',
+                class: 'SearchData',
+                describe: '检索数据'
+              }
+            ]
           }
         ]
       }

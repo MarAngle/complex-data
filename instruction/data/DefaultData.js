@@ -85,14 +85,21 @@ DefaultData.initInstrcution = function() {
         describe: '模块数据',
         data: [
           {
-            prop: 'extra',
-            class: 'ExtraData',
-            describe: '属性'
-          },
-          {
-            prop: 'parent',
-            class: 'ParentData',
-            describe: '属性'
+            prop: 'data',
+            type: 'object',
+            describe: '模块数据保存位置',
+            data: [
+              {
+                prop: 'extra',
+                class: 'ExtraData',
+                describe: '属性'
+              },
+              {
+                prop: 'parent',
+                class: 'ParentData',
+                describe: '属性'
+              }
+            ]
           }
         ]
       }
