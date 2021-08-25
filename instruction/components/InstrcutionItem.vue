@@ -23,7 +23,10 @@
         width: 100%;
         flex: auto;
         .InstrcutionItemInfoItemDataItem{
-          margin: 2px 0;
+          margin-bottom: 4px;
+          &:last-child{
+            margin-bottom: 0px;
+          }
         }
       }
       &:last-child{
