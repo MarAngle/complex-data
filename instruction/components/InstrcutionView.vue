@@ -1,5 +1,24 @@
 <style lang='less' scoped>
-
+.InstrcutionView{
+  /deep/ h4, /deep/ p{
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    margin: 2px 0;
+  }
+  /deep/ h4{
+    color: rgba(0, 0, 0, 0.85);
+  }
+  /deep/ p{
+    color: rgba(0, 0, 0, 0.65);
+  }
+  /deep/ .high{
+    color: rgba(0, 0, 0, 1);
+  }
+  /deep/ .menu{
+    color: #1890ff;
+  }
+}
 .InstrcutionView{
   background-color: rgba(0, 0, 0, 0.06);
   padding: 0 5px;
@@ -15,7 +34,6 @@
       flex: auto;
     }
     .InstrcutionViewTargetMenu{
-      color: #1890ff;
       width: 50px;
       text-align: center;
       flex: none;
@@ -33,7 +51,7 @@
         <div class="InstrcutionViewTarget">
           <InstrcutionView class="InstrcutionViewTargetView" :data="slotProps.target" :type="type" :deep="deep + 1" v-show="showTarget"></InstrcutionView>
           <div class="InstrcutionViewTargetMenu" @click="showTarget = !showTarget" >
-            <p>{{ showTarget ? '关闭' : '查看' }}</p>
+            <p class="menu">{{ showTarget ? '关闭' : '查看' }}</p>
           </div>
         </div>
       </template>

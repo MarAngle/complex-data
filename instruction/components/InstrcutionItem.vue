@@ -1,12 +1,6 @@
 <style lang='less' scoped>
 
 .InstrcutionItem{
-  h4,p{
-    margin: 0;
-    font-size: 14px;
-    line-height: 22px;
-    margin: 2px 0;
-  }
   .InstrcutionItemInfo{
     .InstrcutionItemInfoItem{
       padding: 2px 0;
@@ -71,7 +65,7 @@
           <h4>名称</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
-          <p>{{ data.prop }}</p>
+          <p class="high">{{ data.prop }}</p>
         </div>
       </div>
       <div class="InstrcutionItemInfoItem">
