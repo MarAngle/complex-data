@@ -4,26 +4,26 @@
   h4,p{
     margin: 0;
     font-size: 14px;
-    line-height: 24px;
-    margin: 4px 0;
+    line-height: 22px;
+    margin: 2px 0;
   }
   .InstrcutionItemInfo{
     .InstrcutionItemInfoItem{
-      padding: 5px 0;
+      padding: 2px 0;
       border-bottom: 1px #fff solid;
       display: flex;
       flex-direction: row;
       justify-content: flex-start;
       align-items: flex-start;
       .InstrcutionItemInfoItemLabel{
-        width: 60px;
+        width: 50px;
         flex: none;
       }
       .InstrcutionItemInfoItemContent{
         width: 100%;
         flex: auto;
         .InstrcutionItemInfoItemDataItem{
-          margin: 5px 0;
+          margin: 2px 0;
         }
       }
       &:last-child{
@@ -65,7 +65,7 @@
     <div class="InstrcutionItemInfo" >
       <div class="InstrcutionItemInfoItem">
         <div class="InstrcutionItemInfoItemLabel">
-          <h4>属性</h4>
+          <h4>名称</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
           <p>{{ data.prop }}</p>
@@ -73,17 +73,17 @@
       </div>
       <div class="InstrcutionItemInfoItem">
         <div class="InstrcutionItemInfoItemLabel">
-          <h4>DES</h4>
+          <h4>属性</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
           <div class="desList">
-            <div class="desItem" v-if="checkShow(['build', 'data'])">
-              <p class="desItemTitle">类型:</p>
-              <p class="desItemContent">{{ data.type || '-' }}</p>
-            </div>
             <div class="desItem">
               <p class="desItemTitle">来源:</p>
               <p class="desItemContent">{{ data.from || 'self' }}</p>
+            </div>
+            <div class="desItem" v-if="checkShow(['build', 'data'])">
+              <p class="desItemTitle">类型:</p>
+              <p class="desItemContent">{{ data.type || '-' }}</p>
             </div>
             <div class="desItem" v-if="checkShow('build')">
               <p class="desItemTitle">必选:</p>
@@ -104,7 +104,7 @@
       </div>
       <div class="InstrcutionItemInfoItem" v-if="data.class" >
         <div class="InstrcutionItemInfoItemLabel">
-          <h4>TARGET</h4>
+          <h4>{{ type == 'build' ? '目标' : '继承' }}</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
           <div class="InstrcutionItemInfoItemDataItem">

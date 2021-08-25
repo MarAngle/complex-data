@@ -1,8 +1,8 @@
 <style lang='less' scoped>
 .InstrcutionView{
-  background-color: rgba(0, 0, 0, 0.05);
-  padding: 0 10px;
-  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.06);
+  padding: 0 5px;
+  border-radius: 3px;
   border: 1px #fff solid;
   .InstrcutionViewTarget{
     display: flex;
@@ -14,7 +14,7 @@
       flex: auto;
     }
     .InstrcutionViewTargetMenu{
-      width: 60px;
+      width: 50px;
       text-align: center;
       flex: none;
     }
