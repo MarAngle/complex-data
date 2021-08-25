@@ -45,7 +45,7 @@
           <p>{{ data.prop }}</p>
         </div>
       </div>
-      <div class="InstrcutionItemInfoItem">
+      <div class="InstrcutionItemInfoItem" v-if="checkShow(['build', 'data'])">
         <div class="InstrcutionItemInfoItemLabel">
           <h4>类型</h4>
         </div>
@@ -58,7 +58,7 @@
           <h4>来源</h4>
         </div>
         <div class="InstrcutionItemInfoItemContent">
-          <p>{{ data.from || '-' }}</p>
+          <p>{{ data.from || 'self' }}</p>
         </div>
       </div>
       <div class="InstrcutionItemInfoItem" v-if="checkShow('build')">
@@ -99,7 +99,7 @@
           </div>
         </div>
       </div>
-      <div class="InstrcutionItemInfoItem" v-if="data.args && data.args.length > 0" >
+      <div class="InstrcutionItemInfoItem" v-if="checkShow('method') && data.args && data.args.length > 0" >
         <div class="InstrcutionItemInfoItemLabel">
           <h4>参数</h4>
         </div>
@@ -109,7 +109,7 @@
           </div>
         </div>
       </div>
-      <div class="InstrcutionItemInfoItem" v-if="data.return" >
+      <div class="InstrcutionItemInfoItem" v-if="checkShow('method') && data.return" >
         <div class="InstrcutionItemInfoItemLabel">
           <h4>返回值</h4>
         </div>
