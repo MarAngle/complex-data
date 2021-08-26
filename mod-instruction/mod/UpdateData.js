@@ -1,4 +1,4 @@
-import UpdateData from './../../src/mod/UpdateData.js'
+import UpdateData from '../../src/mod/UpdateData.js'
 
 UpdateData.initInstrcution = function() {
   const instrcutionData = {
