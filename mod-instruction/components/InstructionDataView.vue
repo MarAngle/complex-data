@@ -59,15 +59,15 @@
     <div class="InstructionDataViewHead">
       <div class="InstructionDataViewSelectArea">
         <div class="InstructionDataViewSelect" >
-          <p class="InstructionDataViewSelectContent" @click="changeSelectShow('target')">{{ select.current.target || "请选择数据" }}</p>
+          <p class="InstructionDataViewSelectContent" @click="changeSelectShow('target')">{{ showSelectCurrent('target', '请选择数据') }}</p>
           <div class="InstructionDataViewSelectOption" v-show="select.show.target">
-            <div class="InstructionDataViewSelectOptionItem" v-for="val in select.dataList" :key="val.prop" :value="val.prop" @click="onSelectChange('target', val.prop)">{{ val.prop }}</div>
+            <div class="InstructionDataViewSelectOptionItem" v-for="val in select.list.target" :key="val.value" :value="val.value" @click="onSelectChange('target', val.value)">{{ val.label }}</div>
           </div>
         </div>
         <div class="InstructionDataViewSelect" >
-          <p class="InstructionDataViewSelectContent" @click="changeSelectShow('type')">{{ select.current.type || "请选择数据" }}</p>
+          <p class="InstructionDataViewSelectContent" @click="changeSelectShow('type')">{{ showSelectCurrent('type', '请选择类型') }}</p>
           <div class="InstructionDataViewSelectOption" v-show="select.show.type">
-            <div class="InstructionDataViewSelectOptionItem" v-for="val in select.type" :key="val.value" :value="val.value" @click="onSelectChange('type', val.value)">{{ val.label }}</div>
+            <div class="InstructionDataViewSelectOptionItem" v-for="val in select.list.type" :key="val.value" :value="val.value" @click="onSelectChange('type', val.value)">{{ val.label }}</div>
           </div>
         </div>
       </div>
@@ -85,7 +85,8 @@ import InstrcutionView from './InstrcutionView'
 let dataList = []
 for (let n in instructionData) {
   dataList.push({
-    prop: n
+    value: n,
+    label: n
   })
 }
 export default {
@@ -105,21 +106,23 @@ export default {
           target: undefined,
           type: 'build'
         },
-        dataList: dataList,
-        type: [
-          {
-            value: 'build',
-            label: '传参'
-          },
-          {
-            value: 'data',
-            label: '数据结构'
-          },
-          {
-            value: 'method',
-            label: '方法'
-          }
-        ]
+        list: {
+          target: dataList,
+          type: [
+            {
+              value: 'build',
+              label: '传参'
+            },
+            {
+              value: 'data',
+              label: '数据结构'
+            },
+            {
+              value: 'method',
+              label: '方法'
+            }
+          ]
+        }
       }
     }
   },
@@ -127,6 +130,22 @@ export default {
     this.pageLoad()
   },
   methods: {
+    showSelectCurrent(prop, noContent) {
+      let value = this.select.current[prop]
+      if (!value) {
+        return noContent
+      } else {
+        let label
+        for (let i = 0; i < this.select.list[prop].length; i++) {
+          const item = this.select.list[prop][i]
+          if (item.value === value) {
+            label = item.label
+            break
+          }
+        }
+        return label
+      }
+    },
     changeSelectShow(prop) {
       this.setSelectShow(prop, !this.select.show[prop])
     },
