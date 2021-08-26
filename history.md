@@ -4,6 +4,7 @@
 - 说明相关prop取值从name改为_name，避免混淆
 - 说明模块文件位置优化更新，数据更新
 - 说明UI优化调整，减少padding/margin，减少不必要行数
+- 说明暴露接口优化
 
 ### 2.1.16
 - width === undefined

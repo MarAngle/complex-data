@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import instructionData from '../index'
+import instructionData from '../data'
 import InstrcutionView from './InstrcutionView'
 
 let dataList = []
