@@ -381,12 +381,12 @@ class EditData extends BaseData {
       }
       if (this.func.edit === undefined) { // 可设置为false实现不默认格式化为moment
         this.func.edit = (value) => {
-          return timeUtils.funcEdit(value, this.option.formatedit)
+          return timeUtils.funcEditRange(value, this.option.formatedit)
         }
       }
       if (this.func.unedit === undefined) { // 可设置为false实现moment对象的传递
         this.func.unedit = (value) => {
-          return timeUtils.funcUnEdit(value, this.option.formatedit)
+          return timeUtils.funcUnEditRange(value, this.option.formatedit)
         }
       }
     } else if (this.type == 'file') {
