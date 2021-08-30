@@ -19,57 +19,72 @@ class IdData {
     }
   }
   /**
-   * 生成规则对象item
-   * @param {object | function} item 规则参数
+   * 生成规则对象option
+   * @param {object | function} option 规则参数
    */
-  initRuleData (item) {
-    if (item) {
-      let type = _func.getType(item)
+  initRuleData (option) {
+    if (option) {
+      let type = _func.getType(option)
       if (type == 'function') {
-        this.list.push(item)
+        this.list.push(option)
       } else if (type == 'string') {
-        this.list.push(function () { return item })
+        this.list.push(function () { return option })
       } else if (type == 'object') {
-        let funcitem = this.buildFunc(item)
+        let funcitem = this.buildFunc(option)
         this.list.push(funcitem)
       }
     }
   }
   /**
    * 生成规则函数
-   * @param {*} item 基于规则参数生成函数
+   * @param {*} option 基于规则参数生成函数
    * @returns {function}
    */
-  buildFunc (item) {
-    if (item.type == 'random') {
+  buildFunc (option) {
+    if (option.type == 'random') {
       return function () {
-        return _func.getRandomData(item.size, item.letter)
+        return _func.getRandomData(option.size, option.letter)
       }
-    } else if (item.type == 'time') {
+    } else if (option.type == 'time') {
       return function () {
-        return new Date().getTime().toString()
+        return Date.now().toString()
       }
-    } else if (item.type == 'id') {
-      let start = item.start || 0
-      let step = item.step || 1
-      let interval = item.interval || '0'
-      let minsize = item.minsize || 6
-      let maxsize = item.maxsize || 0
-      let maxaction = item.maxaction || 'cut'
+    } else if (option.type == 'id') {
+      if (option.start === undefined) {
+        option.start = 1
+      }
+      if (!option.step) {
+        option.step = 1
+      }
+      if (!option.interval) {
+        option.interval = '0'
+      }
+      if (!option.intervalTo) {
+        option.intervalTo = 'start'
+      }
+      if (!option.minSize) {
+        option.minSize = 6
+      }
+      if (option.minSize) {
+        if (!option.maxAction) {
+          option.maxAction = 'cut'
+        }
+      }
       return function () {
-        let current = start.toString()
-        if (current.length < minsize) {
-          current = _func.fillString(current, minsize, interval, 'start')
-        } else if (maxsize && current.length > maxsize) {
-          if (maxaction == 'cut') {
-            current = current.slice(0, maxsize)
-          } else if (maxaction == 'restart') {
-            start = 0
+        let current = option.start.toString()
+        if (current.length < option.minSize) {
+          current = _func.fillString(current, option.minSize, option.interval, option.intervalTo)
+        } else if (option.maxSize && current.length > option.maxSize) {
+          if (option.maxAction == 'cut') {
+            current = current.slice(0, option.maxSize)
+          } else if (option.maxAction == 'restart') {
+            option.start = 1
+            current = _func.fillString('1', option.minSize, option.interval, option.intervalTo)
           } else {
-            maxaction(current, start, step, interval)
+            current = option.maxAction(current, option)
           }
         }
-        start = start + step
+        option.start = option.start + option.step
         return current
       }
     }
