@@ -1,3 +1,6 @@
+### 2.1.20-beta
+- complex-func:getRandomData函数同步调整
+
 ### 2.1.19
 - 依赖版本修正
 

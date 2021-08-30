@@ -43,7 +43,7 @@ class IdData {
   buildFunc (item) {
     if (item.type == 'random') {
       return function () {
-        return _func.getRandomData({ size: item.size, letter: item.letter })
+        return _func.getRandomData(item.size, item.letter)
       }
     } else if (item.type == 'time') {
       return function () {
