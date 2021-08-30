@@ -1,4 +1,4 @@
-### 2.1.20-beta
+### 2.1.20
 - complex-func:getRandomData函数同步调整
 - IdData:id类型函数BUG修复，restart模式长度判断缺失，maxAction函数变量变更不生效，优化实现
 
