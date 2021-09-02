@@ -52,29 +52,38 @@ const timeUtils = {
     }
   },
   funcEdit: function(data, format) {
+    let res
     if (data && !moment.isMoment(data)) {
-      data = moment(data, format)
+      res = moment(data, format)
     }
-    return data
+    return res
   },
   funcEditRange: function(data, format) {
+    let res
     if (data && data.length > 0) {
+      res = []
       for (let n = 0; n < data.length; n++) {
-        data[n] = timeUtils.funcEdit(data[n], format)
+        res[n] = timeUtils.funcEdit(data[n], format)
       }
     }
-    return data
+    return resizeTo
   },
   funcUnEdit: function(data, format) {
-    return data ? data.format(format) : data
+    let res
+    if (data) {
+      res = data.format(format)
+    }
+    return res
   },
   funcUnEditRange: function(data, format) {
+    let res
     if (data && data.length > 0) {
+      res = []
       for (let n = 0; n < data.length; n++) {
-        data[n] = timeUtils.funcUnEdit(data[n], format)
+        res[n] = timeUtils.funcUnEdit(data[n], format)
       }
     }
-    return data
+    return res
   },
   // 时间设置格式化
   timeOptionFormat(option, range) {

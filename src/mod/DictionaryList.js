@@ -36,7 +36,7 @@ class DictionaryList extends DefaultDataWithLife {
     if (initOption) {
       this.initMain(initOption, payload)
     }
-    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
+    this.triggerCreateLife('DictionaryList', 'created', initOption)
   }
   initMain (initOption, payload = {}) {
     payload.type = payload.type || 'init'

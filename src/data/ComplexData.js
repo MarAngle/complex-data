@@ -14,7 +14,11 @@ class ComplexData extends BaseData {
     })
     super(initOption)
     this.triggerCreateLife('ComplexData', 'beforeCreate', initOption)
-    this.setModule('dictionary', new DictionaryList(initOption.dictionary))
+    if (initOption.dictionary && initOption.dictionary.constructor === DictionaryList) {
+      this.setModule('dictionary', initOption.dictionary)
+    } else {
+      this.setModule('dictionary', new DictionaryList(this.formatDictionaryOption(initOption.dictionary, 'init')))
+    }
     this._initComplexDataLife()
     this.triggerCreateLife('ComplexData', 'created')
   }
@@ -38,29 +42,21 @@ class ComplexData extends BaseData {
     })
   }
   /**
-   * 设置字典列表
-   * @param {object} [dictionaryOption] DictionaryList初始化参数或实例
-   */
-  initDictionary (dictionaryOption) {
-    if (dictionaryOption) {
-      if (dictionaryOption.constructor === DictionaryList) {
-        this.setModule('dictionary', dictionaryOption)
-      } else {
-        dictionaryOption = this.parseDictionaryOption(dictionaryOption, 'init')
-        if (!dictionaryOption.parent) {
-          dictionaryOption.parent = this
-        }
-        this.getModule('dictionary').initMain(dictionaryOption)
-      }
-    }
-  }
-  /**
    * 解析dictionaryOption
    * @param {object} dictionaryOption DictionaryList初始化参数或实例
    * @param {'init' | 'rebuild'} from 时机
    * @returns {object}
    */
-  parseDictionaryOption (dictionaryOption, from) {
+  formatDictionaryOption (dictionaryOption, from) {
+    if (!dictionaryOption) {
+      dictionaryOption = {}
+    }
+    if (!dictionaryOption.parent) {
+      dictionaryOption.parent = this
+    }
+    if (this.parseDictionaryOption) {
+      dictionaryOption = this.parseDictionaryOption(dictionaryOption, from)
+    }
     return dictionaryOption
   }
   /**
@@ -69,18 +65,11 @@ class ComplexData extends BaseData {
    * @param {*} payload :type 字典构建类型
    */
   rebuildDictionary (dictionaryOption, payload = {}) {
-    if (dictionaryOption) {
-      if (dictionaryOption.constructor === DictionaryList) {
-        this.setModule('dictionary', dictionaryOption)
-      } else {
-        dictionaryOption = this.parseDictionaryOption(dictionaryOption, 'rebuild')
-        if (!dictionaryOption.parent) {
-          dictionaryOption.parent = this
-        }
-        this.getModule('dictionary').rebuildData(dictionaryOption, {
-          type: payload.type
-        })
-      }
+    if (dictionaryOption && dictionaryOption.constructor === DictionaryList) {
+      this.setModule('dictionary', dictionaryOption)
+    } else {
+      dictionaryOption = this.formatDictionaryOption(dictionaryOption, 'rebuild')
+      this.getModule('dictionary').rebuildData(dictionaryOption, payload)
     }
   }
   /**

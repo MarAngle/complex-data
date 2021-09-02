@@ -1,3 +1,7 @@
+### 2.1.22
+- 修复EditData时间moment格式化时的浅拷贝出现的问题
+- 修复ComplexData初始化加载DictionaryList时未调用parseDictionaryOption的BUG，优化加载DictionaryList逻辑
+
 ### 2.1.21
 - ListData分页器BUG修复优化
 - 分页器获取总页数函数实现
