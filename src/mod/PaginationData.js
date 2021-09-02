@@ -117,6 +117,12 @@ class PaginationData extends SimpleData {
     this.countTotalPage()
   }
   /**
+   * 获取总数
+   */
+  getTotal() {
+    return this.data.num.total
+  }
+  /**
    * 设置当前页
    * @param {number} current 当前页
    */

@@ -1,3 +1,7 @@
+### 2.1.21
+- ListData分页器BUG修复优化
+- 分页器获取总页数函数实现
+
 ### 2.1.20
 - complex-func:getRandomData函数同步调整
 - IdData:id类型函数BUG修复，restart模式长度判断缺失，maxAction函数变量变更不生效，优化实现
