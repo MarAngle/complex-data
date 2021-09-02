@@ -160,7 +160,7 @@ class DictionaryList extends DefaultDataWithLife {
       this.initPropData(initOption)
     }
     // 触发update生命周期
-    this.triggerLife('updated', {
+    this.triggerLife('updated', this, {
       type: payload.type
     })
   }
@@ -591,6 +591,7 @@ class DictionaryList extends DefaultDataWithLife {
         _func.setPropByType(editData, originprop, targetdata, ditem.type)
       }
     }
+    this.triggerLife('edited', this, editData, modType, modlist, formData)
     return editData
   }
   /**
@@ -598,10 +599,17 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} target 加载到的目标
    */
   install (target) {
+    // 监听事件
     this.onLife('updated', {
       id: target.$getModuleId('dictionaryListUpdated'),
       data: (...args) => {
         target.triggerLife('dictionaryListUpdated', ...args)
+      }
+    })
+    this.onLife('edited', {
+      id: target.$getModuleId('dictionaryListEdited'),
+      data: (...args) => {
+        target.triggerLife('dictionaryListEdited', ...args)
       }
     })
   }
@@ -610,7 +618,9 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} target 卸载到的目标
    */
   uninstall (target) {
+    // 停止监听事件
     this.offLife('updated', target.$getModuleId('dictionaryListUpdated'))
+    this.offLife('edited', target.$getModuleId('dictionaryListEdited'))
   }
 }
 

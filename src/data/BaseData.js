@@ -186,7 +186,7 @@ class BaseData extends DefaultDataWithLife {
     } else if (optionType !== 'object') {
       option = {}
     }
-    this.triggerLife('beforeReload', option, ...args)
+    this.triggerLife('beforeReload', this, option, ...args)
     // 同步判断值
     let sync = option.sync
     let force = option.force === undefined ? {} : option.force
@@ -194,14 +194,14 @@ class BaseData extends DefaultDataWithLife {
     if (sync) {
       promise.then((res) => {
         // 触发生命周期重载完成事件
-        this.triggerLife('reloaded', {
+        this.triggerLife('reloaded', this, {
           res: res,
           args: args
         })
       }, err => {
         console.error(err)
         // 触发生命周期重载失败事件
-        this.triggerLife('reloadFail', {
+        this.triggerLife('reloadFail', this, {
           res: err,
           args: args
         })
@@ -210,7 +210,7 @@ class BaseData extends DefaultDataWithLife {
       return new Promise((resolve, reject) => {
         promise.then(res => {
           // 触发生命周期重载完成事件
-          this.triggerLife('reloaded', {
+          this.triggerLife('reloaded', this, {
             res: res,
             args: args
           })
@@ -218,7 +218,7 @@ class BaseData extends DefaultDataWithLife {
         }, err => {
           console.error(err)
           // 触发生命周期重载失败事件
-          this.triggerLife('reloadFail', {
+          this.triggerLife('reloadFail', this, {
             res: err,
             args: args
           })
@@ -347,13 +347,13 @@ class BaseData extends DefaultDataWithLife {
   triggerGetData (...args) {
     return this.setPromise('load', new Promise((resolve, reject) => {
       // 触发生命周期加载前事件
-      this.triggerLife('beforeLoad', ...args)
+      this.triggerLife('beforeLoad', this, ...args)
       this.setStatus('loading', 'load')
       args.unshift('getData')
       this.triggerMethod(...args).then(res => {
         this.setStatus('loaded', 'load')
         // 触发生命周期加载完成事件
-        this.triggerLife('loaded', {
+        this.triggerLife('loaded', this, {
           res: res,
           args: args
         })
@@ -361,7 +361,7 @@ class BaseData extends DefaultDataWithLife {
       }, err => {
         this.setStatus('unload', 'load')
         // 触发生命周期加载失败事件
-        this.triggerLife('loadFail', {
+        this.triggerLife('loadFail', this, {
           res: err,
           args: args
         })
@@ -378,12 +378,12 @@ class BaseData extends DefaultDataWithLife {
     return this.setPromise('update', new Promise((resolve, reject) => {
       this.setStatus('updating', 'update')
       // 触发生命周期更新前事件
-      this.triggerLife('beforeUpdate', ...args)
+      this.triggerLife('beforeUpdate', this, ...args)
       args.unshift('updateData')
       this.triggerMethod(...args).then(res => {
         this.setStatus('updated', 'update')
         // 触发生命周期更新完成事件
-        this.triggerLife('updated', {
+        this.triggerLife('updated', this, {
           res: res,
           args: args
         })
@@ -391,7 +391,7 @@ class BaseData extends DefaultDataWithLife {
       }, err => {
         this.setStatus('updated', 'update')
         // 触发生命周期加载失败事件
-        this.triggerLife('updateFail', {
+        this.triggerLife('updateFail', this, {
           res: err,
           args: args
         })
@@ -423,9 +423,9 @@ class BaseData extends DefaultDataWithLife {
    */
   destroy (...args) {
     this.formatResetOption(args)
-    this.triggerLife('beforeDestroy', ...args)
+    this.triggerLife('beforeDestroy', this, ...args)
     this.reset(...args)
-    this.triggerLife('destroyed', ...args)
+    this.triggerLife('destroyed', this, ...args)
   }
   /**
    * 重置回调操作=>不清除额外数据以及生命周期函数
@@ -433,12 +433,12 @@ class BaseData extends DefaultDataWithLife {
    */
   reset (...args) {
     this.formatResetOption(args)
-    this.triggerLife('beforeReset', ...args)
+    this.triggerLife('beforeReset', this, ...args)
     // 重置状态
     if (this.parseResetOption(args[0], 'status') !== false) {
       this.resetStatus(args[0])
     }
-    this.triggerLife('reseted', ...args)
+    this.triggerLife('reseted', this, ...args)
   }
 }
 

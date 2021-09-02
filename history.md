@@ -1,3 +1,7 @@
+### 2.1.23
+- DictionaryList监听edited事件并暴露
+- 生命周期函数触发默认传递this为首参数
+
 ### 2.1.22
 - 修复EditData时间moment格式化时的浅拷贝出现的问题
 - 修复ComplexData初始化加载DictionaryList时未调用parseDictionaryOption的BUG，优化加载DictionaryList逻辑
