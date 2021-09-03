@@ -561,7 +561,6 @@ class DictionaryList extends DefaultDataWithLife {
         _func.setPropByType(editData, originprop, targetdata, ditem.type)
       }
     }
-    this.triggerLife('edited', this, editData, modType, modlist, formData)
     return editData
   }
   /**
@@ -576,12 +575,6 @@ class DictionaryList extends DefaultDataWithLife {
         target.triggerLife('dictionaryListUpdated', ...args)
       }
     })
-    this.onLife('edited', {
-      id: target.$getModuleId('dictionaryListEdited'),
-      data: (...args) => {
-        target.triggerLife('dictionaryListEdited', ...args)
-      }
-    })
   }
   /**
    * 模块卸载
@@ -590,7 +583,6 @@ class DictionaryList extends DefaultDataWithLife {
   uninstall (target) {
     // 停止监听事件
     this.offLife('updated', target.$getModuleId('dictionaryListUpdated'))
-    this.offLife('edited', target.$getModuleId('dictionaryListEdited'))
   }
 }
 
