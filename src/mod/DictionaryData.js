@@ -177,35 +177,7 @@ class DictionaryData extends DefaultData {
     }
   }
   /**
-   * 基于自身从originitem中获取对应属性的数据放返回
-   * @param {string} modType modtype
-   * @param {object} option 参数
-   * @param {object} option.targetitem 目标数据
-   * @param {object} option.originitem 源formdata数据
-   * @param {string} option.from 调用来源
-   * @returns {*}
-   */
-  getFormData (modType, option) {
-    return new Promise((resolve, reject) => {
-      let mod = this.mod[modType]
-      if (mod) {
-        if (mod.readyData) {
-          mod.readyData().then(() => {
-            resolve({ status: 'success', data: this.getFormDataNext(mod, modType, option) })
-          }, () => {
-            resolve({ status: 'fail', data: this.getFormDataNext(mod, modType, option) })
-          })
-        } else {
-          resolve({ status: 'success', data: this.getFormDataNext(mod, modType, option) })
-        }
-      } else {
-        reject({ status: 'fail', code: 'noMod', msg: this.buildPrintMsg(`${modType}对应的mod不存在`) })
-      }
-    })
-  }
-  /**
-   * 基于自身从originitem中获取对应属性的数据放返回
-   * @param {object} mod mod
+   * 生成formData的prop值，基于自身从originitem中获取对应属性的数据并返回
    * @param {string} modType modtype
    * @param {object} option 参数
    * @param {object} option.targetitem 目标数据
@@ -213,29 +185,45 @@ class DictionaryData extends DefaultData {
    * @param {string} [option.from] 调用来源
    * @returns {*}
    */
-  getFormDataNext (mod, modType, { targetitem, originitem, from = 'init' }) {
-    let target
-    if (originitem) {
-      target = this.triggerFunc('edit', originitem[this.prop], {
-        type: modType,
-        targetitem,
-        originitem
-      })
-      if (mod.func && mod.func.edit) {
-        target = mod.func.edit(target, {
+  getFormData (modType, { targetitem, originitem, from = 'init' }) {
+    let mod = this.mod[modType]
+    let targetData
+    // 不存在mod情况下生成值无意义，不做判断
+    if (mod) {
+      // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
+      if (originitem) {
+        targetData = this.triggerFunc('edit', originitem[this.prop], {
           type: modType,
           targetitem,
           originitem
         })
+      } else if (mod.getValueData) {
+        if (from == 'reset') {
+          targetData = mod.getValueData('resetdata')
+        } else {
+          targetData = mod.getValueData('initdata')
+        }
       }
-    } else if (mod.getValueData) {
-      if (from == 'reset') {
-        target = mod.getValueData('resetdata')
-      } else {
-        target = mod.getValueData('initdata')
+      // 调用模块的readyData
+      if (mod.readyData) {
+        mod.readyData().then(() => {}, err => {
+            this.printMsg(`${modType}模块readyData调用失败！`, 'error', {
+            data: err,
+            type: 'error'
+          })
+        })
+      }
+      // 模块存在edit函数时将当前数据进行edit操作
+      if (mod.func && mod.func.edit) {
+        targetData = mod.func.edit(targetData, {
+          type: modType,
+          targetitem,
+          originitem,
+          from: from
+        })
       }
     }
-    return target
+    return targetData
   }
 
   /**

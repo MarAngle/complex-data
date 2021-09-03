@@ -1,6 +1,7 @@
 ### 2.1.23
 - DictionaryList监听edited事件并暴露
 - 生命周期函数触发默认传递this为首参数
+- 生成FormData相关逻辑删除异步操作部分，使用同步操作
 
 ### 2.1.22
 - 修复EditData时间moment格式化时的浅拷贝出现的问题

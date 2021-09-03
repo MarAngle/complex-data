@@ -104,27 +104,19 @@ class SearchData extends ComplexData {
    * @param {'init' | 'reset'} from 请求来源
    * @param {object} option 设置项
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
-   * @param {string} [option.sync] 同步操作，默认异步操作
    * @param {boolean} copyToPost 同步到post[modType]中
    * @param {string} modType modType
    */
   resetSearchFormData(from = 'init', option = {}, copyToPost = true, modType = 'build') {
     if (this.getInit()) {
       let modlist = this.form[modType].modlist
-      let data = this.buildDictionaryFormData(modlist, modType, null, {
+      this.buildDictionaryFormData(modlist, modType, null, {
         form: this.form[modType].form.data,
         from: from,
-        limit: option.limit,
-        sync: option.sync
+        limit: option.limit
       })
       if (copyToPost) {
-        if (option.sync) {
-          this.setData(modType)
-        } else {
-          data.then(() => {
-            this.setData(modType)
-          })
-        }
+        this.setData(modType)
       }
     }
   }

@@ -498,55 +498,25 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [option.form] 目标form数据
    * @param {string} [option.from] 调用来源
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
-   * @param {string} [option.sync] 同步操作，默认异步操作
-   * @returns {object | Promise<{ status, data}>}
+   * @returns {object}
    */
   buildFormData(modlist, modType, originitem, option = {}) {
     let formData = option.form || {}
-    let promiseList = []
-    let sync = option.sync || false
     let from = option.from
     let limit = _func.getLimitData(option.limit)
     let size = modlist.length
     for (let n = 0; n < size; n++) {
       let ditem = modlist[n]
       if (!limit.getLimit(ditem.prop)) {
-        promiseList.push(ditem.getFormData(modType, {
+        let targetData = ditem.getFormData(modType, {
           targetItem: formData,
           originitem: originitem,
-          from: from,
-          sync: sync
-        }))
+          from: from
+        })
+        _func.setProp(formData, ditem.prop, targetData, true)
       }
     }
-    let promise = _func.promiseAllFinished(promiseList)
-    if (sync) {
-      promise.then(resList => {
-        for (let n = 0; n < resList.length; n++) {
-          let res = resList[n]
-          if (res.status == 'success') {
-            _func.setProp(formData, modlist[n].prop, res.data.data, true)
-          } else {
-            _func.setProp(formData, modlist[n].prop, undefined, true)
-          }
-        }
-      })
-      return formData
-    } else {
-      return new Promise((resolve) => {
-        promise.then(resList => {
-          for (let n = 0; n < resList.length; n++) {
-            let res = resList[n]
-            if (res.status == 'success') {
-              _func.setProp(formData, modlist[n].prop, res.data.data, true)
-            } else {
-              _func.setProp(formData, modlist[n].prop, undefined, true)
-            }
-          }
-        })
-        resolve({ status: 'success', data: formData })
-      })
-    }
+    return formData
   }
   /**
    * 基于formdata和模块列表返回编辑完成的数据

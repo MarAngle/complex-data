@@ -135,8 +135,7 @@ class ComplexData extends BaseData {
    * @param {object} [option.form] 目标form数据
    * @param {string} [option.from] 调用来源
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
-   * @param {string} [option.sync] 同步操作，默认异步操作
-   * @returns {object | Promise<{ status, data}>}
+   * @returns {object}
    */
   buildDictionaryFormData (modlist, modType, originitem, option) {
     return this.getModule('dictionary').buildFormData(modlist, modType, originitem, option)
