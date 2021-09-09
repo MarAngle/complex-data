@@ -166,8 +166,14 @@ class ChoiceData extends DefaultData {
    * @param {object[]} list ITEM列表
    */
   setData(idList, list) {
-    this.data.id = idList
-    this.data.list = list
+    _func.clearArray(this.data.id)
+    _func.clearArray(this.data.list)
+    for (let n = 0; n < idList.length; n++) {
+      this.data.id.push(idList[n])
+    }
+    for (let i = 0; i < list.length; i++) {
+      this.data.list.push(list[i])
+    }
   }
   /**
    * 根据option, defaultOption自动判断重置与否

@@ -2,6 +2,9 @@
 - 实现tree-select
 - 实现多选的高度扩展设置项
 
+### 2.1.26-beta
+- choiceData数据一致性修复
+
 ### 2.1.25
 - func依赖升级
 - funcEditRange函数错误返回resolveTo BUG修复
