@@ -150,15 +150,25 @@ class ChoiceData extends DefaultData {
    * @param {object[]} list 要添加的ITEM列表
    * @param {string} idProp id属性
    */
-  addData(idList, list = [], idProp) {
-    let currentIdList = this.data.id
-    for (let i = 0; i < idList.length; i++) {
-      let id = idList[i]
-      if (currentIdList.indexOf(id) < 0) {
-        currentIdList.push(id)
+  addData(idList, list = [], idProp, act = 'auto') {
+    if (act == 'auto') {
+      for (let i = 0; i < idList.length; i++) {
+        let id = idList[i]
+        if (this.data.id.indexOf(id) < 0) {
+          this.data.id.push(id)
+          this.data.list.push(list[i])
+        }
       }
+    } else {
+      let currentIdList = this.data.id
+      for (let i = 0; i < idList.length; i++) {
+        let id = idList[i]
+        if (currentIdList.indexOf(id) < 0) {
+          currentIdList.push(id)
+        }
+      }
+      this.changeData(currentIdList, list, idProp, 'force')
     }
-    this.changeData(idList, list, idProp)
   }
   /**
    * 设置选项列表数据
