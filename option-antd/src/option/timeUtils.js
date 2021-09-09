@@ -66,7 +66,7 @@ const timeUtils = {
         res[n] = timeUtils.funcEdit(data[n], format)
       }
     }
-    return resizeTo
+    return res
   },
   funcUnEdit: function(data, format) {
     let res
