@@ -258,7 +258,6 @@ const timeUtils = {
       let option = timeOption[type]
       let formatValue = moment(_func.fillString(value.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
       let currentValue = moment(_func.fillString(current.format(option.format), 14, 'end'), 'YYYYMMDDHHmmss')
-      // let offset = Math.abs(formatValue - currentValue) / option.rate
       let offset = Math.abs(formatValue.diff(currentValue)) / option.rate
       return offset
     } else {
