@@ -88,7 +88,7 @@ class DictionaryData extends DefaultData {
    * 格式化func函数
    */
   FormatFunc () {
-    if (!this.func.defaultGetData) {
+    if (this.func.defaultGetData === undefined) {
       this.func.defaultGetData = (data, { type }) => {
         let showprop = this.getInterface('showprop', type)
         if (showprop) {
@@ -102,13 +102,13 @@ class DictionaryData extends DefaultData {
         }
       }
     }
-    if (!this.func.show) {
+    if (this.func.show === undefined) {
       this.func.show = this.func.defaultGetData
     }
-    if (!this.func.edit) {
+    if (this.func.edit === undefined) {
       this.func.edit = this.func.defaultGetData
     }
-    if (!this.func.unedit) {
+    if (this.func.unedit === undefined) {
       this.func.unedit = (data, payload) => {
         let moditem = this.mod[payload.type]
         if (moditem && moditem.func.unedit) {
@@ -118,13 +118,9 @@ class DictionaryData extends DefaultData {
         }
       }
     }
-    if (!this.func.check) {
+    if (this.func.check === undefined) {
       this.func.check = (data, payload) => {
-        if (data !== this.mod[payload.type].getValueData('defaultdata')) {
-          return true
-        } else {
-          return false
-        }
+        return _func.isExist(data)
       }
     }
   }

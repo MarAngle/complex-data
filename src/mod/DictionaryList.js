@@ -542,7 +542,7 @@ class DictionaryList extends DefaultDataWithLife {
           originitem: formData,
           type: modType
         })
-        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是非post状态的非真数据不传递
+        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是edit.empty为false状态的非真数据不传递
         if (!add) {
           add = this.option.getData('edit.empty')
         }
