@@ -2,6 +2,9 @@
 - 实现tree-select
 - 实现多选的高度扩展设置项
 
+### 2.1.29-beta
+- func依赖升级
+
 ### 2.1.28
 - DictionaryData的func函数的默认值由为赋值到undefined赋值，可实现传递false值进行不赋值操作
 - DictionaryData的func-check函数默认由检查是否等同于defaultdata更改为使用_func.isExist进行判断
