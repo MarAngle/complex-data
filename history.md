@@ -2,6 +2,9 @@
 - 实现tree-select
 - 实现多选的高度扩展设置项
 
+### 2.1.30
+- BUG修复:同步生命周期调用:首参数默认为触发生命周期的实例
+
 ### 2.1.29
 - func依赖升级
 - ComplexData生命周期dictionaryListUpdated=>dictionaryUpdated

@@ -176,7 +176,7 @@ class UpdateData extends DefaultDataWithLife {
   install (target) {
     target.onLife('reseted', {
       id: this.$getModuleId('Reseted'),
-      data: (resetOption) => {
+      data: (instantiater, resetOption) => {
         if (target.parseResetOption(resetOption, 'update') !== false) {
           this.reset()
         }

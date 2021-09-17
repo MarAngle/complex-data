@@ -33,7 +33,7 @@ class ListData extends ComplexDataWithSearch {
     // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
     this.onLife('beforeReload', {
       id: 'AutoListDataBeforeReload',
-      data: (option) => {
+      data: (instantiater, option) => {
         if (this.getModule('pagination' && option.page)) {
           if (option.page === true) {
             this.setPageData(1, 'page')

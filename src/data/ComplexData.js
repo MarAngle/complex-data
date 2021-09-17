@@ -29,7 +29,7 @@ class ComplexData extends BaseData {
     // 添加重置生命周期回调，此时通过设置项对data数据进行重置操作，对象list/current属性
     this.onLife('reseted', {
       id: 'AutoComplexDataReseted',
-      data: (resetOption) => {
+      data: (instantiater, resetOption) => {
         if (this.parseResetOption(resetOption, 'data') !== false) {
           if (this.parseResetOption(resetOption, 'data.list') !== false) {
             this.resetDataList()

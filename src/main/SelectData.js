@@ -23,7 +23,7 @@ class SelectData extends BaseData {
   _initSelectDataLife() {
     this.onLife('reseted', {
       id: 'AutoSelectDataReseted',
-      data: (resetOption) => {
+      data: (instantiater, resetOption) => {
         if (this.parseResetOption(resetOption, 'select') !== false) {
           this.clearSelect()
         }
