@@ -113,7 +113,7 @@ class FuncData extends SimpleData {
         if (!data.id) {
           data.id = this.buildId()
         }
-        if (this.data.has(data.id) && !data.repalce) {
+        if (this.data.has(data.id) && !data.replace) {
           this.printMsg(`存在当前值:${data.id}`)
         } else {
           this.pushData(data)

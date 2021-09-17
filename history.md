@@ -2,8 +2,10 @@
 - 实现tree-select
 - 实现多选的高度扩展设置项
 
-### 2.1.29-beta
+### 2.1.29
 - func依赖升级
+- ComplexData生命周期dictionaryListUpdated=>dictionaryUpdated
+- FuncData replace错误修复
 
 ### 2.1.28
 - DictionaryData的func函数的默认值由为赋值到undefined赋值，可实现传递false值进行不赋值操作
