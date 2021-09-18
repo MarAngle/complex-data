@@ -283,6 +283,29 @@ class EditData extends BaseData {
           }
         }
       }
+    } else if (this.type == 'cascader') {
+      // 考虑位置在data.list的可行性
+      // =>避免后期修改时存在的问题，基本数据结构提前生成，非当前必要字段也应生成
+      this.option.options = editdata.option.options
+      this.option.allowClear = editdata.option.allowClear === undefined ? true : editdata.option.allowClear
+      this.option.autoFocus = editdata.option.autoFocus || false
+      this.option.changeOnSelect = editdata.option.changeOnSelect || false
+      this.option.displayRender = editdata.option.displayRender
+      this.option.expandTrigger = editdata.option.expandTrigger
+      this.option.fieldNames = editdata.option.fieldNames
+      this.option.getPopupContainer = editdata.option.getPopupContainer
+      this.option.notFoundContent = editdata.option.notFoundContent
+      this.option.popupClassName = editdata.option.popupClassName
+      this.option.popupStyle = editdata.option.popupStyle
+      this.option.popupPlacement = editdata.option.popupPlacement
+      this.option.popupVisible = editdata.option.popupVisible
+      this.option.showSearch = editdata.option.showSearch
+      this.option.size = editdata.option.size
+      this.option.suffixIcon = editdata.option.suffixIcon
+      this.option.loadData = editdata.option.loadData
+
+      this.setValueToArray()
+      // 检索下拉设置
     } else if (this.type == 'date') {
       // DATEPICKER
       this.option.showTime = timeUtils.timeOptionFormat(editdata.option.showTime)

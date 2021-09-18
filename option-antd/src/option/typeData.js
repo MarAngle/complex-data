@@ -76,6 +76,28 @@ let typeData = {
       }
     }
   },
+  type_cascader: {
+    defaultdata: undefined,
+    placeholder: function (label) {
+      let data = {}
+      label.map((labeldata, prop) => {
+        data[prop] = `请选择${labeldata[prop]}`
+      })
+      return data
+    },
+    eventList: ['change'],
+    rule: {
+      trigger: ['blur'],
+      autoTrigger: ['change', 'select'],
+      message: function (label) {
+        let data = {}
+        label.map((labeldata, prop) => {
+          data[prop] = `请选择${labeldata[prop]}`
+        })
+        return data
+      }
+    }
+  },
   type_date: {
     defaultdata: undefined,
     placeholder: function (label) {
