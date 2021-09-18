@@ -295,10 +295,7 @@ class EditData extends BaseData {
       this.option.fieldNames = editdata.option.fieldNames
       this.option.getPopupContainer = editdata.option.getPopupContainer
       this.option.notFoundContent = editdata.option.notFoundContent
-      this.option.popupClassName = editdata.option.popupClassName
-      this.option.popupStyle = editdata.option.popupStyle
       this.option.popupPlacement = editdata.option.popupPlacement
-      this.option.popupVisible = editdata.option.popupVisible
       this.option.showSearch = editdata.option.showSearch
       this.option.size = editdata.option.size
       this.option.suffixIcon = editdata.option.suffixIcon
@@ -506,9 +503,16 @@ class EditData extends BaseData {
   readyData() {
     return new Promise((resolve, reject) => {
       let needLoad = false
-      if (this.type == 'select' && !this.option.search.show && this.getData) {
-        // select非search模式下需要进行数据的加载
-        needLoad = true
+      if (this.type == 'select') {
+        if (!this.option.search.show && this.getData) {
+          // select非search模式下需要进行数据的加载
+          needLoad = true
+        }
+      } else if (this.type == 'cascader') {
+        if (this.getData) {
+          // select非search模式下需要进行数据的加载
+          needLoad = true
+        }
       }
       if (needLoad) {
         // search需要在打开阶段进行数据获取
