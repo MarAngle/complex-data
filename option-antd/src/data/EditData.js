@@ -290,17 +290,24 @@ class EditData extends BaseData {
       this.option.allowClear = editdata.option.allowClear === undefined ? true : editdata.option.allowClear
       this.option.autoFocus = editdata.option.autoFocus || false
       this.option.changeOnSelect = editdata.option.changeOnSelect || false
-      this.option.displayRender = editdata.option.displayRender
       this.option.expandTrigger = editdata.option.expandTrigger
+      this.option.size = editdata.option.size
+      this.option.displayRender = editdata.option.displayRender
       this.option.fieldNames = editdata.option.fieldNames
       this.option.getPopupContainer = editdata.option.getPopupContainer
       this.option.notFoundContent = editdata.option.notFoundContent
       this.option.popupPlacement = editdata.option.popupPlacement
-      this.option.showSearch = editdata.option.showSearch
-      this.option.size = editdata.option.size
       this.option.suffixIcon = editdata.option.suffixIcon
-      this.option.loadData = editdata.option.loadData
-
+      let loadData = editdata.option.loadData
+      if (loadData) {
+        this.option.loadData = (selectedOptions) => {
+          loadData.call(this, selectedOptions)
+        }
+      }
+      let showSearch = editdata.option.showSearch
+      if (showSearch) {
+        this.option.showSearch = showSearch
+      }
       this.setValueToArray()
       // 检索下拉设置
     } else if (this.type == 'date') {
