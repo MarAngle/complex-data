@@ -136,6 +136,8 @@ class EditData extends BaseData {
       this.option.autoWidth = editdata.option.autoWidth || false // 宽度自适应
       this.option.noDataContent = editdata.option.noDataContent // 无数据时文字显示 == 默认不传使用antd的默认模板
       if (this.option.mode == 'multiple') {
+        // 多选模式下将multiple赋值，统一多选处理逻辑
+        this.option.multiple = true
         this.setValueToArray()
       }
       // 存在分页相关设置

@@ -2,6 +2,9 @@
 - 实现tree-select
 - 实现多选的高度扩展设置项
 
+### 2.1.32-beta
+- 统一EditData多选处理模式
+
 ### 2.1.31
 - EditData添加级联选择器cascader
 
