@@ -1,6 +1,8 @@
 ### TODOLIST
-- 实现tree-select
 - 实现多选的高度扩展设置项
+
+### 2.2.0
+- func依赖升级
 
 ### 2.1.32
 - 统一EditData多选处理模式
