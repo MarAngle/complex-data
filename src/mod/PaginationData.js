@@ -193,6 +193,27 @@ class PaginationData extends SimpleData {
     })
   }
   /**
+   * 根据分页器从list中获取对应的数组
+   * @param {*[]} list 需要解析的数组
+   * @param {boolean} [unOrigin] 是否是当前分页器的数据源，为真则不是，此时不对分页器数据做修正
+   * @returns {*[]}
+   */
+  formatList(list, unOrigin) {
+    if (!unOrigin) {
+      this.setTotal(list.length)
+    }
+    let current = this.getPage()
+    let total = this.getTotalPage()
+    if (!unOrigin && current > total) {
+      this.setPage(total)
+      current = total
+    }
+    let size = this.getSize()
+    let start = (current - 1) * size
+    let end = start + size
+    return list.slice(start, end)
+  }
+  /**
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
