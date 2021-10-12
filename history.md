@@ -1,6 +1,10 @@
 ### TODOLIST
 - 实现多选的高度扩展设置项
 
+### 2.2.2
+- UpdateData:实现updateImmerate立即更新函数
+- UpdateData[BUG]:load.operate取值错误以及未重置为false
+
 ### 2.2.1
 - 添加过滤器数据，实现过滤
 - 分页器实现接收数组并根据分页器规则截取对应数组
