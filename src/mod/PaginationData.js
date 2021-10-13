@@ -117,9 +117,9 @@ class PaginationData extends DefaultDataWithLife {
    * 设置总数
    * @param {number} num 总数
    */
-  setTotal(num) {
+  setTotal(num, unCountCurrent, unTriggerLife) {
     this.data.num.total = num < 0 ? 0 : num
-    this.autoCountPage()
+    this.autoCountPage(unCountCurrent, unTriggerLife)
   }
   /**
    * 获取总数
@@ -157,23 +157,27 @@ class PaginationData extends DefaultDataWithLife {
    * @param {number} size size参数
    * @param {number} page page参数
    */
-  setSizeAndPage (current) {
+  setSizeAndPage (current, unTriggerLife) {
     this.data.size.current = current.size
     this.autoCountPage(true)
     this.setPage(current.page, true)
-    this.triggerLife('change', this, 'size', current)
+    if (!unTriggerLife) {
+      this.triggerLife('change', this, 'size', current)
+    }
   }
   /**
    * 更改页面条数
    * @param {number} size size参数
    */
-  setSize(size) {
+  setSize(size, unTriggerLife) {
     this.data.size.current = size
     this.autoCountPage(false, true)
-    this.triggerLife('change', this, 'size', {
-      size: size,
-      page: this.getPage()
-    })
+    if (!unTriggerLife) {
+      this.triggerLife('change', this, 'size', {
+        size: size,
+        page: this.getPage()
+      })
+    }
   }
   /**
    * 获取当前页

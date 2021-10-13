@@ -34,11 +34,11 @@ class ListData extends ComplexDataWithSearch {
     this.onLife('beforeReload', {
       id: 'AutoListDataBeforeReload',
       data: (instantiater, option) => {
-        if (this.getModule('pagination' && option.page)) {
+        if (this.getModule('pagination') && option.page) {
           if (option.page === true) {
-            this.setPageData(1, 'page')
+            this.setPageData(1, 'page', true)
           } else {
-            this.setPageData(option.page.data, option.page.prop)
+            this.setPageData(option.page.data, option.page.prop, true)
           }
         }
         // 根据设置和传值自动进行当前选项的重置操作
@@ -81,12 +81,12 @@ class ListData extends ComplexDataWithSearch {
    * @param {number} data 需要设置的属性值
    * @param {'page' | 'size' | 'num'} [prop = 'page'] 需要设置的参数'page' | 'size' | 'num'
    */
-  setPageData (data, prop = 'page') {
+  setPageData (data, prop = 'page', unTriggerLife) {
     if (this.getModule('pagination')) {
       if (prop == 'page') {
-        this.getModule('pagination').setPage(data)
+        this.getModule('pagination').setPage(data, unTriggerLife)
       } else if (prop == 'size') {
-        this.getModule('pagination').setSize(data) // { size, page }
+        this.getModule('pagination').setSizeAndPage(data, unTriggerLife) // { size, page }
       } else if (prop == 'num') {
         this.getModule('pagination').setTotal(data)
       }
