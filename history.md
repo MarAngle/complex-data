@@ -1,11 +1,14 @@
 ### TODOLIST
 - 实现多选的高度扩展设置项
 
+### 2.2.4
+- immerdiate拼写错误修正
+
 ### 2.2.3
-- BaseData:updateImmerate暴露
+- BaseData:updateImmerdiate暴露
 
 ### 2.2.2
-- UpdateData:实现updateImmerate立即更新函数
+- UpdateData:实现updateImmerdiate立即更新函数
 - UpdateData[BUG]:load.operate取值错误以及未重置为false
 
 ### 2.2.1

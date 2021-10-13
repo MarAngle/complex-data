@@ -66,8 +66,8 @@ class BaseData extends DefaultDataWithLife {
   /**
    * 立即更新
    */
-  updateImmerate (...args) {
-    this.triggerModuleMethod('update', 'updateImmerate', args)
+  updateImmerdiate (...args) {
+    this.triggerModuleMethod('update', 'updateImmerdiate', args)
   }
   /**
    * 自动更新

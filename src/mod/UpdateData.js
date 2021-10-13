@@ -12,7 +12,7 @@ class UpdateData extends DefaultDataWithLife {
     this.load = {
       update: false, // 更新状态判断值，true说明update正在进行中，此时每间隔一段时间则进行触发操作
       operate: false, // 触发操作判断值，true说明trigger正在进行中
-      immerate: false // 立即同步操作判断值，true说明正在进行强制同步操作
+      immerdiate: false // 立即同步操作判断值，true说明正在进行强制同步操作
     }
     this.current = {
       num: 0
@@ -116,7 +116,7 @@ class UpdateData extends DefaultDataWithLife {
    */
   startTrigger(offset) {
     this.clear(true)
-    this.load.immerate = false
+    this.load.immerdiate = false
     if (offset === undefined) {
       offset = this.offset.data
     }
@@ -135,7 +135,7 @@ class UpdateData extends DefaultDataWithLife {
     // trigger结束
     this.load.operate = false
     this.triggerLife('triggered', this, offset)
-    if (this.load.update && !this.load.immerate) {
+    if (this.load.update && !this.load.immerdiate) {
       if (offset !== false) {
         let checkRes = this.check(this.getNum())
         if (offset === undefined) {
@@ -156,17 +156,17 @@ class UpdateData extends DefaultDataWithLife {
       } else {
         this.clear()
       }
-    } else if (this.load.immerate) {
+    } else if (this.load.immerdiate) {
       this.startTrigger(0)
     }
   }
   /**
    * 立刻进行数据更新
    */
-  updateImmerate() {
+  updateImmerdiate() {
     // 正在更新中的在更新完成直接触发下一次更新
     if (this.load.operate) {
-      this.load.immerate = true
+      this.load.immerdiate = true
     } else {
       // 不在更新中直接触发下一次更新
       this.startTrigger(0)
