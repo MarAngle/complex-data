@@ -86,7 +86,7 @@ class ListData extends ComplexDataWithSearch {
       if (prop == 'page') {
         this.getModule('pagination').setPage(data)
       } else if (prop == 'size') {
-        this.getModule('pagination').setSize(data) // { page, size }
+        this.getModule('pagination').setSize(data) // { size, page }
       } else if (prop == 'num') {
         this.getModule('pagination').setTotal(data)
       }

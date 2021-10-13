@@ -1,10 +1,14 @@
 import _func from 'complex-func'
 import config from '../../config'
-import SimpleData from './../data/SimpleData'
+import DefaultDataWithLife from './../data/DefaultDataWithLife'
 
-class PaginationData extends SimpleData {
+class PaginationData extends DefaultDataWithLife {
   constructor (initOption) {
-    super()
+    if (initOption === true) {
+      initOption = {}
+    }
+    super(initOption)
+    this.triggerCreateLife('PaginationData', 'beforeCreate', initOption)
     this.status = {
       init: false
     }
@@ -25,6 +29,7 @@ class PaginationData extends SimpleData {
       props: {}
     }
     this.initMain(initOption)
+    this.triggerCreateLife('PaginationData', 'created')
   }
   /**
    * 加载
@@ -32,9 +37,6 @@ class PaginationData extends SimpleData {
    */
   initMain (initOption) {
     if (initOption) {
-      if (initOption === true) {
-        initOption = {}
-      }
       this.setInit(true)
       this.initSize(initOption.size)
       this.initOption(initOption.props, initOption.option)
@@ -104,11 +106,11 @@ class PaginationData extends SimpleData {
   /**
    * 计算页码相关数据
    */
-  autoCountPage () {
+  autoCountPage (unCountCurrent, unTriggerLife) {
     let total = _func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
     this.data.page.total = total <= 0 ? 1 : total
-    if (this.getPage() > this.data.page.total) {
-      this.setPage(this.data.page.total)
+    if (!unCountCurrent && this.getPage() > this.data.page.total) {
+      this.setPage(this.data.page.total, unTriggerLife)
     }
   }
   /**
@@ -129,7 +131,7 @@ class PaginationData extends SimpleData {
    * 设置当前页
    * @param {number} current 当前页
    */
-  setPage (current) {
+  setPage (current, unTriggerLife) {
     let totalPage = this.getTotalPage()
     if (current <= 0) {
       current = 1
@@ -138,6 +140,9 @@ class PaginationData extends SimpleData {
     }
     if (this.data.page.current != current) {
       this.data.page.current = current
+      if (!unTriggerLife) {
+        this.triggerLife('change', this, 'page', current)
+      }
     }
   }
   /**
@@ -148,15 +153,27 @@ class PaginationData extends SimpleData {
     return this.data.page.total
   }
   /**
-   * 更改页面条数
-   * @param {object} option 参数
-   * @param {number} option.page page参数
-   * @param {number} option.size size参数
+   * 更改页面条数和页码
+   * @param {number} size size参数
+   * @param {number} page page参数
    */
-  setSize ({ page, size }) {
-    this.setPage(page)
+  setSizeAndPage (current) {
+    this.data.size.current = current.size
+    this.autoCountPage(true)
+    this.setPage(current.page, true)
+    this.triggerLife('change', this, 'size', current)
+  }
+  /**
+   * 更改页面条数
+   * @param {number} size size参数
+   */
+  setSize(size) {
     this.data.size.current = size
-    this.autoCountPage()
+    this.autoCountPage(false, true)
+    this.triggerLife('change', this, 'size', {
+      size: size,
+      page: this.getPage()
+    })
   }
   /**
    * 获取当前页
@@ -190,20 +207,6 @@ class PaginationData extends SimpleData {
     this.setPage(1)
   }
   /**
-   * 模块加载
-   * @param {object} target 加载到的目标
-   */
-  install (target) {
-    target.onLife('reseted', {
-      id: this.$getModuleId('Reseted'),
-      data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'pagination') !== false) {
-          this.reset()
-        }
-      }
-    })
-  }
-  /**
    * 根据分页器从list中获取对应的数组
    * @param {*[]} list 需要解析的数组
    * @param {boolean} [unOrigin] 是否是当前分页器的数据源，为真则不是，此时不对分页器数据做修正
@@ -225,11 +228,32 @@ class PaginationData extends SimpleData {
     return list.slice(start, end)
   }
   /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
+  install (target) {
+    target.onLife('reseted', {
+      id: this.$getModuleId('Reseted'),
+      data: (instantiater, resetOption) => {
+        if (target.parseResetOption(resetOption, 'pagination') !== false) {
+          this.reset()
+        }
+      }
+    })
+    this.onLife('change', {
+      id: target.$getModuleId('PaginationChange'),
+      data: (instantiater, prop, current) => {
+        target.triggerLife('paginationChange', instantiater, prop, current)
+      }
+    })
+  }
+  /**
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
   uninstall(target) {
     target.offLife('reseted', this.$getModuleId('Reseted'))
+    this.offLife('change', target.$getModuleId('PaginationChange'))
   }
 }
 
