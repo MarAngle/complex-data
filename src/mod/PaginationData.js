@@ -102,11 +102,14 @@ class PaginationData extends SimpleData {
     return this.option
   }
   /**
-   * 计算总页码
+   * 计算页码相关数据
    */
-  countTotalPage () {
-    let total = _func.getNum(this.data.num.total / this.data.size.current, 'ceil', 0)
+  autoCountPage () {
+    let total = _func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
     this.data.page.total = total <= 0 ? 1 : total
+    if (this.getPage() > this.data.page.total) {
+      this.setPage(this.data.page.total)
+    }
   }
   /**
    * 设置总数
@@ -114,7 +117,7 @@ class PaginationData extends SimpleData {
    */
   setTotal(num) {
     this.data.num.total = num < 0 ? 0 : num
-    this.countTotalPage()
+    this.autoCountPage()
   }
   /**
    * 获取总数
@@ -127,7 +130,15 @@ class PaginationData extends SimpleData {
    * @param {number} current 当前页
    */
   setPage (current) {
-    this.data.page.current = current <= 0 ? 1 : current
+    let totalPage = this.getTotalPage()
+    if (current <= 0) {
+      current = 1
+    } else if (current > totalPage) {
+      current = totalPage
+    }
+    if (this.data.page.current != current) {
+      this.data.page.current = current
+    }
   }
   /**
    * 获取总页码
@@ -145,7 +156,7 @@ class PaginationData extends SimpleData {
   setSize ({ page, size }) {
     this.setPage(page)
     this.data.size.current = size
-    this.countTotalPage()
+    this.autoCountPage()
   }
   /**
    * 获取当前页
