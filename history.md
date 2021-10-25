@@ -1,5 +1,9 @@
 ### TODOLIST
 - 实现多选的高度扩展设置项
+- DL实现childrenTreeProp的循环递归，因list的接收的字段问题和当前冲突，考虑实现方法
+
+### 2.2.7-beta
+- DL实现childrenTreeProp的循环递归，因list的接收的字段问题和当前冲突，考虑实现方法
 
 ### 2.2.6
 - 修正ListData重置分页器的错误判断逻辑
