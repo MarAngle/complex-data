@@ -485,12 +485,12 @@ class DictionaryList extends DefaultDataWithLife {
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let pitem = ditem.getModData(modType, payload)
-      if (ditem.dictionary && ditem.mod[modType] && ditem.mod[modType].childrenTree) {
-        let childrenTreeProp = ditem.mod[modType].childrenTree
-        if (childrenTreeProp === true) {
-          childrenTreeProp = 'children'
+      if (ditem.dictionary && ditem.mod[modType] && ditem.mod[modType].$children) {
+        let childrenProp = ditem.mod[modType].$children
+        if (childrenProp === true) {
+          childrenProp = 'children'
         }
-        pitem[childrenTreeProp] = ditem.dictionary.getPageList(modType, payload)
+        pitem[childrenProp] = ditem.dictionary.getPageList(modType, payload)
       }
       pagelist.push(pitem)
     }
