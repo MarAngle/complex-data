@@ -13,7 +13,12 @@ class ModuleData extends SimpleData {
    * @param {object} parent 父对象
    */
   setParent(parent) {
-    this.parent = parent
+    Object.defineProperty(this, 'parent', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: parent
+    })
   }
   /**
    * 获取父对象

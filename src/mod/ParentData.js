@@ -3,7 +3,12 @@ import SimpleData from './../data/SimpleData'
 class ParentData extends SimpleData {
   constructor (parentData) {
     super()
-    this.data = null
+    Object.defineProperty(this, 'data', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: null
+    })
     this._initMain(parentData)
   }
   _initMain (parentData) {

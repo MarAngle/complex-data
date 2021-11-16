@@ -4,6 +4,7 @@
 
 ### 2.2.8-beta
 - 删除ExtraData数据
+- parent引用设置为不可枚举
 
 ### 2.2.7
 - DictionaryData的mod模块添加$children设置项，此设置项会在DictionaryList方法getPageListByModList中判断，存在则递归循环生成子数组
