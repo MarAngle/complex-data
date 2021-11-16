@@ -107,11 +107,19 @@ class DefaultData extends SimpleData {
   }
   // 设置父实例
   setParent (data) {
-    this.getModule('parent').setData(data)
+    let parentModule = this.getModule('parent')
+    if (parentModule) {
+      parentModule.setData(data)
+    } else {
+      this.initParent(data)
+    }
   }
   // 获取上级实例
   getParent (n) {
-    return this.getModule('parent').getData(n)
+    let parentModule = this.getModule('parent')
+    if (parentModule) {
+      return parentModule.getData(n)
+    }
   }
   /* --额外数据相关-- */
   /**
@@ -119,13 +127,12 @@ class DefaultData extends SimpleData {
    * @param {object} [extraData] 额外数据对象
    */
   initExtra (extraData) {
-    let dataType = _func.getType(extraData)
-    if (dataType == 'object') {
+    this.clearExtra()
+    if (_func.getType(extraData) == 'object') {
       for (let n in extraData) {
         this.setExtra(n, extraData[n])
       }
-    } else {
-      this.clearExtra()
+    } else if (extraData !== undefined) {
       this.printMsg(`初始化extra出错，数据必须为对象`)
     }
   }
