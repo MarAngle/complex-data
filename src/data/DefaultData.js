@@ -1,7 +1,6 @@
 import _func from 'complex-func'
 import SimpleData from './SimpleData'
 import ModuleData from './../mod/ModuleData'
-import ExtraData from './../mod/ExtraData'
 import ParentData from './../mod/ParentData'
 
 class DefaultData extends SimpleData {
@@ -13,11 +12,11 @@ class DefaultData extends SimpleData {
     this.name = initOption.name || ''
     this.prop = initOption.prop || ''
     this.func = {}
-    // 模块,默认加载extra
-    this.module = new ModuleData({
-      extra: new ExtraData(initOption.extra)
-    }, this)
+    this.extra = {}
+    // 模块加载
+    this.module = new ModuleData({}, this)
     this._initData(initOption.data)
+    this.initExtra(initOption.extra)
     this.initParent(initOption.parent)
     this.initFunc(initOption.func)
     this.initMethods(initOption.methods)
@@ -120,11 +119,14 @@ class DefaultData extends SimpleData {
    * @param {object} [extraData] 额外数据对象
    */
   initExtra (extraData) {
-    if (extraData) {
-      let fg = this.getModule('extra').initData(extraData)
-      if (!fg) {
-        this.printMsg(`设置ExtrData出错`)
+    let dataType = _func.getType(extraData)
+    if (dataType == 'object') {
+      for (let n in extraData) {
+        this.setExtra(n, extraData[n])
       }
+    } else {
+      this.clearExtra()
+      this.printMsg(`初始化extra出错，数据必须为对象`)
     }
   }
   /**
@@ -133,7 +135,7 @@ class DefaultData extends SimpleData {
    * @param {*} data 数据
    */
   setExtra (prop, data) {
-    this.getModule('extra').setData(prop, data)
+    this.extra[prop] = data
   }
   /**
    * 获取额外数据
@@ -141,7 +143,11 @@ class DefaultData extends SimpleData {
    * @returns {*}
    */
   getExtra (prop) {
-    return this.getModule('extra').getData(prop)
+    if (!prop) {
+      return this.extra
+    } else {
+      return this.extra[prop]
+    }
   }
   /**
    * 获取额外数据
@@ -149,13 +155,17 @@ class DefaultData extends SimpleData {
    * @returns {*}
    */
   clearExtra (prop) {
-    this.getModule('extra').clearData(prop)
+    if (!prop) {
+      this.extra = {}
+    } else {
+      delete this.extra[prop]
+    }
   }
   /**
    * 重置额外数据，清除全部数据
    */
   resetExtra () {
-    this.getModule('extra').reset()
+    this.clearExtra()
   }
   _selfName () {
     let parent = this.getParent()

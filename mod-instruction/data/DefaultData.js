@@ -40,7 +40,6 @@ DefaultData.initInstrcution = function() {
             prop: 'extra',
             type: 'object',
             required: false,
-            class: 'ExtraData',
             describe: '额外数据参数'
           },
           {
@@ -80,6 +79,11 @@ DefaultData.initInstrcution = function() {
         describe: 'func函数列表'
       },
       {
+        prop: 'extra',
+        type: 'object',
+        describe: '额外数据'
+      },
+      {
         prop: 'module',
         class: 'ModuleData',
         describe: '模块数据',
@@ -89,11 +93,6 @@ DefaultData.initInstrcution = function() {
             type: 'object',
             describe: '模块数据保存位置',
             data: [
-              {
-                prop: 'extra',
-                class: 'ExtraData',
-                describe: '属性'
-              },
               {
                 prop: 'parent',
                 class: 'ParentData',

@@ -11,7 +11,6 @@ import ChoiceData from './src/mod/ChoiceData'
 import DictionaryData from './src/mod/DictionaryData'
 import DictionaryList from './src/mod/DictionaryList'
 import EmptyData from './src/mod/EmptyData'
-import ExtraData from './src/mod/ExtraData'
 import FuncData from './src/mod/FuncData'
 import IdData from './src/mod/IdData'
 import InstrcutionData from './src/mod/InstrcutionData'
@@ -51,7 +50,6 @@ export {
   DictionaryData,
   DictionaryList,
   EmptyData,
-  ExtraData,
   FuncData,
   IdData,
   InstrcutionData,

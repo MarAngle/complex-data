@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.8-beta
+- 删除ExtraData数据
+
 ### 2.2.7
 - DictionaryData的mod模块添加$children设置项，此设置项会在DictionaryList方法getPageListByModList中判断，存在则递归循环生成子数组
 - func依赖升级
