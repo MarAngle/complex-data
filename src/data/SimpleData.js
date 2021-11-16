@@ -3,7 +3,7 @@ import install from './../utils/install'
 
 class SimpleData {
   constructor() {
-    this.$LocalTempData = {
+    this.$temp = {
       moduleId: install.getId(this.constructor._name)
     }
   }
@@ -43,7 +43,7 @@ class SimpleData {
    * @returns {string}
    */
   $getModuleId (data = '') {
-    return this.$LocalTempData.moduleId + data
+    return this.$temp.moduleId + data
   }
 }
 

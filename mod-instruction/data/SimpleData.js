@@ -6,7 +6,7 @@ SimpleData.initInstrcution = function() {
     build: [],
     data: [
       {
-        prop: '$LocalTempData',
+        prop: '$temp',
         type: 'object',
         describe: '缓存属性，保存一些函数必须但无需暴露的数据',
         data: [

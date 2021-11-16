@@ -22,11 +22,11 @@ DefaultDataWithLife.initInstrcution = function() {
     ],
     data: [
       {
-        prop: '$LocalTempData',
+        prop: '$temp',
         extend: true,
         data: [
           {
-            prop: 'AutoCreateLifeNameList',
+            prop: 'lifeCreateNameList',
             type: 'string[]',
             describe: '继承链上所有创建相关生命周期名称保存数组，创建生命周期触发仅能在创建时触发，此列表缓存实现后期挂载的生命周期创建相关函数时进行可能无法触发的提示'
           }

@@ -10,7 +10,7 @@ class DefaultDataWithLife extends DefaultData {
     super(initOption)
     this.setModule('life', new LifeData(initOption.life))
     // 创建生命周期的名称列表-自动
-    this.$LocalTempData.AutoCreateLifeNameList = []
+    this.$temp.lifeCreateNameList = []
     this.triggerCreateLife('DefaultDataWithLife', 'beforeCreate', initOption)
     this.triggerCreateLife('DefaultDataWithLife', 'created')
   }
@@ -22,7 +22,7 @@ class DefaultDataWithLife extends DefaultData {
    * @returns {string | string} id/idList
    */
   onLife (name, data) {
-    if (this.$LocalTempData.AutoCreateLifeNameList.indexOf(name) > -1) {
+    if (this.$temp.lifeCreateNameList.indexOf(name) > -1) {
       this.printMsg(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
     }
     return this.getModule('life').on(name, data)
@@ -58,7 +58,7 @@ class DefaultDataWithLife extends DefaultData {
     if (env != this.constructor._name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)
     }
-    this.$LocalTempData.AutoCreateLifeNameList.push(lifeName)
+    this.$temp.lifeCreateNameList.push(lifeName)
     this.triggerLife(lifeName, this, ...args)
   }
   /**
