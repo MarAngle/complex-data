@@ -510,30 +510,24 @@ class EditData extends BaseData {
     }
   }
   readyData() {
-    return new Promise((resolve, reject) => {
-      let needLoad = false
-      if (this.type == 'select') {
-        if (!this.option.search.show && this.getData) {
-          // select非search模式下需要进行数据的加载
-          needLoad = true
-        }
-      } else if (this.type == 'cascader') {
-        if (this.getData) {
-          // select非search模式下需要进行数据的加载
-          needLoad = true
-        }
+    let needLoad = false
+    if (this.type == 'select') {
+      if (!this.option.search.show && this.getData) {
+        // select非search模式下需要进行数据的加载
+        needLoad = true
       }
-      if (needLoad) {
-        // search需要在打开阶段进行数据获取
-        this.loadData(this.reload).then(res => {
-          resolve(res)
-        }, err => {
-          reject(err)
-        })
-      } else {
-        resolve({ status: 'success' })
+    } else if (this.type == 'cascader') {
+      if (this.getData) {
+        // select非search模式下需要进行数据的加载
+        needLoad = true
       }
-    })
+    }
+    if (needLoad) {
+      // search需要在打开阶段进行数据获取
+      return this.loadData(this.reload)
+    } else {
+      return Promise.resolve({ status: 'success' })
+    }
   }
   setValueToArray() {
     let proplist = ['initdata', 'defaultdata', 'resetdata']

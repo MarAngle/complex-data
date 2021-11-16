@@ -97,47 +97,37 @@ class BaseData extends DefaultDataWithLife {
    * 自动加载或者更新数据
    */
   autoLoadData (next, ...args) {
-    return new Promise((resolve, reject) => {
-      if (next === undefined || next === true) {
-        next = 'auto'
+    if (next === undefined || next === true) {
+      next = 'auto'
+    }
+    let target = ''
+    if (next == 'auto') {
+      let loadStatus = this.getStatus('load')
+      let updateStatus = this.getStatus('update')
+      if (loadStatus.value == 'unload') {
+        next = 'load'
+        target = 'load'
+      } else if (loadStatus.value == 'loading') {
+        next = 'load'
+        target = 'load'
+      } else if (updateStatus.value == 'updated') { // loadStatus.value == 'loaded'
+        next = 'update'
+        target = 'update'
+      } else if (updateStatus == 'updating') {
+        next = 'update'
+        target = 'update'
       }
-      let target = ''
-      if (next == 'auto') {
-        let loadStatus = this.getStatus('load')
-        let updateStatus = this.getStatus('update')
-        if (loadStatus.value == 'unload') {
-          next = 'load'
-          target = 'load'
-        } else if (loadStatus.value == 'loading') {
-          next = 'load'
-          target = 'load'
-        } else if (updateStatus.value == 'updated') { // loadStatus.value == 'loaded'
-          next = 'update'
-          target = 'update'
-        } else if (updateStatus == 'updating') {
-          next = 'update'
-          target = 'update'
-        }
-      }
-      // auto 保证数据的更新
-      if (next == 'load') {
-        args.splice(0, 1, true) // 强制获取新数据
-        this.loadData(...args).then(res => {
-          resolve(res)
-        }, err => {
-          reject(err)
-        })
-      } else if (next == 'update') {
-        args.splice(0, 1, false) // update强制换取，此处设置为ing状态不重新拉取
-        this.loadUpdateData(...args).then(res => {
-          resolve(res)
-        }, err => {
-          reject(err)
-        })
-      } else {
-        resolve({ next: next, target: target })
-      }
-    })
+    }
+    // auto 保证数据的更新
+    if (next == 'load') {
+      args.splice(0, 1, true) // 强制获取新数据
+      return this.loadData(...args)
+    } else if (next == 'update') {
+      args.splice(0, 1, false) // update强制换取，此处设置为ing状态不重新拉取
+      return this.loadUpdateData(...args)
+    } else {
+      return Promise.resolve({ next: next, target: target })
+    }
   }
  /**
   * 数据相关函数定义
@@ -147,31 +137,25 @@ class BaseData extends DefaultDataWithLife {
   * @returns {Promise}
   */
   loadData (force, ...args) {
-    return new Promise((resolve, reject) => {
-      if (force === true) {
-        force = {}
-      }
-      let loadStatus = this.getStatus('load')
-      if (loadStatus.value == 'unload') {
+    if (force === true) {
+      force = {}
+    }
+    let loadStatus = this.getStatus('load')
+    if (loadStatus.value == 'unload') {
+      this.triggerGetData(...args)
+    } else if (loadStatus.value == 'loading') {
+      // 直接then
+      if (force && force.ing) {
         this.triggerGetData(...args)
-      } else if (loadStatus.value == 'loading') {
-        // 直接then
-        if (force && force.ing) {
-          this.triggerGetData(...args)
-        }
-      } else if (loadStatus.value == 'loaded') {
-        if (force) {
-          this.triggerGetData(...args)
-        }
       }
-      this.triggerPromise('load', {
-        errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
-        correct: force ? force.correct : undefined
-      }).then(res => {
-        resolve(res)
-      }, err => {
-        reject(err)
-      })
+    } else if (loadStatus.value == 'loaded') {
+      if (force) {
+        this.triggerGetData(...args)
+      }
+    }
+    return this.triggerPromise('load', {
+      errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+      correct: force ? force.correct : undefined
     })
   }
   /**
@@ -241,27 +225,21 @@ class BaseData extends DefaultDataWithLife {
   * @returns {Promise}
   */
   loadUpdateData (force, ...args) {
-    return new Promise((resolve, reject) => {
-      if (force === true) {
-        force = {}
-      }
-      let updateStatus = this.getStatus('update')
-      if (updateStatus.value == 'updated') {
+    if (force === true) {
+      force = {}
+    }
+    let updateStatus = this.getStatus('update')
+    if (updateStatus.value == 'updated') {
+      this.triggerUpdateData(...args)
+    } else { // updating
+      // 直接then'
+      if (force) {
         this.triggerUpdateData(...args)
-      } else { // updating
-        // 直接then'
-        if (force) {
-          this.triggerUpdateData(...args)
-        }
       }
-      this.triggerPromise('update', {
-        errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`),
-        correct: force ? force.correct : undefined
-      }).then(res => {
-        resolve(res)
-      }, err => {
-        reject(err)
-      })
+    }
+    return this.triggerPromise('update', {
+      errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`),
+      correct: force ? force.correct : undefined
     })
   }
 
@@ -272,40 +250,40 @@ class BaseData extends DefaultDataWithLife {
    * @returns {Promise}
    */
   triggerMethod (target, ...args) {
-    return new Promise((resolve, reject) => {
-      let next = {
-        data: false,
-        promise: null,
-        msg: '',
-        code: ''
-      }
-      let type = _func.getType(target)
-      if (type === 'string') {
-        if (this[target]) {
-          if (_func.getType(this[target]) === 'function') {
-            next.promise = this[target](...args)
-          } else {
-            next.msg = `${target}属性非函数类型，triggerMethod函数触发失败！`
-            next.code = 'errMethod'
-          }
+    let next = {
+      data: false,
+      promise: null,
+      msg: '',
+      code: ''
+    }
+    let type = _func.getType(target)
+    if (type === 'string') {
+      if (this[target]) {
+        if (_func.getType(this[target]) === 'function') {
+          next.promise = this[target](...args)
         } else {
-          next.msg = `未定义${target}函数，triggerMethod函数触发失败！`
-          next.code = 'noMethod'
+          next.msg = `${target}属性非函数类型，triggerMethod函数触发失败！`
+          next.code = 'errMethod'
         }
-      } else if (type === 'function') {
-        next.promise = target(...args)
       } else {
-        next.msg = `target参数接受string/function[promise]，当前值为${target}，triggerMethod函数触发失败！`
-        next.code = 'errArgs'
+        next.msg = `未定义${target}函数，triggerMethod函数触发失败！`
+        next.code = 'noMethod'
       }
-      if (next.promise) {
-        if (_func.isPromise(next.promise)) {
-          next.data = true
-        } else {
-          next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，triggerMethod函数触发失败！`
-          next.code = 'notPromise'
-        }
+    } else if (type === 'function') {
+      next.promise = target(...args)
+    } else {
+      next.msg = `target参数接受string/function[promise]，当前值为${target}，triggerMethod函数触发失败！`
+      next.code = 'errArgs'
+    }
+    if (next.promise) {
+      if (_func.isPromise(next.promise)) {
+        next.data = true
+      } else {
+        next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，triggerMethod函数触发失败！`
+        next.code = 'notPromise'
       }
+    }
+    return new Promise((resolve, reject) => {
       if (next.data) {
         this.setStatus('operating')
         next.promise.then(res => {
@@ -330,19 +308,13 @@ class BaseData extends DefaultDataWithLife {
    * @returns {Promise}
    */
   triggerMethodByOperate (target, ...args) {
-    return new Promise((resolve, reject) => {
-      let operate = this.getStatus()
-      if (operate.value == 'operated') {
-        this.triggerMethod(target, ...args).then(res => {
-          resolve(res)
-        }, err => {
-          reject(err)
-        })
-      } else {
-        this.printMsg(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
-        reject({ status: 'fail', code: 'clash' })
-      }
-    })
+    let operate = this.getStatus()
+    if (operate.value == 'operated') {
+      return this.triggerMethod(target, ...args)
+    } else {
+      this.printMsg(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
+      return Promise.reject({ status: 'fail', code: 'clash' })
+    }
   }
 
   /**
