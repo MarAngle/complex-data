@@ -11,7 +11,7 @@ class DefaultData extends Data {
     this.$prop = initOption.prop || ''
     this.$func = {}
     this.$extra = {}
-    this.data = initOption.data
+    this.data = initOption.data || {}
     this.setParent(initOption.parent)
     this.initFunc(initOption.func)
     this.initExtra(initOption.extra)
