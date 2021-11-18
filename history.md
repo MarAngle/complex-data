@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.11
+- EditData修正select的检索模式下初始加载未判断limit的BUG
+
 ### 2.2.10
 - func依赖升级
 - Promise优化

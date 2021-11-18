@@ -226,7 +226,9 @@ class EditData extends BaseData {
                 this.on.search('')
               } else {
                 // 不强制加载
-                this.loadData(false, this.option.search.value).then(res => {}, err => { this.printMsg('loadData失败！', 'error', { data: err }) })
+                if (this.func.autoSearch('init')) {
+                  this.loadData(false, this.option.search.value).then(res => {}, err => { this.printMsg('loadData失败！', 'error', { data: err }) })
+                }
               }
             }
           }
