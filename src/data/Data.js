@@ -19,14 +19,14 @@ class Data {
    * @returns {string}
    */
   $selfName() {
-    return `[CLASS:${this.constructor.$name} ID:${this.$getId()}]`
+    return `CLASS:${this.constructor.$name} ID:${this.$getId()}`
   }
   /**
    * 创建输出信息
    * @param {string} content 需要输出的信息
    * @returns {string}
    */
-  $buildPrintMsg (content) {
+  $createMsg (content) {
     return `${this.$selfName()}:${content}`
   }
   /**
@@ -37,8 +37,8 @@ class Data {
    * @param {string} [option.data] 设置项
    * @param {'error' | 'warn' | 'log'} [option.type] 设置项
    */
-  $printMsg (content, type = 'error', option) {
-    content = this.$buildPrintMsg(content)
+  $exportMsg (content, type = 'error', option) {
+    content = this.$createMsg(content)
     _func.printMsgAct(content, type, option)
   }
   toString () {
