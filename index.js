@@ -1,5 +1,5 @@
 
-import SimpleData from './src/data/SimpleData'
+import Data from './src/data/Data'
 export {
-  SimpleData
+  Data
 }
