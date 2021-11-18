@@ -1,10 +1,9 @@
 import _func from 'complex-func'
-import install from './../utils/install'
 
 class SimpleData {
   constructor() {
-    this.$LocalTempData = {
-      moduleId: install.getId(this.constructor._name)
+    this.$temp = {
+      moduleId: 1
     }
   }
   /**
@@ -43,7 +42,7 @@ class SimpleData {
    * @returns {string}
    */
   $getModuleId (data = '') {
-    return this.$LocalTempData.moduleId + data
+    return this.$temp.moduleId + data
   }
 }
 
