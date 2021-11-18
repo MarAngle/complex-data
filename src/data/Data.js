@@ -19,7 +19,7 @@ class Data {
    * @returns {string}
    */
   $selfName() {
-    return `CLASS:${this.constructor.$name} ID:${this.$getId()}`
+    return `CLASS:${this.constructor.$name}-ID:${this.$getId()}`
   }
   /**
    * 创建输出信息

@@ -126,9 +126,9 @@ class DefaultData extends Data {
     let parentName = ''
     let parent = this.getParent()
     if (parent && parent.$selfName) {
-      parentName += `{PARENT:${parent.$selfName()}} `
+      parentName += `{PARENT:${parent.$selfName()}}-`
     }
-    return `${parentName}[${super.$selfName()} NAME:${this.name} PROP:${this.prop}]`
+    return `${parentName}[${super.$selfName()}-(${this.name}/${this.prop})]`
   }
 }
 
