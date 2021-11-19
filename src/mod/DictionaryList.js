@@ -1,13 +1,13 @@
 import _func from 'complex-func'
-import DefaultData from './../data/DefaultData'
+import SimpleData from './../data/SimpleData'
 import DictionaryData from './DictionaryData'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
 const propList = ['id', 'parentId', 'children']
 
-class DictionaryList extends DefaultData {
-  constructor (initOption, payload = {}) {
+class DictionaryList extends SimpleData {
+  constructor (initOption, payload) {
     super(initOption)
     this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
     this.$option = new OptionData({
@@ -105,66 +105,6 @@ class DictionaryList extends DefaultData {
     return initOption
   }
   /**
-   * 生成字典列表
-   * @param {*} initOption 列表传参
-   * @param {object} [payload] 设置项
-   */
-  initDictionaryData (initOption, payload = {}) { // type init push replace
-    if (payload.type == 'init') {
-      this.data.clear()
-    }
-    if (initOption) {
-      initOption = this.parseInitOption(initOption)
-      // 触发update生命周期
-      this.triggerLife('beforeUpdate', this, initOption, payload)
-      this.setParent(initOption.parent)
-      this.setLayout(initOption.layout)
-      let isChildren = this.$option.getData('isChildren')
-      for (let n in initOption.list) {
-        let ditemOption = initOption.list[n]
-        // 判断是否为一级，不为一级需要将一级的默认属性添加
-        this.parseOptionFromParent(ditemOption, initOption.parent, isChildren)
-        let ditem = this.getItem(ditemOption.prop)
-        let act = {
-          build: true,
-          children: true
-        }
-        if (ditem) {
-          if (payload.type == 'init') {
-            // 加载模式下不能出现相同字段=加载模式出发前会先清空
-            act.build = false
-            act.children = false
-            this.printMsg(`字典列表加载:${ditemOption.prop}重复!`)
-          } else if (payload.type == 'push') {
-            // 添加模式，不对相同ditem做处理，仅对额外数据做处理
-            act.build = false
-          } else if (payload.type == 'replace') {
-            // 重构模式，相同字段替换
-          }
-        } else {
-          // 无对应值，直接添加
-        }
-        if (act.build) {
-          // 构建字典数据
-          ditemOption.parent = this
-          ditem = new DictionaryData(ditemOption, {
-            layout: this.getLayout()
-          })
-          this.data.set(ditem.prop, ditem)
-        }
-        if (act.children) {
-          // 构建子字典列表
-          this.buildItemDictionary(ditem, ditemOption)
-        }
-      }
-      this.initPropData(initOption)
-    }
-    // 触发update生命周期
-    this.triggerLife('updated', this, {
-      type: payload.type
-    })
-  }
-  /**
    * 加载propData数据
    * @param {object} [initOption] 设置项
    */
@@ -234,6 +174,67 @@ class DictionaryList extends DefaultData {
       ditem.dictionary = this
     }
   }
+  /**
+   * 生成字典列表
+   * @param {*} initOption 列表传参
+   * @param {object} [payload] 设置项
+   */
+  initDictionaryData (initOption, payload = {}) { // type init push replace
+    if (payload.type == 'init') {
+      this.data.clear()
+    }
+    if (initOption) {
+      initOption = this.parseInitOption(initOption)
+      // 触发update生命周期
+      this.triggerLife('beforeUpdate', this, initOption, payload)
+      let parentData = initOption.parent
+      this.setParent(parentData)
+      this.setLayout(initOption.layout)
+      let isChildren = this.$option.getData('isChildren')
+      for (let n in initOption.list) {
+        let ditemOption = initOption.list[n]
+        // 判断是否为一级，不为一级需要将一级的默认属性添加
+        this.parseOptionFromParent(ditemOption, parentData, isChildren)
+        let ditem = this.getItem(ditemOption.prop)
+        let act = {
+          build: true,
+          children: true
+        }
+        if (ditem) {
+          if (payload.type == 'init') {
+            // 加载模式下不能出现相同字段=加载模式出发前会先清空
+            act.build = false
+            act.children = false
+            this.printMsg(`字典列表加载:${ditemOption.prop}重复!`)
+          } else if (payload.type == 'push') {
+            // 添加模式，不对相同ditem做处理，仅对子数据做处理
+            act.build = false
+          } else if (payload.type == 'replace') {
+            // 重构模式，相同字段替换
+          }
+        } else {
+          // 无对应值，直接添加
+        }
+        if (act.build) {
+          // 构建字典数据
+          ditemOption.parent = this
+          ditem = new DictionaryData(ditemOption, {
+            layout: this.getLayout()
+          })
+          this.data.set(ditem.prop, ditem)
+        }
+        if (act.children) {
+          // 构建子字典列表
+          this.buildItemDictionary(ditem, ditemOption)
+        }
+      }
+      this.initPropData(initOption)
+    }
+    // 触发update生命周期
+    this.triggerLife('updated', this, {
+      type: payload.type
+    })
+  }
   // 重新创建字典列表
   rebuildData (initOption, payload = {}) {
     payload.type = payload.type || 'replace'
@@ -276,8 +277,9 @@ class DictionaryList extends DefaultData {
     if (from == 'prop') {
       return this.data.get(data)
     } else if (from == 'id') {
+      let idProp = this.getIdProp()
       for (let ditem of this.data.values()) {
-        if (ditem[this.getIdProp()] == data) {
+        if (ditem[idProp] == data) {
           return ditem
         }
       }
@@ -577,7 +579,7 @@ class DictionaryList extends DefaultData {
   install (target) {
     // 监听事件
     this.onLife('updated', {
-      id: target.$getModuleId('dictionaryUpdated'),
+      id: target.$getId() + 'dictionaryUpdated',
       data: (...args) => {
         target.triggerLife('dictionaryUpdated', ...args)
       }
@@ -589,7 +591,7 @@ class DictionaryList extends DefaultData {
    */
   uninstall (target) {
     // 停止监听事件
-    this.offLife('updated', target.$getModuleId('dictionaryUpdated'))
+    this.offLife('updated', target.$getId() + 'dictionaryUpdated')
   }
 }
 
