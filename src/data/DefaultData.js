@@ -16,6 +16,30 @@ class DefaultData extends SimpleData {
     this.onCreateLife('DefaultData', 'created', initOption)
   }
   /**
+   * 设置模块
+   * @param {string} modName 模块名
+   * @param {object} data 模块实例
+   */
+  setModule(modName, data) {
+    this.$module.setData(modName, data)
+  }
+  /**
+   * 加载模块
+   * @param {string} modName 模块名
+   * @param {object} data 模块实例
+   */
+  installModule(modName, data) {
+    return this.$module.installData(modName, data)
+  }
+  /**
+   * 卸载模块
+   * @param {string} modName 模块名
+   * @returns {object | undefined} 卸载的模块
+   */
+  uninstallModule(modName) {
+    return this.$module.uninstallData(modName)
+  }
+  /**
    * 触发创造生命周期
    * @param {string} env 当前调用对象名称
    * @param {string} lifeName 生命周期

@@ -24,6 +24,7 @@ class ModuleData {
   /**
    * 卸载模块
    * @param {string} modName 模块名
+   * @returns {object | undefined} 卸载的模块
    */
   uninstallData(modName) {
     let modData = this[modName]
@@ -34,6 +35,7 @@ class ModuleData {
       }
       this[modName] = undefined
     }
+    return modData
   }
   /**
    * 加载模块
