@@ -14,8 +14,12 @@ let lifeId = new IdData({
 })
 
 class FuncData extends Data {
-  constructor (initOption = {}) {
+  constructor (initOption) {
+    if (!initOption) {
+      initOption = {}
+    }
     super()
+    this.name = initOption.name
     this.data = new Map()
     if (initOption.data) {
       this.build(initOption.data)
@@ -92,7 +96,7 @@ class FuncData extends Data {
           data.id = lifeId.getData()
         }
         if (this.data.has(data.id) && !data.replace) {
-          this.printMsg(`存在当前值:${data.id}`)
+          this.$exportMsg(`存在当前值:${data.id}`)
         } else {
           this.pushData(data)
           if (data.immediate) {
@@ -101,10 +105,10 @@ class FuncData extends Data {
           return data.id
         }
       } else {
-        this.printMsg(`设置(${data.id || '-'})未定义func`)
+        this.$exportMsg(`设置(${data.id || '-'})未定义func`)
       }
     } else {
-      this.printMsg(`设置data参数需要object或者function`)
+      this.$exportMsg(`设置data参数需要object或者function`)
     }
     return undefined
   }
@@ -130,7 +134,7 @@ class FuncData extends Data {
         this.off(id)
       }
     } else {
-      this.printMsg(`不存在当前值(${id})`)
+      this.$exportMsg(`不存在当前值(${id})`)
     }
   }
   /**
@@ -158,6 +162,9 @@ class FuncData extends Data {
    */
   destroy() {
     this.reset()
+  }
+  $selfName () {
+    return `${super.$selfName()}-NAME:${this.name}`
   }
 }
 
