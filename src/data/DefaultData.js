@@ -12,8 +12,8 @@ class DefaultData extends SimpleData {
     this.$module = new ModuleData({
       life: new LifeData(initOption.life)
     })
-    this.onCreateLife('DefaultData', 'beforeCreate', initOption)
-    this.onCreateLife('DefaultData', 'created', initOption)
+    this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
+    this.triggerCreateLife('DefaultData', 'created', initOption)
   }
   /**
    * 设置模块
@@ -45,8 +45,8 @@ class DefaultData extends SimpleData {
    * @param {string} lifeName 生命周期
    * @param  {*[]} args 参数
    */
-  onCreateLife(env, lifeName, ...args) {
-    return this.$module.life.onCreate(env, this.constructor.$name, lifeName, this, ...args)
+  triggerCreateLife(env, lifeName, ...args) {
+    return this.$module.life.triggerCreate(env, this.constructor.$name, lifeName, this, ...args)
   }
   /**
    * 设置生命周期回调函数

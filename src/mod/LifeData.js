@@ -28,9 +28,9 @@ class LifeData extends Data {
       this.initData(initOption)
     }
   }
-  onCreate(env, name, lifeName, ...args) {
+  triggerCreate(env, name, lifeName, ...args) {
     if (!env) {
-      this.$exportMsg('onCreate函数需要传递env参数')
+      this.$exportMsg('triggerCreate函数需要传递env参数')
     }
     if (env != name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)

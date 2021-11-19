@@ -1,4 +1,7 @@
 let config = {
+  UpdateData: {
+    offset: 10000
+  },
   StatusData: {
     list: [
       {

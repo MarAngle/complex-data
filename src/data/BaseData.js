@@ -9,8 +9,10 @@ class BaseData extends DefaultData {
       initOption = {}
     }
     super(initOption)
+    this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.setModule('status', new StatusData(initOption.status))
     this.setModule('promise', new PromiseData())
+    this.triggerCreateLife('BaseData', 'created', initOption)
   }
   /**
    * 设置状态
