@@ -1,5 +1,6 @@
 import _func from 'complex-func'
 import DefaultData from './DefaultData'
+import ModuleData from './../mod/ModuleData'
 import StatusData from './../mod/StatusData'
 import PromiseData from './../mod/PromiseData'
 
@@ -9,11 +10,11 @@ class BaseData extends DefaultData {
       initOption = {}
     }
     super(initOption)
+    this.$module = new ModuleData({
+      status: new StatusData(initOption.status),
+      promise: new PromiseData()
+    })
     this.$promise = new PromiseData()
-    this.initStatus(initOption.status)
-  }
-  initStatus(status) {
-    this.$status = new StatusData(status)
   }
   /**
    * 设置状态
