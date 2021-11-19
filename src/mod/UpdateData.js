@@ -5,16 +5,6 @@ import DefaultData from './../data/DefaultData'
  * 需要设置methods: trigger,其中的next必须需要调用
 */
 
-const installDictionary = {
-  setUpdateOffset: 'setOffset',
-  startUpdate: 'start',
-  updateImmerdiate: 'updateImmerdiate',
-  autoStartUpdate: 'autoStart',
-  nextUpdate: 'next',
-  clearUpdate: 'clear',
-  resetUpdate: 'reset'
-}
-
 class UpdateData extends DefaultData {
   constructor (initOption) {
     if (!initOption) {
@@ -221,9 +211,6 @@ class UpdateData extends DefaultData {
         }
       }
     })
-    for (let name in installDictionary) {
-      
-    }
   }
   /**
    * 模块卸载

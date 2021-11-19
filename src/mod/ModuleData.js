@@ -67,6 +67,26 @@ class ModuleData {
   getParent() {
     return this.$parent
   }
+  /**
+   * 触发指定模块的指定函数
+   * @param {string} modName 模块名
+   * @param {string} method 函数名
+   * @param {*[]} args 参数
+   * @returns {*}
+   */
+  triggerMethod(modName, method, args) {
+    let mod = this[modName]
+    if (mod) {
+      let type = typeof mod[method]
+      if (type === 'function') {
+        return mod[method](...args)
+      } else {
+        this.$exportMsg(`${modName}模块${method}属性为${type}，函数触发失败！`)
+      }
+    } else {
+      this.$exportMsg(`不存在${modName}模块`)
+    }
+  }
 }
 
 ModuleData.$name = 'ModuleData'

@@ -69,6 +69,45 @@ class BaseData extends DefaultData {
   triggerPromise(prop, option = {}) {
     return this.$module.promise.triggerData(prop, option)
   }
+  setUpdateOffset (...args) {
+    this.triggerModuleMethod('update', 'setOffset', args)
+  }
+  /**
+   * 开始更新
+   */
+  startUpdate (...args) {
+    this.triggerModuleMethod('update', 'start', args)
+  }
+  /**
+   * 立即更新
+   */
+  updateImmerdiate (...args) {
+    this.triggerModuleMethod('update', 'updateImmerdiate', args)
+  }
+  /**
+   * 自动更新
+   */
+  autoStartUpdate (...args) {
+    this.triggerModuleMethod('update', 'autoStart', args)
+  }
+  /**
+   * 触发下一次定时
+   */
+  nextUpdate (...args) {
+    this.triggerModuleMethod('update', 'next', args)
+  }
+  /**
+   * 清除更新
+   */
+  clearUpdate (...args) {
+    this.triggerModuleMethod('update', 'clear', args)
+  }
+  /**
+   * 重置更新
+   */
+  resetUpdate (...args) {
+    this.triggerModuleMethod('update', 'reset', args)
+  }
   /**
    * 数据相关函数定义
    * 加载判断load是否加载成功和强制判断值

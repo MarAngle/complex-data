@@ -31,6 +31,9 @@ class DefaultData extends SimpleData {
   installModule(modName, data) {
     return this.$module.installData(modName, data)
   }
+  triggerModuleMethod(modName, method, args) {
+    this.$module.triggerMethod(modName, method, args)
+  }
   /**
    * 卸载模块
    * @param {string} modName 模块名
