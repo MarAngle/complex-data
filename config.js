@@ -1,4 +1,9 @@
 let config = {
+  LayoutData: {
+    grid: 24,
+    label: 8,
+    content: 16
+  },
   UpdateData: {
     offset: 10000
   },
