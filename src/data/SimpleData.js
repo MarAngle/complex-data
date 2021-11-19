@@ -11,10 +11,10 @@ class SimpleData extends Data {
     this.$prop = initOption.prop || ''
     this.$func = {}
     this.$extra = {}
-    this.data = initOption.data || {}
     this.setParent(initOption.parent)
     this.initFunc(initOption.func)
     this.initExtra(initOption.extra)
+    this.initRoot(initOption.root)
     this.initMethods(initOption.methods)
   }
   /**
@@ -37,23 +37,41 @@ class SimpleData extends Data {
     return this.$parent
   }
   /**
+   * 挂载根属性
+   * @param {*} rootData 函数对象
+   */
+  initRoot (rootData) {
+    if (rootData) {
+      for (let prop in rootData) {
+        if (_func.hasProp(this, prop)) {
+          let type = _func.getType(this[prop])
+          this.$exportMsg(`initRoot:对应属性${prop}存在类型为${type}的同名属性，属性未挂载!`)
+        } else {
+          this[prop] = rootData[prop]
+        }
+      }
+    }
+  }
+  /**
    * 挂载方法
    * @param {*} methods 函数对象
    */
   initMethods (methods) {
-    for (let prop in methods) {
-      let build = true
-      if (this[prop] !== undefined) {
-        let type = _func.getType(this[prop])
-        if (type !== 'function') {
-          this.$exportMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
-          build = false
-        } else {
-          this.$exportMsg(`initMethods:${prop}函数已被改写!`, 'warn')
+    if (methods) {
+      for (let prop in methods) {
+        let build = true
+        if (this[prop] !== undefined) {
+          let type = _func.getType(this[prop])
+          if (type !== 'function') {
+            this.$exportMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
+            build = false
+          } else {
+            this.$exportMsg(`initMethods:${prop}函数已被改写!`, 'warn')
+          }
         }
-      }
-      if (build) {
-        this[prop] = methods[prop]
+        if (build) {
+          this[prop] = methods[prop]
+        }
       }
     }
   }
