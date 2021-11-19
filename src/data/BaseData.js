@@ -2,6 +2,8 @@ import _func from 'complex-func'
 import DefaultData from './DefaultData'
 import StatusData from './../mod/StatusData'
 import PromiseData from './../mod/PromiseData'
+import OptionData from './../mod/OptionData'
+import UpdateData from './../mod/UpdateData'
 
 class BaseData extends DefaultData {
   constructor(initOption) {
@@ -12,6 +14,10 @@ class BaseData extends DefaultData {
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.setModule('status', new StatusData(initOption.status))
     this.setModule('promise', new PromiseData())
+    this.setModule('option', new OptionData())
+    if (initOption.update) {
+      this.setModule('update', new UpdateData(initOption.update))
+    }
     this.triggerCreateLife('BaseData', 'created', initOption)
   }
   /**
@@ -30,6 +36,23 @@ class BaseData extends DefaultData {
    */
   getStatus(prop = 'operate') {
     return this.$module.status.getData(prop)
+  }
+  /**
+   * 设置option
+   * @param {string} prop 指定属性名
+   * @param {*} optiondata 指定属性的设置参数数据
+   * @param {string} type 操作来源
+   */
+  setOption(prop, optiondata, type) {
+    this.$module.option.setData(prop, optiondata, type)
+  }
+  /**
+   * 获取设置
+   * @param {string} prop 属性
+   * @returns {*}
+   */
+  getOption(prop) {
+    return this.$module.option.getData(prop)
   }
   /**
    * 恢复状态
