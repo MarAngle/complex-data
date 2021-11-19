@@ -50,16 +50,16 @@ class DictionaryData extends SimpleData {
   setLayout (layoutOption, parentLayoutOption) {
     let option = layoutOption || parentLayoutOption
     if (option && option.constructor === LayoutData) {
-      this.layout = option
+      this.$layout = option
     } else {
-      this.layout = new LayoutData(option)
+      this.$layout = new LayoutData(option)
     }
   }
   getLayout (prop) {
     if (prop) {
-      return this.layout.getData(prop)
+      return this.$layout.getData(prop)
     } else {
-      return this.layout
+      return this.$layout
     }
   }
   /**
