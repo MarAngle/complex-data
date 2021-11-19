@@ -167,11 +167,11 @@ class DictionaryList extends SimpleData {
         initOption.option.build = this.getBuildOption()
       }
       initOption.parent = ditem
-      ditem.dictionary = new DictionaryList(initOption, {
+      ditem.$dictionary = new DictionaryList(initOption, {
         layout: this.getLayout()
       })
     } else if (type == 'self') {
-      ditem.dictionary = this
+      ditem.$dictionary = this
     }
   }
   /**
@@ -398,7 +398,7 @@ class DictionaryList extends SimpleData {
         let originprop = ditem.getInterface('originprop', originfromType)
         let origindata = _func.getProp(originitem, originprop)
         let targetdata
-        if (ditem.dictionary) {
+        if (ditem.$dictionary) {
           depth++
           if (targetType == 'array') {
             if (origindata && origindata.length > 0) {
@@ -409,7 +409,7 @@ class DictionaryList extends SimpleData {
               origindata = []
             }
           } else {
-            origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, depth)
+            origindata = ditem.$dictionary.formatData({}, origindata, originfromType, option, depth)
           }
         }
         targetdata = ditem.formatOrigin(origindata, {
@@ -422,12 +422,12 @@ class DictionaryList extends SimpleData {
       } else {
         if (targetitem[ditem.prop] === undefined) {
           let targetdata
-          if (ditem.dictionary) {
+          if (ditem.$dictionary) {
             depth++
             if (targetType == 'array') {
               targetdata = []
             } else {
-              targetdata = ditem.dictionary.formatData({}, {}, originfromType, option, depth)
+              targetdata = ditem.$dictionary.formatData({}, {}, originfromType, option, depth)
             }
           } else {
             if (targetType == 'object') {
@@ -487,12 +487,12 @@ class DictionaryList extends SimpleData {
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let pitem = ditem.getModData(modType, payload)
-      if (ditem.dictionary && ditem.mod[modType] && ditem.mod[modType].$children) {
+      if (ditem.$dictionary && ditem.mod[modType] && ditem.mod[modType].$children) {
         let childrenProp = ditem.mod[modType].$children
         if (childrenProp === true) {
           childrenProp = 'children'
         }
-        pitem[childrenProp] = ditem.dictionary.getPageList(modType, payload)
+        pitem[childrenProp] = ditem.$dictionary.getPageList(modType, payload)
       }
       pagelist.push(pitem)
     }
