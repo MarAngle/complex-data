@@ -14,6 +14,7 @@ class DefaultData extends SimpleData {
     })
     this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
     this.data = initOption.data || {}
+    this.$module.$initMain(initOption.module)
     this.triggerCreateLife('DefaultData', 'created', initOption)
   }
   /**
