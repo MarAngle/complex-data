@@ -119,7 +119,7 @@ class DictionaryList extends SimpleData {
         } else if (type == 'string' || type == 'number') {
           this.$propData[prop].prop = data
         } else {
-          this.printMsg(`字典列表propdata:${prop}属性格式未预期:${type}，请检查数据!`)
+          this.$exportMsg(`字典列表propdata:${prop}属性格式未预期:${type}，请检查数据!`)
         }
       }
     }
@@ -205,7 +205,7 @@ class DictionaryList extends SimpleData {
             // 加载模式下不能出现相同字段=加载模式出发前会先清空
             act.build = false
             act.children = false
-            this.printMsg(`字典列表加载:${ditemOption.prop}重复!`)
+            this.$exportMsg(`字典列表加载:${ditemOption.prop}重复!`)
           } else if (payload.type == 'push') {
             // 添加模式，不对相同ditem做处理，仅对子数据做处理
             act.build = false

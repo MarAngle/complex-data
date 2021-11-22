@@ -141,12 +141,8 @@ class DictionaryData extends SimpleData {
    * @param {string} mod 模块
    * @returns {boolean}
    */
-  isMod (modType) {
-    let fg = false
-    if (this.$mod[modType]) {
-      fg = true
-    }
-    return fg
+  getMod (modType) {
+    return this.$mod[modType]
   }
   /**
    * 触发可能存在的func函数
@@ -186,7 +182,7 @@ class DictionaryData extends SimpleData {
    * @returns {*}
    */
   getFormData (modType, { targetitem, originitem, from = 'init' }) {
-    let mod = this.$mod[modType]
+    let mod = this.getMod(modType)
     let targetData
     // 不存在mod情况下生成值无意义，不做判断
     if (mod) {
@@ -207,7 +203,7 @@ class DictionaryData extends SimpleData {
       // 调用模块的readyData
       if (mod.readyData) {
         mod.readyData().then(() => {}, err => {
-            this.printMsg(`${modType}模块readyData调用失败！`, 'error', {
+            this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
             data: err,
             type: 'error'
           })
