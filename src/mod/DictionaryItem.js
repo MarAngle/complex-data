@@ -1,7 +1,7 @@
 import _func from 'complex-func'
 import Data from './../data/Data'
 
-class DictionaryData extends Data {
+class DictionaryItem extends Data {
   constructor (initOption) {
     super()
     if (!initOption) {
@@ -10,6 +10,6 @@ class DictionaryData extends Data {
   }
 }
 
-DictionaryData.$name = 'DictionaryData'
+DictionaryItem.$name = 'DictionaryItem'
 
-export default DictionaryData
+export default DictionaryItem
