@@ -10,11 +10,11 @@ class ListData extends ComplexData {
     }
     super(initOption)
     this.triggerCreateLife('ListData', 'beforeCreate', initOption)
-    if (initOption.choice) {
-      this.setModule('choice', new ChoiceData(initOption.choice))
-    }
     if (initOption.pagination) {
       this.setModule('pagination', new PaginationData(initOption.pagination))
+    }
+    if (initOption.choice) {
+      this.setModule('choice', new ChoiceData(initOption.choice))
     }
     this.$initListDataLife()
     this.triggerCreateLife('ListData', 'created')
@@ -27,7 +27,7 @@ class ListData extends ComplexData {
     this.onLife('beforeReload', {
       id: 'AutoListDataBeforeReload',
       data: (instantiater, option) => {
-        if (this.getModule('pagination') && option.page) {
+        if (this.$module.pagination && option.page) {
           if (option.page === true) {
             this.setPageData(1, 'page', true)
           } else {
@@ -46,17 +46,17 @@ class ListData extends ComplexData {
    */
   getPageData (prop) {
     let res
-    if (this.getModule('pagination')) {
+    if (this.$module.pagination) {
       if (prop == 'page') {
-        res = this.getModule('pagination').getPage()
+        res = this.$module.pagination.getPage()
       } else if (prop == 'size') {
-        res = this.getModule('pagination').getSize()
+        res = this.$module.pagination.getSize()
       } else if (prop == 'num') {
-        res = this.getModule('pagination').getTotal()
+        res = this.$module.pagination.getTotal()
       } else if (prop == 'totalPage') {
-        res = this.getModule('pagination').getTotalPage()
+        res = this.$module.pagination.getTotalPage()
       } else {
-        res = this.getModule('pagination').getCurrent()
+        res = this.$module.pagination.getCurrent()
       }
     }
     return res
@@ -65,8 +65,8 @@ class ListData extends ComplexData {
    * 重置分页器
    */
   resetPageData () {
-    if (this.getModule('pagination')) {
-      this.getModule('pagination').reset()
+    if (this.$module.pagination) {
+      this.$module.pagination.reset()
     }
   }
   /**
@@ -75,13 +75,13 @@ class ListData extends ComplexData {
    * @param {'page' | 'size' | 'num'} [prop = 'page'] 需要设置的参数'page' | 'size' | 'num'
    */
   setPageData (data, prop = 'page', unTriggerLife) {
-    if (this.getModule('pagination')) {
+    if (this.$module.pagination) {
       if (prop == 'page') {
-        this.getModule('pagination').setPage(data, unTriggerLife)
+        this.$module.pagination.setPage(data, unTriggerLife)
       } else if (prop == 'size') {
-        this.getModule('pagination').setSizeAndPage(data, unTriggerLife) // { size, page }
+        this.$module.pagination.setSizeAndPage(data, unTriggerLife) // { size, page }
       } else if (prop == 'num') {
-        this.getModule('pagination').setTotal(data)
+        this.$module.pagination.setTotal(data)
       }
     }
   }
@@ -102,7 +102,9 @@ class ListData extends ComplexData {
    * @param {object | string} [defaultOption] 默认参数
    */
   autoChoiceReset(data) {
-    this.getModule('choice').autoReset(data)
+    if (this.$module.choice) {
+      this.$module.choice.autoReset(data)
+    }
   }
   /**
    * 数据变更=>id作为唯一基准
@@ -112,17 +114,21 @@ class ListData extends ComplexData {
    * @param {string} [idProp] id的属性,不存在时自动从DL中获取
    */
   changeChoice(idList, currentList, check, idProp) {
-    if (!idProp) {
-      idProp = this.getDictionaryPropData('prop', 'id')
+    if (this.$module.choice) {
+      if (!idProp) {
+        idProp = this.getDictionaryPropData('prop', 'id')
+      }
+      this.$module.choice.changeData(idList, currentList, check, idProp)
     }
-    this.getModule('choice').changeData(idList, currentList, check, idProp)
   }
   /**
    * 重置操作
    * @param {boolean} force 重置判断值
    */
   resetChoice(force) {
-    this.getModule('choice').reset(force)
+    if (this.$module.choice) {
+      this.$module.choice.reset(force)
+    }
   }
   /**
    * 获取选项数据
@@ -130,7 +136,9 @@ class ListData extends ComplexData {
    * @returns {string[] | object[] | {id, list}}
    */
   getChoiceData (prop) {
-    return this.getModule('choice').getData(prop)
+    if (this.$module.choice) {
+      return this.$module.choice.getData(prop)
+    }
   }
   // --数据相关--*/
   /**
