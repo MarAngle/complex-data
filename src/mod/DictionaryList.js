@@ -1,21 +1,19 @@
 import _func from 'complex-func'
-import SimpleData from './../data/SimpleData'
+import DefaultData from './../data/DefaultData'
 import DictionaryData from './DictionaryData'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
 const propList = ['id', 'parentId', 'children']
 
-class DictionaryList extends SimpleData {
+class DictionaryList extends DefaultData {
   constructor (initOption, payload) {
     super(initOption)
     this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
     this.$option = new OptionData({
       isChildren: false,
       build: _func.getLimitData(),
-      edit: {
-        empty: false
-      },
+      empty: false,
       tree: false
     })
     this.$propData = {
@@ -34,37 +32,26 @@ class DictionaryList extends SimpleData {
     }
     this.data = new Map()
     if (initOption) {
-      this.initMain(initOption, payload)
+      if (!payload) {
+        payload = {}
+      }
+      if (!payload.type) {
+        payload.type = 'init'
+      }
+      this.initOption(initOption.option)
+      this.initDictionaryData(initOption, payload)
     }
-    this.triggerCreateLife('DictionaryList', 'created', initOption)
-  }
-  initMain (initOption, payload = {}) {
-    payload.type = payload.type || 'init'
-    this.initOption(initOption.option)
-    this.initDictionaryData(initOption, payload)
+    this.triggerCreateLife('DictionaryList', 'created', initOption, payload)
   }
   initOption (option = {}) {
-    if (option.isChildren !== undefined) {
-      this.$option.setData('isChildren', option.isChildren)
+    for (const prop in option) {
+      let data = option[prop]
+      if (prop != 'build') {
+        this.$option.setData(prop, data)
+      } else {
+        this.$option.setData(prop, _func.getLimitData(data, 'allow'), 'init')
+      }
     }
-    if (option.build) {
-      let buildLimit = _func.getLimitData(option.build, 'allow')
-      this.$option.setData('build', buildLimit, 'init')
-    }
-    if (option.edit) {
-      this.$option.setData('edit', option.edit)
-    }
-    if (option.tree !== undefined) {
-      this.$option.setData('tree', option.tree)
-    }
-  }
-  /**
-   * 获取构建设置项
-   * @returns {object}
-   */
-  getBuildOption () {
-    let buildOption = this.$option.getData('build')
-    return buildOption
   }
   /**
    * 设置LayoutData
@@ -92,7 +79,7 @@ class DictionaryList extends SimpleData {
    * @param {*} isChildren 是否是子类
    */
   parseOptionFromParent (optiondata, parentData, isChildren) {
-    if (isChildren && !optiondata.originfrom && parentData.originfrom) {
+    if (isChildren && !optiondata.originfrom && parentData && parentData.originfrom) {
       optiondata.originfrom = parentData.originfrom
     }
   }
@@ -130,7 +117,7 @@ class DictionaryList extends SimpleData {
    * @param {object} originOption 字典初始化数据
    * @returns {'' | 'self' | 'build'}
    */
-  parseBuildData (ditem, originOption) {
+  parseChildrenBuildType (ditem, originOption) {
     let initOption = originOption.dictionary
     let type = ''
     if (this.$option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
@@ -152,8 +139,8 @@ class DictionaryList extends SimpleData {
    * @param {object} originOption 字典初始化数据
    * @param {boolean} isChildren 是否子类
    */
-  buildItemDictionary (ditem, originOption, isChildren = true) {
-    let type = this.parseBuildData(ditem, originOption)
+  initDictionaryItemChildren (ditem, originOption, isChildren = true) {
+    let type = this.parseChildrenBuildType(ditem, originOption)
     if (type == 'build') {
       let initOption = this.parseInitOption(originOption.dictionary)
       if (!initOption.option) {
@@ -164,7 +151,7 @@ class DictionaryList extends SimpleData {
       }
       // 默认加载本级的build设置
       if (!initOption.option.build) {
-        initOption.option.build = this.getBuildOption()
+        initOption.option.build = this.$option.getData('build')
       }
       initOption.parent = ditem
       ditem.$dictionary = new DictionaryList(initOption, {
@@ -180,15 +167,14 @@ class DictionaryList extends SimpleData {
    * @param {object} [payload] 设置项
    */
   initDictionaryData (initOption, payload = {}) { // type init push replace
+    // 触发update生命周期
+    this.triggerLife('beforeUpdate', this, initOption, payload)
     if (payload.type == 'init') {
       this.data.clear()
     }
     if (initOption) {
       initOption = this.parseInitOption(initOption)
-      // 触发update生命周期
-      this.triggerLife('beforeUpdate', this, initOption, payload)
-      let parentData = initOption.parent
-      this.setParent(parentData)
+      let parentData = this.getParent()
       this.setLayout(initOption.layout)
       let isChildren = this.$option.getData('isChildren')
       for (let n in initOption.list) {
@@ -225,15 +211,13 @@ class DictionaryList extends SimpleData {
         }
         if (act.children) {
           // 构建子字典列表
-          this.buildItemDictionary(ditem, ditemOption)
+          this.initDictionaryItemChildren(ditem, ditemOption)
         }
       }
       this.initPropData(initOption)
     }
     // 触发update生命周期
-    this.triggerLife('updated', this, {
-      type: payload.type
-    })
+    this.triggerLife('updated', this, initOption, payload)
   }
   // 重新创建字典列表
   rebuildData (initOption, payload = {}) {
@@ -263,23 +247,22 @@ class DictionaryList extends SimpleData {
    * 获取列表MAP
    * @returns {Map<DictionaryData>}
    */
-  getList () {
+   getData () {
     return this.data
   }
 
   /**
    * 获取字典对象
    * @param {*} data 值
-   * @param {'prop' | 'id'} from 获取类型
+   * @param {[string]} prop 判断的属性
    * @returns {DictionaryData}
    */
-  getItem (data, from = 'prop') {
-    if (from == 'prop') {
+   getItem (data, prop) {
+    if (!prop) {
       return this.data.get(data)
-    } else if (from == 'id') {
-      let idProp = this.getIdProp()
+    } else {
       for (let ditem of this.data.values()) {
-        if (ditem[idProp] == data) {
+        if (ditem[prop] == data) {
           return ditem
         }
       }
@@ -356,7 +339,7 @@ class DictionaryList extends SimpleData {
    */
   formatData (targetitem, originitem = {}, originfromType, option, depth) {
     if (!option) {
-      option = this.getBuildOption()
+      option = this.$option.getData('build')
     }
     if (!option.getLimit) {
       option = _func.getLimitData(option)
@@ -379,7 +362,7 @@ class DictionaryList extends SimpleData {
     let build = false
     let isOther = false
     if (!option) {
-      option = this.getBuildOption()
+      option = this.$option.getData('build')
     }
     if (!option.getLimit) {
       option = _func.getLimitData(option)
