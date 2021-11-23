@@ -38,7 +38,8 @@ class DictionaryData extends SimpleData {
       type = 'object'
     }
     this.$interface.type = new InterfaceData(type || 'string')
-    this.$interface.modtype = new InterfaceData('list')
+    // ???modType用于存疑
+    this.$interface.modType = new InterfaceData('list')
     this.setLayout(initOption.layout, payload.layout)
     complexOption.format(this, initOption.mod)
     this.formatFunc()
@@ -112,11 +113,11 @@ class DictionaryData extends SimpleData {
     if (this.$func.edit === undefined) {
       this.$func.edit = this.$func.defaultGetData
     }
-    if (this.$func.unedit === undefined) {
-      this.$func.unedit = (data, payload) => {
-        let moditem = this.$mod[payload.type]
-        if (moditem && moditem.func.unedit) {
-          return moditem.func.unedit(data, payload)
+    if (this.$func.post === undefined) {
+      this.$func.post = (data, payload) => {
+        let mod = this.getMod(payload.type)
+        if (mod && mod.$func && mod.$func.post) {
+          return mod.$func.post(data, payload)
         } else {
           return data
         }
@@ -133,7 +134,7 @@ class DictionaryData extends SimpleData {
    * @param {string} originFromType 来源
    * @returns {boolean}
    */
-  isOrigin (originFromType) {
+   isOriginFrom (originFromType) {
     return this.originFrom.indexOf(originFromType) > -1
   }
   /**
@@ -174,7 +175,7 @@ class DictionaryData extends SimpleData {
   }
   /**
    * 生成formData的prop值，基于自身从originitem中获取对应属性的数据并返回
-   * @param {string} modType modtype
+   * @param {string} modType modType
    * @param {object} option 参数
    * @param {object} option.targetitem 目标数据
    * @param {object} option.originitem 源formdata数据
@@ -229,6 +230,17 @@ class DictionaryData extends SimpleData {
    */
   formatOrigin (originData, payload) {
     return this.triggerFunc('format', originData, payload)
+  }
+  setDataByProp(targetData, oData, type, payload) {
+    let tData = this.formatOrigin(oData, payload)
+    if (type == 'string' || type == 'object') {
+      //
+    } else if (type == 'number') {
+      tData = _func.formatNum(tData)
+    } else if (type == 'boolean') {
+      tData = !!tData
+    }
+    _func.setProp(targetData, this.prop, tData, true)
   }
 }
 

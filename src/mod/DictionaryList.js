@@ -371,7 +371,6 @@ class DictionaryList extends DefaultData {
       let type = ditem.getInterface('type', originFromType)
       let originProp = ditem.getInterface('originProp', originFromType)
       let oData = _func.getProp(originData, originProp)
-      let tData
       if (ditem.$dictionary) {
         depth++
         if (type != 'array') {
@@ -392,17 +391,12 @@ class DictionaryList extends DefaultData {
             oData = []
           }
         }
-        tData = ditem.formatOrigin(oData, {
+        ditem.setDataByProp(targetData, oData, type, {
           targetData: targetData,
           originData: originData,
           depth: depth,
           type: originFromType
         })
-        // _func.setPropByType(targetData, prop, tData, type, true)
-        console.error(`字典实现对应方法！！！！
-        ！！！！
-        ~~~~`)
-        ditem.setData()
       }
     }
   }
