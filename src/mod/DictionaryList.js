@@ -254,7 +254,7 @@ class DictionaryList extends DefaultData {
   /**
    * 获取字典对象
    * @param {*} data 值
-   * @param {[string]} prop 判断的属性
+   * @param {string} [prop] 判断的属性
    * @returns {DictionaryData}
    */
    getItem (data, prop) {
@@ -265,6 +265,144 @@ class DictionaryList extends DefaultData {
         if (ditem[prop] == data) {
           return ditem
         }
+      }
+    }
+  }
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetList 目标列表
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFromType] 来源originFromType
+   * @param {object} [option] 设置项
+   */
+  formatListData (targetList, originList, originFromType = 'list', option = {}) {
+    if (option.clearType === undefined || option.clearType) {
+      _func.clearArray(targetList)
+    }
+    for (let n in originList) {
+      let item = this.buildData(originList[n], originFromType, option.build)
+      targetList.push(item)
+    }
+  }
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originData 源数据
+   * @param {string} [originFromType] 来源originFromType
+   * @param {object} [option] 设置项
+   * @returns {object}
+   */
+  buildData(originData, originFromType = 'list', option) {
+    return this.updateData({}, originData, originFromType, option)
+  }
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} [originFromType] 来源originFromType
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  updateData(targetData, originData, originFromType = 'info', option) {
+    return this.formatData(targetData, originData, originFromType, option)
+  }
+  /**
+   * 根据字典格式化数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFromType 来源originFromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatData(targetData, originData, originFromType, option, depth) {
+    if (!targetData) {
+      targetData = {}
+    }
+    if (!originData) {
+      originData = {}
+    }
+    if (!originFromType) {
+      originFromType = 'list'
+    }
+    if (!option) {
+      option = this.$option.getData('build')
+    }
+    if (!option.getLimit) {
+      option = _func.getLimitData(option)
+    }
+    if (depth === undefined) {
+      depth = 0
+    }
+    this.formatDataStart(targetData, originData, originFromType, option, depth)
+    return targetData
+  }
+  /**
+   * 根据字典格式化数据START
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFromType 来源originFromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatDataStart(targetData, originData, originFromType, option, depth) {
+    for (let ditem of this.data.values()) {
+      this.formatDataNext(ditem, targetData, originData, originFromType, option, depth)
+    }
+  }
+  /**
+   * 格式化数据
+   * @param {DictionaryData} ditem 字典
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFromType 来源originFromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatDataNext(ditem, targetData, originData, originFromType, option, depth) {
+    let build = false
+    if (ditem.isOriginFrom(originFromType)) {
+      build = true
+    } else if (option.getLimit(originFromType)) {
+      build = false
+    }
+    if (build) {
+      let type = ditem.getInterface('type', originFromType)
+      let originProp = ditem.getInterface('originProp', originFromType)
+      let oData = _func.getProp(originData, originProp)
+      let tData
+      if (ditem.$dictionary) {
+        depth++
+        if (type != 'array') {
+          if (_func.getType(oData) == 'object') {
+            oData = ditem.$dictionary.formatDataStart({}, oData, originFromType, option, depth)
+          } else {
+            oData = {}
+          }
+        } else {
+          if (_func.getType(oData) == 'array') {
+            let oList = []
+            for (let i = 0; i < oData.length; i++) {
+              let oItem = ditem.$dictionary.formatDataStart({}, oData[i], originFromType, option, depth)
+              oList.push(oItem)
+            }
+            oData = oList
+          } else {
+            oData = []
+          }
+        }
+        tData = ditem.formatOrigin(oData, {
+          targetData: targetData,
+          originData: originData,
+          depth: depth,
+          type: originFromType
+        })
+        // _func.setPropByType(targetData, prop, tData, type, true)
+        console.error(`字典实现对应方法！！！！
+        ！！！！
+        ~~~~`)
+        ditem.setData()
       }
     }
   }
