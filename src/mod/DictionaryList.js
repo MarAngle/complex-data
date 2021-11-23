@@ -577,7 +577,7 @@ class DictionaryList extends DefaultDataWithLife {
   install (target) {
     // 监听事件
     this.onLife('updated', {
-      id: target.$getModuleId('dictionaryUpdated'),
+      id: target.$getId('dictionaryUpdated'),
       data: (...args) => {
         target.triggerLife('dictionaryUpdated', ...args)
       }
@@ -589,7 +589,7 @@ class DictionaryList extends DefaultDataWithLife {
    */
   uninstall (target) {
     // 停止监听事件
-    this.offLife('updated', target.$getModuleId('dictionaryUpdated'))
+    this.offLife('updated', target.$getId('dictionaryUpdated'))
   }
 }
 

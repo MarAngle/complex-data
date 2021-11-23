@@ -158,7 +158,7 @@ class SearchData extends ComplexData {
    */
   install (target) {
     target.onLife('reseted', {
-      id: this.$getModuleId('Reseted'),
+      id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.parseResetOption(resetOption, 'search') !== false) {
           this.reset()
@@ -171,7 +171,7 @@ class SearchData extends ComplexData {
    * @param {object} target 卸载到的目标
    */
   uninstall(target) {
-    target.offLife('reseted', this.$getModuleId('Reseted'))
+    target.offLife('reseted', this.$getId('Reseted'))
   }
 }
 

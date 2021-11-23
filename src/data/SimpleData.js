@@ -3,9 +3,7 @@ import install from './../utils/install'
 
 class SimpleData {
   constructor() {
-    this.$temp = {
-      moduleId: install.getId(this.constructor._name)
-    }
+    this.$id = install.getId(this.constructor._name)
   }
   /**
    * 创建输出信息
@@ -25,7 +23,7 @@ class SimpleData {
    */
   printMsg (content, type = 'error', option) {
     content = this.buildPrintMsg(content)
-    _func.printMsgAct(content, type, option)
+    _func.exportMsg(content, type, option)
   }
   /**
    * 获取名称
@@ -42,8 +40,8 @@ class SimpleData {
    * @param {string} data 字符串后缀
    * @returns {string}
    */
-  $getModuleId (data = '') {
-    return this.$temp.moduleId + data
+  $getId (data = '') {
+    return this.$id + data
   }
 }
 

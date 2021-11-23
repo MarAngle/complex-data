@@ -237,7 +237,7 @@ class PaginationData extends DefaultDataWithLife {
    */
   install (target) {
     target.onLife('reseted', {
-      id: this.$getModuleId('Reseted'),
+      id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.parseResetOption(resetOption, 'pagination') !== false) {
           this.reset()
@@ -245,7 +245,7 @@ class PaginationData extends DefaultDataWithLife {
       }
     })
     this.onLife('change', {
-      id: target.$getModuleId('PaginationChange'),
+      id: target.$getId('PaginationChange'),
       data: (instantiater, prop, current) => {
         target.triggerLife('paginationChange', instantiater, prop, current)
       }
@@ -256,8 +256,8 @@ class PaginationData extends DefaultDataWithLife {
    * @param {object} target 卸载到的目标
    */
   uninstall(target) {
-    target.offLife('reseted', this.$getModuleId('Reseted'))
-    this.offLife('change', target.$getModuleId('PaginationChange'))
+    target.offLife('reseted', this.$getId('Reseted'))
+    this.offLife('change', target.$getId('PaginationChange'))
   }
 }
 

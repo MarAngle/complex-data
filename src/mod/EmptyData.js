@@ -3,7 +3,7 @@ import _func from 'complex-func'
 let ProxyCanUse = _func.getCanUse('Proxy')
 let proxyOption = {
   get: function(target, key) {
-    _func.printMsgAct(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key}]的获取操作！`)
+    _func.exportMsg(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key}]的获取操作！`)
     if (target[key]) {
       return target[key]
     } else {
@@ -21,7 +21,7 @@ class EmptyData {
         if (this[n] === undefined) {
           this[n] = data[n]
         } else {
-          _func.printMsgAct(`EmptyData数据存在${n}属性，不能赋值${data[n]}`)
+          _func.exportMsg(`EmptyData数据存在${n}属性，不能赋值${data[n]}`)
         }
       }
     }

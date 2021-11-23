@@ -64,7 +64,7 @@ SimpleData.initInstrcution = function() {
         return: '[CLASS:${this.constructor._name}]'
       },
       {
-        prop: '$getModuleId',
+        prop: '$getId',
         type: 'function',
         describe: '获取唯一识别符函数',
         return: 'module加载判断的唯一识别符'

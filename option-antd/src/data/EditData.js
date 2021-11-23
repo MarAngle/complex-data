@@ -551,7 +551,7 @@ class EditData extends BaseData {
     return `(${this.constructor._name})`
   }
   printMsg(info, type = 'error', option) {
-    _func.printMsgAct(this._selfName() + ':' + info, type, option)
+    _func.exportMsg(this._selfName() + ':' + info, type, option)
   }
   toString() {
     return this._selfName()
