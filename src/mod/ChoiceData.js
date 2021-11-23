@@ -229,7 +229,7 @@ class ChoiceData extends Data {
    */
   install (target) {
     target.onLife('reseted', {
-      id: this.$getModuleId('Reseted'),
+      id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.parseResetOption(resetOption, 'choice') !== false) {
           this.reset(true)
@@ -242,7 +242,7 @@ class ChoiceData extends Data {
    * @param {object} target 卸载到的目标
    */
   uninstall(target) {
-    target.offLife('reseted', this.$getModuleId('Reseted'))
+    target.offLife('reseted', this.$getId('Reseted'))
   }
 }
 

@@ -204,7 +204,7 @@ class UpdateData extends DefaultData {
    */
   install (target) {
     target.onLife('reseted', {
-      id: this.$getId() + 'Reseted',
+      id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.parseResetOption(resetOption, 'update') !== false) {
           this.reset()
@@ -217,7 +217,7 @@ class UpdateData extends DefaultData {
    * @param {object} target 卸载到的目标
    */
   uninstall(target) {
-    target.offLife('reseted', this.$getId() + 'Reseted')
+    target.offLife('reseted', this.$getId('Reseted'))
   }
 }
 

@@ -45,21 +45,11 @@ class ListData extends ComplexData {
    * @returns {number | { page, size }}
    */
   getPageData (prop) {
-    let res
+    let data
     if (this.$module.pagination) {
-      if (prop == 'page') {
-        res = this.$module.pagination.getPage()
-      } else if (prop == 'size') {
-        res = this.$module.pagination.getSize()
-      } else if (prop == 'num') {
-        res = this.$module.pagination.getTotal()
-      } else if (prop == 'totalPage') {
-        res = this.$module.pagination.getTotalPage()
-      } else {
-        res = this.$module.pagination.getCurrent()
-      }
+      data = this.$module.pagination.getData(prop)
     }
-    return res
+    return data
   }
   /**
    * 重置分页器

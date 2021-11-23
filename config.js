@@ -1,4 +1,10 @@
 let config = {
+  PaginationData: {
+    size: 10,
+    sizeList: ['10', '20', '50', '100'],
+    jumperChange: true,
+    sizeChange: true
+  },
   LayoutData: {
     grid: 24,
     label: 8,

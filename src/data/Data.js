@@ -11,8 +11,12 @@ class Data {
   constructor() {
     this.$id = createId()
   }
-  $getId () {
-    return this.$id
+  $getId (prop) {
+    if (prop) {
+      return this.$id + prop
+    } else {
+      return this.$id
+    }
   }
   /**
    * 获取名称
