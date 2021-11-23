@@ -15,20 +15,13 @@ class DefaultData extends SimpleData {
     this.extra = {}
     // 模块加载
     this.module = new ModuleData({}, this)
-    this._initData(initOption.data)
+    if (initOption.data) {
+      this.data = initOption.data
+    }
     this.initExtra(initOption.extra)
     this.initParent(initOption.parent)
     this.initFunc(initOption.func)
     this.initMethods(initOption.methods)
-  }
-  /**
-   * 加载data
-   * @param {*} [data]
-   */
-  _initData(data) {
-    if (data) {
-      this.data = data
-    }
   }
   /**
    * 加载func中的函数

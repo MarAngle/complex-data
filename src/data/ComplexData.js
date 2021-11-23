@@ -19,13 +19,13 @@ class ComplexData extends BaseData {
     } else {
       this.setModule('dictionary', new DictionaryList(this.formatDictionaryOption(initOption.dictionary, 'init')))
     }
-    this._initComplexDataLife()
+    this.$initComplexDataLife()
     this.triggerCreateLife('ComplexData', 'created')
   }
   /**
    * 加载生命周期函数
    */
-  _initComplexDataLife() {
+  $initComplexDataLife() {
     // 添加重置生命周期回调，此时通过设置项对data数据进行重置操作，对象list/current属性
     this.onLife('reseted', {
       id: 'AutoComplexDataReseted',
