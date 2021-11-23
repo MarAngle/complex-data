@@ -6,16 +6,9 @@ SimpleData.initInstrcution = function() {
     build: [],
     data: [
       {
-        prop: '$temp',
-        type: 'object',
-        describe: '缓存属性，保存一些函数必须但无需暴露的数据',
-        data: [
-          {
-            prop: 'moduleId',
-            type: 'string',
-            describe: '唯一识别符'
-          }
-        ]
+        prop: '$id',
+        type: 'string',
+        describe: '唯一识别符'
       }
     ],
     method: [
