@@ -3,7 +3,7 @@ import install from './../utils/install'
 
 class SimpleData {
   constructor() {
-    this.$id = install.getId(this.constructor._name)
+    this.$id = install.getId(this.constructor.$name)
   }
   /**
    * 创建输出信息
@@ -30,7 +30,7 @@ class SimpleData {
    * @returns {string}
    */
   _selfName () {
-    return `[CLASS:${this.constructor._name}]`
+    return `[CLASS:${this.constructor.$name}]`
   }
   toString () {
     return this._selfName()
@@ -45,6 +45,6 @@ class SimpleData {
   }
 }
 
-SimpleData._name = 'SimpleData'
+SimpleData.$name = 'SimpleData'
 
 export default SimpleData

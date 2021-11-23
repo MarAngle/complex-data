@@ -255,6 +255,6 @@ class SelectList extends DefaultData {
   }
 }
 
-SelectList._name = 'SelectList'
+SelectList.$name = 'SelectList'
 
 export default SelectList

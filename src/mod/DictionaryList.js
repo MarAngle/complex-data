@@ -593,6 +593,6 @@ class DictionaryList extends DefaultDataWithLife {
   }
 }
 
-DictionaryList._name = 'DictionaryList'
+DictionaryList.$name = 'DictionaryList'
 
 export default DictionaryList

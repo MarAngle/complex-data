@@ -19,7 +19,7 @@ OptionData.initInstrcution = function() {
     ],
     method: []
   }
-  instrcutionData.prop = this._name
+  instrcutionData.prop = this.$name
   this.buildInstrcution(instrcutionData)
 }
 

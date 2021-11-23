@@ -274,6 +274,6 @@ class ChoiceData extends DefaultData {
   }
 }
 
-ChoiceData._name = 'ChoiceData'
+ChoiceData.$name = 'ChoiceData'
 
 export default ChoiceData

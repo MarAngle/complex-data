@@ -83,6 +83,6 @@ class LayoutData extends SimpleData {
   }
 }
 
-LayoutData._name = 'LayoutData'
+LayoutData.$name = 'LayoutData'
 
 export default LayoutData

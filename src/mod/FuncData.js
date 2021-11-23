@@ -186,6 +186,6 @@ class FuncData extends SimpleData {
   }
 }
 
-FuncData._name = 'FuncData'
+FuncData.$name = 'FuncData'
 
 export default FuncData

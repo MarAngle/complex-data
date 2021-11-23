@@ -61,7 +61,7 @@ SimpleData.initInstrcution = function() {
         type: 'function',
         describe: '获取名称函数',
         // eslint-disable-next-line no-template-curly-in-string
-        return: '[CLASS:${this.constructor._name}]'
+        return: '[CLASS:${this.constructor.$name}]'
       },
       {
         prop: '$getId',
@@ -71,7 +71,7 @@ SimpleData.initInstrcution = function() {
       }
     ]
   }
-  instrcutionData.prop = this._name
+  instrcutionData.prop = this.$name
   this.buildInstrcution(instrcutionData)
 }
 

@@ -102,6 +102,6 @@ class IdData {
   }
 }
 
-IdData._name = 'IdData'
+IdData.$name = 'IdData'
 
 export default IdData

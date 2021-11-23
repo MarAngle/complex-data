@@ -37,6 +37,6 @@ class InfoData extends ComplexDataWithSearch {
   }
 }
 
-InfoData._name = 'InfoData'
+InfoData.$name = 'InfoData'
 
 export default InfoData

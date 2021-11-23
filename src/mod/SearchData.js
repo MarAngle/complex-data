@@ -175,6 +175,6 @@ class SearchData extends ComplexData {
   }
 }
 
-SearchData._name = 'SearchData'
+SearchData.$name = 'SearchData'
 
 export default SearchData

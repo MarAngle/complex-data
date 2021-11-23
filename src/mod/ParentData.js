@@ -53,6 +53,6 @@ class ParentData extends SimpleData {
   }
 }
 
-ParentData._name = 'ParentData'
+ParentData.$name = 'ParentData'
 
 export default ParentData

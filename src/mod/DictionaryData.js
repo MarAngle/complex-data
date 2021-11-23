@@ -232,6 +232,6 @@ class DictionaryData extends DefaultData {
   }
 }
 
-DictionaryData._name = 'DictionaryData'
+DictionaryData.$name = 'DictionaryData'
 
 export default DictionaryData

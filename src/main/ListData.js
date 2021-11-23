@@ -161,6 +161,6 @@ class ListData extends ComplexDataWithSearch {
   }
 }
 
-ListData._name = 'ListData'
+ListData.$name = 'ListData'
 
 export default ListData

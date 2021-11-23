@@ -261,6 +261,6 @@ class PaginationData extends DefaultDataWithLife {
   }
 }
 
-PaginationData._name = 'PaginationData'
+PaginationData.$name = 'PaginationData'
 
 export default PaginationData

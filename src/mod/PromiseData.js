@@ -85,6 +85,6 @@ class PromiseData extends SimpleData {
   }
 }
 
-PromiseData._name = 'PromiseData'
+PromiseData.$name = 'PromiseData'
 
 export default PromiseData

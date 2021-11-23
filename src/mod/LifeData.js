@@ -132,6 +132,6 @@ class LifeData extends SimpleData {
   }
 }
 
-LifeData._name = 'LifeData'
+LifeData.$name = 'LifeData'
 
 export default LifeData

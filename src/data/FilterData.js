@@ -81,6 +81,6 @@ class FilterData extends BaseData {
   }
 }
 
-FilterData._name = 'FilterData'
+FilterData.$name = 'FilterData'
 
 export default FilterData

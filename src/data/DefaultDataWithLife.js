@@ -55,7 +55,7 @@ class DefaultDataWithLife extends DefaultData {
     if (!env) {
       this.$exportMsg('triggerCreateLife函数需要传递env参数')
     }
-    if (env != this.constructor._name) {
+    if (env != this.constructor.$name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)
     }
     this.$temp.lifeCreateNameList.push(lifeName)
@@ -90,6 +90,6 @@ class DefaultDataWithLife extends DefaultData {
   }
 }
 
-DefaultDataWithLife._name = 'DefaultDataWithLife'
+DefaultDataWithLife.$name = 'DefaultDataWithLife'
 
 export default DefaultDataWithLife

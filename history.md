@@ -7,6 +7,7 @@
 - 类调整
 - - buildPrintMsg => $createMsg
 - - printMsg => $exportMsg
+- - constructor._name => constructor.$name
 
 ### 2.2.11
 - EditData修正select的检索模式下初始加载未判断limit的BUG

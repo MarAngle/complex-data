@@ -49,6 +49,6 @@ class StatusData extends SimpleData {
   }
 }
 
-StatusData._name = 'StatusData'
+StatusData.$name = 'StatusData'
 
 export default StatusData

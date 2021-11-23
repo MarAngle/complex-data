@@ -108,10 +108,10 @@ class ModuleData extends SimpleData {
     if (!pre) {
       pre = ''
     }
-    return `{${pre}[${this.constructor._name}]}`
+    return `{${pre}[${this.constructor.$name}]}`
   }
 }
 
-ModuleData._name = 'ModuleData'
+ModuleData.$name = 'ModuleData'
 
 export default ModuleData

@@ -76,6 +76,6 @@ class InterfaceData extends SimpleData {
   }
 }
 
-InterfaceData._name = 'InterfaceData'
+InterfaceData.$name = 'InterfaceData'
 
 export default InterfaceData

@@ -420,6 +420,6 @@ class BaseData extends DefaultDataWithLife {
   }
 }
 
-BaseData._name = 'BaseData'
+BaseData.$name = 'BaseData'
 
 export default BaseData

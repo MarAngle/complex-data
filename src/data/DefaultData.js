@@ -183,10 +183,10 @@ class DefaultData extends SimpleData {
     if (!pre) {
       pre = ``
     }
-    return `{${pre}[${this.constructor._name}-${this.name}/${this.prop}]}`
+    return `{${pre}[${this.constructor.$name}-${this.name}/${this.prop}]}`
   }
 }
 
-DefaultData._name = 'DefaultData'
+DefaultData.$name = 'DefaultData'
 
 export default DefaultData

@@ -48,6 +48,6 @@ class ComplexDataWithSearch extends ComplexData {
   }
 }
 
-ComplexDataWithSearch._name = 'ComplexDataWithSearch'
+ComplexDataWithSearch.$name = 'ComplexDataWithSearch'
 
 export default ComplexDataWithSearch

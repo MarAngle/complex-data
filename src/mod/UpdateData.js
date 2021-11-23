@@ -221,6 +221,6 @@ class UpdateData extends DefaultDataWithLife {
   }
 }
 
-UpdateData._name = 'UpdateData'
+UpdateData.$name = 'UpdateData'
 
 export default UpdateData
