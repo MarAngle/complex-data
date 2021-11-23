@@ -9,7 +9,6 @@ class StatusData extends Data {
     }
     super()
     this.data = {}
-    this.$initMain(initOption)
     this.$initList(initOption.list)
   }
   $initList (list = []) {
