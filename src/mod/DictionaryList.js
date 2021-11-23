@@ -513,23 +513,23 @@ class DictionaryList extends DefaultData {
           originData: formData,
           type: modType
         })
-        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是edit.empty为false状态的非真数据不传递
+        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是empty为false状态的非真数据不传递
         if (!add) {
-          add = this.$option.getData('edit.empty')
+          add = this.$option.getData('empty')
         }
       }
       if (add) {
-        let targetdata = formData[ditem.prop]
+        let tData = formData[ditem.prop]
         if (ditem.mod[modType].trim) {
-          targetdata = _func.trimData(targetdata)
+          tData = _func.trimData(tData)
         }
-        targetdata = ditem.triggerFunc('unedit', targetdata, {
+        tData = ditem.triggerFunc('post', tData, {
           targetData: editData,
           originData: formData,
           type: modType
         })
         let originprop = ditem.getInterface('originprop', modType)
-        _func.setPropByType(editData, originprop, targetdata, ditem.type)
+        _func.setPropByType(editData, originprop, tData, ditem.type)
       }
     }
     return editData
