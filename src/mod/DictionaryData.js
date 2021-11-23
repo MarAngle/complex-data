@@ -11,33 +11,33 @@ class DictionaryData extends SimpleData {
     }
     super(initOption)
     this.$mod = {}
-    let originfromType = _func.getType(initOption.originfrom)
-    if (originfromType === 'array') {
-      this.originfrom = initOption.originfrom
-    } else if (initOption.originfrom && originfromType === 'string') {
-      this.originfrom = [initOption.originfrom]
+    let originFromType = _func.getType(initOption.originFrom)
+    if (originFromType === 'array') {
+      this.originFrom = initOption.originFrom
+    } else if (initOption.originFrom && originFromType === 'string') {
+      this.originFrom = [initOption.originFrom]
     } else {
-      this.originfrom = ['list']
+      this.originFrom = ['list']
     }
     this.prop = this.$prop
     // 加载接口数据
     this.$interface = {}
     this.$interface.label = new InterfaceData(initOption.label || this.$name)
     this.$interface.order = new InterfaceData(initOption.order)
-    this.$interface.showprop = new InterfaceData(initOption.showprop)
-    this.$interface.showtype = new InterfaceData(initOption.showtype)
-    // prop/originprop
-    this.$interface.originprop = new InterfaceData(initOption.originprop || this.prop)
-    // --- 不存在prop时默认以originprop为主，此时以默认为基准=>prop为单一字段
+    this.$interface.showProp = new InterfaceData(initOption.showProp)
+    this.$interface.showType = new InterfaceData(initOption.showType)
+    // prop/originProp
+    this.$interface.originProp = new InterfaceData(initOption.originProp || this.prop)
+    // --- 不存在prop时默认以originProp为主，此时以默认为基准=>prop为单一字段
     if (!this.prop) {
-      this.prop = this.getInterface('originprop')
+      this.prop = this.getInterface('originProp')
     }
-    // 数据格式判断，暂时判断为存在showprop则自动设置为object，暂时不考虑存在showprop{ prop: '' }情况下对应prop的情况
-    let dataType = initOption.type
-    if (!dataType && initOption.showprop) {
-      dataType = 'object'
+    // 数据格式判断，暂时判断为存在showProp则自动设置为object，暂时不考虑存在showProp{ prop: '' }情况下对应prop的情况
+    let type = initOption.type
+    if (!type && initOption.showProp) {
+      type = 'object'
     }
-    this.$interface.type = new InterfaceData(dataType || 'string')
+    this.$interface.type = new InterfaceData(type || 'string')
     this.$interface.modtype = new InterfaceData('list')
     this.setLayout(initOption.layout, payload.layout)
     complexOption.format(this, initOption.mod)
@@ -94,10 +94,10 @@ class DictionaryData extends SimpleData {
   formatFunc () {
     if (this.$func.defaultGetData === undefined) {
       this.$func.defaultGetData = (data, { type }) => {
-        let showprop = this.getInterface('showprop', type)
-        if (showprop) {
+        let showProp = this.getInterface('showProp', type)
+        if (showProp) {
           if (data && _func.getType(data) == 'object') {
-            return _func.getProp(data, showprop)
+            return _func.getProp(data, showProp)
           } else {
             return undefined
           }
@@ -130,11 +130,11 @@ class DictionaryData extends SimpleData {
   }
   /**
    * 判断是否存在来源
-   * @param {string} originfromType 来源
+   * @param {string} originFromType 来源
    * @returns {boolean}
    */
-  isOrigin (originfromType) {
-    return this.originfrom.indexOf(originfromType) > -1
+  isOrigin (originFromType) {
+    return this.originFrom.indexOf(originFromType) > -1
   }
   /**
    * 判断是否存在模块
@@ -160,14 +160,14 @@ class DictionaryData extends SimpleData {
     }
   }
   /**
-   * 获取originprop
+   * 获取originProp
    * @param {string} prop prop值
-   * @param {string} originfromType originfromType值
+   * @param {string} originFromType originFromType值
    * @returns {string}
    */
-  getOriginProp (prop, originfromType) {
+  getOriginProp (prop, originFromType) {
     if (this.prop == prop) {
-      return this.getInterface('originprop', originfromType)
+      return this.getInterface('originProp', originFromType)
     } else {
       return false
     }
