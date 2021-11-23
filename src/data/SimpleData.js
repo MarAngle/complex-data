@@ -30,10 +30,7 @@ class SimpleData {
    * @returns {string}
    */
   $selfName () {
-    return `[CLASS:${this.constructor.$name}]`
-  }
-  toString () {
-    return this.$selfName()
+    return `CLASS:${this.constructor.$name}-ID:${this.$getId()}`
   }
   /**
    * 获取模块ID
@@ -42,6 +39,9 @@ class SimpleData {
    */
   $getId (data = '') {
     return this.$id + data
+  }
+  toString () {
+    return this.$selfName()
   }
 }
 

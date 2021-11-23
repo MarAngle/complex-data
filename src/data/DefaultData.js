@@ -175,15 +175,12 @@ class DefaultData extends SimpleData {
     this.clearExtra()
   }
   $selfName () {
+    let parentName = ''
     let parent = this.getParent()
-    let pre
     if (parent && parent.$selfName) {
-      pre = `(${parent.$selfName()})-`
+      parentName += `{PARENT:${parent.$selfName()}}-`
     }
-    if (!pre) {
-      pre = ``
-    }
-    return `{${pre}[${this.constructor.$name}-${this.name}/${this.prop}]}`
+    return `${parentName}[${super.$selfName()}-(${this.name}/${this.prop})]`
   }
 }
 
