@@ -269,6 +269,160 @@ class DictionaryList extends DefaultData {
     }
   }
   /**
+   * 格式化列表数据
+   * @param {object[]} targetList 目标列表
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFromType] 来源originfromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   */
+  formatListData (targetList, originList, originFromType = 'list', option = {}, depth) {
+    if (option.clearType === undefined || option.clearType) {
+      _func.clearArray(targetList)
+    }
+    for (let n in originList) {
+      let item = this.formatItem(originList[n], originFromType, option.build, depth)
+      targetList.push(item)
+    }
+  }
+  /**
+   * 格式化列表数据为treeList
+   * @param {object[]} targetList 目标列表treeList
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFromType] 来源originfromType
+   * @param {object} [option] 设置项
+   */
+  formatTreeData (targetList, originList, originFromType = 'list', option = {}) {
+    if (option.clearType === undefined || option.clearType) {
+      _func.clearArray(targetList)
+    }
+    for (let n in originList) {
+      let item = this.formatItem(originList[n], originFromType, option.build)
+      targetList.push(item)
+    }
+  }
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originItem 源数据
+   * @param {string} [originFromType] 来源originfromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatItem (originItem, originFromType = 'list', option, depth) {
+    return this.updateItem({}, originItem, originFromType, option, depth)
+  }
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetItem 目标数据
+   * @param {object} originItem 源数据
+   * @param {string} [originFromType] 来源originfromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  updateItem (targetItem, originItem, originFromType = 'info', option, depth) {
+    this.formatData(targetItem, originItem, originFromType, option, depth)
+    return targetItem
+  }
+
+  /**
+   * 根据字典格式化数据
+   * @param {object} targetItem 目标数据
+   * @param {object} originItem 源数据
+   * @param {string} originFromType 来源originfromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatData (targetItem, originItem = {}, originFromType, option, depth) {
+    if (!option) {
+      option = this.$option.getData('build')
+    }
+    if (!option.getLimit) {
+      option = _func.getLimitData(option)
+    }
+    for (let ditem of this.data.values()) {
+      this.formatDataNext(ditem, targetItem, originItem, originFromType, option, depth)
+    }
+    return targetItem
+  }
+  /**
+   * 格式化数据
+   * @param {DictionaryData} ditem 字典
+   * @param {object} targetItem 目标数据
+   * @param {object} originItem 源数据
+   * @param {string} originFromType 来源originfromType
+   * @param {object} [option] 设置项
+   * @param {number} [depth] 深度
+   */
+  formatDataNext (ditem, targetItem, originItem, originFromType, option, depth = 0) {
+    let build = false
+    let isOther = false
+    if (!option) {
+      option = this.$option.getData('build')
+    }
+    if (!option.getLimit) {
+      option = _func.getLimitData(option)
+    }
+    if (ditem.isOrigin(originFromType)) {
+      // 当前字典存在对应模块直接按照build模式进行
+      build = true
+    } else if (option.getLimit(originFromType)) {
+      // 理论上设置为允许值可在此时构建出对应字段，通过vue.set进行赋值，解决数据不能双向绑定和提前构建对象结构，双向绑定问题通过vue.set解决，对象结构暂不考虑，因此此处暂时不做处理
+      build = false
+      isOther = false
+    }
+    if (build) {
+      let targetType = ditem.getInterface('type', originFromType)
+      if (!isOther) {
+        let originprop = ditem.getInterface('originprop', originFromType)
+        let origindata = _func.getProp(originItem, originprop)
+        let targetdata
+        if (ditem.$dictionary) {
+          depth++
+          if (targetType == 'array') {
+            if (origindata && origindata.length > 0) {
+              targetdata = []
+              this.formatListData(targetdata, origindata, originFromType, { build: option }, depth)
+              origindata = targetdata
+            } else {
+              origindata = []
+            }
+          } else {
+            origindata = ditem.$dictionary.formatData({}, origindata, originFromType, option, depth)
+          }
+        }
+        targetdata = ditem.formatOrigin(origindata, {
+          targetItem: targetItem,
+          originItem: originItem,
+          depth: depth,
+          type: originFromType
+        })
+        _func.setPropByType(targetItem, ditem.prop, targetdata, ditem.getInterface('type', originFromType), true)
+      } else {
+        if (targetItem[ditem.prop] === undefined) {
+          let targetdata
+          if (ditem.$dictionary) {
+            depth++
+            if (targetType == 'array') {
+              targetdata = []
+            } else {
+              targetdata = ditem.$dictionary.formatData({}, {}, originFromType, option, depth)
+            }
+          } else {
+            if (targetType == 'object') {
+              targetdata = {}
+            } else if (targetType == 'array') {
+              targetdata = []
+            }
+          }
+          targetItem[ditem.prop] = targetdata
+        }
+      }
+    }
+  }
+  /**
    * 获取符合模块要求的字典列表
    * @param {string} mod 模块名称
    * @returns {DictionaryData[]}
