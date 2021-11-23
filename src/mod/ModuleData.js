@@ -93,10 +93,10 @@ class ModuleData extends SimpleData {
       if (type === 'function') {
         return mod[method](...args)
       } else {
-        this.printMsg(`${modName}模块${method}属性为${type}，函数触发失败！`)
+        this.$exportMsg(`${modName}模块${method}属性为${type}，函数触发失败！`)
       }
     } else {
-      this.printMsg(`不存在${modName}模块`)
+      this.$exportMsg(`不存在${modName}模块`)
     }
   }
   _selfName () {

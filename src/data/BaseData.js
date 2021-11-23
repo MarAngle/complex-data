@@ -154,7 +154,7 @@ class BaseData extends DefaultDataWithLife {
       }
     }
     return this.triggerPromise('load', {
-      errmsg: this.buildPrintMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+      errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
       correct: force ? force.correct : undefined
     })
   }
@@ -238,7 +238,7 @@ class BaseData extends DefaultDataWithLife {
       }
     }
     return this.triggerPromise('update', {
-      errmsg: this.buildPrintMsg(`promise模块无update数据(update状态:${updateStatus.value})`),
+      errmsg: this.$createMsg(`promise模块无update数据(update状态:${updateStatus.value})`),
       correct: force ? force.correct : undefined
     })
   }
@@ -295,7 +295,7 @@ class BaseData extends DefaultDataWithLife {
           reject(err)
         })
       } else {
-        this.printMsg(next.msg)
+        this.$exportMsg(next.msg)
         reject({ status: 'fail', code: next.code })
       }
     })
@@ -312,7 +312,7 @@ class BaseData extends DefaultDataWithLife {
     if (operate.value == 'operated') {
       return this.triggerMethod(target, ...args)
     } else {
-      this.printMsg(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
+      this.$exportMsg(`当前操作状态为:${operate.label}，${target}函数操作互斥，triggerMethodByOperate函数失败！`)
       return Promise.reject({ status: 'fail', code: 'clash' })
     }
   }

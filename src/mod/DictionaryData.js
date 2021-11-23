@@ -203,7 +203,7 @@ class DictionaryData extends DefaultData {
       // 调用模块的readyData
       if (mod.readyData) {
         mod.readyData().then(() => {}, err => {
-            this.printMsg(`${modType}模块readyData调用失败！`, 'error', {
+            this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
             data: err,
             type: 'error'
           })

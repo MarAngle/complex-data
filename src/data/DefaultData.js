@@ -53,10 +53,10 @@ class DefaultData extends SimpleData {
       if (this[prop] !== undefined) {
         let type = _func.getType(this[prop])
         if (type !== 'function') {
-          this.printMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
+          this.$exportMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
           build = false
         } else {
-          this.printMsg(`initMethods:${prop}函数已被改写!`, 'warn')
+          this.$exportMsg(`initMethods:${prop}函数已被改写!`, 'warn')
         }
       }
       if (build) {
@@ -133,7 +133,7 @@ class DefaultData extends SimpleData {
         this.setExtra(n, extraData[n])
       }
     } else if (extraData !== undefined) {
-      this.printMsg(`初始化extra出错，数据必须为对象`)
+      this.$exportMsg(`初始化extra出错，数据必须为对象`)
     }
   }
   /**

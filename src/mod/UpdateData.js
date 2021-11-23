@@ -145,7 +145,7 @@ class UpdateData extends DefaultDataWithLife {
           checkRes.then(() => {
             this.checkAndStartTrigger(offset)
           }, err => {
-            this.printMsg('stop next!', 'log', { data: err })
+            this.$exportMsg('stop next!', 'log', { data: err })
             this.clear()
           })
         } else if (checkRes) {

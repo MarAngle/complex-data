@@ -23,7 +23,7 @@ class OptionData extends SimpleData {
     if (this.data[prop] === undefined) {
       this.data[prop] = structData
     } else {
-      this.printMsg(`当前存在${prop}属性，无法构建对应的结构，将会导致数据内存地址的变更，请确认后重试!`)
+      this.$exportMsg(`当前存在${prop}属性，无法构建对应的结构，将会导致数据内存地址的变更，请确认后重试!`)
     }
   }
   /**
@@ -36,7 +36,7 @@ class OptionData extends SimpleData {
         this.setData(n, data[n], 'init')
       }
     } else {
-      this.printMsg(`设置类的initData函数需要接受对象数据!`)
+      this.$exportMsg(`设置类的initData函数需要接受对象数据!`)
     }
   }
 
@@ -66,7 +66,7 @@ class OptionData extends SimpleData {
       if (type == 'init') {
         check.fg = true
       } else {
-        this.printMsg(
+        this.$exportMsg(
           `非init状态下不能进行undefined值操作!`,
           'error', {
             data: { target, option }
@@ -81,7 +81,7 @@ class OptionData extends SimpleData {
       check.fg = true
       return check
     } else {
-      this.printMsg(
+      this.$exportMsg(
         `option赋值双方格式不一致且存在复杂值,（设置目标值格式:${check.target}/设置值格式:${check.option}），禁止直接赋值，请检查代码!`,
         'error',
         {

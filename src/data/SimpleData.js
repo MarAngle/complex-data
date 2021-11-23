@@ -10,7 +10,7 @@ class SimpleData {
    * @param {string} content 需要输出的信息
    * @returns {string}
    */
-  buildPrintMsg (content) {
+  $createMsg (content) {
     return `${this._selfName()}:${content}`
   }
   /**
@@ -21,8 +21,8 @@ class SimpleData {
    * @param {string} [option.data] 设置项
    * @param {'error' | 'warn' | 'log'} [option.type] 设置项
    */
-  printMsg (content, type = 'error', option) {
-    content = this.buildPrintMsg(content)
+  $exportMsg (content, type = 'error', option) {
+    content = this.$createMsg(content)
     _func.exportMsg(content, type, option)
   }
   /**

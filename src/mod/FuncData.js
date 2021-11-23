@@ -114,7 +114,7 @@ class FuncData extends SimpleData {
           data.id = this.buildId()
         }
         if (this.data.has(data.id) && !data.replace) {
-          this.printMsg(`存在当前值:${data.id}`)
+          this.$exportMsg(`存在当前值:${data.id}`)
         } else {
           this.pushData(data)
           if (data.immediate) {
@@ -123,10 +123,10 @@ class FuncData extends SimpleData {
           return data.id
         }
       } else {
-        this.printMsg(`设置(${data.id || '-'})未定义func`)
+        this.$exportMsg(`设置(${data.id || '-'})未定义func`)
       }
     } else {
-      this.printMsg(`设置data参数需要object或者function`)
+      this.$exportMsg(`设置data参数需要object或者function`)
     }
     return undefined
   }
@@ -152,7 +152,7 @@ class FuncData extends SimpleData {
         this.off(id)
       }
     } else {
-      this.printMsg(`不存在当前值(${id})`)
+      this.$exportMsg(`不存在当前值(${id})`)
     }
   }
   /**

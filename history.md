@@ -5,6 +5,8 @@
 ### 2.2.12-beta
 - func依赖升级,printMsgAct => exportMsg
 - 类调整
+- - buildPrintMsg => $createMsg
+- - printMsg => $exportMsg
 
 ### 2.2.11
 - EditData修正select的检索模式下初始加载未判断limit的BUG

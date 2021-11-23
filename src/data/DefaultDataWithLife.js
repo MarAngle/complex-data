@@ -23,7 +23,7 @@ class DefaultDataWithLife extends DefaultData {
    */
   onLife (name, data) {
     if (this.$temp.lifeCreateNameList.indexOf(name) > -1) {
-      this.printMsg(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
+      this.$exportMsg(`正在创建一个属于创建生命周期相关的回调函数${name}，如此函数不是创建生命周期回调请修改函数名，否则请检查代码，理论上当你在设置这个触发函数时创建已经完成，此函数可能永远不会被触发！`)
     }
     return this.getModule('life').on(name, data)
   }
@@ -53,7 +53,7 @@ class DefaultDataWithLife extends DefaultData {
    */
   triggerCreateLife (env, lifeName, ...args) {
     if (!env) {
-      this.printMsg('triggerCreateLife函数需要传递env参数')
+      this.$exportMsg('triggerCreateLife函数需要传递env参数')
     }
     if (env != this.constructor._name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)

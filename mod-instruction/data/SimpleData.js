@@ -20,7 +20,7 @@ SimpleData.initInstrcution = function() {
     ],
     method: [
       {
-        prop: 'buildPrintMsg',
+        prop: '$createMsg',
         type: 'function',
         describe: '创建输出信息函数',
         args: [
@@ -32,7 +32,7 @@ SimpleData.initInstrcution = function() {
         ]
       },
       {
-        prop: 'printMsg',
+        prop: '$exportMsg',
         type: 'function',
         describe: '警告信息输出函数',
         args: [

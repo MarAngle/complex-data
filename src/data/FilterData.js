@@ -44,7 +44,7 @@ class FilterData extends BaseData {
         this.triggerFilter('filter', prop)
       }
     } else {
-      this.printMsg(`不存在${prop},setFilterData失败!`)
+      this.$exportMsg(`不存在${prop},setFilterData失败!`)
     }
   }
   triggerFilter(from, prop) {

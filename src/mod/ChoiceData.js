@@ -228,17 +228,17 @@ class ChoiceData extends DefaultData {
       if (this.resetOption[from] && typeof this.resetOption[from] == 'object') {
         let act = option.act
         if (!act) {
-          this.printMsg(`checkReset函数中对应的from:${from}未定义act,可定义:${Object.keys(this.resetOption[from])}`)
+          this.$exportMsg(`checkReset函数中对应的from:${from}未定义act,可定义:${Object.keys(this.resetOption[from])}`)
         } else if (this.resetOption[from][act] !== undefined) {
           reset = this.resetOption[from][act]
         } else {
-          this.printMsg(`checkReset函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(this.resetOption[from])}`)
+          this.$exportMsg(`checkReset函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(this.resetOption[from])}`)
         }
       } else {
         reset = this.resetOption[from]
       }
     } else {
-      this.printMsg(`checkReset函数未找到对应的from:${from}`)
+      this.$exportMsg(`checkReset函数未找到对应的from:${from}`)
     }
     return reset
   }
