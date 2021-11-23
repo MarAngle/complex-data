@@ -5,9 +5,11 @@
 ### 2.2.12-beta
 - func依赖升级,printMsgAct => exportMsg
 - 类调整
+- - 生命周期的创建判断删除
 - - buildPrintMsg => $createMsg
 - - printMsg => $exportMsg
 - - constructor._name => constructor.$name
+- - _selfName => $selfName
 
 ### 2.2.11
 - EditData修正select的检索模式下初始加载未判断limit的BUG
@@ -207,7 +209,7 @@
 - resetModule=>resetOption
 - IdData优化判断修复string.length只读的BUG
 - Update优化，修复clear时正在进行的trigger操作会重新启动的BUG
-- module实现触发内部模块指定函数,优化_selfName
+- module实现触发内部模块指定函数,优化$selfName
 
 ### 2.0.8
 - 数据类继承链条的初始化参数为否时格式化为空对象
@@ -216,5 +218,5 @@
 
 ### 2.0.7
 - printMsg函数统一调用complex-func中的相关函数实现逻辑的统一处理
-- 全局类的_selfName函数逻辑统一，实现类实例的名称输出
-- 优化全局类的toString函数，统一调用_selfName函数输出
+- 全局类的$selfName函数逻辑统一，实现类实例的名称输出
+- 优化全局类的toString函数，统一调用$selfName函数输出

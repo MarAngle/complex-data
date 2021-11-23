@@ -99,11 +99,11 @@ class ModuleData extends SimpleData {
       this.$exportMsg(`不存在${modName}模块`)
     }
   }
-  _selfName () {
+  $selfName () {
     let parent = this.getParent()
     let pre
-    if (parent && parent._selfName) {
-      pre = `(${parent._selfName()})-`
+    if (parent && parent.$selfName) {
+      pre = `(${parent.$selfName()})-`
     }
     if (!pre) {
       pre = ''

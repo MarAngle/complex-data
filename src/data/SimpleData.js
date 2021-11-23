@@ -11,7 +11,7 @@ class SimpleData {
    * @returns {string}
    */
   $createMsg (content) {
-    return `${this._selfName()}:${content}`
+    return `${this.$selfName()}:${content}`
   }
   /**
    * 警告信息输出
@@ -29,11 +29,11 @@ class SimpleData {
    * 获取名称
    * @returns {string}
    */
-  _selfName () {
+  $selfName () {
     return `[CLASS:${this.constructor.$name}]`
   }
   toString () {
-    return this._selfName()
+    return this.$selfName()
   }
   /**
    * 获取模块ID

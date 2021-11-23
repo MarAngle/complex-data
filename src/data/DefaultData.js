@@ -174,11 +174,11 @@ class DefaultData extends SimpleData {
   resetExtra () {
     this.clearExtra()
   }
-  _selfName () {
+  $selfName () {
     let parent = this.getParent()
     let pre
-    if (parent && parent._selfName) {
-      pre = `(${parent._selfName()})-`
+    if (parent && parent.$selfName) {
+      pre = `(${parent.$selfName()})-`
     }
     if (!pre) {
       pre = ``

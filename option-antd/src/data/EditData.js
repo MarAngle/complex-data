@@ -547,14 +547,14 @@ class EditData extends BaseData {
   getValueData(prop = 'defaultdata') {
     return this.value[prop]
   }
-  _selfName () {
+  $selfName () {
     return `(${this.constructor.$name})`
   }
   $exportMsg(info, type = 'error', option) {
-    _func.exportMsg(this._selfName() + ':' + info, type, option)
+    _func.exportMsg(this.$selfName() + ':' + info, type, option)
   }
   toString() {
-    return this._selfName()
+    return this.$selfName()
   }
 }
 

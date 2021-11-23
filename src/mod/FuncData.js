@@ -181,8 +181,8 @@ class FuncData extends SimpleData {
   destroy() {
     this.reset()
   }
-  _selfName () {
-    return `${super._selfName()}[生命周期:${this.name}]`
+  $selfName () {
+    return `${super.$selfName()}[生命周期:${this.name}]`
   }
 }
 

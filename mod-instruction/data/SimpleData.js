@@ -20,7 +20,7 @@ SimpleData.initInstrcution = function() {
           {
             prop: 'content',
             required: true,
-            describe: '需要输出的信息，前缀会自动拼接_selfName'
+            describe: '需要输出的信息，前缀会自动拼接$selfName'
           }
         ]
       },
@@ -50,7 +50,7 @@ SimpleData.initInstrcution = function() {
         ]
       },
       {
-        prop: '_selfName',
+        prop: '$selfName',
         type: 'function',
         describe: '获取名称函数',
         // eslint-disable-next-line no-template-curly-in-string
