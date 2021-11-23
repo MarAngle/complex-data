@@ -174,31 +174,31 @@ class DictionaryData extends SimpleData {
     }
   }
   /**
-   * 生成formData的prop值，基于自身从originitem中获取对应属性的数据并返回
+   * 生成formData的prop值，基于自身从originData中获取对应属性的数据并返回
    * @param {string} modType modType
    * @param {object} option 参数
-   * @param {object} option.targetitem 目标数据
-   * @param {object} option.originitem 源formdata数据
+   * @param {object} option.targetData 目标数据
+   * @param {object} option.originData 源formdata数据
    * @param {string} [option.from] 调用来源
    * @returns {*}
    */
-  getFormData (modType, { targetitem, originitem, from = 'init' }) {
+  getFormData (modType, { targetData, originData, from = 'init' }) {
     let mod = this.getMod(modType)
-    let targetData
+    let tData
     // 不存在mod情况下生成值无意义，不做判断
     if (mod) {
       // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
-      if (originitem) {
-        targetData = this.triggerFunc('edit', originitem[this.prop], {
+      if (originData) {
+        tData = this.triggerFunc('edit', originData[this.prop], {
           type: modType,
-          targetitem,
-          originitem
+          targetData,
+          originData
         })
       } else if (mod.getValueData) {
         if (from == 'reset') {
-          targetData = mod.getValueData('resetdata')
+          tData = mod.getValueData('resetdata')
         } else {
-          targetData = mod.getValueData('initdata')
+          tData = mod.getValueData('initdata')
         }
       }
       // 调用模块的readyData
@@ -212,21 +212,21 @@ class DictionaryData extends SimpleData {
       }
       // 模块存在edit函数时将当前数据进行edit操作
       if (mod.$func && mod.$func.edit) {
-        targetData = mod.$func.edit(targetData, {
+        tData = mod.$func.edit(tData, {
           type: modType,
-          targetitem,
-          originitem,
+          targetData,
+          originData,
           from: from
         })
       }
     }
-    return targetData
+    return tData
   }
 
   /**
    * 从数据源获取数据
    * @param {*} originData 数据源数据
-   * @param {*} payload originitem(接口数据源数据)/targetitem(目标本地数据)/type(数据来源的接口)
+   * @param {*} payload originData(接口数据源数据)/targetData(目标本地数据)/type(数据来源的接口)
    */
   formatOrigin (originData, payload) {
     return this.triggerFunc('format', originData, payload)

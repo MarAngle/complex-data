@@ -406,7 +406,7 @@ class DictionaryList extends DefaultData {
    * @returns {DictionaryData[]}
    */
   getModList (modType) {
-    return this.getModListNext([], this.data, modType)
+    return this.getModListByMap([], this.data, modType)
   }
   /**
    * 从dataMap获取符合模块要求的字典列表
@@ -415,7 +415,7 @@ class DictionaryList extends DefaultData {
    * @param {string} modType 模块名称
    * @returns {DictionaryData[]}
    */
-  getModListNext (modList, dataMap, modType) {
+  getModListByMap (modList, dataMap, modType) {
     for (let ditem of dataMap.values()) {
       let fg = ditem.isMod(modType)
       if (fg) {
@@ -437,48 +437,51 @@ class DictionaryList extends DefaultData {
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
    * @param {string} modType 模块名称
-   * @param {DictionaryData[]} modlist 模块列表
+   * @param {DictionaryData[]} modList 模块列表
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageListByModList (modType, modlist, payload = {}) {
-    let pagelist = []
-    for (let n = 0; n < modlist.length; n++) {
-      let ditem = modlist[n]
+  getPageListByModList (modType, modList, payload = {}) {
+    let pageList = []
+    for (let n = 0; n < modList.length; n++) {
+      let ditem = modList[n]
       let pitem = ditem.getModData(modType, payload)
-      if (ditem.$dictionary && ditem.mod[modType] && ditem.mod[modType].$children) {
-        let childrenProp = ditem.mod[modType].$children
-        if (childrenProp === true) {
-          childrenProp = 'children'
+      if (ditem.$dictionary) {
+        let mod = ditem.getMod(modType)
+        if (mod && mod.$children) {
+          let childrenProp = mod.$children
+          if (childrenProp === true) {
+            childrenProp = 'children'
+          }
+          pitem[childrenProp] = ditem.$dictionary.getPageList(modType, payload)
         }
-        pitem[childrenProp] = ditem.$dictionary.getPageList(modType, payload)
       }
-      pagelist.push(pitem)
+      pageList.push(pitem)
     }
-    return pagelist
+    return pageList
   }
   /**
    * 根据模块列表生成对应的form对象
-   * @param {DictionaryData[]} modlist 模块列表
+   * @param {DictionaryData[]} modList 模块列表
    * @param {string} modType 模块名称
-   * @param {*} originItem 初始化数据
+   * @param {*} originData 初始化数据
    * @param {object} option 设置项
    * @param {object} [option.form] 目标form数据
    * @param {string} [option.from] 调用来源
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
    * @returns {object}
    */
-  buildFormData(modlist, modType, originItem, option = {}) {
+  buildFormData(modList, modType, originData, option = {}) {
     let formData = option.form || {}
     let from = option.from
     let limit = _func.getLimitData(option.limit)
-    let size = modlist.length
+    let size = modList.length
     for (let n = 0; n < size; n++) {
-      let ditem = modlist[n]
+      let ditem = modList[n]
       if (!limit.getLimit(ditem.prop)) {
         let targetData = ditem.getFormData(modType, {
-          targetItem: formData,
-          originItem: originItem,
+          targetData: formData,
+          originData: originData,
           from: from
         })
         _func.setProp(formData, ditem.prop, targetData, true)
@@ -489,14 +492,14 @@ class DictionaryList extends DefaultData {
   /**
    * 基于formdata和模块列表返回编辑完成的数据
    * @param {object} formData form数据
-   * @param {DictionaryData[]} modlist 模块列表
+   * @param {DictionaryData[]} modList 模块列表
    * @param {string} modType modType
    * @returns {object}
    */
-  getEditData(formData, modlist, modType) {
+  getEditData(formData, modList, modType) {
     let editData = {}
-    for (let n = 0; n < modlist.length; n++) {
-      let ditem = modlist[n]
+    for (let n = 0; n < modList.length; n++) {
+      let ditem = modList[n]
       let add = true
       if (!ditem.mod[modType].required) {
         /*
@@ -506,8 +509,8 @@ class DictionaryList extends DefaultData {
           2.存在check,返回check函数返回值，为真则赋值
         */
         add = ditem.triggerFunc('check', formData[ditem.prop], {
-          targetItem: editData,
-          originItem: formData,
+          targetData: editData,
+          originData: formData,
           type: modType
         })
         // empty状态下传递数据 或者 checkFg为真时传递数据 也就是edit.empty为false状态的非真数据不传递
@@ -521,8 +524,8 @@ class DictionaryList extends DefaultData {
           targetdata = _func.trimData(targetdata)
         }
         targetdata = ditem.triggerFunc('unedit', targetdata, {
-          targetItem: editData,
-          originItem: formData,
+          targetData: editData,
+          originData: formData,
           type: modType
         })
         let originprop = ditem.getInterface('originprop', modType)
