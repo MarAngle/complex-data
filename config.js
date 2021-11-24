@@ -1,4 +1,20 @@
 let config = {
+  SearchData: {
+    menu: [
+      {
+        type: 'primary',
+        icon: 'search',
+        name: '查询',
+        act: 'search'
+      },
+      {
+        type: 'default',
+        icon: 'reload',
+        name: '重置',
+        act: 'reset'
+      }
+    ]
+  },
   PaginationData: {
     size: 10,
     sizeList: ['10', '20', '50', '100'],
