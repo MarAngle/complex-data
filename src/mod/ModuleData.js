@@ -41,12 +41,7 @@ class ModuleData extends Data {
             }
           }
           if (build) {
-            let ModuleClassData = ModuleData.getDictionary(moduleName)
-            if (ModuleClassData) {
-              this.setData(moduleName, new ModuleClassData(modInitData))
-            } else {
-              this.$exportMsg(`加载字典${moduleName}未设置！`)
-            }
+            this.setData(moduleName, modInitData)
           }
         }
       }
@@ -68,7 +63,12 @@ class ModuleData extends Data {
    */
   setData(moduleName, modData) {
     this.uninstallData(moduleName)
-    this.installData(moduleName, modData)
+    let ModuleClassData = ModuleData.getDictionary(moduleName)
+    if (modData instanceof ModuleClassData) {
+      this.installData(moduleName, modData)
+    } else {
+      this.installData(moduleName, new ModuleClassData(modData))
+    }
   }
   /**
    * 卸载模块
