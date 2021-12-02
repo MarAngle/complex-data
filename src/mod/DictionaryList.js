@@ -7,9 +7,9 @@ import LayoutData from './LayoutData'
 const propList = ['id', 'parentId', 'children']
 
 class DictionaryList extends DefaultData {
-  constructor (initOption, payload) {
+  constructor (initOption) {
     super(initOption)
-    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
+    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
     this.$option = new OptionData({
       isChildren: false,
       build: _func.getLimitData(),
@@ -32,16 +32,10 @@ class DictionaryList extends DefaultData {
     }
     this.data = new Map()
     if (initOption) {
-      if (!payload) {
-        payload = {}
-      }
-      if (!payload.type) {
-        payload.type = 'init'
-      }
       this.initOption(initOption.option)
-      this.initDictionaryData(initOption, payload)
+      this.initDictionaryData(initOption)
     }
-    this.triggerCreateLife('DictionaryList', 'created', initOption, payload)
+    this.triggerCreateLife('DictionaryList', 'created', initOption)
   }
   initOption (option = {}) {
     for (const prop in option) {
@@ -154,9 +148,10 @@ class DictionaryList extends DefaultData {
         initOption.option.build = this.$option.getData('build')
       }
       initOption.parent = ditem
-      ditem.$dictionary = new DictionaryList(initOption, {
-        layout: this.getLayout()
-      })
+      if (!initOption) {
+        initOption.layout = this.getLayout()
+      }
+      ditem.$dictionary = new DictionaryList(initOption)
     } else if (type == 'self') {
       ditem.$dictionary = this
     }
@@ -166,10 +161,10 @@ class DictionaryList extends DefaultData {
    * @param {*} initOption 列表传参
    * @param {object} [payload] 设置项
    */
-  initDictionaryData (initOption, payload = {}) { // type init push replace
+  initDictionaryData (initOption, type = 'init') { // type init push replace
     // 触发update生命周期
-    this.triggerLife('beforeUpdate', this, initOption, payload)
-    if (payload.type == 'init') {
+    this.triggerLife('beforeUpdate', this, initOption, type)
+    if (type == 'init') {
       this.data.clear()
     }
     if (initOption) {
@@ -187,15 +182,15 @@ class DictionaryList extends DefaultData {
           children: true
         }
         if (ditem) {
-          if (payload.type == 'init') {
+          if (type == 'init') {
             // 加载模式下不能出现相同字段=加载模式出发前会先清空
             act.build = false
             act.children = false
             this.$exportMsg(`字典列表加载:${ditemOption.prop}重复!`)
-          } else if (payload.type == 'push') {
+          } else if (type == 'push') {
             // 添加模式，不对相同ditem做处理，仅对子数据做处理
             act.build = false
-          } else if (payload.type == 'replace') {
+          } else if (type == 'replace') {
             // 重构模式，相同字段替换
           }
         } else {
@@ -217,12 +212,11 @@ class DictionaryList extends DefaultData {
       this.initPropData(initOption)
     }
     // 触发update生命周期
-    this.triggerLife('updated', this, initOption, payload)
+    this.triggerLife('updated', this, initOption, type)
   }
   // 重新创建字典列表
-  rebuildData (initOption, payload = {}) {
-    payload.type = payload.type || 'replace'
-    this.initDictionaryData(initOption, payload)
+  rebuildData (initOption, type = 'replace') {
+    this.initDictionaryData(initOption, type)
   }
   /**
    * 设置字典值
