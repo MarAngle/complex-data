@@ -1,33 +1,14 @@
 import _func from 'complex-func'
 
-let ModuleDictionaryMap = new Map()
-
 class ModuleData {
   constructor (initOption, parent) {
-    this.setParent(parent)
     this.$initMain(initOption)
-  }
-  static setDictionary(prop, data) {
-    ModuleDictionaryMap.set(prop, data)
-  }
-  static getDictionary(prop) {
-    if (prop) {
-      return ModuleDictionaryMap.set(prop)
-    } else {
-      return ModuleDictionaryMap
-    }
+    this.setParent(parent)
   }
   $initMain(initOption) {
     if (initOption && _func.getType(initOption) == 'object') {
-      for (let modName in initOption) {
-        this.setData(modName, initOption[modName])
-      }
-    }
-  }
-  $initModule(initOption) {
-    if (initOption && _func.getType(initOption) == 'object') {
-      for (let modName in initOption) {
-        this.setData(modName, initOption[modName])
+      for (let n in initOption) {
+        this.setData(n, initOption[n])
       }
     }
   }

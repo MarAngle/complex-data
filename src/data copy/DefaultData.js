@@ -1,6 +1,7 @@
 import _func from 'complex-func'
 import SimpleData from './SimpleData'
 import ModuleData from './../mod/ModuleData'
+import LifeData from './../mod/LifeData'
 
 class DefaultData extends SimpleData {
   constructor (initOption) {
@@ -9,19 +10,11 @@ class DefaultData extends SimpleData {
     }
     super(initOption)
     this.$module = new ModuleData({
-      life: initOption.life,
-      status: initOption.status,
-      promise: initOption.promise,
-      option: initOption.option,
-      update: initOption.update,
-      dictionary: initOption.dictionary,
-      choice: initOption.choice,
-      pagination: initOption.pagination,
-      search: initOption.search
+      life: new LifeData(initOption.life)
     }, this)
     this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
     this.data = initOption.data || {}
-    this.$module.$initModule(initOption.module)
+    this.$module.$initMain(initOption.module)
     this.triggerCreateLife('DefaultData', 'created', initOption)
   }
   /**
