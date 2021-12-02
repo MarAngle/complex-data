@@ -39,7 +39,7 @@ class Data {
    */
   $exportMsg (content, type = 'error', option) {
     content = this.$createMsg(content)
-    _func.printMsgAct(content, type, option)
+    _func.exportMsg(content, type, option)
   }
   toString () {
     return this.$selfName()

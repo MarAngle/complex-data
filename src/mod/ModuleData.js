@@ -4,10 +4,10 @@ import Data from '../data/Data'
 let ModuleDictionaryMap = new Map()
 
 class ModuleData extends Data {
-  constructor (initOption, parent, moduleOption, defaultModuleOption) {
+  constructor (initOption, parent) {
     super()
     this.setParent(parent)
-    this.$initMain(initOption, moduleOption, defaultModuleOption)
+    this.$initModule(initOption)
   }
   static setDictionary(moduleName, ModuleClassData) {
     ModuleDictionaryMap.set(moduleName, ModuleClassData)
@@ -17,36 +17,6 @@ class ModuleData extends Data {
       return ModuleDictionaryMap.set(moduleName)
     } else {
       return ModuleDictionaryMap
-    }
-  }
-  $initMain(initOption, moduleOption, defaultModuleOption) {
-    if (defaultModuleOption) {
-      if (_func.getType(initOption) != 'object') {
-        this.$exportMsg('加载参数initOption需要object格式！')
-      } else {
-        // 存在此值则进行自动加载判断
-        if (!moduleOption) {
-          moduleOption = {}
-        }
-        for (const moduleName in initOption) {
-          let modInitData = initOption[moduleName]
-          let build = !!modInitData
-          if (!build) {
-            build = moduleOption[moduleName]
-            if (build === undefined) {
-              let defaultBuild = defaultModuleOption[moduleName]
-              if (defaultBuild) {
-                build = defaultBuild.data
-              }
-            }
-          }
-          if (build) {
-            this.setData(moduleName, modInitData)
-          }
-        }
-      }
-    } else {
-      this.$initModule(initOption)
     }
   }
   $initModule(initOption) {
@@ -67,6 +37,9 @@ class ModuleData extends Data {
     if (modData instanceof ModuleClassData) {
       this.installData(moduleName, modData)
     } else {
+      if (modData === true) {
+        modData = undefined
+      }
       this.installData(moduleName, new ModuleClassData(modData))
     }
   }

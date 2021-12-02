@@ -2,49 +2,14 @@ import _func from 'complex-func'
 import DefaultData from './DefaultData'
 import ModuleData from './../mod/ModuleData'
 
-let defaultModuleOption = {
-  status: {
-    default: true,
-    data: false
-  },
-  promise: {
-    default: true,
-    data: false
-  },
-  option: {
-    default: false,
-    data: false
-  },
-  update: {
-    default: false,
-    data: false
-  },
-  dictionary: {
-    default: false,
-    data: false
-  },
-  choice: {
-    default: false,
-    data: false
-  },
-  pagination: {
-    default: false,
-    data: false
-  },
-  search: {
-    default: false,
-    data: false
-  }
-}
-
 class BaseData extends DefaultData {
-  constructor(initOption, moduleOption) {
+  constructor(initOption) {
     if (!initOption) {
       initOption = {}
     }
     super(initOption)
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
-    this.$module = new ModuleData(initOption.module, this, moduleOption, defaultModuleOption)
+    this.$module = new ModuleData(initOption.module, this)
     this.triggerCreateLife('BaseData', 'created', initOption)
   }
 
