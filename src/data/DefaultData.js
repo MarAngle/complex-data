@@ -2,8 +2,20 @@ import _func from 'complex-func'
 import SimpleData from './SimpleData'
 import ModuleData from './../mod/ModuleData'
 
+const defaultModuleOption = {
+  life: true,
+  status: false,
+  promise: false,
+  option: false,
+  update: false,
+  dictionary: false,
+  choice: false,
+  pagination: false,
+  search: false
+}
+
 class DefaultData extends SimpleData {
-  constructor (initOption) {
+  constructor (initOption, moduleOption) {
     if (!initOption) {
       initOption = {}
     }
@@ -18,7 +30,7 @@ class DefaultData extends SimpleData {
       choice: initOption.choice,
       pagination: initOption.pagination,
       search: initOption.search
-    }, this)
+    }, this, moduleOption, defaultModuleOption)
     this.triggerCreateLife('DefaultData', 'beforeCreate', initOption)
     this.data = initOption.data || {}
     this.$module.$initModule(initOption.module)
