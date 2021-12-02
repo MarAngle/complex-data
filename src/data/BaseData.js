@@ -1,24 +1,82 @@
 import _func from 'complex-func'
 import DefaultData from './DefaultData'
-import StatusData from './../mod/StatusData'
-import PromiseData from './../mod/PromiseData'
-import OptionData from './../mod/OptionData'
-import UpdateData from './../mod/UpdateData'
+import ModuleData from './../mod/ModuleData'
+
+let defaultModuleOption = {
+  status: {
+    data: false
+  },
+  promise: {
+    data: false
+  },
+  option: {
+    data: false
+  },
+  update: {
+    data: {
+      data: false
+    }
+  },
+  dictionary: {
+    data: false
+  },
+  choice: {
+    data: false
+  },
+  pagination: {
+    data: false
+  },
+  search: {
+    data: false
+  }
+}
 
 class BaseData extends DefaultData {
-  constructor(initOption) {
+  constructor(initOption, moduleOption) {
     if (!initOption) {
       initOption = {}
     }
     super(initOption)
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
-    this.setModule('status', new StatusData(initOption.status))
-    this.setModule('promise', new PromiseData())
-    this.setModule('option', new OptionData())
-    if (initOption.update) {
-      this.setModule('update', new UpdateData(initOption.update))
-    }
+    this.$module = new ModuleData({
+      status: initOption.status,
+      promise: initOption.promise,
+      option: initOption.option,
+      update: initOption.update,
+      dictionary: initOption.dictionary,
+      choice: initOption.choice,
+      pagination: initOption.pagination,
+      search: initOption.search
+    }, this, moduleOption, defaultModuleOption)
+    this.$module.$initModule(initOption.module)
     this.triggerCreateLife('BaseData', 'created', initOption)
+  }
+  /**
+   * 设置模块
+   * @param {string} modName 模块名
+   * @param {object} data 模块实例
+   */
+  setModule(modName, data) {
+    this.$module.setData(modName, data)
+  }
+  /**
+   * 加载模块
+   * @param {string} modName 模块名
+   * @param {object} data 模块实例
+   */
+  installModule(modName, data) {
+    return this.$module.installData(modName, data)
+  }
+  triggerModuleMethod(modName, method, args) {
+    this.$module.triggerMethod(modName, method, args)
+  }
+  /**
+   * 卸载模块
+   * @param {string} modName 模块名
+   * @returns {object | undefined} 卸载的模块
+   */
+  uninstallModule(modName) {
+    return this.$module.uninstallData(modName)
   }
   /**
    * 设置状态
@@ -70,43 +128,43 @@ class BaseData extends DefaultData {
     return this.$module.promise.triggerData(prop, option)
   }
   setUpdateOffset (...args) {
-    this.triggerModuleMethod('update', 'setOffset', args)
+    this.$module.upate.setOffset(...args)
   }
   /**
    * 开始更新
    */
   startUpdate (...args) {
-    this.triggerModuleMethod('update', 'start', args)
+    this.$module.upate.start(...args)
   }
   /**
    * 立即更新
    */
   updateImmerdiate (...args) {
-    this.triggerModuleMethod('update', 'updateImmerdiate', args)
+    this.$module.upate.updateImmerdiate(...args)
   }
   /**
    * 自动更新
    */
   autoStartUpdate (...args) {
-    this.triggerModuleMethod('update', 'autoStart', args)
+    this.$module.upate.autoStart(...args)
   }
   /**
    * 触发下一次定时
    */
   nextUpdate (...args) {
-    this.triggerModuleMethod('update', 'next', args)
+    this.$module.upate.next(...args)
   }
   /**
    * 清除更新
    */
   clearUpdate (...args) {
-    this.triggerModuleMethod('update', 'clear', args)
+    this.$module.upate.clear(...args)
   }
   /**
    * 重置更新
    */
   resetUpdate (...args) {
-    this.triggerModuleMethod('update', 'reset', args)
+    this.$module.upate.reset(...args)
   }
   /**
    * 数据相关函数定义

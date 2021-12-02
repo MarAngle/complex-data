@@ -34,7 +34,10 @@ class ModuleData extends Data {
           if (!build) {
             build = moduleOption[moduleName]
             if (build === undefined) {
-              build = defaultModuleOption[moduleName]
+              let defaultBuild = defaultModuleOption[moduleName]
+              if (defaultBuild) {
+                build = defaultBuild.data
+              }
             }
           }
           if (build) {
