@@ -4,19 +4,15 @@ let id = 0
 
 function createId() {
   id++
-  return id
+  return id.toString()
 }
 
 class Data {
   constructor() {
     this.$id = createId()
   }
-  $getId (prop) {
-    if (prop) {
-      return this.$id + prop
-    } else {
-      return this.$id
-    }
+  $getId (prop = '') {
+    return this.$id + prop
   }
   /**
    * 获取名称
