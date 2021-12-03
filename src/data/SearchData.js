@@ -1,8 +1,8 @@
 import _func from 'complex-func'
 import config from '../../config'
-import ComplexData from './../data/ComplexData'
+import BaseData from './../data/BaseData'
 
-class SearchData extends ComplexData {
+class SearchData extends BaseData {
   constructor (initOption) {
     if (!initOption) {
       initOption = {}
