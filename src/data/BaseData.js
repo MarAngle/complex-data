@@ -20,7 +20,7 @@ class BaseData extends DefaultData {
    * @param {object} data 模块实例
    */
   setModule(modName, data) {
-    this.$module.setData(modName, data)
+    this.$module.$setData(modName, data)
   }
   /**
    * 加载模块
@@ -28,10 +28,7 @@ class BaseData extends DefaultData {
    * @param {object} data 模块实例
    */
   installModule(modName, data) {
-    return this.$module.installData(modName, data)
-  }
-  triggerModuleMethod(modName, method, args) {
-    this.$module.triggerMethod(modName, method, args)
+    return this.$module.$installData(modName, data)
   }
   /**
    * 卸载模块
@@ -39,7 +36,17 @@ class BaseData extends DefaultData {
    * @returns {object | undefined} 卸载的模块
    */
   uninstallModule(modName) {
-    return this.$module.uninstallData(modName)
+    return this.$module.$uninstallData(modName)
+  }
+  /**
+   * 触发指定模块的指定函数
+   * @param {string} modName 模块名
+   * @param {string} method 函数名
+   * @param {*[]} args 参数
+   * @returns {*}
+   */
+  triggerModuleMethod(modName, method, args) {
+    this.$module.$triggerMethod(modName, method, args)
   }
   /* --- module end --- */
 

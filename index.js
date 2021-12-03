@@ -22,6 +22,14 @@ import UpdateData from './src/mod/UpdateData'
 
 import ListData from './src/core/ListData'
 
+ModuleData.setDictionary('status', StatusData)
+ModuleData.setDictionary('promise', PromiseData)
+ModuleData.setDictionary('dictionary', DictionaryList)
+ModuleData.setDictionary('option', OptionData)
+ModuleData.setDictionary('choice', ChoiceData)
+ModuleData.setDictionary('pagination', PaginationData)
+ModuleData.setDictionary('update', UpdateData)
+
 export {
   BaseData,
   ComplexData,
