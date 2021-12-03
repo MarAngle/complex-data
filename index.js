@@ -18,7 +18,7 @@ import PaginationData from './src/mod/PaginationData'
 import ChoiceData from './src/mod/ChoiceData'
 import UpdateData from './src/mod/UpdateData'
 import LayoutData from './src/mod/LayoutData'
-import DictionaryData from './src/mod/DictionaryData'
+import DictionaryItem from './src/mod/DictionaryItem'
 import DictionaryList from './src/mod/DictionaryList'
 
 import ListData from './src/core/ListData'
@@ -53,7 +53,7 @@ export {
   ChoiceData,
   UpdateData,
   LayoutData,
-  DictionaryData,
+  DictionaryItem,
   DictionaryList,
 
   ListData

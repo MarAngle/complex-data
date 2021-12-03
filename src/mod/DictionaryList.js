@@ -1,6 +1,6 @@
 import _func from 'complex-func'
 import DefaultData from './../data/DefaultData'
-import DictionaryData from './DictionaryData'
+import DictionaryItem from './DictionaryItem'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
 
@@ -33,7 +33,7 @@ class DictionaryList extends DefaultData {
     this.data = new Map()
     if (initOption) {
       this.initOption(initOption.option)
-      this.initDictionaryData(initOption)
+      this.initDictionaryItem(initOption)
     }
     this.triggerCreateLife('DictionaryList', 'created', initOption)
   }
@@ -68,7 +68,7 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 加载默认初始值.子类自动按照父类来源设置
-   * @param {object} optiondata DictionaryData初始化参数
+   * @param {object} optiondata DictionaryItem初始化参数
    * @param {*} parentData 父元素
    * @param {*} isChildren 是否是子类
    */
@@ -107,7 +107,7 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 解析字典初始化数据,获取子字典创建模式
-   * @param {DictionaryData} ditem 对应字典实例
+   * @param {DictionaryItem} ditem 对应字典实例
    * @param {object} originOption 字典初始化数据
    * @returns {'' | 'self' | 'build'}
    */
@@ -129,7 +129,7 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 创建字典的子字典列表
-   * @param {DictionaryData} ditem 对应字典实例
+   * @param {DictionaryItem} ditem 对应字典实例
    * @param {object} originOption 字典初始化数据
    * @param {boolean} isChildren 是否子类
    */
@@ -161,7 +161,7 @@ class DictionaryList extends DefaultData {
    * @param {*} initOption 列表传参
    * @param {object} [payload] 设置项
    */
-  initDictionaryData (initOption, type = 'init') { // type init push replace
+  initDictionaryItem (initOption, type = 'init') { // type init push replace
     // 触发update生命周期
     this.triggerLife('beforeUpdate', this, initOption, type)
     if (type == 'init') {
@@ -199,7 +199,7 @@ class DictionaryList extends DefaultData {
         if (act.build) {
           // 构建字典数据
           ditemOption.parent = this
-          ditem = new DictionaryData(ditemOption, {
+          ditem = new DictionaryItem(ditemOption, {
             layout: this.getLayout()
           })
           this.data.set(ditem.prop, ditem)
@@ -216,7 +216,7 @@ class DictionaryList extends DefaultData {
   }
   // 重新创建字典列表
   rebuildData (initOption, type = 'replace') {
-    this.initDictionaryData(initOption, type)
+    this.initDictionaryItem(initOption, type)
   }
   /**
    * 设置字典值
@@ -239,7 +239,7 @@ class DictionaryList extends DefaultData {
 
   /**
    * 获取列表MAP
-   * @returns {Map<DictionaryData>}
+   * @returns {Map<DictionaryItem>}
    */
    getData () {
     return this.data
@@ -249,7 +249,7 @@ class DictionaryList extends DefaultData {
    * 获取字典对象
    * @param {*} data 值
    * @param {string} [prop] 判断的属性
-   * @returns {DictionaryData}
+   * @returns {DictionaryItem}
    */
    getItem (data, prop) {
     if (!prop) {
@@ -346,7 +346,7 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 格式化数据
-   * @param {DictionaryData} ditem 字典
+   * @param {DictionaryItem} ditem 字典
    * @param {object} targetData 目标数据
    * @param {object} originData 源数据
    * @param {string} originFromType 来源originFromType
@@ -397,22 +397,22 @@ class DictionaryList extends DefaultData {
   /**
    * 获取符合模块要求的字典列表
    * @param {string} mod 模块名称
-   * @returns {DictionaryData[]}
+   * @returns {DictionaryItem[]}
    */
   getModList (modType) {
     return this.getModListByMap([], this.data, modType)
   }
   /**
    * 从dataMap获取符合模块要求的字典列表
-   * @param {DictionaryData[]} modList 返回的字典列表
-   * @param {Map<DictionaryData>} dataMap 字典Map
+   * @param {DictionaryItem[]} modList 返回的字典列表
+   * @param {Map<DictionaryItem>} dataMap 字典Map
    * @param {string} modType 模块名称
-   * @returns {DictionaryData[]}
+   * @returns {DictionaryItem[]}
    */
   getModListByMap (modList, dataMap, modType) {
     for (let ditem of dataMap.values()) {
-      let fg = ditem.isMod(modType)
-      if (fg) {
+      let mod = ditem.getMod(modType)
+      if (mod) {
         modList.push(ditem)
       }
     }
@@ -431,7 +431,7 @@ class DictionaryList extends DefaultData {
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
    * @param {string} modType 模块名称
-   * @param {DictionaryData[]} modList 模块列表
+   * @param {DictionaryItem[]} modList 模块列表
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
@@ -456,7 +456,7 @@ class DictionaryList extends DefaultData {
   }
   /**
    * 根据模块列表生成对应的form对象
-   * @param {DictionaryData[]} modList 模块列表
+   * @param {DictionaryItem[]} modList 模块列表
    * @param {string} modType 模块名称
    * @param {*} originData 初始化数据
    * @param {object} option 设置项
@@ -486,7 +486,7 @@ class DictionaryList extends DefaultData {
   /**
    * 基于formdata和模块列表返回编辑完成的数据
    * @param {object} formData form数据
-   * @param {DictionaryData[]} modList 模块列表
+   * @param {DictionaryItem[]} modList 模块列表
    * @param {string} modType modType
    * @returns {object}
    */
