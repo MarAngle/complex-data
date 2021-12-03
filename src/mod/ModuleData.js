@@ -26,7 +26,7 @@ class ModuleData extends Data {
       }
     }
   }
-  $formatData(modName, modData) {
+  $buildModuleData(modName, modData) {
     let ModuleClassData = ModuleData.getDictionary(modName)
     if (ModuleClassData) {
       if (modData === true) {
@@ -40,12 +40,13 @@ class ModuleData extends Data {
   /**
    * 设置模块
    * @param {string} modName 模块名
-   * @param {object} data 模块实例
+   * @param {object} modData 模块实例
+   * @param {boolean} [build] 自动构建判断值，默认为真
    */
-  $setData(modName, modData, format = true) {
+  $setData(modName, modData, build = true) {
     this.$uninstallData(modName)
-    if (format) {
-      modData = this.$formatData(modName, modData)
+    if (build) {
+      modData = this.$buildModuleData(modName, modData)
     }
     this.$installData(modName, modData)
   }
@@ -68,7 +69,7 @@ class ModuleData extends Data {
   /**
    * 加载模块
    * @param {string} modName 模块名
-   * @param {object} data 模块实例
+   * @param {object} modData 模块实例
    */
   $installData(modName, modData) {
     this[modName] = modData
