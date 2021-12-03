@@ -10,7 +10,30 @@ class BaseData extends DefaultData {
     super(initOption)
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)
+    this.$initBaseDataLife()
     this.triggerCreateLife('BaseData', 'created', initOption)
+  }
+  /**
+   * 加载生命周期函数
+   */
+   $initBaseDataLife() {
+    // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
+    this.onLife('beforeReload', {
+      id: 'AutoBaseDataBeforeReload',
+      data: (instantiater, resetOption) => {
+        if (this.$module.pagination && resetOption.page) {
+          if (resetOption.page === true) {
+            this.setPageData(1, 'page', true)
+          } else {
+            this.setPageData(resetOption.page.data, resetOption.page.prop, true)
+          }
+        }
+        if (this.$module.choice) {
+          // 根据设置和传值自动进行当前选项的重置操作
+          this.autoChoiceReset(resetOption.choice, 'reload')
+        }
+      }
+    })
   }
 
   /* --- module start --- */

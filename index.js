@@ -1,5 +1,4 @@
 import BaseData from './src/data/BaseData'
-import ComplexData from './src/data/ComplexData'
 import DefaultData from './src/data/DefaultData'
 import SimpleData from './src/data/SimpleData'
 
@@ -32,7 +31,6 @@ ModuleData.setDictionary('update', UpdateData)
 
 export {
   BaseData,
-  ComplexData,
   DefaultData,
   SimpleData,
   ChoiceData,

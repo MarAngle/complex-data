@@ -1,4 +1,5 @@
 import _func from 'complex-func'
+import utils from './../utils/index'
 import BaseData from './../data/BaseData'
 
 class ListData extends BaseData {
@@ -6,6 +7,9 @@ class ListData extends BaseData {
     if (!initOption) {
       initOption = {}
     }
+    initOption.data = utils.formatData(initOption.data, {
+      list: []
+    })
     super(initOption)
     this.triggerCreateLife('ListData', 'beforeCreate', initOption)
     this.$initListDataLife()
@@ -18,16 +22,12 @@ class ListData extends BaseData {
     // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
     this.onLife('beforeReload', {
       id: 'AutoListDataBeforeReload',
-      data: (instantiater, option) => {
-        if (this.$module.pagination && option.page) {
-          if (option.page === true) {
-            this.setPageData(1, 'page', true)
-          } else {
-            this.setPageData(option.page.data, option.page.prop, true)
+      data: (instantiater, resetOption) => {
+        if (this.parseResetOption(resetOption, 'data') !== false) {
+          if (this.parseResetOption(resetOption, 'data.list') !== false) {
+            this.resetArray(this.data.list)
           }
         }
-        // 根据设置和传值自动进行当前选项的重置操作
-        this.autoChoiceReset(option.choice, 'reload')
       }
     })
   }
