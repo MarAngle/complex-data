@@ -7,9 +7,18 @@ class ListData extends BaseData {
     if (!initOption) {
       initOption = {}
     }
-    initOption.data = utils.formatData(initOption.data, {
-      list: []
-    })
+    if (!initOption.list) {
+      initOption.list = []
+    }
+    if (!initOption.module) {
+      initOption.module = {}
+    }
+    if (!initOption.module.status) {
+      initOption.module.status = true
+    }
+    if (!initOption.module.promise) {
+      initOption.module.promise = true
+    }
     super(initOption)
     this.triggerCreateLife('ListData', 'beforeCreate', initOption)
     this.$initListDataLife()
