@@ -52,7 +52,7 @@ class SearchData extends ComplexData {
   }
   /**
    * 加载标题
-   * @param {string} [title] 标题
+   * @param {Object} [title] 标题
    */
   initTitle(title) {
     if (title) {

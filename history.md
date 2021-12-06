@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.13
+- func依赖升级
+
 ### 2.2.12
 - func依赖升级,printMsgAct => exportMsg
 - 类调整
