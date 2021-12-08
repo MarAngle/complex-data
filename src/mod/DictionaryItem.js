@@ -1,5 +1,5 @@
 import _func from 'complex-func'
-import complexOption from './../option'
+import modOption from './../../modOption'
 import SimpleData from './../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData from './LayoutData'
@@ -38,15 +38,15 @@ class DictionaryItem extends SimpleData {
       type = 'object'
     }
     this.$interface.type = new InterfaceData(type || 'string')
-    // ???modType用于存疑
+    // modType为模块解析字段，主要使用在modOption
     this.$interface.modType = new InterfaceData('list')
     this.setLayout(initOption.layout, payload.layout)
-    complexOption.format(this, initOption.mod)
+    modOption.format(this, initOption.mod)
     this.formatFunc()
   }
   // 获取moddata=>该数据为页面需要的数据格式,从外部定义
   getModData (modprop, payload = {}) {
-    return complexOption.unformat(this, modprop, payload)
+    return modOption.unformat(this, modprop, payload)
   }
   setLayout (layoutOption, parentLayoutOption) {
     let option = layoutOption || parentLayoutOption
