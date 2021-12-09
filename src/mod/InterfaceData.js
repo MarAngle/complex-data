@@ -8,9 +8,7 @@ class InterfaceData extends Data {
     this.data = {
       default: undefined
     }
-    if (initOption) {
-      this.initMain(initOption)
-    }
+    this.initMain(initOption)
   }
   /**
    * 加载
