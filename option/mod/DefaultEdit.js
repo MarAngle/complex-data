@@ -5,21 +5,23 @@ import config from '../config'
 
 class DefaultEdit extends BaseData {
   constructor(initOption, payload) {
+    if (!initOption) {
+      throw new Error('编辑数据模块初始化参数为空！')
+    }
     super(initOption)
     this.triggerCreateLife('DefaultEdit', 'beforeCreate', initOption, payload)
     this.type = initOption.type || 'input'
     let defaultOption = config.option.getData(this.type)
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = initOption.required || false
-    this.multiple = initOption.multiple || false
     this.disabled = new InterfaceData(initOption.disabled || false)
     // 宽度设置
-    if (initOption.mainwidth) {
-      let type = _func.getType(initOption.mainwidth)
+    if (initOption.mainWidth) {
+      let type = _func.getType(initOption.mainWidth)
       if (type == 'number') {
-        this.mainwidth = initOption.mainwidth + 'px'
+        this.mainWidth = initOption.mainWidth + 'px'
       } else {
-        this.mainwidth = initOption.mainwidth
+        this.mainWidth = initOption.mainWidth
       }
     }
     if (initOption.width) {
@@ -41,12 +43,17 @@ class DefaultEdit extends BaseData {
       }
     }
     this.$value = {}
+    this.option = {}
+    // 组件事件监控
+    this.on = initOption.on || {}
+    // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
+    // main item ...
+    this.localOption = initOption.localOption || {}
     this.initValue(initOption, defaultOption)
-    if (this.multiple) {
-      this.setMultipleValue()
-    }
+    this.setMultiple(initOption.multiple || false)
     this.initSlot(initOption)
     this.initType(initOption)
+    this.initLocalOption(initOption)
     this.triggerCreateLife('DefaultEdit', 'created')
   }
   // slot格式化编辑数据
@@ -79,12 +86,27 @@ class DefaultEdit extends BaseData {
       this.$value.resetValue = this.$value.defaultValue
     }
   }
-  setMultipleValue() {
+  setMultiple(data) {
+    if (this.multiple !== data) {
+      this.multiple = data
+      if (this.multiple) {
+        this.initMultipleValue()
+      }
+    }
+  }
+  initMultipleValue() {
     for (let n = 0; n < config.option.valuePropList.length; n++) {
       let prop = config.option.valuePropList[n]
       let type = _func.getType(this.getValueData(prop))
       if (type != 'array') {
         this.setValueData([], prop)
+      }
+    }
+  }
+  initLocalOption(initOption) {
+    if (initOption.option) {
+      this.option = {
+        ...initOption
       }
     }
   }
