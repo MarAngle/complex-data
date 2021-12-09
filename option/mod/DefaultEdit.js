@@ -15,6 +15,29 @@ class DefaultEdit extends BaseData {
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = initOption.required || false
     this.disabled = new InterfaceData(initOption.disabled || false)
+    // 格式化占位符和检验规则
+    if (defaultOption.placeholder) {
+      if (!initOption.placeholder) {
+        this.placeholder = new InterfaceData(defaultOption.placeholder(this.getParent().getInterfaceData('label')))
+      } else {
+        this.placeholder = new InterfaceData(initOption.placeholder)
+      }
+    }
+    this.$value = {}
+    this.option = {}
+    // 组件事件监控
+    this.on = initOption.on || {}
+    // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
+    // main item ...
+    this.localOption = initOption.localOption || {}
+    this.initWidth(initOption, defaultOption)
+    this.initValue(initOption, defaultOption)
+    this.setMultiple(initOption.multiple || false)
+    this.initSlot(initOption)
+    this.initLocalOption(initOption)
+    this.triggerCreateLife('DefaultEdit', 'created')
+  }
+  initWidth(initOption, defaultOption) {
     // 宽度设置
     if (initOption.mainWidth) {
       let type = _func.getType(initOption.mainWidth)
@@ -34,27 +57,6 @@ class DefaultEdit extends BaseData {
     } else if (initOption.width === undefined && defaultOption.width) {
       this.width = defaultOption.width
     }
-    // 格式化占位符和检验规则
-    if (defaultOption.placeholder) {
-      if (!initOption.placeholder) {
-        this.placeholder = new InterfaceData(defaultOption.placeholder(this.getParent().getInterfaceData('label')))
-      } else {
-        this.placeholder = new InterfaceData(initOption.placeholder)
-      }
-    }
-    this.$value = {}
-    this.option = {}
-    // 组件事件监控
-    this.on = initOption.on || {}
-    // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-    // main item ...
-    this.localOption = initOption.localOption || {}
-    this.initValue(initOption, defaultOption)
-    this.setMultiple(initOption.multiple || false)
-    this.initSlot(initOption)
-    this.initType(initOption)
-    this.initLocalOption(initOption)
-    this.triggerCreateLife('DefaultEdit', 'created')
   }
   // slot格式化编辑数据
   initSlot (initOption) { // label / front / end
@@ -63,7 +65,7 @@ class DefaultEdit extends BaseData {
       this.slot.type = 'auto'
     }
     if (!this.slot.name) { // name=>插槽默认名
-      this.slot.name = this.prop
+      this.slot.name = this.$prop
     }
     if (!this.slot.label) { // label=>title
       this.slot.label = this.slot.name + '-label'

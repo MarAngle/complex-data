@@ -1,4 +1,3 @@
-
 let mapDictionary = new Map()
 
 let maindata = {

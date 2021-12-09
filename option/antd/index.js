@@ -1,6 +1,7 @@
 
 import _func from 'complex-func'
 import modOption from './../../modOption'
+import EditData from './../antd/mod/EditData'
 import config from '../config'
 
 let defaultOption = {
@@ -80,7 +81,7 @@ let defaultOption = {
     format: function (ditem, mod, data) {
       data.prop = ditem.prop
       data.parent = ditem
-      // return new EditData(data, {})
+      return new EditData(data)
     },
     unformat: function (ditem, mod) {
       let pitem = {

@@ -276,7 +276,7 @@ class EditData extends DefaultEdit {
       }
     } else if (this.type == 'dateRange') {
       // DATERANGEPICKER
-      this.setValueToArray()
+      this.setMultiple(true)
       this.option.showTime = dateUtils.timeOptionFormat(initOption.option.showTime, true)
       this.option.separator = initOption.option.separator || '-' // 分隔符
       this.option.format = initOption.option.format || this.option.showTime ? 'YYYY-MM-DD HH:mm:ss' : 'YYYY-MM-DD' // 默认显示解析
