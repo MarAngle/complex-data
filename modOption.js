@@ -42,7 +42,7 @@ let maindata = {
     }
   },
   build() {
-    alert('未定义！！！')
+    alert('未定义BUILD')
   },
   unformat(ditem, name, payload) {
     let formatDictionary = this.getDictionaryByMod(name, payload)
