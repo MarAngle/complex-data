@@ -35,7 +35,7 @@ let maindata = {
       modItemData.$type = name
     }
     ditem.setInterface('modType', name, modItemData.$type)
-    let formatDictionary = mapDictionary.getDictionary(modItemData.$type)
+    let formatDictionary = this.getDictionary(modItemData.$type)
     if (formatDictionary && formatDictionary.format) {
       ditem.$mod[name] = formatDictionary.format(ditem, name, modItemData)
     } else {
