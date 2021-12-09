@@ -3,8 +3,6 @@ import BaseData from './../../src/data/BaseData'
 import InterfaceData from './../../src/mod/InterfaceData'
 import config from '../config'
 
-const valuePropList = ['initValue', 'defaultValue', 'resetValue']
-
 class DefaultEdit extends BaseData {
   constructor(initOption, payload) {
     super(initOption)
@@ -82,8 +80,8 @@ class DefaultEdit extends BaseData {
     }
   }
   setMultipleValue() {
-    for (let n = 0; n < valuePropList.length; n++) {
-      let prop = valuePropList[n]
+    for (let n = 0; n < config.option.valuePropList.length; n++) {
+      let prop = config.option.valuePropList[n]
       let type = _func.getType(this.getValueData(prop))
       if (type != 'array') {
         this.setValueData([], prop)
