@@ -396,6 +396,27 @@ class BaseData extends DefaultData {
   }
   /* --- choice end --- */
 
+  /* --- search start --- */
+  /**
+   * 重置检索值
+   * @param {'init' | 'reset'} from 请求来源
+   * @param {object} option 设置项
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @param {boolean} syncToData 同步到data中
+   */
+  resetSearch (from = 'reset', option, syncToData) {
+    this.$module.search.resetFormData(from, option, syncToData)
+  }
+  /**
+   * 获取当前检索数据
+   * @param {boolean | object} [deep = true] 是否深拷贝
+   * @returns {object}
+   */
+  getSearch (deep) {
+    return this.$module.search.getData(deep)
+  }
+  /* --- search end --- */
+
   /* --- load start --- */
   initLoadDepend() {
     if (!this.$module.status) {

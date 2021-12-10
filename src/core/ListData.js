@@ -1,5 +1,4 @@
 import _func from 'complex-func'
-import utils from './../utils/index'
 import BaseData from './../data/BaseData'
 
 class ListData extends BaseData {
@@ -7,8 +6,11 @@ class ListData extends BaseData {
     if (!initOption) {
       initOption = {}
     }
-    if (!initOption.list) {
-      initOption.list = []
+    if (!initOption.data) {
+      initOption.data = {}
+    }
+    if (!initOption.data.list) {
+      initOption.data.list = []
     }
     if (!initOption.module) {
       initOption.module = {}
