@@ -49,8 +49,8 @@ let defaultOption = {
     },
     unformat: function (ditem, mod) {
       let pitem = {
-        ...ditem.mod[mod],
-        func: ditem.func
+        ...ditem.$mod[mod],
+        $func: ditem.$func
       }
       if (!pitem.title) {
         pitem.title = ditem.getInterface('label', mod)
@@ -89,9 +89,9 @@ let defaultOption = {
         label: ditem.getInterface('label', mod),
         originprop: ditem.getInterface('originprop', mod),
         type: ditem.getInterface('type', mod),
-        func: ditem.func,
+        $func: ditem.$func,
         layout: ditem.getLayout(mod),
-        edit: ditem.mod[mod]
+        edit: ditem.$mod[mod]
       }
       return pitem
     },
