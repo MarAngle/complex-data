@@ -327,8 +327,7 @@ class DictionaryList extends DefaultData {
     if (depth === undefined) {
       depth = 0
     }
-    this.formatDataStart(targetData, originData, originFromType, option, depth)
-    return targetData
+    return this.formatDataStart(targetData, originData, originFromType, option, depth)
   }
   /**
    * 根据字典格式化数据START
@@ -343,6 +342,7 @@ class DictionaryList extends DefaultData {
     for (let ditem of this.data.values()) {
       this.formatDataNext(ditem, targetData, originData, originFromType, option, depth)
     }
+    return targetData
   }
   /**
    * 格式化数据
@@ -385,13 +385,13 @@ class DictionaryList extends DefaultData {
             oData = []
           }
         }
-        ditem.setDataByProp(targetData, oData, type, {
-          targetData: targetData,
-          originData: originData,
-          depth: depth,
-          type: originFromType
-        })
       }
+      ditem.setDataByProp(targetData, oData, type, {
+        targetData: targetData,
+        originData: originData,
+        depth: depth,
+        type: originFromType
+      })
     }
   }
   /**
