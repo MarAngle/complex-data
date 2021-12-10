@@ -118,6 +118,16 @@ class DefaultEdit extends BaseData {
   getValueData(prop = 'defaultValue') {
     return this.$value[prop]
   }
+  checkReadyData() {
+    return this.$getData
+  }
+  readyData() {
+    if (this.$module.status && this.$module.promise && this.checkReadyData()) {
+      return this.loadData(this.reload)
+    } else {
+      return Promise.resolve({ status: 'success' })
+    }
+  }
 }
 
 DefaultEdit.$name = 'DefaultEdit'

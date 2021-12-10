@@ -10,6 +10,9 @@ class BaseData extends DefaultData {
     super(initOption)
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)
+    if (this.$getData) {
+      this.initLoadDepend()
+    }
     this.$initBaseDataLife()
     this.triggerCreateLife('BaseData', 'created', initOption)
   }
@@ -394,6 +397,14 @@ class BaseData extends DefaultData {
   /* --- choice end --- */
 
   /* --- load start --- */
+  initLoadDepend() {
+    if (!this.$module.status) {
+      this.setModule('status')
+    }
+    if (!this.$module.promise) {
+      this.setModule('promise')
+    }
+  }
   /**
    * 数据相关函数定义
    * 加载判断load是否加载成功和强制判断值
@@ -566,7 +577,7 @@ class BaseData extends DefaultData {
       // 触发生命周期加载前事件
       this.triggerLife('beforeLoad', this, ...args)
       this.setStatus('loading', 'load')
-      args.unshift('getData')
+      args.unshift('$getData')
       this.triggerMethod(...args).then(res => {
         this.setStatus('loaded', 'load')
         // 触发生命周期加载完成事件

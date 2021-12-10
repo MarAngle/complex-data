@@ -90,8 +90,8 @@ class EditData extends DefaultEdit {
       if (this.$module.pagination) {
         // 存在分页相关设置
         if (!this.$func.page) {
-          if (!this.getData) {
-            this.$exportMsg('选择器存在分页器时需要定义page回调或者getData函数供分页时调用')
+          if (!this.$getData) {
+            this.$exportMsg('选择器存在分页器时需要定义page回调或者$getData函数供分页时调用')
           }
           this.$func.page = (act, data) => {
             this.loadData(true, this.option.search.value).then(res => {}, err => { this.$exportMsg('loadData失败！', 'error', { data: err }) })
@@ -246,7 +246,6 @@ class EditData extends DefaultEdit {
         this.option.showSearch = showSearch
       }
       this.setMultiple(true)
-      // 检索下拉设置
     } else if (this.type == 'date') {
       // DATEPICKER
       this.option.showTime = dateUtils.timeOptionFormat(initOption.option.showTime)
@@ -390,6 +389,17 @@ class EditData extends DefaultEdit {
         }
       }
     })
+  }
+  checkReadyData() {
+    if (this.type == 'select') {
+      if (!this.option.search.show) {
+        return this.$getData
+      } else {
+        return false
+      }
+    } else {
+      return this.$getData
+    }
   }
 }
 
