@@ -386,7 +386,7 @@ class DictionaryList extends DefaultData {
           }
         }
       }
-      ditem.setDataByFormat('format', targetData, oData, type, {
+      ditem.setDataByFormat(targetData, oData, type, 'format', {
         targetData: targetData,
         originData: originData,
         depth: depth,
@@ -473,12 +473,12 @@ class DictionaryList extends DefaultData {
     for (let n = 0; n < size; n++) {
       let ditem = modList[n]
       if (!limit.getLimit(ditem.prop)) {
-        let targetData = ditem.getFormData(modType, {
+        let tData = ditem.getFormData(modType, {
           targetData: formData,
           originData: originData,
           from: from
         })
-        _func.setProp(formData, ditem.prop, targetData, true)
+        _func.setProp(formData, ditem.prop, tData, true)
       }
     }
     return formData
@@ -517,7 +517,7 @@ class DictionaryList extends DefaultData {
         if (ditem.$mod[modType].trim) {
           oData = _func.trimData(oData)
         }
-        ditem.setDataByFormat('post', editData, oData, ditem.getInterface('type', modType), {
+        ditem.setDataByFormat(editData, oData, ditem.getInterface('type', modType), 'post', {
           targetData: editData,
           originData: formData,
           type: modType
