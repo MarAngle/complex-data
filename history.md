@@ -5,6 +5,7 @@
 ### 2.2.15-beta
 - func依赖升级
 - EditData函数简化
+- DictionaryData => DictionaryItem
 
 ### 2.2.14
 - func依赖升级

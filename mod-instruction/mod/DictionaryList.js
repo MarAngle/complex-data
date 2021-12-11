@@ -27,7 +27,7 @@ DictionaryList.initInstrcution = function() {
               {
                 prop: '[index]',
                 type: 'object',
-                class: 'DictionaryData'
+                class: 'DictionaryItem'
               }
             ]
           }
@@ -118,7 +118,7 @@ DictionaryList.initInstrcution = function() {
           {
             prop: '[value]',
             type: 'object',
-            class: 'DictionaryData'
+            class: 'DictionaryItem'
           }
         ]
       }

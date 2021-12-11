@@ -8,7 +8,7 @@ import SelectList from './src/data/SelectList'
 import SimpleData from './src/data/SimpleData'
 
 import ChoiceData from './src/mod/ChoiceData'
-import DictionaryData from './src/mod/DictionaryData'
+import DictionaryItem from './src/mod/DictionaryItem'
 import DictionaryList from './src/mod/DictionaryList'
 import EmptyData from './src/mod/EmptyData'
 import FuncData from './src/mod/FuncData'
@@ -47,7 +47,7 @@ export {
   SelectList,
   SimpleData,
   ChoiceData,
-  DictionaryData,
+  DictionaryItem,
   DictionaryList,
   EmptyData,
   FuncData,

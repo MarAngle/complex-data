@@ -1,5 +1,5 @@
-import DictionaryData from './../../src/mod/DictionaryData.js'
-DictionaryData.initInstrcution = function() {
+import DictionaryItem from './../../src/mod/DictionaryItem.js'
+DictionaryItem.initInstrcution = function() {
   const funcList = [
     {
       prop: 'defaultGetData',
@@ -262,6 +262,6 @@ DictionaryData.initInstrcution = function() {
   this.buildInstrcution(instrcutionData)
 }
 
-DictionaryData.initInstrcution()
+DictionaryItem.initInstrcution()
 
-export default DictionaryData
+export default DictionaryItem

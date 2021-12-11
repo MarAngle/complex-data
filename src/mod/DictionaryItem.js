@@ -1,10 +1,10 @@
 import _func from 'complex-func'
-import complexOption from './../option'
-import DefaultData from './../data/DefaultData'
+import complexOption from '../option'
+import DefaultData from '../data/DefaultData'
 import InterfaceData from './InterfaceData'
 import LayoutData from './LayoutData'
 
-class DictionaryData extends DefaultData {
+class DictionaryItem extends DefaultData {
   constructor (initOption, payload = {}) {
     super(initOption)
     this.mod = {}
@@ -232,6 +232,6 @@ class DictionaryData extends DefaultData {
   }
 }
 
-DictionaryData.$name = 'DictionaryData'
+DictionaryItem.$name = 'DictionaryItem'
 
-export default DictionaryData
+export default DictionaryItem
