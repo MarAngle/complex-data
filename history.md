@@ -7,6 +7,7 @@
 - EditData函数简化
 - DictionaryData => DictionaryItem
 - - getEditData未正确获取type的BUG
+- - 删除setPropByType函数调用
 
 ### 2.2.14
 - func依赖升级

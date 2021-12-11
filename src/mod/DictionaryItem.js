@@ -223,12 +223,26 @@ class DictionaryItem extends DefaultData {
   }
 
   /**
-   * 从数据源获取数据
-   * @param {*} originData 数据源数据
-   * @param {*} payload originitem(接口数据源数据)/targetitem(目标本地数据)/type(数据来源的接口)
+   * 将数据值挂载到目标数据的prop属性上
+   * @param {string} formatFuncName 需要触发的数据格式化函数名称
+   * @param {object} targetData 目标数据
+   * @param {*} oData 数据源数据
+   * @param {string} type 数据类型
+   * @param {object} payload originData(接口源数据)/targetData(本地目标数据)/type(数据来源接口)
    */
-  formatOrigin (originData, payload) {
-    return this.triggerFunc('format', originData, payload)
+   setDataByFormat(formatFuncName, targetData, oData, type, payload) {
+    let tData
+    if (formatFuncName) {
+      tData = this.triggerFunc(formatFuncName, oData, payload)
+    } else {
+      tData = oData
+    }
+    if (type == 'number') {
+      tData = _func.formatNum(tData)
+    } else if (type == 'boolean') {
+      tData = !!tData
+    }
+    _func.setProp(targetData, this.prop, tData, true)
   }
 }
 

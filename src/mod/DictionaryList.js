@@ -410,13 +410,12 @@ class DictionaryList extends DefaultDataWithLife {
             origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, depth)
           }
         }
-        targetdata = ditem.formatOrigin(origindata, {
+        ditem.setDataByFormat('format', targetitem, origindata, targetType, {
           targetitem: targetitem,
           originitem: originitem,
           depth: depth,
           type: originfromType
         })
-        _func.setPropByType(targetitem, ditem.prop, targetdata, ditem.getInterface('type', originfromType), true)
       } else {
         if (targetitem[ditem.prop] === undefined) {
           let targetdata
@@ -555,16 +554,15 @@ class DictionaryList extends DefaultDataWithLife {
         }
       }
       if (add) {
-        let targetdata = formData[ditem.prop]
+        let oData = formData[ditem.prop]
         if (ditem.mod[modType].trim) {
-          targetdata = _func.trimData(targetdata)
+          oData = _func.trimData(oData)
         }
-        targetdata = ditem.triggerFunc('unedit', targetdata, {
-          targetitem: editData,
-          originitem: formData,
+        ditem.setDataByFormat('unedit', editData, oData, ditem.getInterface('type', modType), {
+          targetData: editData,
+          originData: formData,
           type: modType
         })
-        _func.setPropByType(editData, ditem.getInterface('originprop', modType), targetdata, ditem.getInterface('type', modType))
       }
     }
     return editData
