@@ -6,6 +6,7 @@
 - func依赖升级
 - EditData函数简化
 - DictionaryData => DictionaryItem
+- - getEditData未正确获取type的BUG
 
 ### 2.2.14
 - func依赖升级
