@@ -564,8 +564,7 @@ class DictionaryList extends DefaultDataWithLife {
           originitem: formData,
           type: modType
         })
-        let originprop = ditem.getInterface('originprop', modType)
-        _func.setPropByType(editData, originprop, targetdata, ditem.type)
+        _func.setPropByType(editData, ditem.getInterface('originprop', modType), targetdata, ditem.getInterface('type', modType))
       }
     }
     return editData
