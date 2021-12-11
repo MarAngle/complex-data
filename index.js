@@ -3,6 +3,7 @@ import SimpleData from './src/data/SimpleData'
 import DefaultData from './src/data/DefaultData'
 import BaseData from './src/data/BaseData'
 import SearchData from './src/data/SearchData'
+import FilterData from './src/data/FilterData'
 
 import EmptyData from './src/mod/EmptyData'
 import IdData from './src/mod/IdData'
@@ -38,6 +39,7 @@ export {
   DefaultData,
   BaseData,
   SearchData,
+  FilterData,
 
   EmptyData,
   IdData,

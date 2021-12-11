@@ -1,4 +1,22 @@
-let utils = {}
+let utils = {
+  formatInitOption(initOption, defaultInitOption, noneErrorMsg) {
+    if (!initOption) {
+      if (noneErrorMsg) {
+        throw new Error(noneErrorMsg)
+      } else {
+        initOption = {}
+      }
+    }
+    if (defaultInitOption) {
+      for (let prop in defaultInitOption) {
+
+      }
+    }
+  },
+  mergeData(tagetData, originData) {
+
+  }
+}
 
 /**
  * 合并数据，仅合并一层

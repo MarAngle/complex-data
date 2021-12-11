@@ -233,9 +233,7 @@ class DictionaryItem extends SimpleData {
   }
   setDataByProp(targetData, oData, type, payload) {
     let tData = this.formatOrigin(oData, payload)
-    if (type == 'string' || type == 'object') {
-      //
-    } else if (type == 'number') {
+    if (type == 'number') {
       tData = _func.formatNum(tData)
     } else if (type == 'boolean') {
       tData = !!tData

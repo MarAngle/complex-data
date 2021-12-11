@@ -495,7 +495,7 @@ class DictionaryList extends DefaultData {
     for (let n = 0; n < modList.length; n++) {
       let ditem = modList[n]
       let add = true
-      if (!ditem.mod[modType].required) {
+      if (!ditem.$mod[modType].required) {
         /*
           存在check则进行check判断
           此时赋值存在2种情况
@@ -514,7 +514,7 @@ class DictionaryList extends DefaultData {
       }
       if (add) {
         let tData = formData[ditem.prop]
-        if (ditem.mod[modType].trim) {
+        if (ditem.$mod[modType].trim) {
           tData = _func.trimData(tData)
         }
         tData = ditem.triggerFunc('post', tData, {
@@ -522,8 +522,7 @@ class DictionaryList extends DefaultData {
           originData: formData,
           type: modType
         })
-        let originprop = ditem.getInterface('originprop', modType)
-        _func.setPropByType(editData, originprop, tData, ditem.type)
+        _func.setPropByType(editData, ditem.getInterface('originprop', modType), tData, ditem.getInterface('type', modType))
       }
     }
     return editData
