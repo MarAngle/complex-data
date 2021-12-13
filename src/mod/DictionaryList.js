@@ -559,8 +559,8 @@ class DictionaryList extends DefaultDataWithLife {
           oData = _func.trimData(oData)
         }
         ditem.setDataByFormat(editData, oData, ditem.getInterface('type', modType), 'unedit', {
-          targetData: editData,
-          originData: formData,
+          targetitem: editData,
+          originitem: formData,
           type: modType
         })
       }
