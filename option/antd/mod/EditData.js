@@ -67,6 +67,10 @@ class EditData extends DefaultEdit {
       this.option.min = initOption.option.min === undefined ? -Infinity : initOption.option.min
       this.option.precision = initOption.option.precision === undefined ? 0 : initOption.option.precision // 精确到几位小数，接受非负整数
       this.option.step = initOption.option.step === undefined ? 1 : initOption.option.step // 点击步进
+    } else if (this.type == 'textArea') {
+      // 文本域
+      this.option.autosize = initOption.option.autosize || defaultOption.option.autosize
+      this.option.allowClear = initOption.option.allowClear || defaultOption.option.allowClear
     } else if (this.type == 'switch') {
       // 开关
     } else if (this.type == 'select') {

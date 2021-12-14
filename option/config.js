@@ -22,6 +22,16 @@ let config = {
           return data
         }
       },
+      $textArea: {
+        defaultValue: '',
+        placeholder: function (label) {
+          let data = {}
+          label.map((labeldata, prop) => {
+            data[prop] = `请输入${labeldata[prop]}`
+          })
+          return data
+        }
+      },
       $switch: {
         width: 'auto',
         defaultValue: false
@@ -119,6 +129,24 @@ let config = {
           }
         },
         $inputNumber: {
+          eventList: ['change'],
+          rule: {
+            trigger: ['blur'],
+            autoTrigger: ['input', 'change'],
+            message: function (label) {
+              let data = {}
+              label.map((labeldata, prop) => {
+                data[prop] = `请输入${labeldata[prop]}`
+              })
+              return data
+            }
+          }
+        },
+        $textArea: {
+          option: {
+            autosize: false,
+            allowClear: false
+          },
           eventList: ['change'],
           rule: {
             trigger: ['blur'],
