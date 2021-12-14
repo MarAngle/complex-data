@@ -36,7 +36,7 @@ const timeOption = {
 }
 
 // 重要，此处函数基本赋值操作，this指向不确定，引用时不能使用this
-const timeUtils = {
+const dateUtils = {
   getFormat: function (format = 'min') {
     if (timeOption[format]) {
       return timeOption[format].format
@@ -51,10 +51,27 @@ const timeUtils = {
       return time
     }
   },
-  funcPost: function(data, format) {
+  funcEdit: function(data, format) {
     let res
     if (data && !moment.isMoment(data)) {
       res = moment(data, format)
+    }
+    return res
+  },
+  funcEditRange: function(data, format) {
+    let res
+    if (data && data.length > 0) {
+      res = []
+      for (let n = 0; n < data.length; n++) {
+        res[n] = dateUtils.funcEdit(data[n], format)
+      }
+    }
+    return res
+  },
+  funcPost: function(data, format) {
+    let res
+    if (data) {
+      res = data.format(format)
     }
     return res
   },
@@ -63,24 +80,7 @@ const timeUtils = {
     if (data && data.length > 0) {
       res = []
       for (let n = 0; n < data.length; n++) {
-        res[n] = timeUtils.funcPost(data[n], format)
-      }
-    }
-    return res
-  },
-  funcUnEdit: function(data, format) {
-    let res
-    if (data) {
-      res = data.format(format)
-    }
-    return res
-  },
-  funcUnEditRange: function(data, format) {
-    let res
-    if (data && data.length > 0) {
-      res = []
-      for (let n = 0; n < data.length; n++) {
-        res[n] = timeUtils.funcUnEdit(data[n], format)
+        res[n] = dateUtils.funcPost(data[n], format)
       }
     }
     return res
@@ -112,9 +112,9 @@ const timeUtils = {
   // 时间可用判断设置项格式化总
   timeCheckOptionFormat: function (option) {
     if (option) {
-      option.start = timeUtils.timeCheckOptionFormatNext(option.start)
-      option.end = timeUtils.timeCheckOptionFormatNext(option.end)
-      option.format = timeUtils.getFormat(option.format)
+      option.start = dateUtils.timeCheckOptionFormatNext(option.start)
+      option.end = dateUtils.timeCheckOptionFormatNext(option.end)
+      option.format = dateUtils.getFormat(option.format)
     }
     return option
   },
@@ -150,7 +150,7 @@ const timeUtils = {
     let disabled = false
     if (value) {
       if (start) {
-        let startLimit = timeUtils.getTime(start.data)
+        let startLimit = dateUtils.getTime(start.data)
         // 当前时间在开始时间前则禁止
         if (!start.eq) {
           disabled = value.format(format) - startLimit.format(format) < 0
@@ -161,7 +161,7 @@ const timeUtils = {
       }
       // 开始时间通过后继续检查结束时间
       if (!disabled && end) {
-        let endLimit = timeUtils.getTime(end.data)
+        let endLimit = dateUtils.getTime(end.data)
         // 当前时间在结束时间后则禁止
         if (!end.eq) {
           disabled = value.format(format) - endLimit.format(format) > 0
@@ -215,7 +215,7 @@ const timeUtils = {
    * @returns {boolean}
    */
   dateLimitCheck(value, limitOption) {
-    return timeUtils.checkDateLimitByOption(value, limitOption.current, limitOption)
+    return dateUtils.checkDateLimitByOption(value, limitOption.current, limitOption)
   },
   /**
    * 根据option检查开始结束时间是否不符合要求
@@ -226,7 +226,7 @@ const timeUtils = {
    */
   checkDateLimitByOption(start, end, option) {
     if (start && end) {
-      let offset = timeUtils.getDateOffset(start, end, option.type)
+      let offset = dateUtils.getDateOffset(start, end, option.type)
       if (option.eq) {
         // eq(可相等)情况下限制条件会在相等时判断为否，通过限制判断
         return offset > option.num
@@ -243,7 +243,7 @@ const timeUtils = {
     //   if (limitOption) {
 
     //   }
-    //   let offset = timeUtils.getDateOffset(start, end, limitOption)
+    //   let offset = dateUtils.getDateOffset(start, end, limitOption)
     // }
   },
   /**
@@ -266,4 +266,4 @@ const timeUtils = {
   }
 }
 
-export default timeUtils
+export default dateUtils

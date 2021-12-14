@@ -63,7 +63,7 @@ let defaultOption = {
       let pitem = {
         prop: ditem.prop,
         label: ditem.getInterface('label', mod),
-        showtype: ditem.getInterface('showtype', mod),
+        showType: ditem.getInterface('showType', mod),
         layout: ditem.getLayout(mod),
         option: {
           ...ditem[mod]
@@ -87,7 +87,7 @@ let defaultOption = {
       let pitem = {
         prop: ditem.prop,
         label: ditem.getInterface('label', mod),
-        originprop: ditem.getInterface('originprop', mod),
+        originProp: ditem.getInterface('originProp', mod),
         type: ditem.getInterface('type', mod),
         $func: ditem.$func,
         layout: ditem.getLayout(mod),
