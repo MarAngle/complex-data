@@ -23,7 +23,6 @@ class EditData extends DefaultEdit {
     this.triggerCreateLife('EditData', 'beforeCreate', initOption, payload)
     this.hideLabel = initOption.hideLabel === undefined ? false : initOption.hideLabel
     this.colon = initOption.colon === undefined ? true : initOption.colon // label属性：显示判断值
-    this.option = {}
     // 触发操作，暂时隐藏考虑其他实现方案
     // this.eventTriggerList = defaultOption.eventList
     this.initTips(initOption)
