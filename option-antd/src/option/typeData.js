@@ -49,6 +49,32 @@ let typeData = {
       }
     }
   },
+  type_textArea: {
+    option: {
+      autosize: false,
+      allowClear: false
+    },
+    defaultdata: '',
+    placeholder: function (label) {
+      let data = {}
+      label.map((labeldata, prop) => {
+        data[prop] = `请输入${labeldata[prop]}`
+      })
+      return data
+    },
+    eventList: ['change'],
+    rule: {
+      trigger: ['blur'],
+      autoTrigger: ['input', 'change'],
+      message: function (label) {
+        let data = {}
+        label.map((labeldata, prop) => {
+          data[prop] = `请输入${labeldata[prop]}`
+        })
+        return data
+      }
+    }
+  },
   type_switch: {
     width: 'auto',
     defaultdata: false,
