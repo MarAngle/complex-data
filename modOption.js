@@ -23,10 +23,13 @@ let maindata = {
     for (const name in modData) {
       let modItemData = modData[name]
       if (modItemData.$target) {
-        redirect[name] = modItemData
+        redirect[name] = modItemData.$target
       } else {
         this.formatItem(ditem, name, modItemData)
       }
+    }
+    for (const name in redirect) {
+      ditem.$mod[name] = ditem.$mod[redirect[name]]
     }
   },
   formatItem(ditem, name, modItemData) {
