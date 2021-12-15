@@ -225,12 +225,13 @@ class DictionaryItem extends DefaultData {
   /**
    * 将数据值挂载到目标数据的prop属性上
    * @param {object} targetData 目标数据
+   * @param {string} prop 属性
    * @param {*} oData 数据源数据
    * @param {string} type 数据类型
    * @param {string} [formatFuncName] 需要触发的数据格式化函数名称
    * @param {object} [payload] originData(接口源数据)/targetData(本地目标数据)/type(数据来源接口)
    */
-   setDataByFormat(targetData, oData, type, formatFuncName, payload) {
+   setDataByFormat(targetData, prop, oData, type, formatFuncName, payload) {
     let tData
     if (formatFuncName) {
       tData = this.triggerFunc(formatFuncName, oData, payload)
@@ -242,7 +243,7 @@ class DictionaryItem extends DefaultData {
     } else if (type == 'boolean') {
       tData = !!tData
     }
-    _func.setProp(targetData, this.prop, tData, true)
+    _func.setProp(targetData, prop, tData, true)
   }
 }
 

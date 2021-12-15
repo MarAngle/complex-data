@@ -410,7 +410,7 @@ class DictionaryList extends DefaultDataWithLife {
             origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, depth)
           }
         }
-        ditem.setDataByFormat(targetitem, origindata, targetType, 'format', {
+        ditem.setDataByFormat(targetitem, ditem.prop, origindata, targetType, 'format', {
           targetitem: targetitem,
           originitem: originitem,
           depth: depth,
@@ -558,7 +558,7 @@ class DictionaryList extends DefaultDataWithLife {
         if (ditem.mod[modType].trim) {
           oData = _func.trimData(oData)
         }
-        ditem.setDataByFormat(editData, oData, ditem.getInterface('type', modType), 'unedit', {
+        ditem.setDataByFormat(editData, ditem.getInterface('originprop', modType), oData, ditem.getInterface('type', modType), 'unedit', {
           targetitem: editData,
           originitem: formData,
           type: modType
