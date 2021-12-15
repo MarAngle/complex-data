@@ -9,7 +9,12 @@ function createId() {
 
 class Data {
   constructor() {
-    this.$id = createId()
+    Object.defineProperty(this, '$id', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: createId()
+    })
   }
   $getId (prop = '') {
     return this.$id + prop
