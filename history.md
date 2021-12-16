@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.20
+- 文本域autosize=>autoSize，添加rows
+
 ### 2.2.19
 - 修正getEditData生成编辑数据时错误调用originprop的BUG
 

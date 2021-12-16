@@ -51,7 +51,8 @@ let typeData = {
   },
   type_textArea: {
     option: {
-      autosize: false,
+      autoSize: false,
+      rows: 2,
       allowClear: false
     },
     defaultdata: '',

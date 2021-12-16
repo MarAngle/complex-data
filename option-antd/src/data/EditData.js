@@ -121,7 +121,8 @@ class EditData extends BaseData {
       this.option.step = editdata.option.step === undefined ? 1 : editdata.option.step // 点击步进
     } else if (this.type == 'textArea ') {
       // TEXTAREA
-      this.option.autosize = editdata.option.autosize || typeOption.option.autosize
+      this.option.autoSize = editdata.option.autoSize || typeOption.option.autoSize
+      this.option.rows = editdata.option.rows || typeOption.option.rows
       this.option.allowClear = editdata.option.allowClear || typeOption.option.allowClear
     } else if (this.type == 'switch') {
       // SWITCH
