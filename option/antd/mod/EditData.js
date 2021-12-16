@@ -69,6 +69,7 @@ class EditData extends DefaultEdit {
     } else if (this.type == 'textArea') {
       // 文本域
       this.option.autoSize = initOption.option.autoSize || defaultOption.option.autoSize
+      this.option.rows = initOption.option.rows || defaultOption.option.rows
       this.option.allowClear = initOption.option.allowClear || defaultOption.option.allowClear
     } else if (this.type == 'switch') {
       // 开关
