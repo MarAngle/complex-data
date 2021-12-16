@@ -1,12 +1,11 @@
 import config from '../../config'
+import utils from '../utils'
 import Data from './../data/Data'
 import StatusDataItem from './StatusDataItem'
 
 class StatusData extends Data {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super()
     this.data = {}
     this.$initList(initOption.list)

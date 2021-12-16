@@ -1,12 +1,11 @@
 import _func from 'complex-func'
 import DefaultData from './DefaultData'
 import ModuleData from './../mod/ModuleData'
+import utils from '../utils'
 
 class BaseData extends DefaultData {
   constructor(initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super(initOption)
     this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)

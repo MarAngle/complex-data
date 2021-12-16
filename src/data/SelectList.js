@@ -6,11 +6,10 @@ import OptionData from './../mod/OptionData'
 // 选择器数据
 class SelectList extends DefaultData {
   constructor(initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
-    initOption.data = utils.formatData(initOption.data, {
-      list: []
+    initOption = utils.formatInitOption(initOption, {
+      data: {
+        list: []
+      }
     })
     super(initOption)
     this.$option = new OptionData({

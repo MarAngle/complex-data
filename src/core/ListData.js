@@ -1,26 +1,18 @@
 import _func from 'complex-func'
+import utils from '../utils'
 import BaseData from './../data/BaseData'
 
 class ListData extends BaseData {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
-    if (!initOption.data) {
-      initOption.data = {}
-    }
-    if (!initOption.data.list) {
-      initOption.data.list = []
-    }
-    if (!initOption.module) {
-      initOption.module = {}
-    }
-    if (!initOption.module.status) {
-      initOption.module.status = true
-    }
-    if (!initOption.module.promise) {
-      initOption.module.promise = true
-    }
+    initOption = utils.formatInitOption(initOption, {
+      data: {
+        list: []
+      },
+      module: {
+        status: true,
+        promise: true
+      }
+    })
     super(initOption)
     this.triggerCreateLife('ListData', 'beforeCreate', initOption)
     this.$initListDataLife()

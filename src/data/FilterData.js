@@ -4,12 +4,11 @@ import BaseData from './BaseData'
 
 class FilterData extends BaseData {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
-    initOption.data = utils.formatData(initOption.data, {
-      originList: [],
-      list: []
+    initOption = utils.formatInitOption(initOption, {
+      data: {
+        originList: [],
+        list: []
+      }
     })
     super(initOption)
     this.triggerCreateLife('FilterData', 'beforeCreate', initOption)

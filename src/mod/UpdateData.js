@@ -1,5 +1,6 @@
 import _func from 'complex-func'
 import config from '../../config'
+import utils from '../utils'
 import DefaultData from './../data/DefaultData'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -7,9 +8,7 @@ import DefaultData from './../data/DefaultData'
 
 class UpdateData extends DefaultData {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super(initOption)
     this.triggerCreateLife('UpdateData', 'beforeCreate', initOption)
     this.load = {

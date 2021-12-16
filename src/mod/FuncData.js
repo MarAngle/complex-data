@@ -1,6 +1,7 @@
 import _func from 'complex-func'
 import IdData from './IdData'
 import Data from './../data/Data'
+import utils from '../utils'
 
 let lifeId = new IdData({
   list: [
@@ -15,9 +16,7 @@ let lifeId = new IdData({
 
 class FuncData extends Data {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super()
     this.name = initOption.name
     this.data = new Map()

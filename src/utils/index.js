@@ -1,3 +1,5 @@
+import _func from 'complex-func'
+
 let utils = {
   formatInitOption(initOption, defaultInitOption, noneErrorMsg) {
     if (!initOption) {
@@ -8,30 +10,9 @@ let utils = {
       }
     }
     if (defaultInitOption) {
-      for (let prop in defaultInitOption) {
-
-      }
+      _func.setDataByDefault(initOption, defaultInitOption)
     }
-  },
-  mergeData(tagetData, originData) {
-
-  }
-}
-
-/**
- * 合并数据，仅合并一层
- * @param {*} originData
- * @param {*} defaultData
- * @returns {object}
- */
-utils.formatData = function(originData, defaultData) {
-  if (originData) {
-    return {
-      ...defaultData,
-      ...originData
-    }
-  } else {
-    return defaultData
+    return initOption
   }
 }
 

@@ -1,12 +1,11 @@
 import _func from 'complex-func'
+import utils from '../utils'
 import Data from './../data/Data'
 import EmptyData from './EmptyData'
 
 class ChoiceData extends Data {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super()
     this.data = {
       id: [],

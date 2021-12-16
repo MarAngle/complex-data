@@ -1,11 +1,10 @@
 import _func from 'complex-func'
+import utils from '../utils'
 import Data from './Data'
 
 class SimpleData extends Data {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
     this.$prop = initOption.prop || ''

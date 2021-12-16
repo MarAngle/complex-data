@@ -1,14 +1,13 @@
+import utils from '../utils'
 import Data from './../data/Data'
 
 class StatusDataItem extends Data {
   constructor (initOption) {
+    initOption = utils.formatInitOption(initOption, null, 'StatusDataItem未设置初始化数据')
+    if (!initOption.list || initOption.list.length == 0) {
+      console.error(`StatusDataItem未设置初始化列表`)
+    }
     super()
-    if (!initOption) {
-      initOption = {}
-    }
-    if (!initOption.list || initOption.list.length <= 0) {
-      console.error(`StatusDataItem需要设置初始化数据,并设置列表`)
-    }
     this.option = {
       type: 'default'
     }

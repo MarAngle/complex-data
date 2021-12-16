@@ -1,12 +1,11 @@
 import _func from 'complex-func'
 import config from '../../config'
+import utils from '../utils'
 import DefaultData from './../data/DefaultData'
 
 class PaginationData extends DefaultData {
   constructor (initOption) {
-    if (initOption === true || !initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     initOption.data = {
       page: {
         current: 1,

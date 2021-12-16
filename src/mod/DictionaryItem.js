@@ -1,4 +1,5 @@
 import _func from 'complex-func'
+import utils from '../utils'
 import modOption from './../../modOption'
 import SimpleData from './../data/SimpleData'
 import InterfaceData from './InterfaceData'
@@ -6,9 +7,7 @@ import LayoutData from './LayoutData'
 
 class DictionaryItem extends SimpleData {
   constructor (initOption, payload = {}) {
-    if (!initOption) {
-      console.error(new Error('DictionaryItem初始化参数不存在！'))
-    }
+    initOption = utils.formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
     this.$mod = {}
     let originFromType = _func.getType(initOption.originFrom)

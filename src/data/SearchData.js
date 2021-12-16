@@ -1,12 +1,11 @@
 import _func from 'complex-func'
 import config from '../../config'
+import utils from '../utils'
 import BaseData from './../data/BaseData'
 
 class SearchData extends BaseData {
   constructor (initOption) {
-    if (!initOption) {
-      initOption = {}
-    }
+    initOption = utils.formatInitOption(initOption)
     super(initOption)
     this.triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.$menu = []
