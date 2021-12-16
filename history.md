@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.21
+- 文本域修正，rows删除，maxLength添加
+
 ### 2.2.20
 - 文本域autosize=>autoSize，添加rows
 

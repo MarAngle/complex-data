@@ -119,10 +119,10 @@ class EditData extends BaseData {
       this.option.min = editdata.option.min === undefined ? -Infinity : editdata.option.min
       this.option.precision = editdata.option.precision === undefined ? 0 : editdata.option.precision // 精确到几位小数，接受非负整数
       this.option.step = editdata.option.step === undefined ? 1 : editdata.option.step // 点击步进
-    } else if (this.type == 'textArea ') {
+    } else if (this.type == 'textArea') {
       // TEXTAREA
+      this.option.maxLength = editdata.option.maxLength || typeOption.option.maxLength
       this.option.autoSize = editdata.option.autoSize || typeOption.option.autoSize
-      this.option.rows = editdata.option.rows || typeOption.option.rows
       this.option.allowClear = editdata.option.allowClear || typeOption.option.allowClear
     } else if (this.type == 'switch') {
       // SWITCH
