@@ -398,6 +398,12 @@ class BaseData extends DefaultData {
 
   /* --- search start --- */
   /**
+   * 设置数据
+   */
+  setSearch () {
+    this.$module.search.setData()
+  }
+  /**
    * 重置检索值
    * @param {'init' | 'reset'} from 请求来源
    * @param {object} option 设置项

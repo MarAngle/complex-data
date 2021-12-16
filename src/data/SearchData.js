@@ -66,7 +66,7 @@ class SearchData extends BaseData {
     }
   }
   /**
-   * 设置对应type的数据
+   * 设置数据
    */
   setData() {
     this.$data = this.getEditData(this.$form.data, this.$form.modlist, this.$type)
