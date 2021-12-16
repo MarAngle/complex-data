@@ -144,8 +144,8 @@ let config = {
         },
         $textArea: {
           option: {
+            maxLength: 100,
             autoSize: false,
-            rows: 2,
             allowClear: false
           },
           eventList: ['change'],

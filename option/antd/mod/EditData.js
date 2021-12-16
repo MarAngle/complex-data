@@ -68,8 +68,8 @@ class EditData extends DefaultEdit {
       this.option.step = initOption.option.step === undefined ? 1 : initOption.option.step // 点击步进
     } else if (this.type == 'textArea') {
       // 文本域
+      this.option.maxLength = initOption.option.maxLength || defaultOption.option.maxLength
       this.option.autoSize = initOption.option.autoSize || defaultOption.option.autoSize
-      this.option.rows = initOption.option.rows || defaultOption.option.rows
       this.option.allowClear = initOption.option.allowClear || defaultOption.option.allowClear
     } else if (this.type == 'switch') {
       // 开关
