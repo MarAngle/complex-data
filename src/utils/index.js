@@ -1,13 +1,15 @@
 import _func from 'complex-func'
 
 let utils = {
-  formatInitOption(initOption, defaultInitOption, noneErrorMsg) {
+  formatInitOption(initOption, defaultInitOption, emptyErrorMsg) {
     if (!initOption) {
-      if (noneErrorMsg) {
-        throw new Error(noneErrorMsg)
+      if (emptyErrorMsg) {
+        throw new Error(emptyErrorMsg)
       } else {
         initOption = {}
       }
+    } else if (initOption === true) {
+      initOption = {}
     }
     if (defaultInitOption) {
       _func.setDataByDefault(initOption, defaultInitOption)
