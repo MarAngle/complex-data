@@ -52,15 +52,20 @@ maindata.format = function (ditem, moddata) {
 }
 
 maindata.formatNext = function (ditem, prop, moditem) {
-  if (!moditem.formatType) {
-    moditem.formatType = prop
-  }
-  ditem.setInterface('modtype', prop, moditem.formatType)
-  let formatItem = this.getData(moditem.formatType)
-  if (formatItem && formatItem.format) {
-    formatItem.format(ditem, prop, moditem)
-  } else {
-    ditem.mod[prop] = moditem
+  if (moditem) {
+    if (moditem === true) {
+      moditem = {}
+    }
+    if (!moditem.formatType) {
+      moditem.formatType = prop
+    }
+    ditem.setInterface('modtype', prop, moditem.formatType)
+    let formatItem = this.getData(moditem.formatType)
+    if (formatItem && formatItem.format) {
+      formatItem.format(ditem, prop, moditem)
+    } else {
+      ditem.mod[prop] = moditem
+    }
   }
 }
 
