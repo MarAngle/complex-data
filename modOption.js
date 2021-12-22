@@ -22,10 +22,15 @@ let maindata = {
     let redirect = {}
     for (const name in modData) {
       let modItemData = modData[name]
-      if (modItemData.$target) {
-        redirect[name] = modItemData.$target
-      } else {
-        this.formatItem(ditem, name, modItemData)
+      if (modItemData) {
+        if (modItemData === true) {
+          modItemData = {}
+        }
+        if (modItemData.$target) {
+          redirect[name] = modItemData.$target
+        } else {
+          this.formatItem(ditem, name, modItemData)
+        }
       }
     }
     for (const name in redirect) {
