@@ -1,11 +1,11 @@
 {
   "name": "complex-data",
-  "version": "2.2.22",
+  "version": "2.2.23-beta",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarAngle/complex-data.git"
+    "url": "https://gitee.com/codingarea/complex-data.git"
   },
   "dependencies": {
     "complex-func": "^2.2.8",

@@ -169,7 +169,6 @@ let typeData = {
     }
   },
   type_file: {
-    width: 'auto',
     defaultdata: undefined,
     placeholder: function (label) {
       let data = {}
