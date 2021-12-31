@@ -19,7 +19,6 @@ class EditData extends BaseData {
     this.initType(editdata)
   }
   initMain(editdata) {
-    // this.label = parent.label // 名称设置=InterfaceData数据类型
     this.reload = editdata.reload || false // 异步二次加载判断值
     this.hideLabel = editdata.hideLabel === undefined ? false : editdata.hideLabel
     this.colon = editdata.colon === undefined ? true : editdata.colon // label属性：显示判断值

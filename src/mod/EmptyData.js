@@ -32,7 +32,7 @@ class EmptyData {
     }
   }
   toString() {
-    return null
+    return ''
   }
 }
 
