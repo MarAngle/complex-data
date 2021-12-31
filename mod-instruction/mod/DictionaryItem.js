@@ -77,12 +77,6 @@ DictionaryItem.initInstrcution = function() {
             describe: '名称取值，不存在时取name字段作为InterfaceData的默认值'
           },
           {
-            prop: 'order',
-            type: 'string/object',
-            class: 'InterfaceData',
-            describe: '暂未启用，排序判断值'
-          },
-          {
             prop: 'showprop',
             type: 'string/object',
             class: 'InterfaceData',
@@ -196,11 +190,6 @@ DictionaryItem.initInstrcution = function() {
             prop: 'label',
             type: 'InterfaceData',
             describe: '名称取值，不存在时取name字段作为InterfaceData的默认值'
-          },
-          {
-            prop: 'order',
-            type: 'InterfaceData',
-            describe: '暂未启用，排序判断值'
           },
           {
             prop: 'showprop',

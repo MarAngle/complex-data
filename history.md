@@ -4,6 +4,7 @@
 
 ### 2.2.24-beta
 - func依赖升级
+- DictionaryItem删除order排序字段，无合适实现方案
 
 ### 2.2.23
 - func依赖升级

@@ -19,7 +19,6 @@ class DictionaryItem extends DefaultData {
     // 加载接口数据
     this.interface = {}
     this.interface.label = new InterfaceData(initOption.label || initOption.name)
-    this.interface.order = new InterfaceData(initOption.order)
     this.interface.showprop = new InterfaceData(initOption.showprop)
     this.interface.showtype = new InterfaceData(initOption.showtype)
     // prop/originprop
