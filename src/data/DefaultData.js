@@ -19,16 +19,16 @@ class DefaultData extends SimpleData {
       this.data = initOption.data
     }
     this.initExtra(initOption.extra)
-    this.initParent(initOption.parent)
-    this.initFunc(initOption.func)
-    this.initMethods(initOption.methods)
+    this.$initParent(initOption.parent)
+    this.$initFunc(initOption.func)
+    this.$initMethods(initOption.methods)
   }
   /**
    * 加载func中的函数
    * @param {object} [func] 函数对象
    * @param {*} [reset] 是否重置
    */
-  initFunc (func, reset) {
+  $initFunc (func, reset) {
     if (reset) {
       this.func = {}
     }
@@ -40,16 +40,16 @@ class DefaultData extends SimpleData {
    * 挂载方法
    * @param {*} methods 函数对象
    */
-  initMethods (methods) {
+  $initMethods (methods) {
     for (let prop in methods) {
       let build = true
       if (this[prop] !== undefined) {
         let type = _func.getType(this[prop])
         if (type !== 'function') {
-          this.$exportMsg(`initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
+          this.$exportMsg(`$initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
           build = false
         } else {
-          this.$exportMsg(`initMethods:${prop}函数已被改写!`, 'warn')
+          this.$exportMsg(`$initMethods:${prop}函数已被改写!`, 'warn')
         }
       }
       if (build) {
@@ -93,7 +93,7 @@ class DefaultData extends SimpleData {
   }
   /* --父数据相关-- */
   // 设置父实例
-  initParent (data) {
+  $initParent (data) {
     if (data || data === undefined) {
       this.setModule('parent', new ParentData(data))
     }
@@ -104,7 +104,7 @@ class DefaultData extends SimpleData {
     if (parentModule) {
       parentModule.setData(data)
     } else {
-      this.initParent(data)
+      this.$initParent(data)
     }
   }
   // 获取上级实例

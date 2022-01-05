@@ -9,7 +9,7 @@ const propList = ['id', 'parentId', 'children']
 class DictionaryList extends DefaultDataWithLife {
   constructor (initOption, payload = {}) {
     super(initOption)
-    this.triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
+    this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption, payload)
     this.option = new OptionData({
       isChildren: false,
       build: _func.getLimitData(),
@@ -36,7 +36,7 @@ class DictionaryList extends DefaultDataWithLife {
     if (initOption) {
       this.initMain(initOption, payload)
     }
-    this.triggerCreateLife('DictionaryList', 'created', initOption)
+    this.$triggerCreateLife('DictionaryList', 'created', initOption)
   }
   initMain (initOption, payload = {}) {
     payload.type = payload.type || 'init'
@@ -154,7 +154,7 @@ class DictionaryList extends DefaultDataWithLife {
         }
         if (act.children) {
           // 构建子字典列表
-          this.buildItemDictionary(ditem, ditemOption)
+          this.$buildItemDictionary(ditem, ditemOption)
         }
       }
       this.initPropData(initOption)
@@ -190,7 +190,7 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} originOption 字典初始化数据
    * @returns {'' | 'self' | 'build'}
    */
-  parseBuildData (ditem, originOption) {
+  $parseBuildData (ditem, originOption) {
     let initOption = originOption.dictionary
     let type = ''
     if (this.option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
@@ -212,8 +212,8 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} originOption 字典初始化数据
    * @param {boolean} isChildren 是否子类
    */
-  buildItemDictionary (ditem, originOption, isChildren = true) {
-    let type = this.parseBuildData(ditem, originOption)
+  $buildItemDictionary (ditem, originOption, isChildren = true) {
+    let type = this.$parseBuildData(ditem, originOption)
     if (type == 'build') {
       let initOption = this.parseInitOption(originOption.dictionary)
       if (!initOption.option) {

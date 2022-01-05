@@ -8,7 +8,7 @@ class PaginationData extends DefaultDataWithLife {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('PaginationData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('PaginationData', 'beforeCreate', initOption)
     this.status = {
       init: false
     }
@@ -29,7 +29,7 @@ class PaginationData extends DefaultDataWithLife {
       props: {}
     }
     this.initMain(initOption)
-    this.triggerCreateLife('PaginationData', 'created')
+    this.$triggerCreateLife('PaginationData', 'created')
   }
   /**
    * 加载
@@ -239,7 +239,7 @@ class PaginationData extends DefaultDataWithLife {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'pagination') !== false) {
+        if (target.$parseResetOption(resetOption, 'pagination') !== false) {
           this.reset()
         }
       }

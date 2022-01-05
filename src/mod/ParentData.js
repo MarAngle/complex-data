@@ -9,9 +9,9 @@ class ParentData extends SimpleData {
       writable: true,
       value: null
     })
-    this._initMain(parentData)
+    this.$initMain(parentData)
   }
-  _initMain (parentData) {
+  $initMain (parentData) {
     if (parentData) {
       this.setData(parentData)
     }
@@ -29,7 +29,7 @@ class ParentData extends SimpleData {
    * @returns {object}
    */
   getData (deepLevel = 1) {
-    let current = this.getDataNext(this, deepLevel)
+    let current = this.$getDataNext(this, deepLevel)
     return current
   }
   /**
@@ -38,12 +38,12 @@ class ParentData extends SimpleData {
    * @param {number} deepLevel 层级
    * @returns {object}
    */
-  getDataNext (target, deepLevel) {
+  $getDataNext (target, deepLevel) {
     if (target) {
       let current = target.data
       deepLevel--
       if (current && deepLevel > 0) {
-        return this.getDataNext(current.module.parent, deepLevel)
+        return this.$getDataNext(current.module.parent, deepLevel)
       } else {
         return current
       }

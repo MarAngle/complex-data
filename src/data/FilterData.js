@@ -12,9 +12,9 @@ class FilterData extends BaseData {
       list: []
     })
     super(initOption)
-    this.triggerCreateLife('FilterData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('FilterData', 'beforeCreate', initOption)
     this.initFilter(initOption.filter)
-    this.triggerCreateLife('FilterData', 'created')
+    this.$triggerCreateLife('FilterData', 'created')
   }
   initFilter(filter) {
     this.filter = {}

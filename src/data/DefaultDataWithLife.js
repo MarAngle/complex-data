@@ -9,8 +9,8 @@ class DefaultDataWithLife extends DefaultData {
     }
     super(initOption)
     this.setModule('life', new LifeData(initOption.life))
-    this.triggerCreateLife('DefaultDataWithLife', 'beforeCreate', initOption)
-    this.triggerCreateLife('DefaultDataWithLife', 'created')
+    this.$triggerCreateLife('DefaultDataWithLife', 'beforeCreate', initOption)
+    this.$triggerCreateLife('DefaultDataWithLife', 'created')
   }
   /* --生命周期函数-- */
   /**
@@ -46,9 +46,9 @@ class DefaultDataWithLife extends DefaultData {
    * @param {string} lifeName 生命周期
    * @param  {*[]} args 参数
    */
-  triggerCreateLife (env, lifeName, ...args) {
+  $triggerCreateLife (env, lifeName, ...args) {
     if (!env) {
-      this.$exportMsg('triggerCreateLife函数需要传递env参数')
+      this.$exportMsg('$triggerCreateLife函数需要传递env参数')
     }
     if (env != this.constructor.$name) {
       lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)

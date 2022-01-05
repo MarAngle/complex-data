@@ -7,12 +7,12 @@ class ComplexDataWithSearch extends ComplexData {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('ComplexDataWithSearch', 'beforeCreate', initOption)
+    this.$triggerCreateLife('ComplexDataWithSearch', 'beforeCreate', initOption)
     if (initOption.search) {
       initOption.search.parent = this
     }
     this.setModule('search', new SearchData(initOption.search))
-    this.triggerCreateLife('ComplexDataWithSearch', 'created')
+    this.$triggerCreateLife('ComplexDataWithSearch', 'created')
   }
   /**
    * 设置对应type的数据

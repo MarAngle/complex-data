@@ -6,14 +6,14 @@ class StatusData extends SimpleData {
   constructor (initOption = {}) {
     super()
     this.data = {}
-    this._initMain(initOption)
+    this.$initMain(initOption)
   }
-  _initMain ({
+  $initMain ({
     list
   }) {
-    this._initList(list)
+    this.$initList(list)
   }
-  _initList (list = []) {
+  $initList (list = []) {
     let defaultlist = config.StatusData.list
     let mainlist = defaultlist.concat(list)
     for (let n in mainlist) {

@@ -39,14 +39,14 @@ class SelectList extends DefaultData {
     this.format = {
       type: false
     }
-    this._initOption(initOption.option)
+    this.$initOption(initOption.option)
     this.setList(initOption.list)
     this.setFormat(initOption.format)
     this.setUnhitData(initOption.unhitData)
     this.setUndefData(initOption.undefData)
   }
   // 加载设置
-  _initOption(option = {}) {
+  $initOption(option = {}) {
     this.option.initData(option)
   }
   // 加载数据

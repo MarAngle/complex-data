@@ -7,8 +7,8 @@ class InfoData extends ComplexDataWithSearch {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('InfoData', 'beforeCreate', initOption)
-    this.triggerCreateLife('InfoData', 'created')
+    this.$triggerCreateLife('InfoData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('InfoData', 'created')
   }
   /**
    * 格式化信息数据，以origindata为基准更新data.current

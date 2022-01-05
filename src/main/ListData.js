@@ -9,17 +9,17 @@ class ListData extends ComplexDataWithSearch {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('ListData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('ListData', 'beforeCreate', initOption)
     this.setModule('choice', new ChoiceData(initOption.choice))
-    this._initPagination(initOption.pagination)
-    this._initListDataLife()
-    this.triggerCreateLife('ListData', 'created')
+    this.$initPagination(initOption.pagination)
+    this.$initListDataLife()
+    this.$triggerCreateLife('ListData', 'created')
   }
   /**
    * 加载分页器
    * @param {object} [pagination] 分页器初始化参数
    */
-  _initPagination (pagination) {
+  $initPagination (pagination) {
     if (pagination) {
       this.setModule('pagination', new PaginationData(pagination))
     } else {
@@ -29,7 +29,7 @@ class ListData extends ComplexDataWithSearch {
   /**
    * 加载生命周期函数
    */
-   _initListDataLife() {
+   $initListDataLife() {
     // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
     this.onLife('beforeReload', {
       id: 'AutoListDataBeforeReload',

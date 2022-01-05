@@ -8,17 +8,17 @@ import InterfaceData from './../../../src/mod/InterfaceData'
 class EditData extends BaseData {
   constructor(editdata, payload) {
     super(editdata)
-    this.triggerCreateLife('EditData', 'beforeCreate', editdata, payload)
-    this._initMainByEditData(editdata, payload)
-    this.triggerCreateLife('EditData', 'created')
+    this.$triggerCreateLife('EditData', 'beforeCreate', editdata, payload)
+    this.$initMainByEditData(editdata, payload)
+    this.$triggerCreateLife('EditData', 'created')
   }
-  _initMainByEditData(editdata, payload = {}) {
-    this.initMain(editdata)
-    this.initSlot(editdata)
-    this.initTips(editdata)
-    this.initType(editdata)
+  $initMainByEditData(editdata, payload = {}) {
+    this.$initMain(editdata)
+    this.$initSlot(editdata)
+    this.$initTips(editdata)
+    this.$initType(editdata)
   }
-  initMain(editdata) {
+  $initMain(editdata) {
     this.reload = editdata.reload || false // 异步二次加载判断值
     this.hideLabel = editdata.hideLabel === undefined ? false : editdata.hideLabel
     this.colon = editdata.colon === undefined ? true : editdata.colon // label属性：显示判断值
@@ -27,7 +27,7 @@ class EditData extends BaseData {
     this.value = {}
   }
   // slot格式化编辑数据
-  initSlot (editdata) { // label / front / end
+  $initSlot (editdata) { // label / front / end
     this.slot = editdata.slot || {}
     if (!this.slot.type) { // slot类型 auto/main/item/model
       this.slot.type = 'auto'
@@ -40,7 +40,7 @@ class EditData extends BaseData {
     }
   }
   // 格式化编辑数据
-  initTips (editdata) {
+  $initTips (editdata) {
     // tips提示
     if (!editdata.tips) {
       this.tips = {
@@ -61,7 +61,7 @@ class EditData extends BaseData {
       }
     }
   }
-  initType(editdata) {
+  $initType(editdata) {
     this.type = editdata.type || 'input'
     this.required = editdata.required || false
     // 组件事件监控
@@ -449,9 +449,9 @@ class EditData extends BaseData {
       this.option.name = editdata.option.name ? new InterfaceData(editdata.option.name) : this.placeholder
     } else if (this.type == 'slot') {
     }
-    this.buildRules(editdata, typeOption)
+    this.$buildRules(editdata, typeOption)
   }
-  buildRules(editdata, typeOption) {
+  $buildRules(editdata, typeOption) {
     // 数组，对应事件触发时进行单独的rule判断
     this.autoTrigger = editdata.autoTrigger
     if (this.autoTrigger === undefined) {

@@ -36,7 +36,7 @@ class DictionaryItem extends DefaultData {
     this.interface.modtype = new InterfaceData('list')
     this.setLayout(initOption.layout, payload.layout)
     complexOption.format(this, initOption.mod)
-    this.FormatFunc()
+    this.$FormatFunc()
   }
   // 获取moddata=>该数据为页面需要的数据格式,从外部定义
   getModData (modprop, payload = {}) {
@@ -86,7 +86,7 @@ class DictionaryItem extends DefaultData {
   /**
    * 格式化func函数
    */
-  FormatFunc () {
+  $FormatFunc () {
     if (this.func.defaultGetData === undefined) {
       this.func.defaultGetData = (data, { type }) => {
         let showprop = this.getInterface('showprop', type)

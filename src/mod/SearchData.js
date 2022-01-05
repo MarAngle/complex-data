@@ -5,7 +5,7 @@ import ComplexData from './../data/ComplexData'
 class SearchData extends ComplexData {
   constructor (initOption) {
     super(initOption)
-    this.triggerCreateLife('SearchData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.init = false
     this.title = {
       show: false,
@@ -17,7 +17,7 @@ class SearchData extends ComplexData {
     if (initOption) {
       this.initSearchData(initOption)
     }
-    this.triggerCreateLife('SearchData', 'created')
+    this.$triggerCreateLife('SearchData', 'created')
   }
   /**
    * 加载SearchData
@@ -160,7 +160,7 @@ class SearchData extends ComplexData {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'search') !== false) {
+        if (target.$parseResetOption(resetOption, 'search') !== false) {
           this.reset()
         }
       }

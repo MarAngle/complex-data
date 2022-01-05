@@ -13,14 +13,14 @@ class ComplexData extends BaseData {
       current: {}
     })
     super(initOption)
-    this.triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('ComplexData', 'beforeCreate', initOption)
     if (initOption.dictionary && initOption.dictionary.constructor === DictionaryList) {
       this.setModule('dictionary', initOption.dictionary)
     } else {
       this.setModule('dictionary', new DictionaryList(this.formatDictionaryOption(initOption.dictionary, 'init')))
     }
     this.$initComplexDataLife()
-    this.triggerCreateLife('ComplexData', 'created')
+    this.$triggerCreateLife('ComplexData', 'created')
   }
   /**
    * 加载生命周期函数
@@ -30,11 +30,11 @@ class ComplexData extends BaseData {
     this.onLife('reseted', {
       id: 'AutoComplexDataReseted',
       data: (instantiater, resetOption) => {
-        if (this.parseResetOption(resetOption, 'data') !== false) {
-          if (this.parseResetOption(resetOption, 'data.list') !== false) {
+        if (this.$parseResetOption(resetOption, 'data') !== false) {
+          if (this.$parseResetOption(resetOption, 'data.list') !== false) {
             this.resetDataList()
           }
-          if (this.parseResetOption(resetOption, 'data.current') !== false) {
+          if (this.$parseResetOption(resetOption, 'data.current') !== false) {
             this.resetDataCurrent()
           }
         }

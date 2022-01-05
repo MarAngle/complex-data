@@ -11,14 +11,14 @@ class BaseData extends DefaultDataWithLife {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('BaseData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.setModule('option', new OptionData())
     this.setModule('status', new StatusData(initOption.status))
     this.setModule('promise', new PromiseData())
     if (initOption.update) {
       this.setModule('update', new UpdateData(initOption.update))
     }
-    this.triggerCreateLife('BaseData', 'created')
+    this.$triggerCreateLife('BaseData', 'created')
   }
   /**
    * 设置状态
@@ -142,15 +142,15 @@ class BaseData extends DefaultDataWithLife {
     }
     let loadStatus = this.getStatus('load')
     if (loadStatus.value == 'unload') {
-      this.triggerGetData(...args)
+      this.$triggerGetData(...args)
     } else if (loadStatus.value == 'loading') {
       // 直接then
       if (force && force.ing) {
-        this.triggerGetData(...args)
+        this.$triggerGetData(...args)
       }
     } else if (loadStatus.value == 'loaded') {
       if (force) {
-        this.triggerGetData(...args)
+        this.$triggerGetData(...args)
       }
     }
     return this.triggerPromise('load', {
@@ -230,11 +230,11 @@ class BaseData extends DefaultDataWithLife {
     }
     let updateStatus = this.getStatus('update')
     if (updateStatus.value == 'updated') {
-      this.triggerUpdateData(...args)
+      this.$triggerUpdateData(...args)
     } else { // updating
       // 直接then'
       if (force) {
-        this.triggerUpdateData(...args)
+        this.$triggerUpdateData(...args)
       }
     }
     return this.triggerPromise('update', {
@@ -322,7 +322,7 @@ class BaseData extends DefaultDataWithLife {
    * @param  {...any} args 参数
    * @returns {Promise}
    */
-  triggerGetData (...args) {
+  $triggerGetData (...args) {
     return this.setPromise('load', new Promise((resolve, reject) => {
       // 触发生命周期加载前事件
       this.triggerLife('beforeLoad', this, ...args)
@@ -352,7 +352,7 @@ class BaseData extends DefaultDataWithLife {
    * @param  {...any} args 参数
    * @returns {Promise}
    */
-  triggerUpdateData (...args) {
+  $triggerUpdateData (...args) {
     return this.setPromise('update', new Promise((resolve, reject) => {
       this.setStatus('updating', 'update')
       // 触发生命周期更新前事件
@@ -392,7 +392,7 @@ class BaseData extends DefaultDataWithLife {
    * @param {*} [prop] 当前的reset操作的时机
    * @returns {boolean}
    */
-  parseResetOption(resetOption = {}, prop) {
+  $parseResetOption(resetOption = {}, prop) {
     return _func.getProp(resetOption, prop)
   }
   /**
@@ -413,7 +413,7 @@ class BaseData extends DefaultDataWithLife {
     this.formatResetOption(args)
     this.triggerLife('beforeReset', this, ...args)
     // 重置状态
-    if (this.parseResetOption(args[0], 'status') !== false) {
+    if (this.$parseResetOption(args[0], 'status') !== false) {
       this.resetStatus(args[0])
     }
     this.triggerLife('reseted', this, ...args)

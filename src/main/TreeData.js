@@ -7,8 +7,8 @@ class TreeData extends ListData {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('TreeData', 'beforeCreate', initOption)
-    this.triggerCreateLife('TreeData', 'created')
+    this.$triggerCreateLife('TreeData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('TreeData', 'created')
   }
   /**
    * 解析dictionaryOption初始化数据

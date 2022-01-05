@@ -47,7 +47,7 @@ class FuncData extends SimpleData {
    * 设置生命周期对应函数回调
    * @param {object} data 参数
    */
-  pushData(data) {
+  $pushData(data) {
     if (data.index === undefined || data.index == 'end') {
       this.data.set(data.id, data)
     } else {
@@ -85,10 +85,10 @@ class FuncData extends SimpleData {
       if (isArray) {
         resId = []
         for (let n = 0; n < data.length; n++) {
-          resId.push(this.formatData(data[n]))
+          resId.push(this.$formatData(data[n]))
         }
       } else {
-        resId = this.formatData(data)
+        resId = this.$formatData(data)
       }
     }
     return resId
@@ -98,7 +98,7 @@ class FuncData extends SimpleData {
    * @param {object| function} data 回调参数
    * @returns {boolean}next
    */
-  formatData(data) {
+  $formatData(data) {
     let dataType = _func.getType(data)
     let next = true
     if (dataType === 'function') {
@@ -116,7 +116,7 @@ class FuncData extends SimpleData {
         if (this.data.has(data.id) && !data.replace) {
           this.$exportMsg(`存在当前值:${data.id}`)
         } else {
-          this.pushData(data)
+          this.$pushData(data)
           if (data.immediate) {
             this.emit(data.id)
           }

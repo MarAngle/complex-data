@@ -14,18 +14,18 @@ class StatusDataItem extends SimpleData {
       value: '',
       label: ''
     }
-    this._initList(initOption.list)
+    this.$initList(initOption.list)
     let current = initOption.current || initOption.list[0].value
     this.setData(current, 'init')
     this.default = initOption.default || current // value值
-    this._initOption(initOption.option)
+    this.$initOption(initOption.option)
   }
-  _initList (list) {
+  $initList (list) {
     for (let n in list) {
       this.list[list[n].value] = list[n]
     }
   }
-  _initOption (option = {}) {
+  $initOption (option = {}) {
     if (option.type && option.type == 'count') {
       if (option.prop) {
         this.option.type = option.type
@@ -47,11 +47,11 @@ class StatusDataItem extends SimpleData {
     if (this.list[prop]) {
       let build = true
       if (!act) {
-        build = this.triggerTarget(prop)
+        build = this.$triggerTarget(prop)
       } else if (act == 'init') {
         //
       } else if (act == 'reset') {
-        this.resetTarget()
+        this.$resetTarget()
       }
       if (build && this.current.value != this.list[prop].value) {
         this.current.value = this.list[prop].value
@@ -64,7 +64,7 @@ class StatusDataItem extends SimpleData {
   /**
    * 重置计算值
    */
-  resetTarget () {
+  $resetTarget () {
     if (this.option.type == 'count') {
       this.option.data.num = 0
     }
@@ -74,7 +74,7 @@ class StatusDataItem extends SimpleData {
    * @param {string} prop 属性值
    * @returns {boolean}
    */
-  triggerTarget (prop) {
+  $triggerTarget (prop) {
     let fg = true
     if (this.option.type == 'count') {
       if (this.option.data.prop == prop) {

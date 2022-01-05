@@ -19,7 +19,7 @@ class LayoutData extends SimpleData {
       }
     }
     for (let n in initOption) {
-      initOption[n] = this.formatLayout(initOption[n])
+      initOption[n] = this.$formatLayout(initOption[n])
     }
     this.data = new InterfaceData(initOption)
   }
@@ -28,7 +28,7 @@ class LayoutData extends SimpleData {
    * @param {object} [data] 布局数据
    * @returns {object}
    */
-  formatLayout(data) {
+  $formatLayout(data) {
     if (!data) {
       data = {}
     }
@@ -64,7 +64,7 @@ class LayoutData extends SimpleData {
    * @param {*} data 布局数据
    */
   setData (prop, data) {
-    this.data.setData(prop, this.formatLayout(data))
+    this.data.setData(prop, this.$formatLayout(data))
   }
   /**
    * 获取指定布局

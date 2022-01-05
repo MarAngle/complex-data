@@ -8,7 +8,7 @@ import DefaultDataWithLife from './../data/DefaultDataWithLife'
 class UpdateData extends DefaultDataWithLife {
   constructor (initOption = {}) {
     super(initOption)
-    this.triggerCreateLife('UpdateData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)
     this.load = {
       update: false, // 更新状态判断值，true说明update正在进行中，此时每间隔一段时间则进行触发操作
       operate: false, // 触发操作判断值，true说明trigger正在进行中
@@ -23,7 +23,7 @@ class UpdateData extends DefaultDataWithLife {
       data: config.UpdateData.offset
     }
     this._initMain(initOption)
-    this.triggerCreateLife('UpdateData', 'created')
+    this.$triggerCreateLife('UpdateData', 'created')
   }
   _initMain (initOption = {}) {
     this.setOffset(initOption.offset)
@@ -206,7 +206,7 @@ class UpdateData extends DefaultDataWithLife {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'update') !== false) {
+        if (target.$parseResetOption(resetOption, 'update') !== false) {
           this.reset()
         }
       }

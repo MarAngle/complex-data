@@ -8,23 +8,23 @@ class SelectData extends BaseData {
       initOption = {}
     }
     super(initOption)
-    this.triggerCreateLife('SelectData', 'beforeCreate', initOption)
+    this.$triggerCreateLife('SelectData', 'beforeCreate', initOption)
     this.setModule('select', new SelectList({
       name: this.name,
       prop: this.prop,
       ...initOption.select
     }))
-    this._initSelectDataLife()
-    this.triggerCreateLife('SelectData', 'created')
+    this.$initSelectDataLife()
+    this.$triggerCreateLife('SelectData', 'created')
   }
   /**
    * 加载生命周期函数
    */
-  _initSelectDataLife() {
+  $initSelectDataLife() {
     this.onLife('reseted', {
       id: 'AutoSelectDataReseted',
       data: (instantiater, resetOption) => {
-        if (this.parseResetOption(resetOption, 'select') !== false) {
+        if (this.$parseResetOption(resetOption, 'select') !== false) {
           this.clearSelect()
         }
       }

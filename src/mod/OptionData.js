@@ -47,7 +47,7 @@ class OptionData extends SimpleData {
    * @param {string} type 操作来源
    */
   setData (prop, optiondata, type) {
-    this.setDataNext(this.data, prop, optiondata, type)
+    this.$setDataNext(this.data, prop, optiondata, type)
   }
   /**
    * 检查数据格式
@@ -56,7 +56,7 @@ class OptionData extends SimpleData {
    * @param {string} type 操作来源
    * @returns { target, option, fg }
    */
-  checkData (target, option, type) {
+  $checkData (target, option, type) {
     let check = {
       target: _func.getType(target),
       option: _func.getType(option),
@@ -98,13 +98,13 @@ class OptionData extends SimpleData {
    * @param {*} option 要设置的数据
    * @param {string} type 操作来源
    */
-  setDataNext (data, prop, optiondata, type) {
-    let check = this.checkData(data[prop], optiondata, type)
+  $setDataNext (data, prop, optiondata, type) {
+    let check = this.$checkData(data[prop], optiondata, type)
     if (check.fg) {
       // init状态下的object直接赋值
       if (check.target == 'object' && type != 'init') {
         for (let n in optiondata) {
-          this.setDataNext(data[prop], n, optiondata[n], type)
+          this.$setDataNext(data[prop], n, optiondata[n], type)
         }
       } else {
         data[prop] = optiondata
