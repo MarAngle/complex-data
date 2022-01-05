@@ -2,6 +2,9 @@
 - 实现多选的高度扩展设置项
 - $children设置项因list的接收的字段问题和当前冲突，考虑实现方法
 
+### 2.2.25-beta
+- func依赖升级
+
 ### 2.2.24
 - func依赖升级
 - DictionaryItem删除order排序字段，无合适实现方案
