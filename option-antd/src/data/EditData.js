@@ -531,6 +531,11 @@ class EditData extends BaseData {
         // select非search模式下需要进行数据的加载
         needLoad = true
       }
+    } else if (this.type == 'customize') {
+      if (this.getData) {
+        // select非search模式下需要进行数据的加载
+        needLoad = true
+      }
     }
     if (needLoad) {
       // search需要在打开阶段进行数据获取

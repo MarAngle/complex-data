@@ -198,6 +198,28 @@ let typeData = {
       return label.getMain()
     }
   },
+  type_customize: {
+    defaultdata: undefined,
+    placeholder: function (label) {
+      let data = {}
+      label.map((labeldata, prop) => {
+        data[prop] = `请选择${labeldata[prop]}`
+      })
+      return data
+    },
+    eventList: ['change'],
+    rule: {
+      trigger: ['blur'],
+      autoTrigger: ['change'],
+      message: function (label) {
+        let data = {}
+        label.map((labeldata, prop) => {
+          data[prop] = `请选择${labeldata[prop]}`
+        })
+        return data
+      }
+    }
+  },
   type_slot: {
     defaultdata: undefined
   }
