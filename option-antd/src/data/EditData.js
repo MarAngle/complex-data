@@ -447,6 +447,10 @@ class EditData extends BaseData {
       this.option.type = editdata.option.type || 'default'
       this.option.icon = editdata.option.icon || ''
       this.option.name = editdata.option.name ? new InterfaceData(editdata.option.name) : this.placeholder
+    } else if (this.type == 'customize') {
+      // 自定义
+      this.customize = editdata.customize
+      this.option = editdata.option
     } else if (this.type == 'slot') {
     }
     this.$buildRules(editdata, typeOption)
