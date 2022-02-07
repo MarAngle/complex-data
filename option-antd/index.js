@@ -2,6 +2,23 @@ import EditData from './src/data/EditData'
 import _func from 'complex-func'
 import complexOption from './../src/option'
 import config from '../config'
+import typeData from './src/option/typeData'
+import timeUtils from './src/option/timeUtils'
+
+config.antd = {
+  format: {
+    list: {
+      width: 100,
+      scrollWidth: 100,
+      ellipsis: true,
+      autoText: true
+    }
+  },
+  EditData: {
+    typeData: typeData,
+    timeUtils: timeUtils
+  }
+}
 
 let antdOption = {
   data: {

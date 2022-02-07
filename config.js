@@ -1,6 +1,3 @@
-import typeData from './option-antd/src/option/typeData'
-import timeUtils from './option-antd/src/option/timeUtils'
-
 let config = {
   LayoutData: {
     grid: 24,
@@ -88,20 +85,6 @@ let config = {
   },
   UpdateData: {
     offset: 10000
-  },
-  antd: {
-    format: {
-      list: {
-        width: 100,
-        scrollWidth: 100,
-        ellipsis: true,
-        autoText: true
-      }
-    },
-    EditData: {
-      typeData: typeData,
-      timeUtils: timeUtils
-    }
   }
 }
 
