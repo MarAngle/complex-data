@@ -33,7 +33,6 @@ import SelectData from './src/main/SelectData'
 import TreeData from './src/main/TreeData'
 
 import option from './src/option'
-import antdOption from './option-antd/index'
 
 // import './buildContentImport'
 
@@ -69,6 +68,5 @@ export {
   ListData,
   SelectData,
   TreeData,
-  option,
-  antdOption
+  option
 }
