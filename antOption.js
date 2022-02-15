@@ -1,2 +1,3 @@
-import antdOption from './option-antd/index'
-antdOption.init()
+import antOption from './option-ant/index'
+
+export default antOption
