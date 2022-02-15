@@ -288,12 +288,13 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} originitem 源数据
    * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatItem (originitem, originfromType = 'list', option, depth) {
+  formatItem (originitem, originfromType = 'list', option, formatPrototype, depth) {
     let targetitem = {}
-    this.updateItem(targetitem, originitem, originfromType, option, depth)
+    this.updateItem(targetitem, originitem, originfromType, option, formatPrototype, depth)
     return targetitem
   }
   /**
@@ -302,11 +303,12 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} originitem 源数据
    * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  updateItem (targetitem, originitem, originfromType = 'info', option, depth) {
-    this.formatData(targetitem, originitem, originfromType, option, depth)
+  updateItem (targetitem, originitem, originfromType = 'info', option, formatPrototype, depth) {
+    this.formatData(targetitem, originitem, originfromType, option, formatPrototype, depth)
     return targetitem
   }
   /**
@@ -315,14 +317,15 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object[]} originlist 源数据列表
    * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    */
-  formatListData (targetlist, originlist, originfromType = 'list', option = {}, depth) {
+  formatListData (targetlist, originlist, originfromType = 'list', option = {}, formatPrototype = true, depth) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
     }
     for (let n in originlist) {
-      let item = this.formatItem(originlist[n], originfromType, option.build, depth)
+      let item = this.formatItem(originlist[n], originfromType, option.build, formatPrototype, depth)
       targetlist.push(item)
     }
   }
@@ -332,27 +335,36 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object[]} originlist 源数据列表
    * @param {string} [originfromType] 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
    */
-  formatTreeData (targetlist, originlist, originfromType = 'list', option = {}) {
+  formatTreeData (targetlist, originlist, originfromType = 'list', option = {}, depth, formatPrototype = true) {
     if (option.clearType === undefined || option.clearType) {
       _func.clearArray(targetlist)
     }
     for (let n in originlist) {
-      let item = this.formatItem(originlist[n], originfromType, option.build)
+      let item = this.formatItem(originlist[n], originfromType, option.build, formatPrototype, depth)
       targetlist.push(item)
     }
   }
 
+  $formatPrototype(targetitem, depth) {
+    let currentPrototype = Object.create(Object.getPrototypeOf(targetitem), {
+      $depth: depth
+    })
+    Object.setPrototypeOf(targetitem, currentPrototype)
+  }
   /**
    * 根据字典格式化数据
    * @param {object} targetitem 目标数据
    * @param {object} originitem 源数据
    * @param {string} originfromType 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatData (targetitem, originitem = {}, originfromType, option, depth) {
+  formatData (targetitem, originitem = {}, originfromType, option, formatPrototype, depth = 0) {
     if (!option) {
       option = this.getBuildOption()
     }
@@ -360,7 +372,10 @@ class DictionaryList extends DefaultDataWithLife {
       option = _func.getLimitData(option)
     }
     for (let ditem of this.data.values()) {
-      this.formatDataNext(ditem, targetitem, originitem, originfromType, option, depth)
+      this.formatDataNext(ditem, targetitem, originitem, originfromType, option, formatPrototype, depth)
+    }
+    if (formatPrototype) {
+      this.$formatPrototype(targetitem, depth)
     }
     return targetitem
   }
@@ -371,9 +386,10 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} originitem 源数据
    * @param {string} originfromType 来源originfromType
    * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    */
-  formatDataNext (ditem, targetitem, originitem, originfromType, option, depth = 0) {
+  formatDataNext (ditem, targetitem, originitem, originfromType, option, formatPrototype, depth = 0) {
     let build = false
     let isOther = false
     if (!option) {
@@ -401,13 +417,13 @@ class DictionaryList extends DefaultDataWithLife {
           if (targetType == 'array') {
             if (origindata && origindata.length > 0) {
               targetdata = []
-              this.formatListData(targetdata, origindata, originfromType, { build: option }, depth)
+              this.formatListData(targetdata, origindata, originfromType, { build: option }, formatPrototype, depth)
               origindata = targetdata
             } else {
               origindata = []
             }
           } else {
-            origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, depth)
+            origindata = ditem.dictionary.formatData({}, origindata, originfromType, option, formatPrototype, depth)
           }
         }
         ditem.setDataByFormat(targetitem, ditem.prop, origindata, targetType, 'format', {
@@ -424,7 +440,7 @@ class DictionaryList extends DefaultDataWithLife {
             if (targetType == 'array') {
               targetdata = []
             } else {
-              targetdata = ditem.dictionary.formatData({}, {}, originfromType, option, depth)
+              targetdata = ditem.dictionary.formatData({}, {}, originfromType, option, formatPrototype, depth)
             }
           } else {
             if (targetType == 'object') {
