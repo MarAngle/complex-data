@@ -349,9 +349,8 @@ class DictionaryList extends DefaultDataWithLife {
   }
 
   $formatPrototype(targetitem, depth) {
-    let currentPrototype = Object.create(Object.getPrototypeOf(targetitem), {
-      $depth: depth
-    })
+    let currentPrototype = Object.create(Object.getPrototypeOf(targetitem))
+    currentPrototype.$depth = depth
     Object.setPrototypeOf(targetitem, currentPrototype)
   }
   /**
