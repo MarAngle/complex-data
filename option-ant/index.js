@@ -9,7 +9,6 @@ config.antd = {
   format: {
     list: {
       width: 100,
-      scrollWidth: 100,
       ellipsis: true,
       autoText: true
     }
@@ -35,7 +34,11 @@ let antdOption = {
             data.width = config.antd.format.list.width
           }
           if (!data.scrollWidth) {
-            data.scrollWidth = config.antd.format.list.scrollWidth
+            if (data.width && typeof data.width == 'number') {
+              data.scrollWidth = data.width
+            } else {
+              data.scrollWidth = config.antd.format.list.width
+            }
           }
           if (data.ellipsis === undefined) {
             data.ellipsis = config.antd.format.list.ellipsis
