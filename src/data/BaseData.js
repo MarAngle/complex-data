@@ -76,7 +76,7 @@ class BaseData extends DefaultDataWithLife {
     this.triggerModuleMethod('update', 'autoStart', args)
   }
   /**
-   * 触发下一次定时
+   * 触发下一次定时???
    */
   nextUpdate (...args) {
     this.triggerModuleMethod('update', 'next', args)
