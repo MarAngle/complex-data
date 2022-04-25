@@ -35,10 +35,10 @@ class LayoutData extends SimpleData {
     if (!data.type) {
       data.type = 'grid'
     }
-    if (!data.grid) {
+    if (data.grid === undefined) {
       data.grid = config.LayoutData.grid
     }
-    if (!data.label) {
+    if (data.label === undefined) {
       data.label = {
         span: config.LayoutData.label
       }
@@ -47,7 +47,7 @@ class LayoutData extends SimpleData {
         span: data.label
       }
     }
-    if (!data.content) {
+    if (data.content === undefined) {
       data.content = {
         span: config.LayoutData.content
       }
