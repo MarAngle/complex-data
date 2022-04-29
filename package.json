@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "2.3.9",
+  "version": "2.3.10",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://gitee.com/codingarea/complex-data.git"
   },
   "dependencies": {
-    "complex-func": "^2.3.3",
+    "complex-func": "^2.3.4",
     "moment": ">=2.24.0"
   },
   "devDependencies": {

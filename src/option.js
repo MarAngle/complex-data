@@ -41,31 +41,37 @@ maindata.format = function (ditem, moddata) {
   if (!moddata) {
     moddata = {}
   }
-  if (moddata.edit) {
-    this.formatNext(ditem, 'edit', moddata.edit)
-    delete moddata.edit
+  let redirect = {}
+  for (const name in moddata) {
+    let modItemData = moddata[name]
+    if (modItemData) {
+      if (modItemData === true) {
+        modItemData = {}
+      }
+      if (modItemData.$target) {
+        redirect[name] = modItemData.$target
+      } else if (modItemData.type == 'edit') {
+        redirect[name] = 'edit'
+      } else {
+        this.formatNext(ditem, name, modItemData)
+      }
+    }
   }
-  for (let n in moddata) {
-    let moditem = moddata[n]
-    this.formatNext(ditem, n, moditem)
+  for (const name in redirect) {
+    ditem.mod[name] = ditem.mod[redirect[name]]
   }
 }
 
 maindata.formatNext = function (ditem, prop, moditem) {
-  if (moditem) {
-    if (moditem === true) {
-      moditem = {}
-    }
-    if (!moditem.formatType) {
-      moditem.formatType = prop
-    }
-    ditem.setInterface('modtype', prop, moditem.formatType)
-    let formatItem = this.getData(moditem.formatType)
-    if (formatItem && formatItem.format) {
-      formatItem.format(ditem, prop, moditem)
-    } else {
-      ditem.mod[prop] = moditem
-    }
+  if (!moditem.formatType) {
+    moditem.formatType = prop
+  }
+  ditem.setInterface('modtype', prop, moditem.formatType)
+  let formatItem = this.getData(moditem.formatType)
+  if (formatItem && formatItem.format) {
+    formatItem.format(ditem, prop, moditem)
+  } else {
+    ditem.mod[prop] = moditem
   }
 }
 
