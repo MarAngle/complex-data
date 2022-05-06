@@ -80,8 +80,8 @@ class DictionaryItem extends DefaultData {
    * @param {string} prop 属性
    * @param {*} data 值
    */
-  setInterface (target, prop, data) {
-    this.interface[target].setData(prop, data)
+  setInterface (target, prop, data, useSetData) {
+    this.interface[target].setData(prop, data, useSetData)
   }
   /**
    * 格式化func函数

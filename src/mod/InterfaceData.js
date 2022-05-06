@@ -41,8 +41,12 @@ class InterfaceData extends SimpleData {
    * @param {string} prop 属性
    * @param {*} data 值
    */
-  setData (prop, data) {
-    this.data[prop] = data
+  setData (prop, data, useSetData) {
+    if (useSetData === undefined) {
+      this.data[prop] = data
+    } else {
+      _func.setProp(this.data, prop, data, useSetData)
+    }
   }
   /**
    * 获取对应属性值，不存在对应属性或值则获取默认值
