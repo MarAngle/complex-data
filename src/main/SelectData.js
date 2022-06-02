@@ -37,16 +37,16 @@ class SelectData extends BaseData {
     this.setSelect([])
   }
   setSelect(data) {
-    this.getModule('select').setList(data)
+    return this.getModule('select').setList(data)
   }
   getList(payload) {
-    this.getModule('select').getList(payload)
+    return this.getModule('select').getList(payload)
   }
   getItem(value, option) {
-    this.getModule('select').getItem(value, option)
+    return this.getModule('select').getItem(value, option)
   }
   getItemByIndex(index, option) {
-    this.getModule('select').getItemByIndex(index, option)
+    return this.getModule('select').getItemByIndex(index, option)
   }
 }
 
