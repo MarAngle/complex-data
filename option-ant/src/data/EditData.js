@@ -38,6 +38,9 @@ class EditData extends BaseData {
     if (!this.slot.label) { // label=>title
       this.slot.label = this.slot.name + '-label'
     }
+    if (!this.slot.render) {
+      this.slot.render = null
+    }
   }
   // 格式化编辑数据
   $initTips (editdata) {
