@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "3.0.0",
+  "version": "3.0.0-beta.0",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
@@ -8,12 +8,9 @@
     "url": "https://gitee.com/codingarea/complex-data.git"
   },
   "dependencies": {
-    "complex-func": "^3.0.0"
+    "complex-func": "3.0.0-beta.0"
   },
-  "devDependencies": {
-    "webpack": "^5.36.1",
-    "webpack-cli": "^4.6.0"
-  },
+  "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
