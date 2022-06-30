@@ -1,5 +1,5 @@
-import _func from 'complex-func'
-import { objectAny, objectFunction } from 'complex-func/src/ts'
+import $func from 'complex-func'
+import { objectAny, objectFunction } from 'complex-func/ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -60,8 +60,8 @@ class SimpleData extends Data {
   $initRoot (rootData?: objectAny) {
     if (rootData) {
       for (const prop in rootData) {
-        if (_func.hasProp(this, prop)) {
-          const type = _func.getType(this[prop])
+        if ($func.hasProp(this, prop)) {
+          const type = $func.getType(this[prop])
           this.$exportMsg(`$initRoot:对应属性${prop}存在类型为${type}的同名属性，属性未挂载!`)
         } else {
           this[prop] = rootData[prop]
@@ -78,7 +78,7 @@ class SimpleData extends Data {
       for (const prop in methods) {
         let build = true
         if (this[prop] !== undefined) {
-          const type = _func.getType(this[prop])
+          const type = $func.getType(this[prop])
           if (type !== 'function') {
             this.$exportMsg(`$initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
             build = false
@@ -111,7 +111,7 @@ class SimpleData extends Data {
    */
   initExtra (extraData?: objectAny) {
     this.clearExtra()
-    if (_func.getType(extraData) == 'object') {
+    if ($func.getType(extraData) == 'object') {
       for (const n in extraData) {
         this.setExtra(n, extraData[n])
       }

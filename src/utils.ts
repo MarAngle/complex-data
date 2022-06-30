@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 
 export const formatInitOption = function(initOption?: any, defaultInitOption?: any, emptyErrorMsg?: any) {
   if (!initOption) {
@@ -11,7 +11,7 @@ export const formatInitOption = function(initOption?: any, defaultInitOption?: a
     initOption = {}
   }
   if (defaultInitOption) {
-    _func.setDataByDefault(initOption, defaultInitOption)
+    $func.setDataByDefault(initOption, defaultInitOption)
   }
   return initOption
 }

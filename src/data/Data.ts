@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { consoleType, exportOption } from 'complex-func/src/data/utils/exportMsg'
 
 declare global {
@@ -51,7 +51,7 @@ class Data {
    * @param {'error' | 'warn' | 'log'} [option.type] 设置项
    */
   $exportMsg (content: string, type:consoleType = 'error', option?: exportOption) {
-    _func.exportMsg(this.$createMsg(content), type, option)
+    $func.exportMsg(this.$createMsg(content), type, option)
   }
   toString ():string {
     return this.$selfName()
