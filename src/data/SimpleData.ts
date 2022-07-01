@@ -1,5 +1,5 @@
 import $func from 'complex-func'
-import { objectAny, objectFunction } from 'complex-func/ts'
+import { objectUnknown, objectFunction } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -9,8 +9,8 @@ export interface SimpleDataInitOption {
   prop?: string,
   parent?: Data,
   func?: objectFunction,
-  extra?: objectAny,
-  root?: objectAny,
+  extra?: objectUnknown,
+  root?: objectUnknown,
   methods?: objectFunction,
 }
 
@@ -18,8 +18,8 @@ class SimpleData extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	$func: objectAny;
-	$extra: objectAny;
+	$func: objectUnknown;
+	$extra: objectUnknown;
   [prop: string]: any
   constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
@@ -57,7 +57,7 @@ class SimpleData extends Data {
    * 挂载根属性
    * @param {*} rootData 函数对象
    */
-  $initRoot (rootData?: objectAny) {
+  $initRoot (rootData?: objectUnknown) {
     if (rootData) {
       for (const prop in rootData) {
         if ($func.hasProp(this, prop)) {
@@ -73,7 +73,7 @@ class SimpleData extends Data {
    * 挂载方法
    * @param {*} methods 函数对象
    */
-  $initMethods (methods?: objectAny) {
+  $initMethods (methods?: objectUnknown) {
     if (methods) {
       for (const prop in methods) {
         let build = true
@@ -109,7 +109,7 @@ class SimpleData extends Data {
    * 加载额外数据
    * @param {object} [extraData] 额外数据对象
    */
-  initExtra (extraData?: objectAny) {
+  initExtra (extraData?: objectUnknown) {
     this.clearExtra()
     if ($func.getType(extraData) == 'object') {
       for (const n in extraData) {
@@ -133,7 +133,7 @@ class SimpleData extends Data {
    * @returns {*}
    */
   getExtra (prop:string): any
-  getExtra (): objectAny
+  getExtra (): objectUnknown
   getExtra (prop?:string){
     if (!prop) {
       return this.$extra
