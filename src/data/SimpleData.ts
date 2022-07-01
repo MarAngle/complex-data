@@ -3,7 +3,6 @@ import { objectUnknown, objectFunction } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
-
 export interface SimpleDataInitOption {
   name?: string,
   prop?: string,
@@ -14,13 +13,14 @@ export interface SimpleDataInitOption {
   methods?: objectFunction,
 }
 
+
 class SimpleData extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	$func: objectUnknown;
+	$func: objectFunction;
 	$extra: objectUnknown;
-  [prop: string]: any
+  [prop: string]: unknown
   constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
@@ -124,7 +124,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  setExtra (prop: string, data: any) {
+  setExtra (prop: string, data: unknown) {
     this.$extra[prop] = data
   }
   /**
@@ -132,7 +132,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  getExtra (prop:string): any
+  getExtra (prop:string): unknown
   getExtra (): objectUnknown
   getExtra (prop?:string){
     if (!prop) {
