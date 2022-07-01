@@ -41,13 +41,13 @@ type ruleOptionTypeObject = {
 
 type ruleOptionType = string | ruleOptionTypeObject | finalFunction
 
-export interface initOptionType {
+export interface IdDataInitOption {
   list: ruleOptionType[]
 }
 
 class IdData {
   list: finalFunction[]
-  constructor (initOption: initOptionType) {
+  constructor (initOption: IdDataInitOption) {
     this.list = []
     this.$initMain(initOption)
   }
@@ -56,7 +56,7 @@ class IdData {
    * @param {object} option 参数
    * @param {object[]} option.list 参数
    */
-  $initMain ({ list }: initOptionType) {
+  $initMain ({ list }: IdDataInitOption) {
     this.list = []
     for (const n in list) {
       this.$initRuleData(list[n])
