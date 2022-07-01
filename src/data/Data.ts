@@ -1,12 +1,6 @@
 import $func from 'complex-func'
 import { consoleType, exportOption } from 'complex-func/src/data/utils/exportMsg'
 
-declare global {
-  interface Function {
-    $name?: string
-  }
-}
-
 let id = 0
 
 function createId(): string {
@@ -50,7 +44,7 @@ class Data {
    * @param {string} [option.data] 设置项
    * @param {'error' | 'warn' | 'log'} [option.type] 设置项
    */
-  $exportMsg (content: string, type:consoleType = 'error', option?: exportOption) {
+  $exportMsg (content: string, type: consoleType = 'error', option?: exportOption) {
     $func.exportMsg(this.$createMsg(content), type, option)
   }
   toString ():string {
