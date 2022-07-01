@@ -2,7 +2,7 @@
   "name": "complex-data",
   "version": "3.0.0-beta.1",
   "description": "a complex data",
-  "main": "index.js",
+  "main": "index.ts",
   "repository": {
     "type": "git",
     "url": "https://gitee.com/codingarea/complex-data.git"
