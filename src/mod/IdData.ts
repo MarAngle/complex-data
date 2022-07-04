@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { letterType } from 'complex-func/src/data/string/getRandomLetter'
 
 type finalFunction = (...args:unknown[]) => string
@@ -68,7 +68,7 @@ class IdData {
    */
   $initRuleData (option:ruleOptionType) {
     if (option) {
-      const type = _func.getType(option)
+      const type = $func.getType(option)
       if (type == 'function') {
         this.list.push(option as finalFunction)
       } else if (type == 'string') {
@@ -87,7 +87,7 @@ class IdData {
   $buildFunc (option: ruleOptionTypeObject):finalFunction {
     if (option.type == 'random') {
       return function () {
-        return _func.getRandomData(option.size, option.letter)
+        return $func.getRandomData(option.size, option.letter)
       }
     } else if (option.type == 'time') {
       return function () {
@@ -117,13 +117,13 @@ class IdData {
       return function () {
         let current = (option as formatRuleOptionTypeObject).start.toString()
         if (current.length < (option as formatRuleOptionTypeObject).minSize) {
-          current = _func.fillString(current, (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
+          current = $func.fillString(current, (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
         } else if ((option as formatRuleOptionTypeObject).maxSize && current.length > (option as formatRuleOptionTypeObject).maxSize!) {
           if ((option as formatRuleOptionTypeObject).maxAction == 'cut') {
             current = current.slice(0, (option as formatRuleOptionTypeObject).maxSize)
           } else if ((option as formatRuleOptionTypeObject).maxAction == 'restart') {
             (option as formatRuleOptionTypeObject).start = 1
-            current = _func.fillString('1', (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
+            current = $func.fillString('1', (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
           } else {
             current = ((option as formatRuleOptionTypeObject).maxAction as maxActionFunction)(current, option)
           }

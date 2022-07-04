@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
@@ -26,7 +26,7 @@ class OptionData extends Data {
    * @param {object} data 设置总数据
    */
   $initData (data:objectUnknown = {}) {
-    if (_func.getType(data) == 'object') {
+    if ($func.getType(data) == 'object') {
       for (const n in data) {
         this.setData(n, data[n], 'init')
       }
@@ -53,8 +53,8 @@ class OptionData extends Data {
    */
   $checkData (target: unknown, option: unknown, type: string) {
     const check = {
-      target: _func.getType(target),
-      option: _func.getType(option),
+      target: $func.getType(target),
+      option: $func.getType(option),
       fg: false
     }
     if (check.target === 'undefined' || check.option === 'undefined') {
@@ -72,7 +72,7 @@ class OptionData extends Data {
     } else if (check.target == check.option) {
       check.fg = true
       return check
-    } else if (!_func.isComplex(check.target) && !_func.isComplex(check.option)) {
+    } else if (!$func.isComplex(check.target) && !$func.isComplex(check.option)) {
       check.fg = true
       return check
     } else {
@@ -117,7 +117,7 @@ class OptionData extends Data {
   getData(prop: string): unknown
   getData (prop?: string) {
     if (prop) {
-      return _func.getProp(this.data, prop)
+      return $func.getProp(this.data, prop)
     } else {
       return this.data
     }

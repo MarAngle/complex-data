@@ -1,16 +1,16 @@
-import _func from 'complex-func'
-import utils from '../utils'
-import modOption from './../../modOption'
-import SimpleData from './../data/SimpleData'
+import $func from 'complex-func'
+import { formatInitOption } from '../utils'
+import modOption from '../../modOption'
+import SimpleData from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData from './LayoutData'
 
 class DictionaryItem extends SimpleData {
   constructor (initOption, payload = {}) {
-    initOption = utils.formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
+    initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
     this.$mod = {}
-    let originFromType = _func.getType(initOption.originFrom)
+    const originFromType = $func.getType(initOption.originFrom)
     if (originFromType === 'array') {
       this.originFrom = initOption.originFrom
     } else if (initOption.originFrom && originFromType === 'string') {
@@ -95,8 +95,8 @@ class DictionaryItem extends SimpleData {
       this.$func.defaultGetData = (data, { type }) => {
         let showProp = this.getInterface('showProp', type)
         if (showProp) {
-          if (data && _func.getType(data) == 'object') {
-            return _func.getProp(data, showProp)
+          if (data && $func.getType(data) == 'object') {
+            return $func.getProp(data, showProp)
           } else {
             return undefined
           }
@@ -123,7 +123,7 @@ class DictionaryItem extends SimpleData {
     }
     if (this.$func.check === undefined) {
       this.$func.check = (data, payload) => {
-        return _func.isExist(data)
+        return $func.isExist(data)
       }
     }
   }
@@ -238,11 +238,11 @@ class DictionaryItem extends SimpleData {
       tData = oData
     }
     if (type == 'number') {
-      tData = _func.formatNum(tData)
+      tData = $func.formatNum(tData)
     } else if (type == 'boolean') {
       tData = !!tData
     }
-    _func.setProp(targetData, prop, tData, true)
+    $func.setProp(targetData, prop, tData, true)
   }
 }
 

@@ -1,25 +1,28 @@
-let mapDictionary = new Map()
+import Data from "./src/data/Data"
+import DictionaryItem from "./src/mod/DictionaryItem"
 
-let modOption = {
-  setDictionary(name, data, redirect) {
+const mapDictionary = new Map()
+
+const modOption = {
+  setDictionary(name: string, data: Data, redirect?: boolean) {
     if (!redirect) {
       mapDictionary.set(name, data)
     } else {
-      let target = mapDictionary.get(data)
+      const target = mapDictionary.get(data)
       mapDictionary.set(name, target)
     }
   },
-  getDictionary(name) {
+  getDictionary(name: string) {
     return mapDictionary.get(name)
   },
-  getDictionaryByMod(name, payload) {
+  getDictionaryByMod(name: string, payload) {
     return this.getDictionary(payload.mod || name)
   },
-  format(ditem, modData) {
+  format(ditem: DictionaryItem, modData) {
     if (!modData) {
       modData = {}
     }
-    let redirect = {}
+    const redirect = {}
     for (const name in modData) {
       let modItemData = modData[name]
       if (modItemData) {
@@ -37,7 +40,7 @@ let modOption = {
       ditem.$mod[name] = ditem.$mod[redirect[name]]
     }
   },
-  formatItem(ditem, name, modItemData) {
+  formatItem(ditem: DictionaryItem, name, modItemData) {
     if (!modItemData.$type) {
       modItemData.$type = name
     }
@@ -52,7 +55,7 @@ let modOption = {
   build() {
     alert('未定义BUILD')
   },
-  unformat(ditem, name, payload) {
+  unformat(ditem: DictionaryItem, name, payload) {
     let formatDictionary = this.getDictionaryByMod(name, payload)
     if (formatDictionary && formatDictionary.unformat) {
       return formatDictionary.unformat(ditem, name, payload)

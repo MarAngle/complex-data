@@ -1,10 +1,10 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { objectUnknown } from '../../ts'
 
-const ProxyCanUse = _func.getCanUse('Proxy')
+const ProxyCanUse = $func.getCanUse('Proxy')
 const proxyOption = {
   get: function(target: EmptyData, key: PropertyKey) {
-    _func.exportMsg(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key as string}]的获取操作！`)
+    $func.exportMsg(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key as string}]的获取操作！`)
     if (target[key]) {
       return target[key]
     } else {
@@ -24,7 +24,7 @@ class EmptyData {
         if (this[n] === undefined) {
           this[n] = data[n]
         } else {
-          _func.exportMsg(`EmptyData数据存在${n}属性，不能赋值${data[n]}`)
+          $func.exportMsg(`EmptyData数据存在${n}属性，不能赋值${data[n]}`)
         }
       }
     }

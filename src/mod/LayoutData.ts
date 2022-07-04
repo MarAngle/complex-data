@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import config from '../../config'
 import Data from './../data/Data'
 import InterfaceData from './InterfaceData'
@@ -72,7 +72,7 @@ class LayoutData extends Data {
       data.label = {
         span: config.LayoutData.label
       }
-    } else if (_func.getType(data.label) !== 'object') {
+    } else if ($func.getType(data.label) !== 'object') {
       data.label = {
         span: (data.label as number)
       }
@@ -81,7 +81,7 @@ class LayoutData extends Data {
       data.content = {
         span: config.LayoutData.content
       }
-    } else if (_func.getType(data.content) !== 'object') {
+    } else if ($func.getType(data.content) !== 'object') {
       data.content = {
         span: (data.content as number)
       }

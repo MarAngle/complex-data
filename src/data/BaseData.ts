@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import ModuleData from './../mod/ModuleData'
 import { offsetType } from '../mod/UpdateData'
@@ -304,7 +304,7 @@ class BaseData extends DefaultData {
   //     option.type = 'add'
   //   }
   //   let item = this.formatItem(originData, originFrom)
-  //   _func.updateData(targetData, item, option)
+  //   $func.updateData(targetData, item, option)
   // }
   /**
    * 基于formdata和模块列表返回编辑完成的数据
@@ -479,7 +479,7 @@ class BaseData extends DefaultData {
    * @returns {}
    */
   reloadData (option, ...args) {
-    let optionType = _func.getType(option)
+    let optionType = $func.getType(option)
     if (optionType === 'boolean') {
       option = {
         force: option
@@ -541,10 +541,10 @@ class BaseData extends DefaultData {
       msg: '',
       code: ''
     }
-    let type = _func.getType(target)
+    let type = $func.getType(target)
     if (type === 'string') {
       if (this[(target as string)]) {
-        if (_func.getType(this[(target as string)]) === 'function') {
+        if ($func.getType(this[(target as string)]) === 'function') {
           next.promise = this[(target as string)](...args)
         } else {
           next.msg = `${target}属性非函数类型，triggerMethod函数触发失败！`
@@ -561,7 +561,7 @@ class BaseData extends DefaultData {
       next.code = 'not function'
     }
     if (next.promise) {
-      if (_func.isPromise(next.promise)) {
+      if ($func.isPromise(next.promise)) {
         next.data = true
       } else {
         next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，triggerMethod函数触发失败！`
@@ -641,7 +641,7 @@ class BaseData extends DefaultData {
    * @param {array} list 数组
    */
   resetArray(list = []) {
-    _func.clearArray(list)
+    $func.clearArray(list)
   }
   /**
    * 清空对象
@@ -668,7 +668,7 @@ class BaseData extends DefaultData {
    * @returns {boolean}
    */
   parseResetOption(resetOption = {}, prop: string) {
-    return _func.getProp(resetOption, prop)
+    return $func.getProp(resetOption, prop)
   }
   /**
    * 重置回调操作=>不清除额外数据以及生命周期函数

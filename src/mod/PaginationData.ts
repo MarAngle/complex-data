@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import config from '../../config'
 import { objectAny } from '../../ts'
 import BaseData from '../data/BaseData'
@@ -70,9 +70,9 @@ class PaginationData extends DefaultData {
   $initSize(size?:sizeType) {
     if (!size) {
       this.size.current = config.PaginationData.size
-      this.size.list = _func.deepClone(config.PaginationData.sizeList)
+      this.size.list = $func.deepClone(config.PaginationData.sizeList)
     } else {
-      const sizeType = _func.getType(size)
+      const sizeType = $func.getType(size)
       if (sizeType != 'object') {
         this.size.current = Number(size)
         this.size.list = [this.size.current.toString()]
@@ -114,7 +114,7 @@ class PaginationData extends DefaultData {
    * 计算页码相关数据
    */
   $autoCountPage (unCountCurrent?: boolean, unTriggerLife?: boolean) {
-    const total = _func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
+    const total = $func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
     this.page.total = total <= 0 ? 1 : total
     if (!unCountCurrent && this.getPage() > this.page.total) {
       this.setPage(this.page.total, unTriggerLife)

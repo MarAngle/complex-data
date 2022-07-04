@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
@@ -28,7 +28,7 @@ class InterfaceData extends Data {
    */
   $initMain (initOption?: InterfaceDataInitOption) {
     if (initOption !== undefined) {
-      const type = _func.getType(initOption)
+      const type = $func.getType(initOption)
       if (type !== 'object') {
         this.setData('default', initOption)
       } else {
@@ -55,7 +55,7 @@ class InterfaceData extends Data {
     if (useSetData === undefined) {
       this.data[prop] = data
     } else {
-      _func.setProp(this.data, prop, data, useSetData)
+      $func.setProp(this.data, prop, data, useSetData)
     }
   }
   /**

@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import { objectAny } from '../../ts'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
@@ -176,8 +176,8 @@ class ChoiceData extends Data {
    * @param {object[]} list ITEM列表
    */
   setData(idList: idType[], list: objectAny[]) {
-    _func.clearArray(this.data.id)
-    _func.clearArray(this.data.list)
+    $func.clearArray(this.data.id)
+    $func.clearArray(this.data.list)
     for (let n = 0; n < idList.length; n++) {
       this.data.id.push(idList[n])
     }

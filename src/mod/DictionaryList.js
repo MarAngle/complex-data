@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import DefaultData from './../data/DefaultData'
 import DictionaryItem from './DictionaryItem'
 import OptionData from './OptionData'
@@ -12,7 +12,7 @@ class DictionaryList extends DefaultData {
     this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
     this.$option = new OptionData({
       isChildren: false,
-      build: _func.getLimitData(),
+      build: $func.getLimitData(),
       empty: false,
       tree: false
     })
@@ -43,7 +43,7 @@ class DictionaryList extends DefaultData {
       if (prop != 'build') {
         this.$option.setData(prop, data)
       } else {
-        this.$option.setData(prop, _func.getLimitData(data, 'allow'), 'init')
+        this.$option.setData(prop, $func.getLimitData(data, 'allow'), 'init')
       }
     }
   }
@@ -94,7 +94,7 @@ class DictionaryList extends DefaultData {
       let prop = propList[n]
       let data = initOption[prop]
       if (data) {
-        let type = _func.getType(data)
+        let type = $func.getType(data)
         if (type == 'object') {
           this.$propData[prop] = data
         } else if (type == 'string' || type == 'number') {
@@ -273,7 +273,7 @@ class DictionaryList extends DefaultData {
    */
   formatListData (targetList, originList, originFrom = 'list', option = {}, formatPrototype = true, depth) {
     if (option.clearType === undefined || option.clearType) {
-      _func.clearArray(targetList)
+      $func.clearArray(targetList)
     }
     for (let n in originList) {
       let item = this.buildData(originList[n], originFrom, option.build, formatPrototype, depth)
@@ -328,7 +328,7 @@ class DictionaryList extends DefaultData {
       option = this.$option.getData('build')
     }
     if (!option.getLimit) {
-      option = _func.getLimitData(option)
+      option = $func.getLimitData(option)
     }
     if (depth === undefined) {
       depth = 0
@@ -380,17 +380,17 @@ class DictionaryList extends DefaultData {
     if (build) {
       let type = ditem.getInterface('type', originFrom)
       let originProp = ditem.getInterface('originProp', originFrom)
-      let oData = _func.getProp(originData, originProp)
+      let oData = $func.getProp(originData, originProp)
       if (ditem.$dictionary) {
         depth++
         if (type != 'array') {
-          if (_func.getType(oData) == 'object') {
+          if ($func.getType(oData) == 'object') {
             oData = ditem.$dictionary.$formatDataStart({}, oData, originFrom, option, formatPrototype, depth)
           } else {
             oData = {}
           }
         } else {
-          if (_func.getType(oData) == 'array') {
+          if ($func.getType(oData) == 'array') {
             let oList = []
             for (let i = 0; i < oData.length; i++) {
               let oItem = ditem.$dictionary.$formatDataStart({}, oData[i], originFrom, option, formatPrototype, depth)
@@ -484,7 +484,7 @@ class DictionaryList extends DefaultData {
   buildFormData(modList, modType, originData, option = {}) {
     let formData = option.form || {}
     let from = option.from
-    let limit = _func.getLimitData(option.limit)
+    let limit = $func.getLimitData(option.limit)
     let size = modList.length
     for (let n = 0; n < size; n++) {
       let ditem = modList[n]
@@ -494,7 +494,7 @@ class DictionaryList extends DefaultData {
           originData: originData,
           from: from
         })
-        _func.setProp(formData, ditem.prop, tData, true)
+        $func.setProp(formData, ditem.prop, tData, true)
       }
     }
     return formData
@@ -531,7 +531,7 @@ class DictionaryList extends DefaultData {
       if (add) {
         let oData = formData[ditem.prop]
         if (ditem.$mod[modType].trim) {
-          oData = _func.trimData(oData)
+          oData = $func.trimData(oData)
         }
         ditem.setDataByFormat(editData, ditem.getInterface('originProp', modType), oData, ditem.getInterface('type', modType), 'post', {
           targetData: editData,

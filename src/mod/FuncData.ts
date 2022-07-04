@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import IdData from './IdData'
 import Data from './../data/Data'
 import { formatInitOption } from '../utils'
@@ -79,7 +79,7 @@ class FuncData extends Data {
   build(data?: FuncDataItem | FuncDataItem[]) {
     let resId
     if (data) {
-      const isArray = _func.isArray(data)
+      const isArray = $func.isArray(data)
       if (isArray) {
         resId = []
         for (let n = 0; n < (data as FuncDataItem[]).length; n++) {
@@ -97,7 +97,7 @@ class FuncData extends Data {
    * @returns {boolean}next
    */
   $formatData(data: FuncDataItem): string | undefined {
-    const dataType = _func.getType(data)
+    const dataType = $func.getType(data)
     let next = true
     if (dataType === 'function') {
       data = {

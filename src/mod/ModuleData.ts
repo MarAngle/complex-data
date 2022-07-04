@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 
@@ -30,7 +30,7 @@ class ModuleData extends Data {
   }
   static setDictionary(modName, ModuleClassData) {
     if (!ModuleClassData.$name) {
-      _func.exportMsg(`${modName}对应的模块类不存在$name属性，可能会导致判断错误！`, 'warn')
+      $func.exportMsg(`${modName}对应的模块类不存在$name属性，可能会导致判断错误！`, 'warn')
     }
     ModuleDictionaryMap.set(modName, ModuleClassData)
   }
@@ -42,7 +42,7 @@ class ModuleData extends Data {
     }
   }
   $initModule(initOption) {
-    if (initOption && _func.getType(initOption) == 'object') {
+    if (initOption && $func.getType(initOption) == 'object') {
       for (let modName in initOption) {
         this.$setData(modName, initOption[modName])
       }

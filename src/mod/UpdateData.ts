@@ -1,4 +1,4 @@
-import _func from 'complex-func'
+import $func from 'complex-func'
 import config from '../../config'
 import { anyFunction } from '../../ts'
 import BaseData from '../data/BaseData'
@@ -61,7 +61,7 @@ class UpdateData extends DefaultData {
     this.$triggerCreateLife('UpdateData', 'created')
   }
   setOffset (offset: offsetType) {
-    let type = _func.getType(offset)
+    let type = $func.getType(offset)
     if (type !== 'object') {
       offset = {
         data: offset
@@ -173,7 +173,7 @@ class UpdateData extends DefaultData {
         if (offset === undefined) {
           offset = this.offset.data
         }
-        if (_func.isPromise(checkRes)) {
+        if ($func.isPromise(checkRes)) {
           (checkRes as Promise<any>).then(() => {
             this.$checkAndStartTrigger(offset as number)
           }, err => {
