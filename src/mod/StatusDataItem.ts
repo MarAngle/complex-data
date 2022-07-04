@@ -1,10 +1,13 @@
-import utils from '../utils'
+import { formatInitOption } from '../utils'
 import Data from './../data/Data'
 
 
+export type valueType = string
+
 export interface itemType {
-  value: PropertyKey,
-  label: PropertyKey
+  value: valueType,
+  label: valueType,
+  [prop: string]: valueType
 }
 
 type defaultOption = {
@@ -30,20 +33,20 @@ type StatusDataItemInitOptionOption = {
 
 export type StatusDataItemInitOption = {
   list: itemType[],
-  current?: PropertyKey,
-  default?: PropertyKey,
+  current?: valueType,
+  default?: valueType,
   option?: StatusDataItemInitOptionOption
 }
 
 class StatusDataItem extends Data {
   option: defaultOption | countOption
   list: {
-    [prop: PropertyKey]: itemType
+    [prop: string]: itemType
   }
   current: itemType
-  default: PropertyKey
+  default: string
   constructor (initOption: StatusDataItemInitOption) {
-    initOption = utils.formatInitOption(initOption, null, 'StatusDataItem未设置初始化数据')
+    initOption = formatInitOption(initOption, null, 'StatusDataItem未设置初始化数据')
     if (!initOption.list || initOption.list.length == 0) {
       console.error(`StatusDataItem未设置初始化列表`)
     }
@@ -57,13 +60,13 @@ class StatusDataItem extends Data {
       label: ''
     }
     this.$initList(initOption.list)
-    let current = initOption.current || initOption.list[0].value
+    const current = initOption.current || initOption.list[0].value
     this.setData(current, 'init')
     this.default = initOption.default || current // value值
     this.$initOption(initOption.option)
   }
   $initList (list: itemType[]) {
-    for (let n in list) {
+    for (const n in list) {
       this.list[list[n].value] = list[n]
     }
   }
@@ -85,7 +88,7 @@ class StatusDataItem extends Data {
    * @param {string} prop 指定的属性值
    * @param {'init' | 'reset'} [act] 操作判断值
    */
-  setData (prop: PropertyKey, act?: 'init' | 'reset') {
+  setData (prop: string, act?: 'init' | 'reset') {
     if (this.list[prop]) {
       let build = true
       if (!act) {
@@ -116,7 +119,7 @@ class StatusDataItem extends Data {
    * @param {string} prop 属性值
    * @returns {boolean}
    */
-  $triggerTarget (prop: PropertyKey) {
+  $triggerTarget (prop: string) {
     let fg = true
     if (this.option.type == 'count') {
       if (this.option.data.prop == prop) {
@@ -136,8 +139,8 @@ class StatusDataItem extends Data {
    * @returns {*}
    */
   getData(): itemType
-  getData(prop: string): PropertyKey
-  getData (prop?: string) {
+  getData(prop: valueType): valueType
+  getData (prop?: valueType): itemType | valueType {
     if (prop) {
       return this.current[prop]
     } else {

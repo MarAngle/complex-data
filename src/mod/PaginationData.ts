@@ -2,14 +2,31 @@ import _func from 'complex-func'
 import config from '../../config'
 import { objectAny } from '../../ts'
 import BaseData from '../data/BaseData'
-import utils from '../utils'
-import DefaultData from './../data/DefaultData'
+import { formatInitOption } from '../utils'
+import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 
 
 type optionProps = {
   jumper?: boolean,
   size?: boolean
 }
+
+type sizeObjectType = {
+  current: number,
+  list?: string[]
+}
+
+
+type sizeType = number | sizeObjectType
+
+export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
+  size?: sizeType,
+  props?: optionProps,
+  option?: objectAny
+}
+
+
+export type PaginationDataInitOption = undefined | true | PaginationDataInitOptionObject
 
 class PaginationData extends DefaultData {
   page: {
@@ -24,8 +41,8 @@ class PaginationData extends DefaultData {
     total: number
   }
   option: objectAny
-  constructor (initOption) {
-    initOption = utils.formatInitOption(initOption)
+  constructor (initOption?: PaginationDataInitOption) {
+    initOption = formatInitOption(initOption) as PaginationDataInitOptionObject
     super(initOption)
     this.$triggerCreateLife('PaginationData', 'beforeCreate', initOption)
     this.page = {
@@ -50,21 +67,21 @@ class PaginationData extends DefaultData {
    * 加载size
    * @param {number | object} [size] size设置项
    */
-  $initSize(size) {
+  $initSize(size?:sizeType) {
     if (!size) {
       this.size.current = config.PaginationData.size
       this.size.list = _func.deepClone(config.PaginationData.sizeList)
     } else {
-      let sizeType = _func.getType(size)
+      const sizeType = _func.getType(size)
       if (sizeType != 'object') {
         this.size.current = Number(size)
         this.size.list = [this.size.current.toString()]
       } else {
-        this.size.current = Number(size.current)
+        this.size.current = Number((size as sizeObjectType).current)
         if (!this.size.list) {
           this.size.list = [this.size.current.toString()]
         } else {
-          this.size.list = size.list
+          this.size.list = (size as sizeObjectType).list!
         }
       }
     }
@@ -97,7 +114,7 @@ class PaginationData extends DefaultData {
    * 计算页码相关数据
    */
   $autoCountPage (unCountCurrent?: boolean, unTriggerLife?: boolean) {
-    let total = _func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
+    const total = _func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
     this.page.total = total <= 0 ? 1 : total
     if (!unCountCurrent && this.getPage() > this.page.total) {
       this.setPage(this.page.total, unTriggerLife)
@@ -122,7 +139,7 @@ class PaginationData extends DefaultData {
    * @param {number} current 当前页
    */
   setPage (current: number, unTriggerLife?: boolean) {
-    let totalPage = this.getTotalPage()
+    const totalPage = this.getTotalPage()
     if (current <= 0) {
       current = 1
     } else if (current > totalPage) {
@@ -231,14 +248,14 @@ class PaginationData extends DefaultData {
       this.setTotal(list.length)
     }
     let current = this.getPage()
-    let total = this.getTotalPage()
+    const total = this.getTotalPage()
     if (!unOrigin && current > total) {
       this.setPage(total)
       current = total
     }
-    let size = this.getSize()
-    let start = (current - 1) * size
-    let end = start + size
+    const size = this.getSize()
+    const start = (current - 1) * size
+    const end = start + size
     return list.slice(start, end)
   }
   /**

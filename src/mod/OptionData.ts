@@ -1,10 +1,11 @@
 import _func from 'complex-func'
-import { objectAny } from '../../ts'
+import { objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
+
 class OptionData extends Data {
-  data: objectAny
-  constructor (structData) {
+  data: objectUnknown
+  constructor (structData?:objectUnknown) {
     super()
     this.data = structData || {}
   }
@@ -13,7 +14,7 @@ class OptionData extends Data {
    * @param {string} prop 结构属性名
    * @param {*} structData 对应结构数据
    */
-  addStruct (prop, structData) {
+  addStruct (prop: string, structData: unknown) {
     if (this.data[prop] === undefined) {
       this.data[prop] = structData
     } else {
@@ -24,13 +25,13 @@ class OptionData extends Data {
    * 加载设置
    * @param {object} data 设置总数据
    */
-  initData (data = {}) {
+  $initData (data:objectUnknown = {}) {
     if (_func.getType(data) == 'object') {
-      for (let n in data) {
+      for (const n in data) {
         this.setData(n, data[n], 'init')
       }
     } else {
-      this.$exportMsg(`设置类的initData函数需要接受对象数据!`)
+      this.$exportMsg(`设置类的$initData函数需要接受对象数据!`)
     }
   }
 
@@ -40,7 +41,7 @@ class OptionData extends Data {
    * @param {*} optiondata 指定属性的设置参数数据
    * @param {string} type 操作来源
    */
-  setData (prop, optiondata, type) {
+  setData (prop: string, optiondata: unknown, type: string) {
     this.$setDataNext(this.data, prop, optiondata, type)
   }
   /**
@@ -50,8 +51,8 @@ class OptionData extends Data {
    * @param {string} type 操作来源
    * @returns { target, option, fg }
    */
-  $checkData (target, option, type) {
-    let check = {
+  $checkData (target: unknown, option: unknown, type: string) {
+    const check = {
       target: _func.getType(target),
       option: _func.getType(option),
       fg: false
@@ -92,13 +93,13 @@ class OptionData extends Data {
    * @param {*} option 要设置的数据
    * @param {string} type 操作来源
    */
-  $setDataNext (data, prop, optiondata, type) {
-    let check = this.$checkData(data[prop], optiondata, type)
+  $setDataNext (data: objectUnknown, prop: string, optiondata: unknown, type: string) {
+    const check = this.$checkData(data[prop], optiondata, type)
     if (check.fg) {
       // init状态下的object直接赋值
       if (check.target == 'object' && type != 'init') {
-        for (let n in optiondata) {
-          this.$setDataNext(data[prop], n, optiondata[n], type)
+        for (const n in (optiondata as objectUnknown)) {
+          this.$setDataNext(data[prop] as objectUnknown, n, (optiondata as objectUnknown)[n], type)
         }
       } else {
         data[prop] = optiondata
@@ -112,7 +113,9 @@ class OptionData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  getData (prop) {
+  getData(): objectUnknown
+  getData(prop: string): unknown
+  getData (prop?: string) {
     if (prop) {
       return _func.getProp(this.data, prop)
     } else {
@@ -123,7 +126,7 @@ class OptionData extends Data {
    * 清除数据/结构
    * @param {string} [prop] 所有或者指定
    */
-  clearData (prop) {
+  clearData (prop: string): void {
     if (!prop) {
       this.data = {}
     } else {

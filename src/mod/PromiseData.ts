@@ -34,7 +34,7 @@ class PromiseData extends Data {
    * @param {*} data 数据
    */
   $initData (data: dataType = {}) {
-    for (let n in data) {
+    for (const n in data) {
       this.setData(n, data[n])
     }
   }
@@ -68,11 +68,11 @@ class PromiseData extends Data {
       if (option.correct === undefined) {
         option.correct = 'reload' // '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
       }
-      let data = this.getData(prop)
+      const data = this.getData(prop)
       if (data) {
         data.then(res => {
           // 判断Promise一致性，一致则说明就的Promise期间生成了新的Promise
-          let currentData = this.getData(prop)
+          const currentData = this.getData(prop)
           if (data === currentData || !option.correct) {
             resolve(res)
           } else if (option.correct == 'reload') {

@@ -1,7 +1,7 @@
 import config from '../../config'
-import utils from '../utils'
+import { formatInitOption } from '../utils'
 import Data from './../data/Data'
-import StatusDataItem, { StatusDataItemInitOption, itemType } from './StatusDataItem'
+import StatusDataItem, { StatusDataItemInitOption, itemType, valueType } from './StatusDataItem'
 
 type StatusDataInitOptionItem = {
   prop: string,
@@ -17,16 +17,16 @@ class StatusData extends Data {
     [prop: string]: StatusDataItem
   }
   constructor (initOption?: StatusDataInitOption) {
-    initOption = utils.formatInitOption(initOption)
+    initOption = formatInitOption(initOption)
     super()
     this.data = {}
-    this.$initList(initOption.list)
+    this.$initList(initOption!.list)
   }
   $initList (list: StatusDataInitOptionItem[] = []) {
-    let defaultlist = (config.StatusData.list as StatusDataInitOptionItem[])
-    let mainlist = defaultlist.concat(list)
-    for (let n in mainlist) {
-      let item = mainlist[n]
+    const defaultlist = (config.StatusData.list as StatusDataInitOptionItem[])
+    const mainlist = defaultlist.concat(list)
+    for (const n in mainlist) {
+      const item = mainlist[n]
       this.data[item.prop] = new StatusDataItem(item.data)
     }
   }
@@ -37,9 +37,13 @@ class StatusData extends Data {
    * @returns {*}
    */
   getData(target: string): itemType
-  getData(target: string, prop: string): PropertyKey
-  getData (target: string, prop?: string): itemType | PropertyKey {
-    return this.data[target].getData(prop)
+  getData(target: string, prop: valueType): valueType
+  getData (target: string, prop?: valueType) {
+    if (prop) {
+      return this.data[target].getData(prop)
+    } else {
+      return this.data[target].getData()
+    }
   }
   /**
    * 设置指定status的值
@@ -47,14 +51,14 @@ class StatusData extends Data {
    * @param {string} data 指定的属性值
    * @param {'init' | 'reset'} [act] 操作判断值
    */
-  setData (target: string, data: PropertyKey, act?: 'init' | 'reset') {
+  setData (target: string, data: valueType, act?: 'init' | 'reset') {
     this.data[target].setData(data, act)
   }
   /**
    * 重置
    */
   reset () {
-    for (let n in this.data) {
+    for (const n in this.data) {
       this.data[n].reset()
     }
   }
