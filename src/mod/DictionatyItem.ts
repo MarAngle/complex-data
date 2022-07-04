@@ -4,8 +4,11 @@ import modOption from '../../modOption'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
-import { baseObject, objectUnknown } from '../../ts'
+import { anyFunction, baseObject, objectUnknown } from '../../ts'
 
+type payloadType = { targetData: objectUnknown, originData: objectUnknown, type: string, from?: string }
+
+type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
 
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
   label?: string | baseObject<string>
@@ -14,7 +17,16 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
   showType?: string | baseObject<string>
   originProp?: string | baseObject<string>
   originFrom?: string | string[],
-  layout?: LayoutData | LayoutDataInitOption
+  layout?: LayoutData | LayoutDataInitOption,
+  mod?: objectUnknown,
+  func?: {
+    format?: baseFuncType<unknown>,
+    defaultGetData: false | baseFuncType<unknown>,
+    show: false | baseFuncType<unknown>,
+    edit: false | baseFuncType<unknown>,
+    post: false | baseFuncType<unknown>,
+    check: false | baseFuncType<boolean>
+  }
 }
 
 export interface DictionaryItemPayload {
@@ -34,11 +46,19 @@ class DictionaryItem extends SimpleData {
     showType: InterfaceData<string>
     originProp: InterfaceData<string>
     modType: InterfaceData<string>
-    // [prop: string]: InterfaceData<unknown>
   }
   $layout!: LayoutData
   $mod: {
     [prop: string]: objectUnknown
+  }
+  $func!: {
+    format?: false | baseFuncType<unknown>
+    defaultGetData: false | baseFuncType<unknown>
+    show: false | baseFuncType<unknown>
+    edit: false | baseFuncType<unknown>
+    post: false | baseFuncType<unknown>
+    check: false | baseFuncType<boolean>
+    [prop: string]: undefined | false | anyFunction
   }
   constructor (initOption: DictionaryItemInitOption, payload: DictionaryItemPayload = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
@@ -74,10 +94,9 @@ class DictionaryItem extends SimpleData {
     }
     this.$setLayout(initOption.layout, payload.layout)
 
-
-
     this.$mod = {}
-
+    modOption.format(this, initOption.mod)
+    this.$formatFunc()
   }
   /**
    * 获取接口数据对象
@@ -121,6 +140,139 @@ class DictionaryItem extends SimpleData {
     } else {
       return this.$layout
     }
+  }
+  /**
+   * 格式化func函数
+   */
+  $formatFunc () {
+    if (this.$func.defaultGetData === undefined) {
+      this.$func.defaultGetData = (data: unknown, { type }) => {
+        const showProp = this.$getInterface('showProp', type)
+        if (showProp) {
+          if (data && $func.getType(data) == 'object') {
+            return $func.getProp(data as objectUnknown, showProp)
+          } else {
+            return undefined
+          }
+        } else {
+          return data
+        }
+      }
+    }
+    if (this.$func.show === undefined) {
+      this.$func.show = this.$func.defaultGetData
+    }
+    if (this.$func.edit === undefined) {
+      this.$func.edit = this.$func.defaultGetData
+    }
+    if (this.$func.post === undefined) {
+      this.$func.post = (data, payload) => {
+        const mod = this.$getMod(payload.type) as any
+        if (mod && mod.$func && mod.$func.post) {
+          return mod.$func.post(data, payload)
+        } else {
+          return data
+        }
+      }
+    }
+    if (this.$func.check === undefined) {
+      this.$func.check = (data, payload) => {
+        return $func.isExist(data)
+      }
+    }
+  }
+  /**
+   * 判断是否存在来源
+   * @param {string} originFrom 来源
+   * @returns {boolean}
+   */
+  $isOriginFrom (originFrom: string) {
+    return this.originFrom.indexOf(originFrom) > -1
+  }
+  /**
+   * 判断是否存在模块
+   * @param {string} mod 模块
+   * @returns {boolean}
+   */
+  $getMod (modType: string) {
+    return this.$mod[modType]
+  }
+  /**
+   * 触发可能存在的func函数
+   * @param {string} funcName 函数名
+   * @param {*} originData 数据
+   * @param {object} payload 参数
+   * @returns {*}
+   */
+  $triggerFunc (funcName: string, originData: unknown, payload: payloadType) {
+    const itemFunc = this.$func[funcName]
+    if (itemFunc) {
+      return itemFunc(originData, payload)
+    } else {
+      return originData
+    }
+  }
+  /**
+   * 获取originProp
+   * @param {string} prop prop值
+   * @param {string} originFrom originFrom值
+   * @returns {string}
+   */
+  $getOriginProp (prop: string, originFrom: string) {
+    if (this.prop == prop) {
+      return this.$getInterface('originProp', originFrom)
+    } else {
+      return false
+    }
+  }
+  /**
+   * 生成formData的prop值，基于自身从originData中获取对应属性的数据并返回
+   * @param {string} modType modType
+   * @param {object} option 参数
+   * @param {object} option.targetData 目标数据
+   * @param {object} option.originData 源formdata数据
+   * @param {string} [option.from] 调用来源
+   * @returns {*}
+   */
+  $getFormData (modType: string, { targetData, originData, from = 'init' }: payloadType) {
+    const mod = this.$getMod(modType) as any
+    let tData
+    // 不存在mod情况下生成值无意义，不做判断
+    if (mod) {
+      // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
+      if (originData) {
+        tData = this.$triggerFunc('edit', originData[this.prop], {
+          type: modType,
+          targetData,
+          originData
+        })
+      } else if (mod.getValueData) {
+        if (from == 'reset') {
+          tData = mod.getValueData('resetdata')
+        } else {
+          tData = mod.getValueData('initdata')
+        }
+      }
+      // 调用模块的readyData
+      if (mod.readyData) {
+        mod.readyData().then(() => { /* */ }, err => {
+            this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
+            data: err,
+            type: 'error'
+          })
+        })
+      }
+      // 模块存在edit函数时将当前数据进行edit操作
+      if (mod.$func && mod.$func.edit) {
+        tData = mod.$func.edit(tData, {
+          type: modType,
+          targetData,
+          originData,
+          from: from
+        })
+      }
+    }
+    return tData
   }
 }
 

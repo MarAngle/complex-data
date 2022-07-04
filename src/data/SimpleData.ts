@@ -1,5 +1,5 @@
 import $func from 'complex-func'
-import { objectUnknown, objectFunction } from './../../ts'
+import { objectUnknown, objectFunction, baseObject, anyFunction } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -7,7 +7,7 @@ export interface SimpleDataInitOption {
   name?: string,
   prop?: string,
   parent?: Data,
-  func?: objectFunction,
+  func?: baseObject<undefined | false | anyFunction>,
   extra?: objectUnknown,
   root?: objectUnknown,
   methods?: objectFunction,
@@ -18,7 +18,7 @@ class SimpleData extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	$func: objectFunction;
+	$func: baseObject<undefined | false | anyFunction>;
 	$extra: objectUnknown;
   [prop: string]: unknown
   constructor (initOption: SimpleDataInitOption) {
@@ -97,12 +97,16 @@ class SimpleData extends Data {
    * @param {object} [func] 函数对象
    * @param {*} [reset] 是否重置
    */
-  $initFunc (func?: objectFunction, reset?: boolean) {
+  $initFunc (func?: baseObject<undefined | false | anyFunction>, reset?: boolean) {
     if (reset) {
       this.$func = {}
     }
     for (const n in func) {
-      this.$func[n] = func[n].bind(this)
+      if (func[n]) {
+        this.$func[n] = (func[n] as anyFunction).bind(this)
+      } else {
+        this.$func[n] = false
+      }
     }
   }
   /**
