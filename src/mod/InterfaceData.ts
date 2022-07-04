@@ -1,5 +1,5 @@
 import $func from 'complex-func'
-import { objectUnknown } from '../../ts'
+import { baseObject, objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
 export interface InterfaceDataInitOptionObject {
@@ -7,14 +7,15 @@ export interface InterfaceDataInitOptionObject {
   [prop: string]: unknown
 }
 
-export type mapFunction = (data: InterfaceDataInitOptionObject, prop: string) => void
+export type mapFunction<D> = (data: baseObject<D>, prop: string) => void
 
-export type InterfaceDataInitOption = unknown
+export type InterfaceDataInitOption<D> = D | baseObject<D>
 
-class InterfaceData extends Data {
+
+class InterfaceData<D> extends Data {
   init: boolean
-  data: InterfaceDataInitOptionObject
-  constructor (initOption?: InterfaceDataInitOption) {
+  data: baseObject<D | undefined>
+  constructor (initOption?: InterfaceDataInitOption<D | undefined>) {
     super()
     this.init = false
     this.data = {
@@ -26,14 +27,14 @@ class InterfaceData extends Data {
    * 加载
    * @param {*} initOption 参数
    */
-  $initMain (initOption?: InterfaceDataInitOption) {
+  $initMain (initOption?: InterfaceDataInitOption<D | undefined>) {
     if (initOption !== undefined) {
       const type = $func.getType(initOption)
       if (type !== 'object') {
-        this.setData('default', initOption)
+        this.setData('default', initOption as D)
       } else {
-        for (const n in (initOption as InterfaceDataInitOptionObject)) {
-          this.setData(n, (initOption as InterfaceDataInitOptionObject)[n])
+        for (const n in (initOption as baseObject<D>)) {
+          this.setData(n, (initOption as baseObject<D>)[n])
         }
       }
       this.init = true
@@ -51,7 +52,7 @@ class InterfaceData extends Data {
    * @param {string} prop 属性
    * @param {*} data 值
    */
-  setData (prop: string, data: unknown, useSetData?: boolean) {
+  setData (prop: string, data: D, useSetData?: boolean) {
     if (useSetData === undefined) {
       this.data[prop] = data
     } else {
@@ -80,7 +81,7 @@ class InterfaceData extends Data {
    * 对data属性调用fn方法
    * @param {function} fn 方法
    */
-  map(fn: mapFunction) {
+  map(fn: mapFunction<D | undefined>) {
     for (const n in this.data) {
       fn(this.data, n)
     }
@@ -89,11 +90,11 @@ class InterfaceData extends Data {
     const value = this.getData('default')
     const type = typeof value
     if (type == 'object' || type == 'function') {
-      return (value as objectUnknown).toString()
+      return (value as unknown as objectUnknown).toString()
     } else if (type != 'string') {
       return String(value)
     } else {
-      return (value as string)
+      return (value as unknown as string)
     }
   }
 }
