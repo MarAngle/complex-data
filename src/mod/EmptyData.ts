@@ -3,7 +3,7 @@ import { objectUnknown } from '../../ts'
 
 const ProxyCanUse = _func.getCanUse('Proxy')
 const proxyOption = {
-  get: function(target: objectUnknown, key: PropertyKey) {
+  get: function(target: EmptyData, key: PropertyKey) {
     _func.exportMsg(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key as string}]的获取操作！`)
     if (target[key]) {
       return target[key]

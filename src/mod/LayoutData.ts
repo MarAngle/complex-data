@@ -3,9 +3,38 @@ import config from '../../config'
 import Data from './../data/Data'
 import InterfaceData from './InterfaceData'
 
+
+
+
+export type LayoutDataDataTypeObject = {
+  span: number,
+  offset?: number,
+  pull?: number,
+  push?: number,
+  xs?: number
+  sm?: number
+  md?: number
+  lg?: number
+  xl?: number
+  xxl?: number
+}
+export type LayoutDataDataType = number | LayoutDataDataTypeObject
+
+export type LayoutDataInitOptionType = {
+  type?: 'grid',
+  grid?: number,
+  label?: LayoutDataDataType,
+  content?: LayoutDataDataType
+}
+
+export interface LayoutDataInitOption {
+  default: LayoutDataInitOptionType,
+  [prop: string]: LayoutDataInitOptionType
+}
+
 class LayoutData extends Data {
   data!: InterfaceData
-  constructor (initOption) {
+  constructor (initOption?: LayoutDataInitOption) {
     super()
     this.initData(initOption)
   }
@@ -13,13 +42,13 @@ class LayoutData extends Data {
    * 加载
    * @param {*} initOption 参数
    */
-  initData (initOption) {
+  initData (initOption?: LayoutDataInitOption) {
     if (!initOption) {
       initOption = {
         default: undefined
-      }
+      } as any
     }
-    for (let n in initOption) {
+    for (const n in initOption) {
       initOption[n] = this.formatLayout(initOption[n])
     }
     this.data = new InterfaceData(initOption)
@@ -29,7 +58,7 @@ class LayoutData extends Data {
    * @param {object} [data] 布局数据
    * @returns {object}
    */
-  formatLayout(data) {
+  formatLayout(data?: LayoutDataInitOptionType) {
     if (!data) {
       data = {}
     }
@@ -45,7 +74,7 @@ class LayoutData extends Data {
       }
     } else if (_func.getType(data.label) !== 'object') {
       data.label = {
-        span: data.label
+        span: (data.label as number)
       }
     }
     if (data.content === undefined) {
@@ -54,7 +83,7 @@ class LayoutData extends Data {
       }
     } else if (_func.getType(data.content) !== 'object') {
       data.content = {
-        span: data.content
+        span: (data.content as number)
       }
     }
     return data
@@ -64,7 +93,7 @@ class LayoutData extends Data {
    * @param {string} prop 指定属性
    * @param {*} data 布局数据
    */
-  setData (prop, data) {
+  setData (prop: string, data: LayoutDataInitOptionType) {
     this.data.setData(prop, this.formatLayout(data))
   }
   /**
@@ -72,8 +101,8 @@ class LayoutData extends Data {
    * @param {string} prop 指定属性
    * @returns {*}
    */
-  getData (prop) {
-    return this.data.getData(prop)
+  getData (prop?: string):LayoutDataDataTypeObject  {
+    return this.data.getData(prop) as LayoutDataDataTypeObject
   }
   /**
    * 获取布局全数据
