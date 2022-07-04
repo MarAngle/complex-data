@@ -2,27 +2,27 @@ import _func from 'complex-func'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 
-// import OptionData from './OptionData'
-// import StatusData from './StatusData'
-// import PromiseData from './PromiseData'
+import OptionData from './OptionData'
+import StatusData from './StatusData'
+import PromiseData from './PromiseData'
 import UpdateData from './UpdateData'
-// import PaginationData from './PaginationData'
-// import ChoiceData from './ChoiceData'
-// import DictionaryList from './DictionaryList'
-// import SearchData from './../data/SearchData'
+import PaginationData from './PaginationData'
+import ChoiceData from './ChoiceData'
+import DictionaryList from './DictionaryList'
+import SearchData from './../data/SearchData'
 
 const ModuleDictionaryMap = new Map()
 
 class ModuleData extends Data {
   $parent?: BaseData
-  // option?: OptionData
-  // status?: StatusData
-  // promise?: PromiseData
+  option?: OptionData
+  status?: StatusData
+  promise?: PromiseData
   update?: UpdateData
-  // pagination?: PaginationData
-  // choice?: ChoiceData
-  // dictionary?: DictionaryList
-  // search?: SearchData
+  pagination?: PaginationData
+  choice?: ChoiceData
+  dictionary?: DictionaryList
+  search?: SearchData
   constructor (initOption, parent) {
     super()
     this.setParent(parent)
