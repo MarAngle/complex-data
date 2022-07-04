@@ -20,11 +20,18 @@ export type LayoutDataDataTypeObject = {
 }
 export type LayoutDataDataType = number | LayoutDataDataTypeObject
 
-export type LayoutDataInitOptionType = {
-  type?: 'grid',
+export interface LayoutDataInitOptionType {
+  type?: string,
   grid?: number,
   label?: LayoutDataDataType,
   content?: LayoutDataDataType
+}
+
+export interface LayoutDataFormatData {
+  type: string,
+  grid: number,
+  label: LayoutDataDataType,
+  content: LayoutDataDataType
 }
 
 export interface LayoutDataInitOption {
@@ -33,7 +40,7 @@ export interface LayoutDataInitOption {
 }
 
 class LayoutData extends Data {
-  data!: InterfaceData
+  data!: InterfaceData<LayoutDataFormatData>
   constructor (initOption?: LayoutDataInitOption) {
     super()
     this.initData(initOption)
@@ -51,14 +58,16 @@ class LayoutData extends Data {
     for (const n in initOption) {
       initOption[n] = this.formatLayout(initOption[n])
     }
-    this.data = new InterfaceData(initOption)
+    this.data = new InterfaceData((initOption as {
+      [prop: string]: LayoutDataFormatData
+    }))
   }
   /**
    * 格式化布局数据
    * @param {object} [data] 布局数据
    * @returns {object}
    */
-  formatLayout(data?: LayoutDataInitOptionType) {
+  formatLayout(data?: LayoutDataInitOptionType): LayoutDataFormatData {
     if (!data) {
       data = {}
     }
@@ -86,7 +95,7 @@ class LayoutData extends Data {
         span: (data.content as number)
       }
     }
-    return data
+    return data as LayoutDataFormatData
   }
   /**
    * 设置指定布局
@@ -101,8 +110,8 @@ class LayoutData extends Data {
    * @param {string} prop 指定属性
    * @returns {*}
    */
-  getData (prop?: string):LayoutDataDataTypeObject  {
-    return this.data.getData(prop) as LayoutDataDataTypeObject
+  getData (prop?: string):LayoutDataFormatData  {
+    return this.data.getData(prop) as LayoutDataFormatData
   }
   /**
    * 获取布局全数据

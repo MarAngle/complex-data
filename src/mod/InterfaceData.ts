@@ -2,10 +2,6 @@ import $func from 'complex-func'
 import { baseObject, objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
-export interface InterfaceDataInitOptionObject {
-  default: unknown,
-  [prop: string]: unknown
-}
 
 export type mapFunction<D> = (data: baseObject<D>, prop: string) => void
 
