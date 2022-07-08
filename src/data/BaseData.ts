@@ -1,13 +1,24 @@
 import $func from 'complex-func'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
-import ModuleData from './../mod/ModuleData'
+import ModuleData, { ModuleDataInitOption, moduleKeys } from './../mod/ModuleData'
 import { offsetType } from '../mod/UpdateData'
 import { formatInitOption } from '../utils'
 import { anyFunction } from '../../ts'
+import { LifeDataInitOption } from '../mod/LifeData'
+import { objectAny } from 'complex-require/ts'
+import DictionaryItem, { DictionaryItemInitOption } from '../mod/DictionaryItem'
+
+
+export interface forceObjectType {
+  [prop: string]: boolean | string
+}
+
+export type forceType = boolean | forceObjectType
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   life?: LifeDataInitOption,
-  data?: objectAny
+  data?: objectAny,
+  module?: ModuleDataInitOption
 }
 
 class BaseData extends DefaultData {
@@ -53,7 +64,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @param {object} data 模块实例
    */
-  setModule(modName: string, data?: any) {
+  setModule(modName: moduleKeys, data?: any) {
     this.$module.$setData(modName, data)
   }
   /**
@@ -61,7 +72,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @param {object} data 模块实例
    */
-  installModule(modName, data) {
+  installModule(modName: moduleKeys, data: any) {
     return this.$module.$installData(modName, data)
   }
   /**
@@ -69,7 +80,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @returns {object | undefined} 卸载的模块
    */
-  uninstallModule(modName) {
+  uninstallModule(modName: moduleKeys) {
     return this.$module.$uninstallData(modName)
   }
   /**
@@ -79,7 +90,7 @@ class BaseData extends DefaultData {
    * @param {*[]} args 参数
    * @returns {*}
    */
-  triggerModuleMethod(modName, method, args) {
+  triggerModuleMethod(modName: moduleKeys, method: string, args: any[]) {
     this.$module.$triggerMethod(modName, method, args)
   }
   /* --- module end --- */
@@ -91,8 +102,8 @@ class BaseData extends DefaultData {
    * @param {*} prop 需要设置的状态
    * @param {*} act 操作判断值 count模式下启用，可选不传/init/reset，基本不用传
    */
-  setStatus(data: PropertyKey, prop: string = 'operate', act?: 'init' | 'reset') {
-    this.$module.status.setData(prop, data, act)
+  setStatus(data: string, prop = 'operate', act?: 'init' | 'reset') {
+    this.$module.status!.setData(prop, data, act)
   }
   /**
    * 获取对应状态的值
@@ -100,13 +111,13 @@ class BaseData extends DefaultData {
    * @returns {*}
    */
   getStatus(prop = 'operate') {
-    return this.$module.status.getData(prop)
+    return this.$module.status!.getData(prop)
   }
   /**
    * 恢复状态
    */
   resetStatus() {
-    this.$module.status.reset()
+    this.$module.status!.reset()
   }
   /* --- status end --- */
 
@@ -117,52 +128,56 @@ class BaseData extends DefaultData {
    * @param {*} optiondata 指定属性的设置参数数据
    * @param {string} type 操作来源
    */
-  setOption(prop, optiondata, type) {
-    this.$module.option.setData(prop, optiondata, type)
+  setOption(prop: string, optiondata: unknown, type: string) {
+    this.$module.option!.setData(prop, optiondata, type)
   }
   /**
    * 获取设置
    * @param {string} prop 属性
    * @returns {*}
    */
-  getOption(prop) {
-    return this.$module.option.getData(prop)
+  getOption(prop?: string) {
+    if (prop) {
+      return this.$module.option!.getData(prop)
+    } else {
+      return this.$module.option!.getData()
+    }
   }
   /* --- option end --- */
 
   /* --- promise start --- */
-  setPromise(prop, promisedata) {
-    return this.$module.promise.setData(prop, promisedata)
+  setPromise(prop: string, promisedata: Promise<any>) {
+    return this.$module.promise!.setData(prop, promisedata)
   }
-  getPromise(prop) {
-    return this.$module.promise.getData(prop)
+  getPromise(prop: string) {
+    return this.$module.promise!.getData(prop)
   }
-  triggerPromise(prop, option = {}) {
-    return this.$module.promise.triggerData(prop, option)
+  triggerPromise(prop: string, option = {}) {
+    return this.$module.promise!.triggerData(prop, option)
   }
   /* --- promise end --- */
 
   /* --- update start --- */
   setUpdateOffset (offset: offsetType) {
-    this.$module.update.setOffset(offset)
+    this.$module.update!.setOffset(offset)
   }
   /**
    * 开始更新
    */
   startUpdate (offset?: number) {
-    this.$module.update.start(offset)
+    this.$module.update!.start(offset)
   }
   /**
    * 立即更新
    */
   updateImmerdiate () {
-    this.$module.update.updateImmerdiate()
+    this.$module.update!.updateImmerdiate()
   }
   /**
    * 自动更新
    */
   autoStartUpdate (offset?: number) {
-    this.$module.update.autoStart(offset)
+    this.$module.update!.autoStart(offset)
   }
   // /**
   //  * 触发下一次定时
@@ -174,13 +189,13 @@ class BaseData extends DefaultData {
    * 清除更新
    */
   clearUpdate (next?: boolean) {
-    this.$module.update.clear(next)
+    this.$module.update!.clear(next)
   }
   /**
    * 重置更新
    */
   resetUpdate () {
-    this.$module.update.reset()
+    this.$module.update!.reset()
   }
   /* --- update end --- */
 
@@ -190,8 +205,8 @@ class BaseData extends DefaultData {
    * @param {*} dictionary 字典列表构建参数
    * @param {*} type :type 字典构建类型
    */
-  rebuildDictionary (dictionaryOption, type) {
-    this.$module.dictionary.rebuildData(dictionaryOption, type)
+  rebuildDictionary (dictionaryOption: DictionaryItemInitOption, type?: string) {
+    this.$module.dictionary!.rebuildData(dictionaryOption, type)
   }
   /**
    * 获取字典对象
@@ -199,8 +214,8 @@ class BaseData extends DefaultData {
    * @param {'prop' | 'id'} from 获取类型
    * @returns {DictionaryData}
    */
-  getDictionaryItem(data, from) {
-    return this.$module.dictionary.getItem(data, from)
+  getDictionaryItem(data: any, from: string) {
+    return this.$module.dictionary!.getItem(data, from)
   }
   /**
    * 设置字典值
@@ -208,8 +223,8 @@ class BaseData extends DefaultData {
    * @param {'data' | 'prop'} [target = 'data'] 目标属性
    * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
    */
-  setDictionaryPropData (data, target, prop) {
-    this.$module.dictionary.setPropData(data, target, prop)
+  setDictionaryPropData (data: any, target?: 'data' | 'prop', prop?: 'id' | 'parentId' | 'children') {
+    this.$module.dictionary!.setPropData(data, target, prop)
   }
   /**
    * 获取字典值
@@ -217,16 +232,16 @@ class BaseData extends DefaultData {
    * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
    * @returns {*}
    */
-  getDictionaryPropData (target, prop) {
-    return this.$module.dictionary.getPropData(target, prop)
+  getDictionaryPropData (target?: 'data' | 'prop', prop?: 'id' | 'parentId' | 'children') {
+    return this.$module.dictionary!.getPropData(target, prop)
   }
   /**
    * 获取符合模块要求的字典列表
    * @param {string} mod 模块名称
    * @returns {DictionaryData[]}
    */
-  getDictionaryModList (mod) {
-    return this.$module.dictionary.getModList(mod)
+  getDictionaryModList (mod: string) {
+    return this.$module.dictionary!.getModList(mod)
   }
   /**
    * 获取符合模块要求的字典page列表
@@ -234,8 +249,8 @@ class BaseData extends DefaultData {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageList (modType, payload) {
-    return this.$module.dictionary.getPageList(modType, payload)
+  getDictionaryPageList (modType: string, payload?: any) {
+    return this.$module.dictionary!.getPageList(modType, payload)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
@@ -244,8 +259,8 @@ class BaseData extends DefaultData {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageListByModList (modType, modList, payload) {
-    return this.$module.dictionary.getPageListByModList(modType, modList, payload)
+  getDictionaryPageListByModList (modType: string, modList: DictionaryItem[], payload?: any) {
+    return this.$module.dictionary!.getPageListByModList(modType, modList, payload)
   }
   /**
    * 根据模块列表生成对应的form对象
@@ -258,8 +273,8 @@ class BaseData extends DefaultData {
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
    * @returns {object}
    */
-  buildDictionaryFormData (modList, modType, originData, option) {
-    return this.$module.dictionary.buildFormData(modList, modType, originData, option)
+  buildDictionaryFormData (modList: DictionaryItem[], modType: string, originData: any, option?: any) {
+    return this.$module.dictionary!.buildFormData(modList, modType, originData, option)
   }
   /**
    * 根据源数据格式化生成对象
@@ -268,8 +283,8 @@ class BaseData extends DefaultData {
    * @param {object} [option] 设置项
    * @returns {object}
    */
-  buildData (originData, originFrom = 'list', option) {
-    return this.$module.dictionary.buildData(originData, originFrom, option)
+  buildData (originData: any, originFrom = 'list', option: any) {
+    return this.$module.dictionary!.buildData(originData, originFrom, option)
   }
   /**
    * 根据源数据更新数据
@@ -280,7 +295,7 @@ class BaseData extends DefaultData {
    * @returns {object}
    */
   updateData (targetData, originData, originFrom = 'info', option) {
-    return this.$module.dictionary.updateData(targetData, originData, originFrom, option)
+    return this.$module.dictionary!.updateData(targetData, originData, originFrom, option)
   }
   /**
    * 格式化列表数据
@@ -290,7 +305,7 @@ class BaseData extends DefaultData {
    * @param {object} [option] 设置项
    */
   formatListData (targetList, originList, originFrom, option) {
-    this.$module.dictionary.formatListData(targetList, originList, originFrom, option)
+    this.$module.dictionary!.formatListData(targetList, originList, originFrom, option)
   }
   // /**
   //  * 根据源数据格式化生成对象并更新到targetData中
@@ -314,7 +329,7 @@ class BaseData extends DefaultData {
    * @returns {object}
    */
   getEditData (formData, modList, modType) {
-    return this.$module.dictionary.getEditData(formData, modList, modType)
+    return this.$module.dictionary!.getEditData(formData, modList, modType)
   }
   /* --- dictionary end --- */
 
@@ -409,7 +424,7 @@ class BaseData extends DefaultData {
    * 设置数据
    */
   setSearch () {
-    this.$module.search.setData()
+    this.$module.search!.setData()
   }
   /**
    * 重置检索值
@@ -418,16 +433,16 @@ class BaseData extends DefaultData {
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
    * @param {boolean} syncToData 同步到data中
    */
-  resetSearch (from: 'init' | 'reset' = 'reset', option, syncToData) {
-    this.$module.search.resetFormData(from, option, syncToData)
+  resetSearch (from: 'init' | 'reset' = 'reset', option: any, syncToData: any) {
+    this.$module.search!.resetFormData(from, option, syncToData)
   }
   /**
    * 获取当前检索数据
    * @param {boolean | object} [deep = true] 是否深拷贝
    * @returns {object}
    */
-  getSearch (deep) {
-    return this.$module.search.getData(deep)
+  getSearch (deep: any) {
+    return this.$module.search!.getData(deep)
   }
   /* --- search end --- */
 
@@ -447,11 +462,11 @@ class BaseData extends DefaultData {
    * @param  {...any} args getData参数列表
    * @returns {Promise}
    */
-   loadData(force, ...args) {
+   loadData(force?: forceType, ...args: any[]) {
     if (force === true) {
       force = {}
     }
-    let loadStatus = this.getStatus('load')
+    const loadStatus = this.getStatus('load')
     if (loadStatus.value == 'unload') {
       this.$triggerGetData(...args)
     } else if (loadStatus.value == 'loading') {
@@ -479,7 +494,7 @@ class BaseData extends DefaultData {
    * @returns {}
    */
   reloadData (option, ...args) {
-    let optionType = $func.getType(option)
+    const optionType = $func.getType(option)
     if (optionType === 'boolean') {
       option = {
         force: option
@@ -489,9 +504,9 @@ class BaseData extends DefaultData {
     }
     this.triggerLife('beforeReload', this, option, ...args)
     // 同步判断值
-    let sync = option.sync
-    let force = option.force === undefined ? {} : option.force
-    let promise = this.loadData(force, ...args)
+    const sync = option.sync
+    const force = option.force === undefined ? {} : option.force
+    const promise = this.loadData(force, ...args)
     if (sync) {
       promise.then((res) => {
         // 触发生命周期重载完成事件
@@ -535,13 +550,13 @@ class BaseData extends DefaultData {
    * @returns {Promise}
    */
   triggerMethod (target: string | anyFunction, ...args: any[]) {
-    let next = {
+    const next = {
       data: false,
       promise: null,
       msg: '',
       code: ''
     }
-    let type = $func.getType(target)
+    const type = $func.getType(target)
     if (type === 'string') {
       if (this[(target as string)]) {
         if ($func.getType(this[(target as string)]) === 'function') {
@@ -593,7 +608,7 @@ class BaseData extends DefaultData {
    * @returns {Promise}
    */
   triggerMethodByOperate (target, ...args) {
-    let operate = this.getStatus()
+    const operate = this.getStatus()
     if (operate.value == 'operated') {
       return this.triggerMethod(target, ...args)
     } else {
@@ -647,8 +662,8 @@ class BaseData extends DefaultData {
    * 清空对象
    * @param {object} data 对象
    */
-  resetObject(data = {}) {
-    for (let prop in data) {
+  resetObject(data: objectAny = {}) {
+    for (const prop in data) {
       delete data[prop]
     }
   }
@@ -656,7 +671,7 @@ class BaseData extends DefaultData {
    * 将第一个传参的第一个参数无值时转换为空对象
    * @param {*[]} args 参数列表
    */
-  formatResetOption(args) {
+  formatResetOption(args: any[]) {
     if (!args[0]) {
       args[0] = {}
     }
@@ -674,7 +689,7 @@ class BaseData extends DefaultData {
    * 重置回调操作=>不清除额外数据以及生命周期函数
    * @param  {...any} args 参数
    */
-  reset (...args) {
+  reset (...args: any[]) {
     this.formatResetOption(args)
     this.triggerLife('beforeReset', this, ...args)
     // 重置状态
@@ -687,7 +702,7 @@ class BaseData extends DefaultData {
    * 销毁回调操作
    * @param  {...any} args 参数
    */
-  destroy (...args) {
+  destroy (...args: any[]) {
     this.formatResetOption(args)
     this.triggerLife('beforeDestroy', this, ...args)
     this.reset(...args)
