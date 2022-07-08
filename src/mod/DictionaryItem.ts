@@ -176,7 +176,7 @@ class DictionaryItem extends SimpleData {
       }
     }
     if (this.$func.check === undefined) {
-      this.$func.check = (data, payload) => {
+      this.$func.check = (data) => {
         return $func.isExist(data)
       }
     }
