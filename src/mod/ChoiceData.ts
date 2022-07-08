@@ -190,7 +190,7 @@ class ChoiceData extends Data {
    * @param {object | string} [option] 参数
    * @param {object | string} [defaultOption] 默认参数
    */
-  autoReset(option, defaultOption?) {
+  autoReset(option: any, defaultOption?: any) {
     option = this.$formatResetOption(option, defaultOption)
     const force = this.$checkReset(option)
     this.reset(force)
@@ -201,7 +201,7 @@ class ChoiceData extends Data {
    * @param {object | string} [defaultOption = 'load'] 默认参数
    * @returns {object}
    */
-  $formatResetOption(option, defaultOption = 'load') {
+  $formatResetOption(option: any, defaultOption = 'load') {
     if (!option) {
       option = defaultOption
     }
@@ -219,18 +219,18 @@ class ChoiceData extends Data {
    * @param {string} [option.act] 当前操作分支操作
    * @returns {boolean}
    */
-  $checkReset(option: { from?: true | string, act?: string } = {}) {
-    let from = option.from
+  $checkReset(option: { from: true | string, act?: string } = { from: '' }) {
+    const from = option.from
     let reset
     if (from === true) {
       reset = true
     } else if (this.resetOption[from] !== undefined) {
       if (this.resetOption[from] && typeof this.resetOption[from] == 'object') {
-        let act = option.act
+        const act = option.act
         if (!act) {
           this.$exportMsg(`$checkReset函数中对应的from:${from}未定义act,可定义:${Object.keys(this.resetOption[from])}`)
-        } else if (this.resetOption[from][act] !== undefined) {
-          reset = this.resetOption[from][act]
+        } else if ((this.resetOption[from] as ResetOptionItem)[act] !== undefined) {
+          reset = (this.resetOption[from] as ResetOptionItem)[act]
         } else {
           this.$exportMsg(`$checkReset函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(this.resetOption[from])}`)
         }
@@ -240,7 +240,7 @@ class ChoiceData extends Data {
     } else {
       this.$exportMsg(`$checkReset函数未找到对应的from:${from}`)
     }
-    return reset
+    return !!reset
   }
   /**
    * 重置操作

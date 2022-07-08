@@ -3,15 +3,31 @@ import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 
 import OptionData from './OptionData'
-import StatusData from './StatusData'
-import PromiseData from './PromiseData'
-import UpdateData from './UpdateData'
-import PaginationData from './PaginationData'
-import ChoiceData from './ChoiceData'
-import DictionaryList from './DictionaryList'
-import SearchData from './../data/SearchData'
+import StatusData, { StatusDataInitOption } from './StatusData'
+import PromiseData, { PromiseDataInitData } from './PromiseData'
+import UpdateData, { UpdateDataInitOption } from './UpdateData'
+import PaginationData, { PaginationDataInitOption } from './PaginationData'
+import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
+import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
+import SearchData, { SearchDataInitOption } from './../data/SearchData'
+import { objectUnknown } from 'complex-require/ts'
 
 const ModuleDictionaryMap = new Map()
+
+
+
+export interface ModuleDataInitOption {
+  option?: objectUnknown
+  status?: StatusDataInitOption
+  promise?: PromiseDataInitData
+  update?: UpdateDataInitOption
+  pagination?: PaginationDataInitOption
+  choice?: ChoiceDataInitOption
+  dictionary?: DictionaryListInitOption
+  search?: SearchDataInitOption
+}
+
+export type moduleKeys = keyof ModuleDataInitOption
 
 class ModuleData extends Data {
   $parent?: BaseData
@@ -23,41 +39,42 @@ class ModuleData extends Data {
   choice?: ChoiceData
   dictionary?: DictionaryList
   search?: SearchData
-  constructor (initOption, parent) {
+  constructor (initOption: ModuleDataInitOption, parent: Data) {
     super()
     this.setParent(parent)
     this.$initModule(initOption)
   }
-  static setDictionary(modName, ModuleClassData) {
-    if (!ModuleClassData.$name) {
+  static setDictionary(modName: moduleKeys, ModuleClassData: Data) {
+    if (!(ModuleClassData as any).$name) {
       $func.exportMsg(`${modName}对应的模块类不存在$name属性，可能会导致判断错误！`, 'warn')
     }
     ModuleDictionaryMap.set(modName, ModuleClassData)
   }
-  static getDictionary(modName) {
+  static getDictionary(modName: moduleKeys) {
     if (modName) {
       return ModuleDictionaryMap.get(modName)
     } else {
       return ModuleDictionaryMap
     }
   }
-  $initModule(initOption) {
+  $initModule(initOption: ModuleDataInitOption) {
     if (initOption && $func.getType(initOption) == 'object') {
-      for (let modName in initOption) {
+      let modName: moduleKeys
+      for (modName in  initOption) {
         this.$setData(modName, initOption[modName])
       }
     }
   }
-  $buildModuleData(modName, modData) {
-    let ModuleClassData = ModuleData.getDictionary(modName)
+  $buildModuleData(modName: moduleKeys, modData: any) {
+    const ModuleClassData = ModuleData.getDictionary(modName)
     if (ModuleClassData) {
       if (modData === true) {
         return new ModuleClassData()
       } else if (modData && !(modData instanceof ModuleClassData)) {
-        let parent = this.getParent()
-        let formatFuncName = '$formatModule' + ModuleClassData.$name
+        const parent = this.getParent()
+        const formatFuncName = '$formatModule' + ModuleClassData.$name
         if (parent && parent[formatFuncName]) {
-          modData = parent[formatFuncName](modData)
+          modData = (parent as any)[formatFuncName](modData)
         }
         return new ModuleClassData(modData)
       }
@@ -70,7 +87,7 @@ class ModuleData extends Data {
    * @param {object} modData 模块实例
    * @param {boolean} [build] 自动构建判断值，默认为真
    */
-  $setData(modName, modData, build = true) {
+  $setData(modName: moduleKeys, modData: any, build = true) {
     this.$uninstallData(modName)
     if (build) {
       modData = this.$buildModuleData(modName, modData)
@@ -82,12 +99,12 @@ class ModuleData extends Data {
    * @param {string} modName 模块名
    * @returns {object | undefined} 卸载的模块
    */
-  $uninstallData(modName) {
-    let modData = this[modName]
+  $uninstallData(modName: moduleKeys) {
+    const modData = this[modName]
     if (modData) {
       // 存在旧数据时需要对旧数据进行卸载操作
-      if (modData.uninstall) {
-        modData.uninstall(this.getParent())
+      if (modData.$uninstall) {
+        modData.$uninstall(this.getParent())
       }
       this[modName] = undefined
     }
@@ -98,17 +115,17 @@ class ModuleData extends Data {
    * @param {string} modName 模块名
    * @param {object} modData 模块实例
    */
-  $installData(modName, modData) {
-    this[modName] = modData
-    if (modData && modData.install) {
-      modData.install(this.getParent())
+  $installData(modName: moduleKeys, modData: Data) {
+    (this as any)[modName] = modData
+    if (modData && modData.$install) {
+      modData.$install(this.getParent())
     }
   }
   /**
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
    * @param {object} parent 父数据
    */
-  setParent (parent) {
+  setParent (parent?: Data) {
     Object.defineProperty(this, '$parent', {
       enumerable: false,
       configurable: true,
@@ -130,12 +147,12 @@ class ModuleData extends Data {
    * @param {*[]} args 参数
    * @returns {*}
    */
-  $triggerMethod(modName, method, args) {
-    let mod = this[modName]
+  $triggerMethod(modName: moduleKeys, method: string, args: any[]) {
+    const mod = this[modName]
     if (mod) {
-      let type = typeof mod[method]
+      const type = typeof (mod as any)[method]
       if (type === 'function') {
-        return mod[method](...args)
+        return (mod as any)[method](...args)
       } else {
         this.$exportMsg(`${modName}模块${method}属性为${type}，函数触发失败！`)
       }

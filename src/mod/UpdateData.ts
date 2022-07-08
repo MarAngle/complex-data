@@ -2,17 +2,19 @@ import $func from 'complex-func'
 import config from '../../config'
 import { anyFunction } from '../../ts'
 import BaseData from '../data/BaseData'
-import utils from '../utils'
+import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
 */
 
 
-export type offsetType = number | {
+export type offsetObjectType = {
   start?: number,
   data: number
 }
+
+export type offsetType = number | offsetObjectType
 
 
 type triggerType = (func: UpdateData["$triggerNext"], index: number) => void
@@ -38,10 +40,10 @@ class UpdateData extends DefaultData {
     start: number,
     data: number
   }
-  timer: NodeJS.Timeout
-  trigger: triggerType
-  constructor (initOption?: UpdateDataInitOption) {
-    initOption = utils.formatInitOption(initOption)
+  timer: undefined | NodeJS.Timeout
+  trigger!: triggerType
+  constructor (initOption: UpdateDataInitOption) {
+    initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)
     this.load = {
@@ -60,15 +62,15 @@ class UpdateData extends DefaultData {
     this.setOffset(initOption.offset)
     this.$triggerCreateLife('UpdateData', 'created')
   }
-  setOffset (offset: offsetType) {
-    let type = $func.getType(offset)
+  setOffset (offset?: offsetType) {
+    const type = $func.getType(offset)
     if (type !== 'object') {
       offset = {
-        data: offset
+        data: offset as number
       }
     }
-    this.offset.data = offset.data === undefined ? config.UpdateData.offset : offset.data
-    this.offset.start = offset.start === undefined ? offset.data : offset.start
+    this.offset.data =( offset as offsetObjectType).data === undefined ? config.UpdateData.offset :( offset as offsetObjectType).data
+    this.offset.start =( offset as offsetObjectType).start === undefined ?(offset as offsetObjectType).data! :( offset as offsetObjectType).start!
   }
   /**
    * 获取间隔

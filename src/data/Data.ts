@@ -10,6 +10,8 @@ function createId(): string {
 
 class Data {
   readonly $id!: string
+  $install?: (parent?: Data) => void
+  $uninstall?: (parent?: Data) => void
   constructor() {
     Object.defineProperty(this, '$id', {
       enumerable: false,
