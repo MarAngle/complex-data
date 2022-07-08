@@ -65,7 +65,7 @@ class DictionaryList extends DefaultData {
    * 设置LayoutData
    * @param {object} data LayoutData参数
    */
-  $setLayout (data?: LayoutData | LayoutDataInitOption) {
+  $setLayout (data?: LayoutDataInitOption) {
     this.$layout = new LayoutData(data)
   }
   /**
@@ -83,15 +83,68 @@ class DictionaryList extends DefaultData {
     }
   }
   /**
+   * 加载默认初始值.子类自动按照父类来源设置
+   * @param {object} optiondata DictionaryItem初始化参数
+   * @param {*} parentData 父元素
+   * @param {*} isChildren 是否是子类
+   */
+  $parseOptionFromParent (optiondata, parentData, isChildren) {
+    if (isChildren && !optiondata.originfrom && parentData && parentData.originfrom) {
+      optiondata.originfrom = parentData.originfrom
+    }
+  }
+  /**
+   * 加载propData数据
+   * @param {object} [initOption] 设置项
+   */
+  initPropData (initOption = {}) {
+    for (const n in propList) {
+      const prop = propList[n]
+      const data = initOption[prop]
+      if (data) {
+        const type = $func.getType(data)
+        if (type == 'object') {
+          this.$propData[prop] = data
+        } else if (type == 'string' || type == 'number') {
+          this.$propData[prop].prop = data
+        } else {
+          this.$exportMsg(`字典列表propdata:${prop}属性格式未预期:${type}，请检查数据!`)
+        }
+      }
+    }
+  }
+  /**
+   * 解析字典初始化数据,获取子字典创建模式
+   * @param {DictionaryItem} ditem 对应字典实例
+   * @param {object} originOption 字典初始化数据
+   * @returns {'' | 'self' | 'build'}
+   */
+  $parseChildrenBuildType (ditem, originOption) {
+    let initOption = originOption.dictionary
+    let type = ''
+    if (this.$option.getData('tree') && (this.getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
+      initOption = 'self'
+    }
+    if (initOption == 'self') {
+      type = 'self'
+      if (originOption.type === undefined) {
+        ditem.setInterface('type', 'default', 'array')
+      }
+    } else if (initOption) {
+      type = 'build'
+    }
+    return type
+  }
+  /**
    * 创建字典的子字典列表
    * @param {DictionaryItem} ditem 对应字典实例
    * @param {object} originOption 字典初始化数据
    * @param {boolean} isChildren 是否子类
    */
   $initDictionaryItemChildren (ditem, originOption, isChildren = true) {
-    let type = this.$parseChildrenBuildType(ditem, originOption)
+    const type = this.$parseChildrenBuildType(ditem, originOption)
     if (type == 'build') {
-      let initOption = this.parseInitOption(originOption.dictionary)
+      const initOption = this.parseInitOption(originOption.dictionary)
       if (!initOption.option) {
         initOption.option = {}
       }
@@ -176,6 +229,355 @@ class DictionaryList extends DefaultData {
     }
     // 触发update生命周期
     this.triggerLife('updated', this, initOption, type)
+  }
+  // 重新创建字典列表
+  rebuildData (initOption, type = 'replace') {
+    this.initDictionaryItem(initOption, type)
+  }
+  /**
+   * 设置字典值
+   * @param {*} data 值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   */
+  setPropData (data, target = 'data', prop = 'id') {
+    this.$propData[prop][target] = data
+  }
+  /**
+   * 获取字典值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   * @returns {*}
+   */
+  getPropData (target = 'data', prop = 'id') {
+    return this.$propData[prop][target]
+  }
+
+  /**
+   * 获取列表MAP
+   * @returns {Map<DictionaryItem>}
+   */
+  getData () {
+    return this.data
+  }
+
+  /**
+   * 获取字典对象
+   * @param {*} data 值
+   * @param {string} [prop] 判断的属性
+   * @returns {DictionaryItem}
+   */
+   getItem (data, prop) {
+    if (!prop) {
+      return this.data.get(data)
+    } else {
+      for (let ditem of this.data.values()) {
+        if (ditem[prop] == data) {
+          return ditem
+        }
+      }
+    }
+  }
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetList 目标列表
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   */
+  formatListData (targetList, originList, originFrom = 'list', option = {}, formatPrototype = true, depth) {
+    if (option.clearType === undefined || option.clearType) {
+      $func.clearArray(targetList)
+    }
+    for (let n in originList) {
+      let item = this.buildData(originList[n], originFrom, option.build, formatPrototype, depth)
+      targetList.push(item)
+    }
+  }
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  buildData(originData, originFrom = 'list', option, formatPrototype, depth) {
+    return this.updateData({}, originData, originFrom, option, formatPrototype, depth)
+  }
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  updateData(targetData, originData, originFrom = 'info', option, formatPrototype, depth) {
+    return this.formatData(targetData, originData, originFrom, option, formatPrototype, depth)
+  }
+  /**
+   * 根据字典格式化数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatData(targetData, originData, originFrom, option, formatPrototype, depth) {
+    if (!targetData) {
+      targetData = {}
+    }
+    if (!originData) {
+      originData = {}
+    }
+    if (!originFrom) {
+      originFrom = 'list'
+    }
+    if (!option) {
+      option = this.$option.getData('build')
+    }
+    if (!option.getLimit) {
+      option = $func.getLimitData(option)
+    }
+    if (depth === undefined) {
+      depth = 0
+    }
+    return this.$formatDataStart(targetData, originData, originFrom, option, formatPrototype, depth)
+  }
+  $formatPrototype(targetData, depth) {
+    let currentPrototype = Object.create(Object.getPrototypeOf(targetData))
+    currentPrototype.$depth = depth
+    Object.setPrototypeOf(targetData, currentPrototype)
+  }
+  /**
+   * 根据字典格式化数据START
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  $formatDataStart(targetData, originData, originFrom, option, formatPrototype, depth = 0) {
+    for (let ditem of this.data.values()) {
+      this.$formatDataNext(ditem, targetData, originData, originFrom, option, formatPrototype, depth)
+    }
+    if (formatPrototype) {
+      this.$formatPrototype(targetData, depth)
+    }
+    return targetData
+  }
+  /**
+   * 格式化数据
+   * @param {DictionaryItem} ditem 字典
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  $formatDataNext(ditem, targetData, originData, originFrom, option, formatPrototype, depth) {
+    let build = false
+    if (ditem.isOriginFrom(originFrom)) {
+      build = true
+    } else if (option.getLimit(originFrom)) {
+      build = false
+    }
+    if (build) {
+      let type = ditem.getInterface('type', originFrom)
+      let originProp = ditem.getInterface('originProp', originFrom)
+      let oData = $func.getProp(originData, originProp)
+      if (ditem.$dictionary) {
+        depth++
+        if (type != 'array') {
+          if ($func.getType(oData) == 'object') {
+            oData = ditem.$dictionary.$formatDataStart({}, oData, originFrom, option, formatPrototype, depth)
+          } else {
+            oData = {}
+          }
+        } else {
+          if ($func.getType(oData) == 'array') {
+            let oList = []
+            for (let i = 0; i < oData.length; i++) {
+              let oItem = ditem.$dictionary.$formatDataStart({}, oData[i], originFrom, option, formatPrototype, depth)
+              oList.push(oItem)
+            }
+            oData = oList
+          } else {
+            oData = []
+          }
+        }
+      }
+      ditem.setDataByFormat(targetData, ditem.prop, oData, type, 'format', {
+        targetData: targetData,
+        originData: originData,
+        depth: depth,
+        type: originFrom
+      })
+    }
+  }
+  /**
+   * 获取符合模块要求的字典列表
+   * @param {string} mod 模块名称
+   * @returns {DictionaryItem[]}
+   */
+  getModList (modType) {
+    return this.$getModListByMap([], this.data, modType)
+  }
+  /**
+   * 从dataMap获取符合模块要求的字典列表
+   * @param {DictionaryItem[]} modList 返回的字典列表
+   * @param {Map<DictionaryItem>} dataMap 字典Map
+   * @param {string} modType 模块名称
+   * @returns {DictionaryItem[]}
+   */
+  $getModListByMap (modList, dataMap, modType) {
+    for (let ditem of dataMap.values()) {
+      let mod = ditem.getMod(modType)
+      if (mod) {
+        modList.push(ditem)
+      }
+    }
+    return modList
+  }
+  /**
+   * 获取符合模块要求的字典page列表
+   * @param {string} modType 模块名称
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
+  getPageList (modType, payload) {
+    let modList = this.getModList(modType)
+    return this.getPageListByModList(modType, modList, payload)
+  }
+  /**
+   * 将模块列表根据payload转换为页面需要数据的列表
+   * @param {string} modType 模块名称
+   * @param {DictionaryItem[]} modList 模块列表
+   * @param {object} [payload] 参数
+   * @returns {*[]}
+   */
+  getPageListByModList (modType, modList, payload = {}) {
+    let pageList = []
+    for (let n = 0; n < modList.length; n++) {
+      let ditem = modList[n]
+      let pitem = ditem.getModData(modType, payload)
+      if (ditem.$dictionary) {
+        let mod = ditem.getMod(modType)
+        if (mod && mod.$children) {
+          let childrenProp = mod.$children
+          if (childrenProp === true) {
+            childrenProp = 'children'
+          }
+          pitem[childrenProp] = ditem.$dictionary.getPageList(modType, payload)
+        }
+      }
+      pageList.push(pitem)
+    }
+    return pageList
+  }
+  /**
+   * 根据模块列表生成对应的form对象
+   * @param {DictionaryItem[]} modList 模块列表
+   * @param {string} modType 模块名称
+   * @param {*} originData 初始化数据
+   * @param {object} option 设置项
+   * @param {object} [option.form] 目标form数据
+   * @param {string} [option.from] 调用来源
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @returns {object}
+   */
+  buildFormData(modList, modType, originData, option = {}) {
+    let formData = option.form || {}
+    let from = option.from
+    let limit = $func.getLimitData(option.limit)
+    let size = modList.length
+    for (let n = 0; n < size; n++) {
+      let ditem = modList[n]
+      if (!limit.getLimit(ditem.prop)) {
+        let tData = ditem.getFormData(modType, {
+          targetData: formData,
+          originData: originData,
+          from: from
+        })
+        $func.setProp(formData, ditem.prop, tData, true)
+      }
+    }
+    return formData
+  }
+  /**
+   * 基于formdata和模块列表返回编辑完成的数据
+   * @param {object} formData form数据
+   * @param {DictionaryItem[]} modList 模块列表
+   * @param {string} modType modType
+   * @returns {object}
+   */
+  getEditData(formData, modList, modType) {
+    let editData = {}
+    for (let n = 0; n < modList.length; n++) {
+      let ditem = modList[n]
+      let add = true
+      if (!ditem.$mod[modType].required) {
+        /*
+          存在check则进行check判断
+          此时赋值存在2种情况
+          1.不存在check 返回data ,data为真则赋值
+          2.存在check,返回check函数返回值，为真则赋值
+        */
+        add = ditem.triggerFunc('check', formData[ditem.prop], {
+          targetData: editData,
+          originData: formData,
+          type: modType
+        })
+        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是empty为false状态的非真数据不传递
+        if (!add) {
+          add = this.$option.getData('empty')
+        }
+      }
+      if (add) {
+        let oData = formData[ditem.prop]
+        if (ditem.$mod[modType].trim) {
+          oData = $func.trimData(oData)
+        }
+        ditem.setDataByFormat(editData, ditem.getInterface('originProp', modType), oData, ditem.getInterface('type', modType), 'post', {
+          targetData: editData,
+          originData: formData,
+          type: modType
+        })
+      }
+    }
+    return editData
+  }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
+  install (target) {
+    // 监听事件
+    this.onLife('updated', {
+      id: target.$getId('dictionaryUpdated'),
+      data: (...args) => {
+        target.triggerLife('dictionaryUpdated', ...args)
+      }
+    })
+  }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
+  uninstall (target) {
+    // 停止监听事件
+    this.offLife('updated', target.$getId('dictionaryUpdated'))
   }
 }
 

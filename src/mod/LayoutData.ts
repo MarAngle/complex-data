@@ -41,9 +41,13 @@ export interface LayoutDataInitOption {
 
 class LayoutData extends Data {
   data!: InterfaceData<LayoutDataFormatData>
-  constructor (initOption?: LayoutDataInitOption) {
-    super()
-    this.initData(initOption)
+  constructor (initOption?: LayoutData | LayoutDataInitOption) {
+    if (initOption && initOption.constructor === LayoutData) {
+      return initOption
+    } else {
+      super()
+      this.initData(initOption as LayoutDataInitOption)
+    }
   }
   /**
    * 加载

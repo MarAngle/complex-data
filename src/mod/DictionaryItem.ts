@@ -17,7 +17,7 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
   showType?: string | baseObject<string>
   originProp?: string | baseObject<string>
   originFrom?: string | string[],
-  layout?: LayoutData | LayoutDataInitOption,
+  layout?: LayoutDataInitOption,
   mod?: objectUnknown,
   func?: {
     format?: baseFuncType<unknown>,
@@ -30,7 +30,7 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
 }
 
 export interface DictionaryItemPayload {
-  layout?: LayoutData | LayoutDataInitOption
+  layout?: LayoutDataInitOption
 }
 
 export type interfaceKeys = 'label' | 'type' | 'showProp' | 'showType' | 'originProp' | 'modType'
@@ -124,13 +124,9 @@ class DictionaryItem extends SimpleData {
   $setInterface (target: interfaceKeys, prop: string, data: string, useSetData?: boolean) {
     this.$interface[target].setData(prop, data, useSetData)
   }
-  $setLayout (layoutOption?: LayoutData | LayoutDataInitOption, parentLayoutOption?: LayoutData | LayoutDataInitOption) {
+  $setLayout (layoutOption?: LayoutDataInitOption, parentLayoutOption?: LayoutDataInitOption) {
     const option = layoutOption || parentLayoutOption
-    if (option && option.constructor === LayoutData) {
-      this.$layout = option
-    } else {
-      this.$layout = new LayoutData(option as LayoutDataInitOption)
-    }
+    this.$layout = new LayoutData(option)
   }
   $getLayout (): LayoutData
   $getLayout (prop: string): LayoutDataFormatData
