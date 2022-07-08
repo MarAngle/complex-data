@@ -4,6 +4,8 @@ export type baseObject<T> = {
 
 export type anyFunction = (...args:any[]) => any
 
+export type anyPromiseFunction = (...args:any[]) => Promise<any>
+
 export type objectAny = baseObject<any>
 
 export type objectUnknown = baseObject<unknown>

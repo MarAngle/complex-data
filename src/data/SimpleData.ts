@@ -7,7 +7,7 @@ export interface SimpleDataInitOption {
   name?: string,
   prop?: string,
   parent?: Data,
-  func?: baseObject<undefined | false | anyFunction>,
+  func?: object,
   extra?: objectUnknown,
   root?: objectUnknown,
   methods?: objectFunction,
@@ -18,18 +18,17 @@ class SimpleData extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	$func: baseObject<undefined | false | anyFunction>;
+	// $func: any;
 	$extra: objectUnknown;
-  [prop: string]: unknown
   constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
-    this.$prop = initOption.prop || ''
-    this.$func = {}
+    this.$prop = initOption.prop || '';
+    (this as any).$func = {};
     this.$extra = {}
     this.$setParent(initOption.parent)
-    this.$initFunc(initOption.func)
+    this.$initFunc(initOption.func as any)
     this.$initExtra(initOption.extra)
     this.$initRoot(initOption.root)
     this.$initMethods(initOption.methods)
@@ -61,10 +60,10 @@ class SimpleData extends Data {
     if (rootData) {
       for (const prop in rootData) {
         if ($func.hasProp(this, prop)) {
-          const type = $func.getType(this[prop])
+          const type = $func.getType((this as any)[prop])
           this.$exportMsg(`$initRoot:对应属性${prop}存在类型为${type}的同名属性，属性未挂载!`)
         } else {
-          this[prop] = rootData[prop]
+          (this as any)[prop] = rootData[prop]
         }
       }
     }
@@ -77,8 +76,8 @@ class SimpleData extends Data {
     if (methods) {
       for (const prop in methods) {
         let build = true
-        if (this[prop] !== undefined) {
-          const type = $func.getType(this[prop])
+        if ((this as any)[prop] !== undefined) {
+          const type = $func.getType((this as any)[prop])
           if (type !== 'function') {
             this.$exportMsg(`$initMethods:对应函数${prop}存在类型为${type}的同名属性，函数未挂载!`)
             build = false
@@ -87,7 +86,7 @@ class SimpleData extends Data {
           }
         }
         if (build) {
-          this[prop] = methods[prop]
+          (this as any)[prop] = methods[prop]
         }
       }
     }
@@ -99,13 +98,13 @@ class SimpleData extends Data {
    */
   $initFunc (func?: baseObject<undefined | false | anyFunction>, reset?: boolean) {
     if (reset) {
-      this.$func = {}
+      (this as any).$func = {}
     }
     for (const n in func) {
       if (func[n]) {
-        this.$func[n] = (func[n] as anyFunction).bind(this)
+        ((this as any).$func as any)[n] = (func[n] as anyFunction).bind(this)
       } else {
-        this.$func[n] = false
+        ((this as any).$func as any)[n] = false
       }
     }
   }

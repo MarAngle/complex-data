@@ -40,7 +40,7 @@ class UpdateData extends DefaultData {
     start: number,
     data: number
   }
-  timer: undefined | NodeJS.Timeout
+  timer: undefined | number
   trigger!: triggerType
   constructor (initOption: UpdateDataInitOption) {
     initOption = formatInitOption(initOption)
@@ -159,7 +159,7 @@ class UpdateData extends DefaultData {
       this.load.operate = true
       this.triggerLife('beforeTrigger', this, offset)
       this.trigger(this.$triggerNext.bind(this), this.getNum())
-    }, this.triggerGetOffset(offset))
+    }, this.triggerGetOffset(offset)) as unknown as number
   }
   /**
    * 继续进行下一次回调
@@ -171,7 +171,7 @@ class UpdateData extends DefaultData {
     this.triggerLife('triggered', this, offset)
     if (this.load.update && !this.load.immerdiate) {
       if (offset !== false) {
-        let checkRes = this.check(this.getNum())
+        const checkRes = this.check(this.getNum())
         if (offset === undefined) {
           offset = this.offset.data
         }
@@ -240,7 +240,7 @@ class UpdateData extends DefaultData {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'update') !== false) {
+        if (target.$parseResetOption(resetOption, 'update') !== false) {
           this.reset()
         }
       }

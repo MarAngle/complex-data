@@ -1,6 +1,6 @@
 import $func from 'complex-func'
 import { formatInitOption } from '../utils'
-import modOption from '../../modOption'
+// import modOption from '../../modOption'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
@@ -95,7 +95,7 @@ class DictionaryItem extends SimpleData {
     this.$setLayout(initOption.layout, payload.layout)
 
     this.$mod = {}
-    modOption.format(this, initOption.mod)
+    // modOption.format(this, initOption.mod)
     this.$formatFunc()
   }
   /**
@@ -251,7 +251,7 @@ class DictionaryItem extends SimpleData {
       }
       // 调用模块的readyData
       if (mod.readyData) {
-        mod.readyData().then(() => { /* */ }, err => {
+        mod.readyData().then(() => { /* */ }, (err: any) => {
             this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
             data: err,
             type: 'error'

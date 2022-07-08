@@ -259,7 +259,7 @@ class ChoiceData extends Data {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'choice') !== false) {
+        if (target.$parseResetOption(resetOption, 'choice') !== false) {
           this.reset(true)
         }
       }

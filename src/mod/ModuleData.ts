@@ -9,7 +9,7 @@ import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
-import SearchData, { SearchDataInitOption } from './../data/SearchData'
+// import SearchData, { SearchDataInitOption } from './../data/SearchData'
 import { objectUnknown } from 'complex-require/ts'
 
 const ModuleDictionaryMap = new Map()
@@ -24,7 +24,7 @@ export interface ModuleDataInitOption {
   pagination?: PaginationDataInitOption
   choice?: ChoiceDataInitOption
   dictionary?: DictionaryListInitOption
-  search?: SearchDataInitOption
+  // search?: SearchDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
@@ -38,7 +38,7 @@ class ModuleData extends Data {
   pagination?: PaginationData
   choice?: ChoiceData
   dictionary?: DictionaryList
-  search?: SearchData
+  // search?: SearchData
   constructor (initOption: undefined | ModuleDataInitOption, parent?: BaseData) {
     super()
     this.setParent(parent)
@@ -73,7 +73,7 @@ class ModuleData extends Data {
       } else if (modData && !(modData instanceof ModuleClassData)) {
         const parent = this.getParent()
         const formatFuncName = '$formatModule' + ModuleClassData.$name
-        if (parent && parent[formatFuncName]) {
+        if (parent && (parent as any)[formatFuncName]) {
           modData = (parent as any)[formatFuncName](modData)
         }
         return new ModuleClassData(modData)

@@ -266,7 +266,7 @@ class PaginationData extends DefaultData {
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
-        if (target.parseResetOption(resetOption, 'pagination') !== false) {
+        if (target.$parseResetOption(resetOption, 'pagination') !== false) {
           this.reset()
         }
       }

@@ -64,7 +64,7 @@ class OptionData extends Data {
         this.$exportMsg(
           `非init状态下不能进行undefined值操作!`,
           'error', {
-            data: { target, option }
+            data: { target, option } as unknown as string
           }
         )
       }
@@ -80,7 +80,7 @@ class OptionData extends Data {
         `option赋值双方格式不一致且存在复杂值,（设置目标值格式:${check.target}/设置值格式:${check.option}），禁止直接赋值，请检查代码!`,
         'error',
         {
-          data: { target, option }
+          data: { target, option } as unknown as string
         }
       )
       return check
