@@ -72,14 +72,14 @@ class BaseData extends DefaultData {
    * 清空数组
    * @param {array} list 数组
    */
-  resetArray(list = []) {
+  $resetArray(list = []) {
     $func.clearArray(list)
   }
   /**
    * 清空对象
    * @param {object} data 对象
    */
-  resetObject(data: objectAny = {}) {
+  $resetObject(data: objectAny = {}) {
     for (const prop in data) {
       delete data[prop]
     }

@@ -49,7 +49,7 @@ class SimpleData extends Data {
    * 获取父数据
    * @returns {object | undefined}
    */
-  getParent(): Data | undefined {
+  $getParent(): Data | undefined {
     return this.$parent
   }
   /**
@@ -113,10 +113,10 @@ class SimpleData extends Data {
    * @param {object} [extraData] 额外数据对象
    */
   $initExtra (extraData?: objectUnknown) {
-    this.clearExtra()
+    this.$clearExtra()
     if ($func.getType(extraData) == 'object') {
       for (const n in extraData) {
-        this.setExtra(n, extraData[n])
+        this.$setExtra(n, extraData[n])
       }
     } else if (extraData !== undefined) {
       this.$exportMsg(`初始化extra出错，数据必须为对象`)
@@ -127,7 +127,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  setExtra (prop: string, data: unknown) {
+  $setExtra (prop: string, data: unknown) {
     this.$extra[prop] = data
   }
   /**
@@ -135,9 +135,9 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  getExtra (prop:string): unknown
-  getExtra (): objectUnknown
-  getExtra (prop?:string){
+  $getExtra (prop:string): unknown
+  $getExtra (): objectUnknown
+  $getExtra (prop?:string){
     if (!prop) {
       return this.$extra
     } else {
@@ -149,7 +149,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  clearExtra (prop?:string) {
+  $clearExtra (prop?:string) {
     if (!prop) {
       this.$extra = {}
     } else {
@@ -159,12 +159,12 @@ class SimpleData extends Data {
   /**
    * 重置额外数据，清除全部数据
    */
-  resetExtra () {
-    this.clearExtra()
+  $resetExtra () {
+    this.$clearExtra()
   }
   $selfName (): string {
     let parentName = ''
-    const parent = this.getParent()
+    const parent = this.$getParent()
     if (parent && parent.$selfName) {
       parentName += `{PARENT:${parent.$selfName()}}-`
     }
