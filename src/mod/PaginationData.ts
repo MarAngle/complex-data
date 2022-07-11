@@ -263,6 +263,31 @@ class PaginationData extends DefaultData {
    * @param {object} target 加载到的目标
    */
   install (target: BaseData) {
+    target.onLife('beforeReload', {
+      id: this.$getId('BeforeReload'),
+      data: (instantiater, resetOption) => {
+        let pageResetOption = resetOption.page
+        if (pageResetOption) {
+          if (pageResetOption === true) {
+            pageResetOption = {
+              prop: 'page',
+              data: 1,
+              unTriggerLife: true
+            }
+          }
+          if (pageResetOption.unTriggerLife === undefined) {
+            pageResetOption.unTriggerLife = true
+          }
+          if (pageResetOption.prop == 'page') {
+            this.setPage(pageResetOption.data, pageResetOption.unTriggerLife)
+          } else if (pageResetOption.prop == 'size') {
+            this.setSize(pageResetOption.data, pageResetOption.unTriggerLife)
+          } else if (pageResetOption.prop == 'sizeAndPage') {
+            this.setSizeAndPage(pageResetOption.data, pageResetOption.unTriggerLife)
+          }
+        }
+      }
+    })
     target.onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
@@ -283,6 +308,7 @@ class PaginationData extends DefaultData {
    * @param {object} target 卸载到的目标
    */
   uninstall(target: BaseData) {
+    target.offLife('beforeReload', this.$getId('BeforeReload'))
     target.offLife('reseted', this.$getId('Reseted'))
     this.offLife('change', target.$getId('PaginationChange'))
   }

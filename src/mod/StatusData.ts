@@ -1,4 +1,5 @@
 import config from '../../config'
+import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
 import StatusDataItem, { StatusDataItemInitOption, itemType, valueType } from './StatusDataItem'
@@ -61,6 +62,27 @@ class StatusData extends Data {
     for (const n in this.data) {
       this.data[n].reset()
     }
+  }
+  /**
+   * 模块加载
+   * @param {object} target 加载到的目标
+   */
+  install (target: BaseData) {
+    target.onLife('beforeReset', {
+      id: this.$getId('BeforeReset'),
+      data: (instantiater, resetOption) => {
+        if (target.$parseResetOption(resetOption, 'status') !== false) {
+          this.reset()
+        }
+      }
+    })
+  }
+  /**
+   * 模块卸载
+   * @param {object} target 卸载到的目标
+   */
+  uninstall(target: BaseData) {
+    target.offLife('beforeReset', this.$getId('BeforeReset'))
   }
 }
 

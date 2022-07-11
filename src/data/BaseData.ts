@@ -3,7 +3,7 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import ModuleData, { ModuleDataInitOption, moduleKeys } from './../mod/ModuleData'
 import { formatInitOption } from '../utils'
 import { LifeDataInitOption } from '../mod/LifeData'
-import { anyFunction, anyPromiseFunction, objectAny } from '../../ts'
+import { anyPromiseFunction, objectAny } from '../../ts'
 
 
 export interface forceObjectType {
@@ -29,30 +29,7 @@ class BaseData extends DefaultData {
     if (this.$getData) {
       this.$initLoadDepend()
     }
-    this.$initBaseDataLife()
     this.$triggerCreateLife('BaseData', 'created', initOption)
-  }
-  /**
-   * 加载生命周期函数
-   */
-   $initBaseDataLife() {
-    // 添加重载开始生命周期回调，此时通过设置项对分页器和选项进行操作
-    this.onLife('beforeReload', {
-      id: 'AutoBaseDataBeforeReload',
-      data: (instantiater, resetOption) => {
-        // if (this.$module.pagination && resetOption.page) {
-        //   if (resetOption.page === true) {
-        //     this.setPageData(1, 'page', true)
-        //   } else {
-        //     this.setPageData(resetOption.page.data, resetOption.page.prop, true)
-        //   }
-        // }
-        // if (this.$module.choice) {
-        //   // 根据设置和传值自动进行当前选项的重置操作
-        //   this.autoChoiceReset(resetOption.choice)
-        // }
-      }
-    })
   }
   $initLoadDepend() {
     if (!this.$module.status) {
@@ -88,16 +65,67 @@ class BaseData extends DefaultData {
     return this.$module.$uninstallData(modName)
   }
   /* --- module end --- */
+
   /* --- reset start --- */
+
+  /**
+   * 清空数组
+   * @param {array} list 数组
+   */
+  resetArray(list = []) {
+    $func.clearArray(list)
+  }
+  /**
+   * 清空对象
+   * @param {object} data 对象
+   */
+  resetObject(data: objectAny = {}) {
+    for (const prop in data) {
+      delete data[prop]
+    }
+  }
+  /**
+   * 将第一个传参的第一个参数无值时转换为空对象
+   * @param {*[]} args 参数列表
+   */
+  $formatResetOption(args: any[]) {
+    if (!args[0]) {
+      args[0] = {}
+    }
+  }
   /**
    * 获取reset操作对应prop时机时的重置操作判断
    * @param {object} [resetOption]
    * @param {*} [prop] 当前的reset操作的时机
    * @returns {boolean}
    */
-  $parseResetOption(resetOption = {}, prop: string): undefined | boolean | objectAny {
+  $parseResetOption(resetOption = {}, prop: string) {
     return $func.getProp(resetOption, prop)
   }
+  /**
+   * 重置回调操作=>不清除额外数据以及生命周期函数
+   * @param  {...any} args 参数
+   */
+  reset (...args: any[]) {
+    this.$formatResetOption(args)
+    this.triggerLife('beforeReset', this, ...args)
+    // // 重置状态
+    // if (this.$parseResetOption(args[0], 'status') !== false) {
+    //   this.resetStatus()
+    // }
+    this.triggerLife('reseted', this, ...args)
+  }
+  /**
+   * 销毁回调操作
+   * @param  {...any} args 参数
+   */
+  destroy (...args: any[]) {
+    this.$formatResetOption(args)
+    this.triggerLife('beforeDestroy', this, ...args)
+    this.reset(...args)
+    this.triggerLife('destroyed', this, ...args)
+  }
+  /* --- reset end --- */
 }
 
 
