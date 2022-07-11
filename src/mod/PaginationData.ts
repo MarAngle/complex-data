@@ -211,10 +211,7 @@ class PaginationData extends DefaultData {
     }
   }
   getData(): { page: number, size: number }
-  getData(prop: 'page'): number
-  getData(prop: 'size'): number
-  getData(prop: 'num'): number
-  getData(prop: 'totalPage'): number
+  getData(prop: 'page' | 'size' | 'num' | 'totalPage'): number
   getData(prop?: 'page' | 'size' | 'num' | 'totalPage') {
     let data
     if (prop == 'page') {
