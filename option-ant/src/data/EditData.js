@@ -560,8 +560,12 @@ class EditData extends BaseData {
   setValueData(data, prop = 'defaultdata') {
     this.value[prop] = data
   }
-  getValueData(prop = 'defaultdata') {
-    return this.value[prop]
+  getValueData(prop = 'defaultdata', deep) {
+    let valueData = this.value[prop]
+    if (deep && _func.checkComplex(valueData)) {
+      valueData = _func.deepCloneData(valueData)
+    }
+    return valueData
   }
 }
 

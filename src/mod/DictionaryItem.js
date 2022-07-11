@@ -194,9 +194,9 @@ class DictionaryItem extends DefaultData {
         })
       } else if (mod.getValueData) {
         if (from == 'reset') {
-          targetData = mod.getValueData('resetdata')
+          targetData = mod.getValueData('resetdata', true)
         } else {
-          targetData = mod.getValueData('initdata')
+          targetData = mod.getValueData('initdata', true)
         }
       }
       // 调用模块的readyData
