@@ -33,10 +33,10 @@ class BaseData extends DefaultData {
   }
   $initLoadDepend() {
     if (!this.$module.status) {
-      this.setModule('status')
+      this.$setModule('status')
     }
     if (!this.$module.promise) {
-      this.setModule('promise')
+      this.$setModule('promise')
     }
   }
   /* --- module start --- */
@@ -45,7 +45,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @param {object} data 模块实例
    */
-   setModule(modName: moduleKeys, data?: any) {
+  $setModule(modName: moduleKeys, data?: any) {
     this.$module.$setData(modName, data)
   }
   /**
@@ -53,7 +53,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @param {object} data 模块实例
    */
-  installModule(modName: moduleKeys, data: any) {
+  $installModule(modName: moduleKeys, data: any) {
     return this.$module.$installData(modName, data)
   }
   /**
@@ -61,7 +61,7 @@ class BaseData extends DefaultData {
    * @param {string} modName 模块名
    * @returns {object | undefined} 卸载的模块
    */
-  uninstallModule(modName: moduleKeys) {
+  $uninstallModule(modName: moduleKeys) {
     return this.$module.$uninstallData(modName)
   }
   /* --- module end --- */
@@ -106,24 +106,20 @@ class BaseData extends DefaultData {
    * 重置回调操作=>不清除额外数据以及生命周期函数
    * @param  {...any} args 参数
    */
-  reset (...args: any[]) {
+  $reset (...args: any[]) {
     this.$formatResetOption(args)
-    this.triggerLife('beforeReset', this, ...args)
-    // // 重置状态
-    // if (this.$parseResetOption(args[0], 'status') !== false) {
-    //   this.resetStatus()
-    // }
-    this.triggerLife('reseted', this, ...args)
+    this.$triggerLife('beforeReset', this, ...args)
+    this.$triggerLife('reseted', this, ...args)
   }
   /**
    * 销毁回调操作
    * @param  {...any} args 参数
    */
-  destroy (...args: any[]) {
+  $destroy (...args: any[]) {
     this.$formatResetOption(args)
-    this.triggerLife('beforeDestroy', this, ...args)
-    this.reset(...args)
-    this.triggerLife('destroyed', this, ...args)
+    this.$triggerLife('beforeDestroy', this, ...args)
+    this.$reset(...args)
+    this.$triggerLife('destroyed', this, ...args)
   }
   /* --- reset end --- */
 }

@@ -36,7 +36,7 @@ class DefaultData extends SimpleData {
    * @param {*} data 回调对象
    * @returns {string | string} id/idList
    */
-  onLife (name: string, data: FuncDataItem | FuncDataItem[]) {
+  $onLife (name: string, data: FuncDataItem | FuncDataItem[]) {
     return this.$life.on(name, data)
   }
   /**
@@ -45,7 +45,7 @@ class DefaultData extends SimpleData {
    * @param {string} id 指定ID
    * @param  {...any} args 参数
    */
-  emitLife (name: string, id: string, ...args: any[]) {
+  $emitLife (name: string, id: string, ...args: any[]) {
     this.$life.emit(name, id, ...args)
   }
   /**
@@ -54,7 +54,7 @@ class DefaultData extends SimpleData {
    * @param {string} id 指定ID
    * @returns {boolean}
    */
-  offLife (name: string, id: string): boolean {
+  $offLife (name: string, id: string): boolean {
     return this.$life.off(name, id)
   }
   /**
@@ -62,26 +62,26 @@ class DefaultData extends SimpleData {
    * @param {string} name 生命周期
    * @param  {...any} args 参数
    */
-  triggerLife (name: string, ...args: any[]) {
+  $triggerLife (name: string, ...args: any[]) {
     this.$life.trigger(name, ...args)
   }
   /**
    * 清除生命周期
    * @param {string} name 生命周期
    */
-  clearLife (name: string) {
+  $clearLife (name: string) {
     this.$life.clear(name)
   }
   /**
    * 生命周期重置
    */
-  resetLife () {
+  $resetLife () {
     this.$life.reset()
   }
   /**
    * 生命周期销毁
    */
-  destroyLife () {
+  $destroyLife () {
     this.$life.destroy()
   }
 }

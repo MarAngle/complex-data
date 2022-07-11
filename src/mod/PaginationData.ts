@@ -113,20 +113,20 @@ class PaginationData extends DefaultData {
   /**
    * 计算页码相关数据
    */
-  $autoCountPage (unCountCurrent?: boolean, unTriggerLife?: boolean) {
+  $autoCountPage (unCountCurrent?: boolean, untriggerLife?: boolean) {
     const total = $func.getNum(this.getTotal() / this.getSize(), 'ceil', 0)
     this.page.total = total <= 0 ? 1 : total
     if (!unCountCurrent && this.getPage() > this.page.total) {
-      this.setPage(this.page.total, unTriggerLife)
+      this.setPage(this.page.total, untriggerLife)
     }
   }
   /**
    * 设置总数
    * @param {number} num 总数
    */
-  setTotal(num: number, unCountCurrent?: boolean, unTriggerLife?: boolean) {
+  setTotal(num: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
     this.num.total = num < 0 ? 0 : num
-    this.$autoCountPage(unCountCurrent, unTriggerLife)
+    this.$autoCountPage(unCountCurrent, untriggerLife)
   }
   /**
    * 获取总数
@@ -138,7 +138,7 @@ class PaginationData extends DefaultData {
    * 设置当前页
    * @param {number} current 当前页
    */
-  setPage (current: number, unTriggerLife?: boolean) {
+  setPage (current: number, untriggerLife?: boolean) {
     const totalPage = this.getTotalPage()
     if (current <= 0) {
       current = 1
@@ -147,8 +147,8 @@ class PaginationData extends DefaultData {
     }
     if (this.page.current != current) {
       this.page.current = current
-      if (!unTriggerLife) {
-        this.triggerLife('change', this, 'page', current)
+      if (!untriggerLife) {
+        this.$triggerLife('change', this, 'page', current)
       }
     }
   }
@@ -164,23 +164,23 @@ class PaginationData extends DefaultData {
    * @param {number} size size参数
    * @param {number} page page参数
    */
-  setSizeAndPage (current: { page: number, size: number }, unTriggerLife?: boolean) {
+  setSizeAndPage (current: { page: number, size: number }, untriggerLife?: boolean) {
     this.size.current = current.size
     this.$autoCountPage(true)
     this.setPage(current.page, true)
-    if (!unTriggerLife) {
-      this.triggerLife('change', this, 'size', current)
+    if (!untriggerLife) {
+      this.$triggerLife('change', this, 'size', current)
     }
   }
   /**
    * 更改页面条数
    * @param {number} size size参数
    */
-  setSize(size: number, unTriggerLife?: boolean) {
+  setSize(size: number, untriggerLife?: boolean) {
     this.size.current = size
     this.$autoCountPage(false, true)
-    if (!unTriggerLife) {
-      this.triggerLife('change', this, 'size', {
+    if (!untriggerLife) {
+      this.$triggerLife('change', this, 'size', {
         size: size,
         page: this.getPage()
       })
@@ -263,7 +263,7 @@ class PaginationData extends DefaultData {
    * @param {object} target 加载到的目标
    */
   install (target: BaseData) {
-    target.onLife('beforeReload', {
+    target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {
         let pageResetOption = resetOption.page
@@ -272,23 +272,23 @@ class PaginationData extends DefaultData {
             pageResetOption = {
               prop: 'page',
               data: 1,
-              unTriggerLife: true
+              untriggerLife: true
             }
           }
-          if (pageResetOption.unTriggerLife === undefined) {
-            pageResetOption.unTriggerLife = true
+          if (pageResetOption.untriggerLife === undefined) {
+            pageResetOption.untriggerLife = true
           }
           if (pageResetOption.prop == 'page') {
-            this.setPage(pageResetOption.data, pageResetOption.unTriggerLife)
+            this.setPage(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop == 'size') {
-            this.setSize(pageResetOption.data, pageResetOption.unTriggerLife)
+            this.setSize(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop == 'sizeAndPage') {
-            this.setSizeAndPage(pageResetOption.data, pageResetOption.unTriggerLife)
+            this.setSizeAndPage(pageResetOption.data, pageResetOption.untriggerLife)
           }
         }
       }
     })
-    target.onLife('reseted', {
+    target.$onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.$parseResetOption(resetOption, 'pagination') !== false) {
@@ -296,10 +296,10 @@ class PaginationData extends DefaultData {
         }
       }
     })
-    this.onLife('change', {
+    this.$onLife('change', {
       id: target.$getId('PaginationChange'),
       data: (instantiater, prop, current) => {
-        target.triggerLife('paginationChange', instantiater, prop, current)
+        target.$triggerLife('paginationChange', instantiater, prop, current)
       }
     })
   }
@@ -308,9 +308,9 @@ class PaginationData extends DefaultData {
    * @param {object} target 卸载到的目标
    */
   uninstall(target: BaseData) {
-    target.offLife('beforeReload', this.$getId('BeforeReload'))
-    target.offLife('reseted', this.$getId('Reseted'))
-    this.offLife('change', target.$getId('PaginationChange'))
+    target.$offLife('beforeReload', this.$getId('BeforeReload'))
+    target.$offLife('reseted', this.$getId('Reseted'))
+    this.$offLife('change', target.$getId('PaginationChange'))
   }
 }
 

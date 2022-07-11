@@ -157,7 +157,7 @@ class UpdateData extends DefaultData {
     this.timer = setTimeout(() => {
       // 准备开始trigger操作
       this.load.operate = true
-      this.triggerLife('beforeTrigger', this, offset)
+      this.$triggerLife('beforeTrigger', this, offset)
       this.trigger(this.$triggerNext.bind(this), this.getNum())
     }, this.triggerGetOffset(offset)) as unknown as number
   }
@@ -168,7 +168,7 @@ class UpdateData extends DefaultData {
    $triggerNext (offset?: false | number) {
     // trigger结束
     this.load.operate = false
-    this.triggerLife('triggered', this, offset)
+    this.$triggerLife('triggered', this, offset)
     if (this.load.update && !this.load.immerdiate) {
       if (offset !== false) {
         const checkRes = this.check(this.getNum())
@@ -237,7 +237,7 @@ class UpdateData extends DefaultData {
    * @param {object} target 加载到的目标
    */
   install (target: BaseData) {
-    target.onLife('reseted', {
+    target.$onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.$parseResetOption(resetOption, 'update') !== false) {
@@ -251,7 +251,7 @@ class UpdateData extends DefaultData {
    * @param {object} target 卸载到的目标
    */
   uninstall(target: BaseData) {
-    target.offLife('reseted', this.$getId('Reseted'))
+    target.$offLife('reseted', this.$getId('Reseted'))
   }
 }
 

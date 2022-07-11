@@ -91,10 +91,10 @@ class DictionaryList extends DefaultData {
    */
   install (target: BaseData) {
     // 监听事件
-    this.onLife('updated', {
+    this.$onLife('updated', {
       id: target.$getId('dictionaryUpdated'),
       data: (...args) => {
-        target.triggerLife('dictionaryUpdated', ...args)
+        target.$triggerLife('dictionaryUpdated', ...args)
       }
     })
   }
@@ -104,7 +104,7 @@ class DictionaryList extends DefaultData {
    */
   uninstall (target: BaseData) {
     // 停止监听事件
-    this.offLife('updated', target.$getId('dictionaryUpdated'))
+    this.$offLife('updated', target.$getId('dictionaryUpdated'))
   }
 }
 

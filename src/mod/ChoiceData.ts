@@ -256,13 +256,13 @@ class ChoiceData extends Data {
    * @param {object} target 加载到的目标
    */
   install (target: BaseData) {
-    target.onLife('beforeReload', {
+    target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {
         this.autoReset(resetOption.choice)
       }
     })
-    target.onLife('reseted', {
+    target.$onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
         if (target.$parseResetOption(resetOption, 'choice') !== false) {
@@ -276,8 +276,8 @@ class ChoiceData extends Data {
    * @param {object} target 卸载到的目标
    */
   uninstall(target: BaseData) {
-    target.offLife('beforeReload', this.$getId('BeforeReload'))
-    target.offLife('reseted', this.$getId('Reseted'))
+    target.$offLife('beforeReload', this.$getId('BeforeReload'))
+    target.$offLife('reseted', this.$getId('Reseted'))
   }
 }
 

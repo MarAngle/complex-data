@@ -68,7 +68,7 @@ class StatusData extends Data {
    * @param {object} target 加载到的目标
    */
   install (target: BaseData) {
-    target.onLife('beforeReset', {
+    target.$onLife('beforeReset', {
       id: this.$getId('BeforeReset'),
       data: (instantiater, resetOption) => {
         if (target.$parseResetOption(resetOption, 'status') !== false) {
@@ -82,7 +82,7 @@ class StatusData extends Data {
    * @param {object} target 卸载到的目标
    */
   uninstall(target: BaseData) {
-    target.offLife('beforeReset', this.$getId('BeforeReset'))
+    target.$offLife('beforeReset', this.$getId('BeforeReset'))
   }
 }
 
