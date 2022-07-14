@@ -15,7 +15,12 @@ config.antd = {
   },
   EditData: {
     typeData: typeData,
-    timeUtils: timeUtils
+    timeUtils: timeUtils,
+    select: {
+      search: {
+        reload: false
+      }
+    }
   }
 }
 

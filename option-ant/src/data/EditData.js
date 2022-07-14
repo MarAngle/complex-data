@@ -4,6 +4,7 @@ import timeUtils from './../option/timeUtils'
 import BaseData from './../../../src/data/BaseData'
 import PaginationData from './../../../src/mod/PaginationData'
 import InterfaceData from './../../../src/mod/InterfaceData'
+import config from '../../../config'
 
 class EditData extends BaseData {
   constructor(editdata, payload) {
@@ -205,6 +206,7 @@ class EditData extends BaseData {
         noDataContent: search.noDataContent || this.option.noDataContent,
         noSizeContent: search.noSizeContent || 0,
         auto: search.auto === undefined ? true : search.auto, // 是否load检索
+        reload: search.reload === undefined ? config.antd.EditData.select.search.reload : search.reload,
         reset: search.reset || false // 是否重新检索，默认保存上次检索值?
       }
       this.option.search.noSizeContent = search.noSizeContent || `请输入${this.option.search.min}位及以上的值检索`
@@ -525,9 +527,11 @@ class EditData extends BaseData {
   readyData() {
     let needLoad = false
     if (this.type == 'select') {
-      if (!this.option.search.show && this.getData) {
-        // select非search模式下需要进行数据的加载
-        needLoad = true
+      if (this.getData) {
+        if (!this.option.search.show || this.option.search.reload) {
+          // select非search模式下需要进行数据的加载/或者search reload模式下
+          needLoad = true
+        }
       }
     } else if (this.type == 'cascader') {
       if (this.getData) {
