@@ -4,6 +4,10 @@ import moment from 'moment'
 // 创建事件更新回调，保存当前moment
 _func.current.setCallback(function(currentDate, from) {
   _func.current.setData(moment(currentDate), 'moment')
+  let today = _func.current.getData('today')
+  _func.current.setData(moment(today), 'moment:start')
+  let nextday = _func.current.getData('nextday')
+  _func.current.setData(moment(nextday), 'moment:nextday')
 })
 _func.current.setOffset(1000 * 60)
 
@@ -44,12 +48,19 @@ const timeUtils = {
       return format
     }
   },
-  getTime: function (time) {
-    if (time == 'current') {
-      return _func.current.getData('moment')
-    } else {
-      return time
+  getTime: function (option) {
+    if (option.data) {
+      if (option.data == 'current') {
+        if (option.data.start == true) {
+          return _func.current.getData('moment:start')
+        } else {
+          return _func.current.getData('moment')
+        }
+      } else if (option.data == 'next') {
+        return _func.current.getData('nextday')
+      }
     }
+    return option.data
   },
   funcEdit: function(data, format) {
     let res
@@ -121,9 +132,9 @@ const timeUtils = {
   // 时间可用判断设置项格式化
   timeCheckOptionFormatNext: function (timeOption) {
     if (timeOption) {
-      if (timeOption === 'current') {
+      if (timeOption === 'current' || timeOption === 'next') {
         timeOption = {
-          data: 'current'
+          data: timeOption
         }
       } else if (moment.isMoment(moment)) {
         timeOption = {
@@ -150,7 +161,7 @@ const timeUtils = {
     let disabled = false
     if (value) {
       if (start) {
-        let startLimit = timeUtils.getTime(start.data)
+        let startLimit = timeUtils.getTime(start)
         // 当前时间在开始时间前则禁止
         if (!start.eq) {
           disabled = value.format(format) - startLimit.format(format) < 0
@@ -161,7 +172,7 @@ const timeUtils = {
       }
       // 开始时间通过后继续检查结束时间
       if (!disabled && end) {
-        let endLimit = timeUtils.getTime(end.data)
+        let endLimit = timeUtils.getTime(end)
         // 当前时间在结束时间后则禁止
         if (!end.eq) {
           disabled = value.format(format) - endLimit.format(format) > 0
