@@ -51,13 +51,13 @@ const timeUtils = {
   getTime: function (option) {
     if (option.data) {
       if (option.data == 'current') {
-        if (option.data.start == true) {
+        if (option.start == true) {
           return _func.current.getData('moment:start')
         } else {
           return _func.current.getData('moment')
         }
       } else if (option.data == 'next') {
-        return _func.current.getData('nextday')
+        return _func.current.getData('moment:nextday')
       }
     }
     return option.data
