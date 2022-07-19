@@ -113,8 +113,8 @@ class ComplexData extends BaseData {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageList (modType, payload) {
-    return this.getModule('dictionary').getPageList(modType, payload)
+  getDictionaryPageList (modType, payload, usePageList) {
+    return this.getModule('dictionary').getPageList(modType, payload, usePageList)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
@@ -123,8 +123,8 @@ class ComplexData extends BaseData {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getDictionaryPageListByModList (modType, modlist, payload) {
-    return this.getModule('dictionary').getPageListByModList(modType, modlist, payload)
+  getDictionaryPageListByModList (modType, modlist, payload, usePageList) {
+    return this.getModule('dictionary').getPageListByModList(modType, modlist, payload, usePageList)
   }
   /**
    * 根据模块列表生成对应的form对象

@@ -3,6 +3,7 @@ import DefaultDataWithLife from './../data/DefaultDataWithLife'
 import DictionaryItem from './DictionaryItem'
 import OptionData from './OptionData'
 import LayoutData from './LayoutData'
+import utils from '../utils'
 
 const propList = ['id', 'parentId', 'children']
 
@@ -483,9 +484,9 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageList (modType, payload) {
+  getPageList (modType, payload, usePageList) {
     let modList = this.getModList(modType)
-    return this.getPageListByModList(modType, modList, payload)
+    return this.getPageListByModList(modType, modList, payload, usePageList)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
@@ -494,8 +495,8 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageListByModList (modType, modlist, payload = {}) {
-    let pagelist = []
+  getPageListByModList (modType, modlist, payload = {}, usePageList) {
+    let pagelist = usePageList ? utils.createDictionaryPageList(modType) : []
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let pitem = ditem.getModData(modType, payload)
@@ -506,7 +507,7 @@ class DictionaryList extends DefaultDataWithLife {
         }
         pitem[childrenProp] = ditem.dictionary.getPageList(modType, payload)
       }
-      pagelist.push(pitem)
+      pagelist[usePageList ? '$push' : 'push'](pitem)
     }
     return pagelist
   }

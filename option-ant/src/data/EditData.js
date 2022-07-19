@@ -21,6 +21,7 @@ class EditData extends BaseData {
   }
   $initMain(editdata) {
     this.reload = editdata.reload || false // 异步二次加载判断值
+    this.$observe = editdata.observe // 响应式判断函数
     this.hideLabel = editdata.hideLabel === undefined ? false : editdata.hideLabel
     this.colon = editdata.colon === undefined ? true : editdata.colon // label属性：显示判断值
     this.disabled = new InterfaceData(editdata.disabled || false)
