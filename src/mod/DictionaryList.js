@@ -484,9 +484,9 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageList (modType, payload, usePageList) {
+  getPageList (modType, payload) {
     let modList = this.getModList(modType)
-    return this.getPageListByModList(modType, modList, payload, usePageList)
+    return this.getPageListByModList(modType, modList, payload)
   }
   /**
    * 将模块列表根据payload转换为页面需要数据的列表
@@ -495,8 +495,8 @@ class DictionaryList extends DefaultDataWithLife {
    * @param {object} [payload] 参数
    * @returns {*[]}
    */
-  getPageListByModList (modType, modlist, payload = {}, usePageList) {
-    let pagelist = usePageList ? utils.createDictionaryPageList(modType) : []
+  getPageListByModList (modType, modlist, payload = {}) {
+    let pagelist = payload.usePageList ? utils.createDictionaryPageList(modType) : []
     for (let n = 0; n < modlist.length; n++) {
       let ditem = modlist[n]
       let pitem = ditem.getModData(modType, payload)
@@ -507,7 +507,7 @@ class DictionaryList extends DefaultDataWithLife {
         }
         pitem[childrenProp] = ditem.dictionary.getPageList(modType, payload)
       }
-      pagelist[usePageList ? '$push' : 'push'](pitem)
+      pagelist[payload.usePageList ? '$push' : 'push'](pitem)
     }
     return pagelist
   }
