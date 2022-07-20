@@ -67,7 +67,7 @@ class StatusData extends Data {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  install (target: BaseData) {
+  $install (target: BaseData) {
     target.$onLife('beforeReset', {
       id: this.$getId('BeforeReset'),
       data: (instantiater, resetOption) => {
@@ -81,7 +81,7 @@ class StatusData extends Data {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  uninstall(target: BaseData) {
+  $uninstall(target: BaseData) {
     target.$offLife('beforeReset', this.$getId('BeforeReset'))
   }
 }

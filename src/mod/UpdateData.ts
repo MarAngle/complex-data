@@ -236,7 +236,7 @@ class UpdateData extends DefaultData {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  install (target: BaseData) {
+  $install (target: BaseData) {
     target.$onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {
@@ -250,7 +250,7 @@ class UpdateData extends DefaultData {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  uninstall(target: BaseData) {
+  $uninstall(target: BaseData) {
     target.$offLife('reseted', this.$getId('Reseted'))
   }
 }

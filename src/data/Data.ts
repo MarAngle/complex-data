@@ -1,5 +1,6 @@
 import $func from 'complex-func'
 import { consoleType, exportOption } from 'complex-func/src/data/utils/exportMsg'
+import BaseData from './BaseData'
 
 let id = 0
 
@@ -10,8 +11,6 @@ function createId(): string {
 
 class Data {
   readonly $id!: string
-  $install?: (parent?: Data) => void
-  $uninstall?: (parent?: Data) => void
   constructor() {
     Object.defineProperty(this, '$id', {
       enumerable: false,
@@ -49,6 +48,10 @@ class Data {
   $exportMsg (content: string, type: consoleType = 'error', option?: exportOption) {
     $func.exportMsg(this.$createMsg(content), type, option)
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  $install (target: BaseData) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  $uninstall (target: BaseData) {}
   toString ():string {
     return this.$selfName()
   }

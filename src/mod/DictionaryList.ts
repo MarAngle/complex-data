@@ -89,7 +89,7 @@ class DictionaryList extends DefaultData {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  install (target: BaseData) {
+  $install (target: BaseData) {
     // 监听事件
     this.$onLife('updated', {
       id: target.$getId('dictionaryUpdated'),
@@ -102,7 +102,7 @@ class DictionaryList extends DefaultData {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  uninstall (target: BaseData) {
+   $uninstall (target: BaseData) {
     // 停止监听事件
     this.$offLife('updated', target.$getId('dictionaryUpdated'))
   }
