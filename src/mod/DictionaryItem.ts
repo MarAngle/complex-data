@@ -5,12 +5,14 @@ import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import { anyFunction, baseObject, objectUnknown } from '../../ts'
+import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
 type payloadType = { targetData: objectUnknown, originData: objectUnknown, type: string, from?: string }
 
 type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
 
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
+  prop: string,
   label?: string | baseObject<string>
   type?: string | baseObject<string>
   showProp?: string | baseObject<string>
@@ -19,6 +21,7 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
   originFrom?: string | string[],
   layout?: LayoutDataInitOption,
   mod?: objectUnknown,
+  dictionary?: DictionaryListInitOption,
   func?: {
     format?: baseFuncType<unknown>,
     defaultGetData: false | baseFuncType<unknown>,
@@ -39,6 +42,7 @@ export type interfaceKeys = 'label' | 'type' | 'showProp' | 'showType' | 'origin
 class DictionaryItem extends SimpleData {
   prop: string
   originFrom: string[]
+  $dictionary?: DictionaryList
   $interface: {
     label: InterfaceData<string>
     type: InterfaceData<string>

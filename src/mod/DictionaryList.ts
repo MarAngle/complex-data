@@ -1,13 +1,13 @@
 import $func from 'complex-func'
 import LimitData, { LimitDataInitOption } from 'complex-func/src/build/LimitData'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
-import DictionaryItem from './DictionaryItem'
+import DictionaryItem, { DictionaryItemInitOption } from './DictionaryItem'
 import OptionData from './OptionData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import BaseData from '../data/BaseData'
+import Data from '../data/Data'
 
 // const propList = ['id', 'parentId', 'children']
-
 
 interface optionType {
   isChildren?: boolean,
@@ -16,15 +16,29 @@ interface optionType {
   tree?: boolean
 }
 
+type propDataItemType = {
+  prop: string,
+  data: any
+}
+
+type propDataType<T> = {
+  id: T,
+  parentId: T,
+  children: T
+}
+
 export interface DictionaryListInitOption extends DefaultDataInitOption {
-  option: optionType
+  option: optionType,
+  layout?: LayoutDataInitOption,
+  propData?: propDataType<string | propDataItemType>,
+  list: DictionaryItemInitOption[]
 }
 
 class DictionaryList extends DefaultData {
   $data: Map<string, DictionaryItem>
   $layout!: LayoutData
   $option: OptionData
-  $propData: any
+  $propData: propDataType<propDataItemType>
   constructor (initOption: DictionaryListInitOption) {
     super(initOption)
     this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
@@ -50,7 +64,8 @@ class DictionaryList extends DefaultData {
     }
     this.$data = new Map<string, DictionaryItem>()
     this.$initOption(initOption.option)
-    // this.$initDictionaryItem(initOption)
+    this.$setLayout(initOption.layout)
+    this.$initDictionaryList(initOption.list)
     this.$triggerCreateLife('DictionaryList', 'created', initOption)
   }
   $initOption (option: optionType = {}) {
@@ -63,6 +78,153 @@ class DictionaryList extends DefaultData {
         (this.$option as any).setData(prop, $func.getLimitData(data as LimitDataInitOption, 'allow'), 'init')
       }
     }
+  }
+
+  $initDictionaryList(initOptionList: DictionaryItemInitOption[], type = 'replace') {
+    // 触发update生命周期
+    this.$triggerLife('beforeUpdate', this, initOptionList, type)
+    if (type == 'init') {
+      this.$data.clear()
+    }
+    const parentData = this.$getParent()
+    const isChildren = this.$option.getData('isChildren') as boolean
+    for (const n in initOptionList) {
+      const ditemOption = initOptionList[n]
+      // 判断是否为一级，不为一级需要将一级的默认属性添加
+      this.$parseOptionFromParent(ditemOption, parentData, isChildren)
+      let ditem = this.$getItem(ditemOption.prop)
+      const act = {
+        build: true,
+        children: true
+      }
+      if (ditem) {
+        if (type == 'init') {
+          // 加载模式下不能出现相同字段=加载模式出发前会先清空
+          act.build = false
+          act.children = false
+          this.$exportMsg(`字典列表加载:${ditemOption.prop}重复!`)
+        } else if (type == 'push') {
+          // 添加模式，不对相同ditem做处理，仅对子数据做处理
+          act.build = false
+        } else if (type == 'replace') {
+          // 重构模式，相同字段替换
+        }
+      }
+      // 无对应值，直接添加
+      if (act.build) {
+        // 构建字典数据
+        ditemOption.parent = this
+        ditem = new DictionaryItem(ditemOption, {
+          layout: this.$getLayout()
+        })
+        this.$data.set(ditem.prop, ditem)
+      }
+      if (act.children) {
+        // 构建子字典列表
+        this.$initDictionaryItemChildren(ditem!, ditemOption)
+      }
+    }
+  }
+  /**
+   * 加载默认初始值.子类自动按照父类来源设置
+   * @param {object} optiondata DictionaryItem初始化参数
+   * @param {*} parentData 父元素
+   * @param {*} isChildren 是否是子类
+   */
+  $parseOptionFromParent (optiondata: DictionaryItemInitOption, parentData?: Data, isChildren?: boolean) {
+    if (isChildren && !optiondata.originFrom && parentData && (parentData as DictionaryItem).originFrom) {
+      optiondata.originFrom = (parentData as DictionaryItem).originFrom
+    }
+  }
+  /**
+   * 解析字典初始化数据,获取子字典创建模式
+   * @param {DictionaryItem} ditem 对应字典实例
+   * @param {object} originOption 字典初始化数据
+   * @returns {'' | 'self' | 'build'}
+   */
+  $parseChildrenBuildType (ditem: DictionaryItem, originOption: DictionaryItemInitOption) {
+    let initOption:DictionaryListInitOption | string | undefined = originOption.dictionary
+    let type: '' | 'self' | 'build' = ''
+    if (this.$option.getData('tree') && (this.$getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
+      initOption = 'self'
+    }
+    if (initOption == 'self') {
+      type = 'self'
+      if (originOption.type === undefined) {
+        ditem.$setInterface('type', 'default', 'array')
+      }
+    } else if (initOption) {
+      type = 'build'
+    }
+    return type
+  }
+  /**
+   * 创建字典的子字典列表
+   * @param {DictionaryItem} ditem 对应字典实例
+   * @param {object} originOption 字典初始化数据
+   * @param {boolean} isChildren 是否子类
+   */
+  $initDictionaryItemChildren (ditem: DictionaryItem, originOption: DictionaryItemInitOption, isChildren = true) {
+    const type = this.$parseChildrenBuildType(ditem, originOption)
+    if (type == 'build') {
+      const initOption = originOption.dictionary as DictionaryListInitOption
+      if (!initOption.option) {
+        initOption.option = {}
+      }
+      if (initOption.option.isChildren === undefined) {
+        initOption.option.isChildren = isChildren
+      }
+      // 默认加载本级的build设置
+      if (!initOption.option.build) {
+        initOption.option.build = this.$option.getData('build') as LimitData
+      }
+      initOption.parent = ditem
+      if (!initOption.layout) {
+        initOption.layout = this.$getLayout()
+      }
+      ditem.$dictionary = new DictionaryList(initOption)
+    } else if (type == 'self') {
+      ditem.$dictionary = this
+    }
+  }
+
+
+  /**
+   * 获取字典对象
+   * @param {*} data 值
+   * @param {string} [prop] 判断的属性
+   * @returns {DictionaryItem}
+   */
+  $getItem (data: string): undefined | DictionaryItem
+  $getItem (data: any, prop: string): undefined | DictionaryItem
+  $getItem (data: string | any, prop?: string) {
+    if (!prop) {
+      return this.$data.get(data)
+    } else {
+      for (const ditem of this.$data.values()) {
+        if ((ditem as any)[prop] == data) {
+          return ditem
+        }
+      }
+    }
+  }
+  /**
+   * 设置字典值
+   * @param {*} data 值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   */
+  $setPropData (data: any, target:'data' | 'prop' = 'data', prop: 'id' | 'parentId' | 'children' = 'id') {
+    this.$propData[prop][target] = data
+  }
+  /**
+   * 获取字典值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   * @returns {*}
+   */
+  $getPropData (target:'data' | 'prop' = 'data', prop: 'id' | 'parentId' | 'children' = 'id') {
+    return this.$propData[prop][target]
   }
   /**
    * 设置LayoutData

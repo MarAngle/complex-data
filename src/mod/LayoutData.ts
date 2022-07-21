@@ -34,26 +34,28 @@ export interface LayoutDataFormatData {
   content: LayoutDataDataType
 }
 
-export interface LayoutDataInitOption {
+export interface LayoutDataInitOptionOption {
   default: LayoutDataInitOptionType,
   [prop: string]: LayoutDataInitOptionType
 }
 
+export type LayoutDataInitOption = LayoutDataInitOptionOption | LayoutData
+
 class LayoutData extends Data {
   data!: InterfaceData<LayoutDataFormatData>
-  constructor (initOption?: LayoutData | LayoutDataInitOption) {
+  constructor (initOption?: LayoutDataInitOption) {
     if (initOption && initOption.constructor === LayoutData) {
       return initOption
     } else {
       super()
-      this.initData(initOption as LayoutDataInitOption)
+      this.initData(initOption as LayoutDataInitOptionOption)
     }
   }
   /**
    * 加载
    * @param {*} initOption 参数
    */
-  initData (initOption?: LayoutDataInitOption) {
+  initData (initOption?: LayoutDataInitOptionOption) {
     if (!initOption) {
       initOption = {
         default: undefined
