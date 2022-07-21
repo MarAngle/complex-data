@@ -104,7 +104,7 @@ class ModuleData extends Data {
     if (modData) {
       // 存在旧数据时需要对旧数据进行卸载操作
       if (modData.$uninstall) {
-        modData.$uninstall(this.$getParent())
+        modData.$uninstall(this.$getParent()!)
       }
       this[modName] = undefined
     }
@@ -118,7 +118,7 @@ class ModuleData extends Data {
   $installData(modName: moduleKeys, modData: Data) {
     (this as any)[modName] = modData
     if (modData && modData.$install) {
-      modData.$install(this.$getParent())
+      modData.$install(this.$getParent()!)
     }
   }
   /**

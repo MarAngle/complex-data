@@ -1,6 +1,6 @@
 import $func from 'complex-func'
 import { formatInitOption } from '../utils'
-import dictionaryFormatOption from './../../DictionaryFormatOption'
+import dictionaryFormatOption from './../../dictionaryFormatOption'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'

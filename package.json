@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/MarAngle/complex-data.git"
   },
   "dependencies": {
-    "complex-func": "3.0.0-beta.5"
+    "complex-func": "3.0.0-beta.6"
   },
   "devDependencies": {},
   "scripts": {
