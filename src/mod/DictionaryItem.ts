@@ -4,7 +4,7 @@ import { formatInitOption } from '../utils'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
-import { anyFunction, baseObject, objectUnknown } from '../../ts'
+import { anyFunction, baseObject, objectAny, objectUnknown } from '../../ts'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
 type payloadType = { targetData: objectUnknown, originData: objectUnknown, type: string, from?: string }
@@ -225,6 +225,37 @@ class DictionaryItem extends SimpleData {
       return false
     }
   }
+
+
+  /**
+   * 将数据值挂载到目标数据的prop属性上
+   * @param {object} targetData 目标数据
+   * @param {string} prop 属性
+   * @param {*} oData 数据源数据
+   * @param {string} type 数据类型
+   * @param {string} [formatFuncName] 需要触发的数据格式化函数名称
+   * @param {object} [payload] originData(接口源数据)/targetData(本地目标数据)/type(数据来源接口)
+   */
+  $formatData(targetData: objectAny, prop: string, oData: any, type: string, formatFuncName: string, payload: {
+    targetData: objectAny,
+    originData: objectAny,
+    depth: number,
+    type: string
+  }) {
+    let tData
+    if (formatFuncName) {
+      tData = this.$triggerFunc(formatFuncName, oData, payload)
+    } else {
+      tData = oData
+    }
+    if (type == 'number') {
+      tData = $func.formatNum(tData)
+    } else if (type == 'boolean') {
+      tData = !!tData
+    }
+    $func.setProp(targetData, prop, tData, true)
+  }
+
   /**
    * 生成formData的prop值，基于自身从originData中获取对应属性的数据并返回
    * @param {string} modType modType
@@ -256,7 +287,7 @@ class DictionaryItem extends SimpleData {
       // 调用模块的readyData
       if (mod.readyData) {
         mod.readyData().then(() => { /* */ }, (err: any) => {
-            this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
+          this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
             data: err,
             type: 'error'
           })

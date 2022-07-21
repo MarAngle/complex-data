@@ -6,8 +6,17 @@ import OptionData from './OptionData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
+import { objectAny } from '../../ts'
 
 // const propList = ['id', 'parentId', 'children']
+
+
+type formatOptionBuild = LimitDataInitOption | LimitData
+
+interface formatOption {
+  clear?: boolean,
+  build?: formatOptionBuild
+}
 
 interface optionType {
   isChildren?: boolean,
@@ -187,6 +196,158 @@ class DictionaryList extends DefaultData {
       ditem.$dictionary = this
     }
   }
+
+
+
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetList 目标列表
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   */
+   formatListData (targetList: objectAny[], originList: objectAny[], originFrom = 'list', option:formatOption = {}, formatPrototype = true, depth?: number) {
+    if (option.clear === undefined || option.clear) {
+      $func.clearArray(targetList)
+    }
+    for (const n in originList) {
+      const item = this.buildData(originList[n], originFrom, option.build, formatPrototype, depth)
+      targetList.push(item)
+    }
+  }
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  buildData(originData:objectAny, originFrom = 'list', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+    return this.updateData({}, originData, originFrom, option, formatPrototype, depth)
+  }
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  updateData(targetData: objectAny, originData: formatOptionBuild, originFrom = 'info', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+    return this.formatData(targetData, originData, originFrom, option, formatPrototype, depth)
+  }
+  /**
+   * 根据字典格式化数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  formatData(targetData: objectAny, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+    if (!targetData) {
+      targetData = {}
+    }
+    if (!originData) {
+      originData = {}
+    }
+    if (!originFrom) {
+      originFrom = 'list'
+    }
+    if (!option) {
+      option = this.$option.getData('build') as LimitData
+    }
+    if (!(option as any).getLimit) {
+      option = $func.getLimitData(option)
+    }
+    if (depth === undefined) {
+      depth = 0
+    }
+    return this.$formatDataStart(targetData, originData, originFrom, option as LimitData, !!formatPrototype, depth)
+  }
+  $formatPrototype(targetData: objectAny, depth: number) {
+    const currentPrototype = Object.create(Object.getPrototypeOf(targetData))
+    currentPrototype.$depth = depth
+    Object.setPrototypeOf(targetData, currentPrototype)
+  }
+  /**
+   * 根据字典格式化数据START
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  $formatDataStart(targetData: objectAny, originData: objectAny, originFrom: string, option: LimitData, formatPrototype: boolean, depth = 0) {
+    for (const ditem of this.$data.values()) {
+      this.$formatDataNext(ditem, targetData, originData, originFrom, option, formatPrototype, depth)
+    }
+    if (formatPrototype) {
+      this.$formatPrototype(targetData, depth)
+    }
+    return targetData
+  }
+  /**
+   * 格式化数据
+   * @param {DictionaryItem} ditem 字典
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} originFrom 来源originFrom
+   * @param {object} [option] 设置项
+   * @param {boolean} [formatPrototype] 是否格式化原型
+   * @param {number} [depth] 深度
+   * @returns {object}
+   */
+  $formatDataNext(ditem: DictionaryItem, targetData: objectAny, originData: objectAny, originFrom: string, option: LimitData, formatPrototype: boolean, depth: number) {
+    let build = false
+    if (ditem.$isOriginFrom(originFrom)) {
+      build = true
+    } else if (option.getLimit(originFrom)) {
+      build = false
+    }
+    if (build) {
+      const type = ditem.$getInterface('type', originFrom) as string
+      const originProp = ditem.$getInterface('originProp', originFrom) as string
+      let oData = $func.getProp(originData, originProp)
+      if (ditem.$dictionary) {
+        depth++
+        if (type != 'array') {
+          if ($func.getType(oData) == 'object') {
+            oData = ditem.$dictionary.$formatDataStart({}, oData, originFrom, option, formatPrototype, depth)
+          } else {
+            oData = {}
+          }
+        } else {
+          if ($func.getType(oData) == 'array') {
+            const oList = []
+            for (let i = 0; i < oData.length; i++) {
+              const oItem = ditem.$dictionary.$formatDataStart({}, oData[i], originFrom, option, formatPrototype, depth)
+              oList.push(oItem)
+            }
+            oData = oList
+          } else {
+            oData = []
+          }
+        }
+      }
+      ditem.$formatData(targetData, ditem.prop, oData, type, 'format', {
+        targetData: targetData,
+        originData: originData,
+        depth: depth,
+        type: originFrom
+      })
+    }
+  }
+
 
 
   /**
