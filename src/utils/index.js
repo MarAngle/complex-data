@@ -50,7 +50,7 @@ utils.createDictionaryPageList = function(type, olist) {
     const deleteItem = this.pop()
     const deleteItemProp = deleteItem.prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
-    this.$order.splice(this.$order.indexOf(this.$order), 1)
+    this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
     this.$map.hidden.delete(deleteItemProp)
   })
@@ -58,7 +58,7 @@ utils.createDictionaryPageList = function(type, olist) {
     const deleteItem = this.shift()
     const deleteItemProp = deleteItem.prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
-    this.$order.splice(this.$order.indexOf(this.$order), 1)
+    this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
     this.$map.hidden.delete(deleteItemProp)
   })
