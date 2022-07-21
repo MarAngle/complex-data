@@ -1,6 +1,6 @@
 import $func from 'complex-func'
 import { formatInitOption } from '../utils'
-// import modOption from '../../modOption'
+import dictionaryFormatOption from './../../DictionaryFormatOption'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
@@ -10,6 +10,15 @@ import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 type payloadType = { targetData: objectUnknown, originData: objectUnknown, type: string, from?: string }
 
 type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
+
+export interface DictionaryItemModType {
+  $children?: true | string,
+  [prop: PropertyKey]: any
+}
+
+export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
+  prop: string
+}
 
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
   prop: string,
@@ -53,7 +62,7 @@ class DictionaryItem extends SimpleData {
   }
   $layout!: LayoutData
   $mod: {
-    [prop: string]: objectUnknown
+    [prop: string]: DictionaryItemModType
   }
   $func!: {
     format?: false | baseFuncType<unknown>
@@ -99,7 +108,7 @@ class DictionaryItem extends SimpleData {
     this.$setLayout(initOption.layout, payload.layout)
 
     this.$mod = {}
-    // modOption.format(this, initOption.mod)
+    dictionaryFormatOption.format(this, initOption.mod)
     this.$formatFunc()
   }
   /**
@@ -180,6 +189,9 @@ class DictionaryItem extends SimpleData {
         return $func.isExist(data)
       }
     }
+  }
+  $getModData(modType: string, payload?: objectAny) {
+    return dictionaryFormatOption.unformat(this, modType, payload)
   }
   /**
    * 判断是否存在来源

@@ -7,6 +7,7 @@ import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './Layout
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 import { objectAny } from '../../ts'
+import PageList from './PageList'
 
 // const propList = ['id', 'parentId', 'children']
 
@@ -348,6 +349,41 @@ class DictionaryList extends DefaultData {
     }
   }
 
+  $getList(modType: string, dataMap?: Map<string, DictionaryItem>) {
+    if (!dataMap) {
+      dataMap = this.$data
+    }
+    const list: DictionaryItem[] = []
+    for (const ditem of dataMap.values()) {
+      const mod = ditem.$getMod(modType)
+      if (mod) {
+        list.push(ditem)
+      }
+    }
+    return list
+  }
+  $getPageList(modType: string, payload?: objectAny) {
+    return this.$buildPageList(modType, this.$getList(modType), payload)
+  }
+  $buildPageList(modType: string, list: DictionaryItem[], payload?: objectAny) {
+    const pageList = new PageList()
+    for (let n = 0; n < list.length; n++) {
+      const ditem = list[n]
+      const pitem = ditem.$getModData(modType, payload)
+      if (ditem.$dictionary) {
+        const mod = ditem.$getMod(modType)
+        if (mod && mod.$children) {
+          let childrenProp = mod.$children
+          if (childrenProp === true) {
+            childrenProp = 'children'
+          }
+          pitem[childrenProp] = ditem.$dictionary.$getPageList(modType, payload)
+        }
+      }
+      pageList.push(pitem)
+    }
+    return pageList
+  }
 
 
   /**
