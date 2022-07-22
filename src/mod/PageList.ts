@@ -142,7 +142,7 @@ class PageList extends Data {
     this.$data = data
     this.$observe()
   }
-  $triggerObserve (prop: string, val: any, from: string) {
+  $triggerObserve (prop: string, val: any, from?: string) {
     this.$map.data.forEach((item) => {
       if (item.edit.$observe) {
         item.edit.$observe(this, prop, val, from)
@@ -150,20 +150,36 @@ class PageList extends Data {
     })
   }
   $observe () {
+    this.clearObserve()
+    if (this.$data) {
+      for (const prop in this.$data) {
+        this.addObserve(prop, new $func.Watcher(this.$data, prop, {
+          deep: true,
+          handler: (val) => {
+            this.$triggerObserve(prop, val, 'watch')
+          }
+        }), false, 'init')
+      }
+    }
+  }
+  addObserve (prop: string, watcher: Watcher, unTriggerObserve?: boolean, from?: string) {
+    this.$watch.set(prop, watcher)
+    if (!unTriggerObserve) {
+      this.$triggerObserve(prop, this.$data![prop], from)
+    }
+  }
+  delObserve (prop: string) {
+    const watcher = this.$watch.get(prop)
+    if (watcher) {
+      watcher.stop()
+      this.$watch.delete(prop)
+    }
+  }
+  clearObserve () {
     this.$watch.forEach(function(watcher) {
       watcher.stop()
     })
-    if (this.$data) {
-      for (const prop in this.$data) {
-        this.$watch.set(prop, new Watcher(this.$data, prop, {
-          deep: true,
-          handler: (val: any) => {
-            this.$triggerObserve(prop, val, 'watch')
-          }
-        }))
-        this.$triggerObserve(prop, this.$data[prop], 'init')
-      }
-    }
+    this.$watch.clear()
   }
 }
 
