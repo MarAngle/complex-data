@@ -6,6 +6,8 @@ import { LifeDataInitOption } from '../mod/LifeData'
 import { anyPromiseFunction, objectAny } from '../../ts'
 import { offsetType } from '../mod/UpdateData'
 import { anyFunction } from 'complex-require/ts'
+import DictionaryItem, { DictionaryItemInitOption } from '../mod/DictionaryItem'
+import { formatOption, formatOptionBuild, formDataOption } from '../mod/DictionaryList'
 
 
 export interface forceObjectType {
@@ -175,7 +177,149 @@ class BaseData extends DefaultData {
   /* --- update end --- */
 
 
+  /* --- dictionary start --- */
+  /**
+   * 重新构建字典列表
+   * @param {*} dictionary 字典列表构建参数
+   * @param {*} type :type 字典构建类型
+   */
+  $rebuildDictionary (dictionaryOption: DictionaryItemInitOption[], type: string) {
+    this.$module.dictionary!.rebuildData(dictionaryOption, type)
+    this.$syncData('rebuildDictionary')
+  }
+  /**
+   * 获取字典对象
+   * @param {*} data 值
+   * @param {string} [prop] 判断的属性
+   * @returns {DictionaryData}
+   */
+  $getDictionaryItem (data: string): undefined | DictionaryItem
+  $getDictionaryItem (data: any, prop: string): undefined | DictionaryItem
+  $getDictionaryItem (data: string | any, prop?: string) {
+    if (!prop) {
+      return this.$module.dictionary!.getItem(data)
+    } else {
+      return this.$module.dictionary!.getItem(data, prop)
+    }
+  }
+  /**
+   * 设置字典值
+   * @param {*} data 值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   */
+  $setDictionaryPropData (data: any, target:'data' | 'prop' = 'data', prop: 'id' | 'parentId' | 'children' = 'id') {
+    this.$module.dictionary!.$setPropData(data, target, prop)
+    this.$syncData('setDictionaryPropData')
+  }
+  /**
+   * 获取字典值
+   * @param {'data' | 'prop'} [target = 'data'] 目标属性
+   * @param {'id' | 'parentId' | 'children'} [prop = 'id'] 目标
+   * @returns {*}
+   */
+  $getDictionaryPropData (target:'data' | 'prop' = 'data', prop: 'id' | 'parentId' | 'children' = 'id') {
+    return this.$module.dictionary!.$getPropData(target, prop)
+  }
+  /**
+   * 获取符合模块要求的字典列表
+   * @param {string} modType 模块名称
+   * @param {object} [payload] 参数
+   * @returns {DictionaryItem[]}
+   */
+  $getDictionaryList (modType: string, dataMap?: Map<string, DictionaryItem>) {
+    return this.$module.dictionary!.$getList(modType, dataMap)
+  }
+  /**
+   * 获取符合模块要求的字典PageList列表
+   * @param {string} modType 模块名称
+   * @param {object} [payload] 参数
+   * @returns {DictionaryItem[]}
+   */
+  $getDictionaryPageList (modType: string, payload?: objectAny) {
+    return this.$module.dictionary!.$getPageList(modType, payload)
+  }
+  /**
+   * 获取符合模块要求的字典PageList列表
+   * @param {string} modType 模块名称
+   * @param {object} [payload] 参数
+   * @returns {DictionaryItem[]}
+   */
+   $buildDictionaryPageList (modType: string, list: DictionaryItem[], payload?: objectAny) {
+    return this.$module.dictionary!.$buildPageList(modType, list, payload)
+  }
 
+  /**
+   * 根据模块列表生成对应的form对象
+   * @param {DictionaryData[]} modList 模块列表
+   * @param {string} modType 模块名称
+   * @param {*} originData 初始化数据
+   * @param {object} option 设置项
+   * @param {object} [option.form] 目标form数据
+   * @param {string} [option.from] 调用来源
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @returns {object}
+   */
+   $buildDictionaryFormData (modList: DictionaryItem[], modType: string, originData: any, option:formDataOption = {}) {
+    return this.$module.dictionary!.$buildFormData(modList, modType, originData, option)
+  }
+  /**
+   * 根据源数据格式化生成对象
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @returns {object}
+   */
+   $buildData (originData:objectAny, originFrom?: string, option?: formatOptionBuild) {
+    return this.$module.dictionary!.buildData(originData, originFrom, option)
+  }
+  /**
+   * 根据源数据更新数据
+   * @param {object} targetData 目标数据
+   * @param {object} originData 源数据
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   * @returns {object}
+   */
+   $updateData (targetData: objectAny, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild) {
+    return this.$module.dictionary!.updateData(targetData, originData, originFrom, option)
+  }
+  /**
+   * 格式化列表数据
+   * @param {object[]} targetList 目标列表
+   * @param {object[]} originList 源数据列表
+   * @param {string} [originFrom] 来源originFrom
+   * @param {object} [option] 设置项
+   */
+   $formatListData (targetList: objectAny[], originList: objectAny[], originFrom = 'list', option:formatOption = {}) {
+    this.$module.dictionary!.formatListData(targetList, originList, originFrom, option)
+    this.$syncData('formatListData')
+  }
+  // /**
+  //  * 根据源数据格式化生成对象并更新到targetData中
+  //  * @param {object} targetData 目标数据
+  //  * @param {object} originData 源数据
+  //  * @param {string} [originFrom] 来源originFrom
+  //  * @param {object} [option] 更新设置项
+  //  */
+  // formatItemData (targetData, originData, originFrom, option = {}) {
+  //   if (!option.type) {
+  //     option.type = 'add'
+  //   }
+  //   let item = this.formatItem(originData, originFrom)
+  //   _func.updateData(targetData, item, option)
+  // }
+  /**
+   * 基于formdata和模块列表返回编辑完成的数据
+   * @param {object} formData form数据
+   * @param {DictionaryData[]} modList 模块列表
+   * @param {string} modType modType
+   * @returns {object}
+   */
+  $buildEditData (formData: objectAny, modList: DictionaryItem[], modType: string) {
+    return this.$module.dictionary!.$buildEditData(formData, modList, modType)
+  }
+  /* --- dictionary end --- */
 
 
 
@@ -226,8 +370,6 @@ class BaseData extends DefaultData {
     }
   }
   /* --- pagination end --- */
-
-
 
 
   /* --- choice start --- */
@@ -521,7 +663,7 @@ $triggerGetData (...args: any[]) {
    * 清空数组
    * @param {array} list 数组
    */
-  $resetArray(list = []) {
+  $resetArray(list: any[] = []) {
     $func.clearArray(list)
   }
   /**

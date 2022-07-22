@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import $func from 'complex-func'
 import { consoleType, exportOption } from 'complex-func/src/data/utils/exportMsg'
 import BaseData from './BaseData'
@@ -19,6 +21,7 @@ class Data {
       value: createId()
     })
   }
+  $syncData(...args: any[]) {}
   $getId (prop = ''): string {
     return this.$id + prop
   }
@@ -48,9 +51,7 @@ class Data {
   $exportMsg (content: string, type: consoleType = 'error', option?: exportOption) {
     $func.exportMsg(this.$createMsg(content), type, option)
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   $install (target: BaseData) {}
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   $uninstall (target: BaseData) {}
   toString ():string {
     return this.$selfName()

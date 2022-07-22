@@ -251,7 +251,7 @@ class DictionaryItem extends SimpleData {
   $formatData(targetData: objectAny, prop: string, oData: any, type: string, formatFuncName: string, payload: {
     targetData: objectAny,
     originData: objectAny,
-    depth: number,
+    depth?: number,
     type: string
   }) {
     let tData
@@ -277,15 +277,15 @@ class DictionaryItem extends SimpleData {
    * @param {string} [option.from] 调用来源
    * @returns {*}
    */
-  $getFormData (modType: string, { targetData, originData, from = 'init' }: payloadType) {
-    const mod = this.$getMod(modType) as any
+  $getFormData ({ targetData, originData, type, from = 'init' }: payloadType) {
+    const mod = this.$getMod(type) as any
     let tData
     // 不存在mod情况下生成值无意义，不做判断
     if (mod) {
       // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
       if (originData) {
         tData = this.$triggerFunc('edit', originData[this.prop], {
-          type: modType,
+          type: type,
           targetData,
           originData
         })
@@ -299,7 +299,7 @@ class DictionaryItem extends SimpleData {
       // 调用模块的readyData
       if (mod.readyData) {
         mod.readyData().then(() => { /* */ }, (err: any) => {
-          this.$exportMsg(`${modType}模块readyData调用失败！`, 'error', {
+          this.$exportMsg(`${type}模块readyData调用失败！`, 'error', {
             data: err,
             type: 'error'
           })
@@ -308,7 +308,7 @@ class DictionaryItem extends SimpleData {
       // 模块存在edit函数时将当前数据进行edit操作
       if (mod.$func && mod.$func.edit) {
         tData = mod.$func.edit(tData, {
-          type: modType,
+          type: type,
           targetData,
           originData,
           from: from

@@ -12,9 +12,9 @@ import PageList from './PageList'
 // const propList = ['id', 'parentId', 'children']
 
 
-type formatOptionBuild = LimitDataInitOption | LimitData
+export type formatOptionBuild = LimitDataInitOption | LimitData
 
-interface formatOption {
+export interface formatOption {
   clear?: boolean,
   build?: formatOptionBuild
 }
@@ -35,6 +35,12 @@ type propDataType<T> = {
   id: T,
   parentId: T,
   children: T
+}
+
+export interface formDataOption {
+  form?: objectAny,
+  from?: string,
+  limit?: LimitData | LimitDataInitOption,
 }
 
 export interface DictionaryListInitOption extends DefaultDataInitOption {
@@ -90,6 +96,10 @@ class DictionaryList extends DefaultData {
     }
   }
 
+  // 重新创建字典列表
+  rebuildData (initOption: DictionaryItemInitOption[], type = 'replace') {
+    this.$initDictionaryList(initOption, type)
+  }
   $initDictionaryList(initOptionList: DictionaryItemInitOption[], type = 'replace') {
     // 触发update生命周期
     this.$triggerLife('beforeUpdate', this, initOptionList, type)
@@ -102,7 +112,7 @@ class DictionaryList extends DefaultData {
       const ditemOption = initOptionList[n]
       // 判断是否为一级，不为一级需要将一级的默认属性添加
       this.$parseOptionFromParent(ditemOption, parentData, isChildren)
-      let ditem = this.$getItem(ditemOption.prop)
+      let ditem = this.getItem(ditemOption.prop)
       const act = {
         build: true,
         children: true
@@ -385,6 +395,79 @@ class DictionaryList extends DefaultData {
     return pageList
   }
 
+  /**
+   * 根据模块列表生成对应的form对象
+   * @param {DictionaryItem[]} modList 模块列表
+   * @param {string} modType 模块名称
+   * @param {*} originData 初始化数据
+   * @param {object} option 设置项
+   * @param {object} [option.form] 目标form数据
+   * @param {string} [option.from] 调用来源
+   * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
+   * @returns {object}
+   */
+   $buildFormData(modList: DictionaryItem[], modType: string, originData: any, option:formDataOption = {}) {
+    const formData = option.form || {}
+    const from = option.from
+    const limit = $func.getLimitData(option.limit)
+    const size = modList.length
+    for (let n = 0; n < size; n++) {
+      const ditem = modList[n]
+      if (!limit.getLimit(ditem.prop)) {
+        const tData = ditem.$getFormData({
+          targetData: formData,
+          originData: originData,
+          type: modType,
+          from: from
+        })
+        $func.setProp(formData, ditem.prop, tData, true)
+      }
+    }
+    return formData
+  }
+  /**
+   * 基于formdata和模块列表返回编辑完成的数据
+   * @param {object} formData form数据
+   * @param {DictionaryItem[]} modList 模块列表
+   * @param {string} modType modType
+   * @returns {object}
+   */
+  $buildEditData(formData: objectAny, modList: DictionaryItem[], modType: string) {
+    const editData = {}
+    for (let n = 0; n < modList.length; n++) {
+      const ditem = modList[n]
+      let add = true
+      if (!ditem.$mod[modType].required) {
+        /*
+          存在check则进行check判断
+          此时赋值存在2种情况
+          1.不存在check 返回data ,data为真则赋值
+          2.存在check,返回check函数返回值，为真则赋值
+        */
+        add = ditem.$triggerFunc('check', formData[ditem.prop], {
+          targetData: editData,
+          originData: formData,
+          type: modType
+        })
+        // empty状态下传递数据 或者 checkFg为真时传递数据 也就是empty为false状态的非真数据不传递
+        if (!add) {
+          add = this.$option.getData('empty') as boolean
+        }
+      }
+      if (add) {
+        let oData = formData[ditem.prop]
+        if (ditem.$mod[modType].trim) {
+          oData = $func.trimData(oData)
+        }
+        ditem.$formatData(editData, ditem.$getInterface('originProp', modType)!, oData, ditem.$getInterface('type', modType)!, 'post', {
+          targetData: editData,
+          originData: formData,
+          type: modType
+        })
+      }
+    }
+    return editData
+  }
 
   /**
    * 获取字典对象
@@ -392,9 +475,9 @@ class DictionaryList extends DefaultData {
    * @param {string} [prop] 判断的属性
    * @returns {DictionaryItem}
    */
-  $getItem (data: string): undefined | DictionaryItem
-  $getItem (data: any, prop: string): undefined | DictionaryItem
-  $getItem (data: string | any, prop?: string) {
+  getItem (data: string): undefined | DictionaryItem
+  getItem (data: any, prop: string): undefined | DictionaryItem
+  getItem (data: string | any, prop?: string) {
     if (!prop) {
       return this.$data.get(data)
     } else {
