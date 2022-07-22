@@ -143,7 +143,6 @@ utils.createDictionaryPageList = function(type, olist) {
       this.$addItemByPreIndex(totalIndex - 1, target)
     }
   })
-
   def(list, 'setData', function(data) {
     _func.observe(data)
     this.$data = data
@@ -157,20 +156,36 @@ utils.createDictionaryPageList = function(type, olist) {
     })
   })
   def(list, '$observe', function() {
-    this.$watch.forEach(function(watcher) {
-      watcher.stop()
-    })
+    this.clearObserve()
     if (this.$data) {
       for (const prop in this.$data) {
-        this.$watch.set(prop, new _func.Watcher(this.$data, prop, {
+        this.addObserve(prop, new _func.Watcher(this.$data, prop, {
           deep: true,
           handler: (val) => {
             this.$triggerObserve(prop, val, 'watch')
           }
-        }))
-        this.$triggerObserve(prop, this.$data[prop], 'init')
+        }), false, 'init')
       }
     }
+  })
+  def(list, 'addObserve', function(prop, watcher, unTriggerObserve, from) {
+    this.$watch.set(prop, watcher)
+    if (!unTriggerObserve) {
+      this.$triggerObserve(prop, this.$data[prop], from)
+    }
+  })
+  def(list, 'delObserve', function(prop) {
+    let watcher = this.$watch.get(prop)
+    if (watcher) {
+      watcher.stop()
+      this.$watch.delete(prop)
+    }
+  })
+  def(list, 'clearObserve', function() {
+    this.$watch.forEach(function(watcher) {
+      watcher.stop()
+    })
+    this.$watch.clear()
   })
   if (olist) {
     for (let i = 0; i < olist.length; i++) {
