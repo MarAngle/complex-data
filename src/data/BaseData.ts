@@ -3,9 +3,8 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import ModuleData, { ModuleDataInitOption, moduleKeys } from './../mod/ModuleData'
 import { formatInitOption } from '../utils'
 import { LifeDataInitOption } from '../mod/LifeData'
-import { anyPromiseFunction, objectAny } from '../../ts'
+import { anyFunction, anyPromiseFunction, objectAny, objectUnknown } from '../../ts'
 import { offsetType } from '../mod/UpdateData'
-import { anyFunction } from 'complex-require/ts'
 import DictionaryItem, { DictionaryItemInitOption } from '../mod/DictionaryItem'
 import { formatOption, formatOptionBuild, formDataOption } from '../mod/DictionaryList'
 
@@ -18,7 +17,7 @@ export type forceType = boolean | forceObjectType
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   life?: LifeDataInitOption,
-  data?: objectAny,
+  data?: objectUnknown,
   module?: ModuleDataInitOption
 }
 

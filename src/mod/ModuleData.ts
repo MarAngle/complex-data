@@ -9,8 +9,8 @@ import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
+import { objectUnknown } from '../../ts'
 // import SearchData, { SearchDataInitOption } from './../data/SearchData'
-import { objectUnknown } from 'complex-require/ts'
 
 const ModuleDictionaryMap = new Map()
 
