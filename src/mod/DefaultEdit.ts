@@ -1,52 +1,89 @@
 import $func from 'complex-func'
 import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
-import InterfaceData from './../../src/mod/InterfaceData'
-import config from '../../config'
+import InterfaceData, { InterfaceDataInitOption } from './../../src/mod/InterfaceData'
+import config, { DictType } from '../../config'
+import { objectAny, objectFunction } from '../../ts'
+import DictionaryItem from './DictionaryItem'
 
 
-export interface DefaultEditInitOption extends BaseDataInitOption {
-  type?: string,
-  reload?: boolean,
-  required?: boolean,
-  disabled?: boolean
+interface valueType {
+  default?: any,
+  init?: any,
+  reset?: any,
+  [prop: PropertyKey]: any
 }
 
-
+export interface DefaultEditInitOption extends BaseDataInitOption {
+  type?: string
+  reload?: boolean
+  required?: boolean
+  multiple?: boolean
+  disabled?: InterfaceDataInitOption<boolean>
+  placeholder?: InterfaceDataInitOption<string>
+  mainWidth?: string | number
+  width?: string | number
+  option?: objectAny
+  localOption?: objectAny
+  value?: valueType,
+  on: objectFunction
+  slot?: {
+    type?: string,
+    name?: string,
+    label?: string
+  }
+}
 
 class DefaultEdit extends BaseData {
   type: string
   reload: boolean
   required: boolean
-  disabled: boolean
-  constructor(initOption: DefaultEditInitOption, payload) {
+  multiple!: boolean
+  disabled: InterfaceData<boolean>
+  placeholder!: InterfaceData<string>
+  $mainWidth?: string
+  $width?: string
+  $value!: {
+    default: any,
+    init: any,
+    reset: any,
+    [prop: PropertyKey]: any
+  }
+  $option: objectAny
+  $localOption: objectAny
+  $on: objectFunction
+  $slot!: {
+    type: string,
+    name: string,
+    label: string
+  }
+  constructor(initOption: DefaultEditInitOption) {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
     }
     super(initOption)
-    this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption, payload)
+    this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
     this.type = initOption.type || 'input'
-    const defaultOption = config.option.getData(this.type)
+    const defaultOption = config.DefaultEdit.option.getData(this.type)
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = initOption.required || false
+    this.disabled = new InterfaceData(initOption.disabled || false)
+    this.$option = {}
+    // 组件事件监控
+    this.$on = initOption.on || {}
+    // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
+    // main = { props: {} } item = { props: {} }
+    this.$localOption = initOption.localOption || {}
     if (defaultOption) {
-      this.disabled = new InterfaceData(initOption.disabled || false)
       // 格式化占位符和检验规则
       if (defaultOption.placeholder) {
         if (!initOption.placeholder) {
-          this.placeholder = new InterfaceData(defaultOption.placeholder(this.getParent().getInterfaceData('label')))
+          this.placeholder = new InterfaceData(defaultOption.placeholder((this.$getParent() as DictionaryItem).$getInterfaceData('label')))
         } else {
           this.placeholder = new InterfaceData(initOption.placeholder)
         }
       }
-      this.$value = {}
-      this.option = {}
-      // 组件事件监控
-      this.on = initOption.on || {}
-      // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-      // main = { props: {} } item = { props: {} }
-      this.localOption = initOption.localOption || {}
       this.$initWidth(initOption, defaultOption)
-      this.$initValue(initOption, defaultOption)
+      this.$initValue(initOption.value, defaultOption)
       this.setMultiple(initOption.multiple || false)
       this.$initSlot(initOption)
       this.$initLocalOption(initOption)
@@ -55,58 +92,59 @@ class DefaultEdit extends BaseData {
     }
     this.$triggerCreateLife('DefaultEdit', 'created')
   }
-  $initWidth(initOption, defaultOption) {
+  $initWidth(initOption: DefaultEditInitOption, defaultOption: DictType) {
     // 宽度设置
     if (initOption.mainWidth) {
-      let type = $func.getType(initOption.mainWidth)
+      const type = $func.getType(initOption.mainWidth)
       if (type == 'number') {
-        this.mainWidth = initOption.mainWidth + 'px'
+        this.$mainWidth = initOption.mainWidth + 'px'
       } else {
-        this.mainWidth = initOption.mainWidth
+        this.$mainWidth = initOption.mainWidth as string 
       }
     }
     if (initOption.width) {
-      let type = $func.getType(initOption.width)
+      const type = $func.getType(initOption.width)
       if (type == 'number') {
-        this.width = initOption.width + 'px'
+        this.$width = initOption.width + 'px'
       } else {
-        this.width = initOption.width
+        this.$width = initOption.width as string
       }
     } else if (initOption.width === undefined && defaultOption.width) {
-      this.width = defaultOption.width
+      this.$width = defaultOption.width
     }
   }
   // slot格式化编辑数据
-  $initSlot (initOption) { // label / front / end
-    this.slot = initOption.slot || {}
-    if (!this.slot.type) { // slot类型 auto/main/item/model
-      this.slot.type = 'auto'
+  $initSlot (initOption: DefaultEditInitOption) { // label / front / end
+    this.$slot = initOption.slot || {} as any
+    if (!this.$slot.type) { // slot类型 auto/main/item/model
+      this.$slot.type = 'auto'
     }
-    if (!this.slot.name) { // name=>插槽默认名
-      this.slot.name = this.$prop
+    if (!this.$slot.name) { // name=>插槽默认名
+      this.$slot.name = this.$prop
     }
-    if (!this.slot.label) { // label=>title
-      this.slot.label = this.slot.name + '-label'
-    }
-  }
-  $initValue(initOption, defaultOption) {
-    if ($func.hasProp(initOption, 'defaultValue')) {
-      this.setValueData(initOption.defaultValue, 'defaultValue')
-    } else {
-      this.setValueData(defaultOption.defaultValue, 'defaultValue')
-    }
-    if ($func.hasProp(initOption, 'initValue')) {
-      this.setValueData(initOption.initValue, 'initValue')
-    } else {
-      this.setValueData(this.getValueData(), 'initValue')
-    }
-    if ($func.hasProp(initOption, 'resetValue')) {
-      this.setValueData(initOption.resetValue, 'resetValue')
-    } else {
-      this.setValueData(this.getValueData(), 'resetValue')
+    if (!this.$slot.label) { // label=>title
+      this.$slot.label = this.$slot.name + '-label'
     }
   }
-  setMultiple(data) {
+  $initValue(initOptionValue: valueType = {}, defaultOption: DictType) {
+    this.$value = {} as any
+    if ($func.hasProp(initOptionValue, 'default')) {
+      this.setValueData(initOptionValue.default, 'default')
+    } else {
+      this.setValueData(defaultOption.default, 'default')
+    }
+    if ($func.hasProp(initOptionValue, 'init')) {
+      this.setValueData(initOptionValue.init, 'init')
+    } else {
+      this.setValueData(this.getValueData(), 'init')
+    }
+    if ($func.hasProp(initOptionValue, 'reset')) {
+      this.setValueData(initOptionValue.reset, 'reset')
+    } else {
+      this.setValueData(this.getValueData(), 'reset')
+    }
+  }
+  setMultiple(data: boolean) {
     if (this.multiple !== data) {
       this.multiple = data
       if (this.multiple) {
@@ -115,25 +153,25 @@ class DefaultEdit extends BaseData {
     }
   }
   $initMultipleValue() {
-    for (let n = 0; n < config.option.valuePropList.length; n++) {
-      let prop = config.option.valuePropList[n]
-      let type = $func.getType(this.getValueData(prop))
+    for (let n = 0; n < config.DefaultEdit.option.valuePropList.length; n++) {
+      const prop = config.DefaultEdit.option.valuePropList[n]
+      const type = $func.getType(this.getValueData(prop))
       if (type != 'array') {
         this.setValueData([], prop)
       }
     }
   }
-  $initLocalOption(initOption) {
+  $initLocalOption(initOption: DefaultEditInitOption) {
     if (initOption.option) {
-      this.option = {
+      this.$option = {
         ...initOption
       }
     }
   }
-  setValueData(data, prop = 'defaultValue') {
+  setValueData(data: any, prop = 'default') {
     this.$value[prop] = data
   }
-  getValueData(prop = 'defaultValue') {
+  getValueData(prop = 'default') {
     return this.$value[prop]
   }
   $checkReadyData() {
@@ -141,7 +179,7 @@ class DefaultEdit extends BaseData {
   }
   readyData() {
     if (this.$module.status && this.$module.promise && this.$checkReadyData()) {
-      return this.loadData(this.reload)
+      return this.$loadData(this.reload)
     } else {
       return Promise.resolve({ status: 'success' })
     }
