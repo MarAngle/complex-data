@@ -12,9 +12,6 @@ export interface ListDataInitOption<DATA> extends BaseDataInitOption {
 
 
 class ListData<DATA extends object> extends BaseData {
-  override data!: {
-    list: DATA[]
-  }
   constructor (initOption: ListDataInitOption<DATA>) {
     initOption = formatInitOption(initOption, {
       data: {

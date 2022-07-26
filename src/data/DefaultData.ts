@@ -12,7 +12,11 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 
 class DefaultData extends SimpleData {
   $life: LifeData;
-  data: objectAny;
+  data: {
+    $list?: any[],
+    $current?: objectAny,
+    [prop: PropertyKey]: any
+  }
   constructor (initOption: DefaultDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
