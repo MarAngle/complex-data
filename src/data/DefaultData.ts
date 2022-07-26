@@ -12,7 +12,7 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 
 class DefaultData extends SimpleData {
   $life: LifeData;
-  data: {
+  $data: {
     $list?: any[],
     $current?: objectAny,
     [prop: PropertyKey]: any
@@ -22,7 +22,7 @@ class DefaultData extends SimpleData {
     super(initOption)
     this.$life = new LifeData(initOption.life)
     this.$triggerCreateLife('DefaultData', 'beforeCreate', initOption)
-    this.data = initOption.data || {}
+    this.$data = initOption.data || {}
     this.$triggerCreateLife('DefaultData', 'created', initOption)
   }
   /**

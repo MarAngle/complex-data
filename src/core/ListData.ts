@@ -38,7 +38,7 @@ class ListData<DATA extends object> extends BaseData {
       data: (instantiater, resetOption) => {
         if (this.$parseResetOption(resetOption, 'data') !== false) {
           if (this.$parseResetOption(resetOption, 'data.list') !== false) {
-            this.$resetArray(this.data.list)
+            this.$resetArray(this.$data.$list)
           }
         }
       }
@@ -52,7 +52,7 @@ class ListData<DATA extends object> extends BaseData {
    * @param {object} [option] 参数
    */
   $formatData (datalist: DATA[] = [], totalnum?: number, originFrom?: string, option?: formatOption) {
-    this.$formatListData(this.data.list, datalist, originFrom, option)
+    this.$formatListData(this.$data.$list!, datalist, originFrom, option)
     if (totalnum || totalnum === 0) {
       this.$setPageData(totalnum, 'num')
     }
@@ -67,11 +67,11 @@ class ListData<DATA extends object> extends BaseData {
    */
   $getItem (data: number | any, type:'index' | 'id' = 'index') {
     if (type == 'index') {
-      return this.data.list[data]
+      return this.$data.$list![data]
     } else if (type == 'id') {
       const prop = this.$getDictionaryPropData('prop', 'id')
-      for (let i = 0; i < this.data.list.length; i++) {
-        const item = this.data.list[i];
+      for (let i = 0; i < this.$data.$list!.length; i++) {
+        const item = this.$data.$list![i];
         if ((item as any)[prop] == data) {
           return item
         }
@@ -84,7 +84,7 @@ class ListData<DATA extends object> extends BaseData {
    * @returns {number}
    */
   $getIndex (data: DATA) {
-    return this.data.list.indexOf(data)
+    return this.$data.$list!.indexOf(data)
   }
 }
 
