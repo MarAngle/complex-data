@@ -2,17 +2,17 @@ import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import LifeData, { LifeDataInitOption } from './../mod/LifeData'
 import { FuncDataItem } from '../mod/FuncData'
 import { formatInitOption } from '../utils'
-import { objectUnknown } from '../../ts'
+import { objectAny } from '../../ts'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
   life?: LifeDataInitOption,
-  data?: objectUnknown
+  data?: objectAny
 }
 
 
 class DefaultData extends SimpleData {
   $life: LifeData;
-  data: objectUnknown;
+  data: objectAny;
   constructor (initOption: DefaultDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)

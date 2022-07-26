@@ -4,14 +4,15 @@ import BaseData, { BaseDataInitOption } from './../data/BaseData'
 
 export interface ListDataInitOption<DATA> extends BaseDataInitOption {
   data?: {
-    list?: DATA[]
+    list?: DATA[],
+    [prop: PropertyKey]: any
   }
 }
 
 
 
 class ListData<DATA extends object> extends BaseData {
-  data!: {
+  override data!: {
     list: DATA[]
   }
   constructor (initOption: ListDataInitOption<DATA>) {
