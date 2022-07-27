@@ -200,6 +200,9 @@ const config = {
             return data
           }
         },
+        $text: {
+          default: undefined
+        },
         $slot: {
           default: undefined
         }

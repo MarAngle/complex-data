@@ -12,7 +12,7 @@ import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 import { objectUnknown } from '../../ts'
 // import SearchData, { SearchDataInitOption } from './../data/SearchData'
 
-const ModuleDictionaryMap = new Map()
+const ModuleDictionaryMap: Map<string, any> = new Map()
 
 
 
@@ -44,7 +44,7 @@ class ModuleData extends Data {
     this.setParent(parent)
     this.$initModule(initOption)
   }
-  static setDictionary(modName: moduleKeys, ModuleClassData: Data) {
+  static setDictionary(modName: moduleKeys, ModuleClassData: any) {
     if (!(ModuleClassData as any).$name) {
       $func.exportMsg(`${modName}对应的模块类不存在$name属性，可能会导致判断错误！`, 'warn')
     }
@@ -163,5 +163,15 @@ class ModuleData extends Data {
 }
 
 ModuleData.$name = 'ModuleData'
+
+
+ModuleData.setDictionary('status', StatusData)
+ModuleData.setDictionary('promise', PromiseData)
+ModuleData.setDictionary('option', OptionData)
+ModuleData.setDictionary('pagination', PaginationData)
+ModuleData.setDictionary('choice', ChoiceData)
+ModuleData.setDictionary('update', UpdateData)
+ModuleData.setDictionary('dictionary', DictionaryList)
+// ModuleData.setDictionary('search', SearchData)
 
 export default ModuleData

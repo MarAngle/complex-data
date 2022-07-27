@@ -24,8 +24,12 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   width?: string | number
   option?: objectAny
   localOption?: objectAny
-  value?: valueType,
-  on: objectFunction
+  value?: valueType
+  on?: objectFunction
+  tips?: string | {
+    data: string,
+    location?: string
+  }
   slot?: {
     type?: string,
     name?: string,
@@ -51,6 +55,10 @@ class DefaultEdit extends BaseData {
   $option: objectAny
   $localOption: objectAny
   $on: objectFunction
+  $tips!: {
+    data: string,
+    location: string
+  }
   $slot!: {
     type: string,
     name: string,
@@ -68,6 +76,10 @@ class DefaultEdit extends BaseData {
     this.required = initOption.required || false
     this.disabled = new InterfaceData(initOption.disabled || false)
     this.$option = {}
+    this.$tips = {
+      data: '',
+      location: ''
+    }
     // 组件事件监控
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
@@ -91,6 +103,22 @@ class DefaultEdit extends BaseData {
       this.$exportMsg(`对应的${this.type}不存在预定义，请检查代码或进行扩展！`)
     }
     this.$triggerCreateLife('DefaultEdit', 'created')
+  }
+  // 格式化编辑数据
+  $initTips (initOption: DefaultEditInitOption) {
+    // tips提示
+    if (!initOption.tips) {
+      this.$tips.data =''
+      this.$tips.location =''
+    } else {
+      if (typeof initOption.tips != 'object') {
+        this.$tips.data = initOption.tips || ''
+        this.$tips.location = 'top'
+      } else {
+        this.$tips.data = initOption.tips.data
+        this.$tips.location = initOption.tips.location || 'top'
+      }
+    }
   }
   $initWidth(initOption: DefaultEditInitOption, defaultOption: DictType) {
     // 宽度设置

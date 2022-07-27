@@ -7,7 +7,7 @@ import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './Layout
 import { anyFunction, baseObject, objectAny, objectUnknown } from '../../ts'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
-type payloadType = { targetData: objectUnknown, originData: objectUnknown, type: string, from?: string }
+type payloadType = { targetData: objectUnknown, originData?: objectUnknown, type: string, from?: string }
 
 type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
 
