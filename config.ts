@@ -1,9 +1,10 @@
 import InterfaceData from "./src/mod/InterfaceData"
-import { baseObject } from "./ts"
+import { baseObject, objectAny } from "./ts"
 
 export interface DictType {
   default: any,
   width?: string,
+  option?: objectAny,
   placeholder?: (label: InterfaceData<string>) => baseObject<string>
 }
 
@@ -101,6 +102,10 @@ const config = {
       data: {
         $input: {
           default: '',
+          option: {
+            maxLength: 100,
+            hideClear: false
+          },
           placeholder: function (label: InterfaceData<string>) {
             const data: baseObject<string> = {}
             label.map((labeldata, prop) => {
@@ -121,6 +126,11 @@ const config = {
         },
         $textArea: {
           default: '',
+          option: {
+            maxLength: 500,
+            autoSize: false,
+            allowClear: false
+          },
           placeholder: function (label: InterfaceData<string>) {
             const data: baseObject<string> = {}
             label.map((labeldata, prop) => {
@@ -135,6 +145,11 @@ const config = {
         },
         $select: {
           default: undefined,
+          option: {
+            search: {
+              reload: false
+            }
+          },
           placeholder: function (label: InterfaceData<string>) {
             const data: baseObject<string> = {}
             label.map((labeldata, prop) => {
@@ -207,13 +222,13 @@ const config = {
           default: undefined
         }
       },
-      getData(name: string): null | DictType {
+      getData(name: string): undefined | DictType {
         const prop = '$' + name
         if ((this.data as any)[prop]) {
           return (this.data as any)[prop]
         } else {
           console.error(`未找到对应的编辑逻辑:${name}`)
-          return null
+          return undefined
         }
       }
     }

@@ -14,10 +14,9 @@ class AntdEdit extends DefaultEdit {
     if (initOption.module && initOption.module.pagination === true) {
       initOption.module.pagination = {
         size: 10,
-        mod: {
-          sizehidden: true,
-          jumphidden: true,
-          total: 'hidden'
+        props: {
+          jumper: false,
+          size: false
         }
       }
     }
