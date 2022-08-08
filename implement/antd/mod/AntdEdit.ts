@@ -11,15 +11,6 @@ class AntdEdit extends DefaultEdit {
   hideLabel: boolean
   colon: boolean
   constructor(initOption: AntdEditInitOption) {
-    if (initOption.module && initOption.module.pagination === true) {
-      initOption.module.pagination = {
-        size: 10,
-        props: {
-          jumper: false,
-          size: false
-        }
-      }
-    }
     super(initOption)
     this.$triggerCreateLife('EditData', 'beforeCreate', initOption)
     this.hideLabel = initOption.hideLabel === undefined ? false : initOption.hideLabel
@@ -28,11 +19,11 @@ class AntdEdit extends DefaultEdit {
     // this.eventTriggerList = defaultOption.eventList
     this.$triggerCreateLife('EditData', 'created')
   }
-  $initLocalOption(initOption: AntdEditInitOption) {
-    if (!initOption.option) {
-      initOption.option = {}
-    }
-  }
+  // $initLocalOption(initOption: AntdEditInitOption) {
+  //   if (!initOption.option) {
+  //     initOption.option = {}
+  //   }
+  // }
 }
 
 AntdEdit.$name = 'AntdEdit'

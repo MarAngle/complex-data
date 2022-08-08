@@ -75,6 +75,15 @@ class DefaultEdit extends BaseData {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
     }
+    if (initOption.module && initOption.module.pagination === true) {
+      initOption.module.pagination = {
+        size: 10,
+        props: {
+          jumper: false,
+          size: false
+        }
+      }
+    }
     super(initOption)
     this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
     this.type = initOption.type || 'input'
@@ -233,7 +242,6 @@ class DefaultEdit extends BaseData {
       this.$option.optionDisabled = initOption.option.optionDisabled || 'disabled'
       this.$option.hideArrow = initOption.option.hideArrow || false
       this.$option.hideClear = initOption.option.hideClear || false
-      this.$option.filterOption = initOption.option.filterOption || false // 是否自动过滤
       this.$option.autoWidth = initOption.option.autoWidth || false // 宽度自适应
       this.$option.noDataContent = initOption.option.noDataContent // 无数据时文字显示 == 默认不传使用antd的默认模板
       if (this.$module.pagination) {
@@ -265,7 +273,11 @@ class DefaultEdit extends BaseData {
         }
       }
     } else if (this.type == 'cascader') {
-      // 级联选择？
+      // 级联选择
+      this.$option.list = initOption.option.list || []
+      this.$option.hideArrow = initOption.option.hideArrow || false
+      this.$option.hideClear = initOption.option.hideClear || false
+      this.setMultiple(true)
     } else if (this.type == 'date') {
       // 日期选择
     } else if (this.type == 'dateRange') {
