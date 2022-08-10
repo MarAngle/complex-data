@@ -7,25 +7,28 @@ export interface SimpleDataInitOption {
   name?: string,
   prop?: string,
   parent?: Data,
-  func?: object,
+  func?: SimpleDataFunc,
   extra?: objectUnknown,
   root?: objectUnknown,
   methods?: objectFunction,
 }
 
+export interface SimpleDataFunc {
+  [prop: PropertyKey]: undefined | false | anyFunction
+}
 
 class SimpleData extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	// $func: any;
+	$func: SimpleDataFunc;
 	$extra: objectUnknown;
   constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
     this.$prop = initOption.prop || '';
-    (this as any).$func = {};
+    this.$func = {};
     this.$extra = {}
     this.$setParent(initOption.parent)
     this.$initFunc(initOption.func as any)
@@ -98,13 +101,13 @@ class SimpleData extends Data {
    */
   $initFunc (func?: baseObject<undefined | false | anyFunction>, reset?: boolean) {
     if (reset) {
-      (this as any).$func = {}
+      this.$func = {}
     }
     for (const n in func) {
       if (func[n]) {
-        ((this as any).$func as any)[n] = (func[n] as anyFunction).bind(this)
+        this.$func[n] = (func[n] as anyFunction).bind(this)
       } else {
-        ((this as any).$func as any)[n] = false
+        this.$func[n] = false
       }
     }
   }

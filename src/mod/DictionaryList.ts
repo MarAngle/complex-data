@@ -44,10 +44,10 @@ export interface formDataOption {
 }
 
 export interface DictionaryListInitOption extends DefaultDataInitOption {
-  option: optionType,
+  option?: optionType,
   layout?: LayoutDataInitOption,
   propData?: propDataType<string | propDataItemType>,
-  list: DictionaryItemInitOption[]
+  list?: DictionaryItemInitOption[]
 }
 
 class DictionaryList extends DefaultData {
@@ -100,7 +100,7 @@ class DictionaryList extends DefaultData {
   rebuildData (initOption: DictionaryItemInitOption[], type = 'replace') {
     this.$initDictionaryList(initOption, type)
   }
-  $initDictionaryList(initOptionList: DictionaryItemInitOption[], type = 'replace') {
+  $initDictionaryList(initOptionList: DictionaryItemInitOption[] = [], type = 'replace') {
     // 触发update生命周期
     this.$triggerLife('beforeUpdate', this, initOptionList, type)
     if (type == 'init') {
@@ -108,7 +108,7 @@ class DictionaryList extends DefaultData {
     }
     const parentData = this.$getParent()
     const isChildren = this.$option.getData('isChildren') as boolean
-    for (const n in initOptionList) {
+    for (let n = 0; n < initOptionList.length; n++) {
       const ditemOption = initOptionList[n]
       // 判断是否为一级，不为一级需要将一级的默认属性添加
       this.$parseOptionFromParent(ditemOption, parentData, isChildren)

@@ -339,7 +339,7 @@ class BaseData extends DefaultData {
   /**
    * 重置分页器
    */
-  $resetPageData () {
+  $resetPagination () {
     if (this.$module.pagination) {
       this.$module.pagination.reset()
     }

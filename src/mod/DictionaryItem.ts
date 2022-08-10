@@ -1,7 +1,7 @@
 import $func from 'complex-func'
 import { formatInitOption } from '../utils'
 import dictionaryFormatOption from './../../dictionaryFormatOption'
-import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
+import SimpleData, { SimpleDataFunc, SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import { anyFunction, baseObject, objectAny, objectUnknown } from '../../ts'
@@ -20,6 +20,15 @@ export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
   prop: string
 }
 
+export interface DictionaryItemFunc extends SimpleDataFunc {
+  format?: false | baseFuncType<unknown>
+  defaultGetData: false | baseFuncType<unknown>
+  show: false | baseFuncType<unknown>
+  edit: false | baseFuncType<unknown>
+  post: false | baseFuncType<unknown>
+  check: false | baseFuncType<boolean>
+}
+
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
   prop: string,
   label?: string | baseObject<string>
@@ -31,14 +40,7 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
   layout?: LayoutDataInitOption,
   mod?: objectUnknown,
   dictionary?: DictionaryListInitOption,
-  func?: {
-    format?: baseFuncType<unknown>,
-    defaultGetData: false | baseFuncType<unknown>,
-    show: false | baseFuncType<unknown>,
-    edit: false | baseFuncType<unknown>,
-    post: false | baseFuncType<unknown>,
-    check: false | baseFuncType<boolean>
-  }
+  func?: DictionaryItemFunc
 }
 
 export interface DictionaryItemPayload {
@@ -63,15 +65,6 @@ class DictionaryItem extends SimpleData {
   $layout!: LayoutData
   $mod: {
     [prop: string]: DictionaryItemModType
-  }
-  $func!: {
-    format?: false | baseFuncType<unknown>
-    defaultGetData: false | baseFuncType<unknown>
-    show: false | baseFuncType<unknown>
-    edit: false | baseFuncType<unknown>
-    post: false | baseFuncType<unknown>
-    check: false | baseFuncType<boolean>
-    [prop: string]: undefined | false | anyFunction
   }
   constructor (initOption: DictionaryItemInitOption, payload: DictionaryItemPayload = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')

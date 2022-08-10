@@ -66,11 +66,6 @@ class DefaultEdit extends BaseData {
     label: string
   }
   $customize?: unknown
-  $func!: {
-    page?: (act: string, data: any) => void,
-    resetList?: () => void,
-    resetPagination?: () => void,
-  }
   constructor(initOption: DefaultEditInitOption) {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
@@ -109,7 +104,7 @@ class DefaultEdit extends BaseData {
     this.$initValue(initOption.value, defaultOption)
     this.setMultiple(initOption.multiple || false)
     this.$initSlot(initOption)
-    this.$initOption(initOption)
+    this.$initOption(initOption, defaultOption)
     this.$triggerCreateLife('DefaultEdit', 'created')
   }
   $initPlaceholder(initOption: DefaultEditInitOption, defaultOption?: DictType) {
@@ -244,34 +239,26 @@ class DefaultEdit extends BaseData {
       this.$option.hideClear = initOption.option.hideClear || false
       this.$option.autoWidth = initOption.option.autoWidth || false // 宽度自适应
       this.$option.noDataContent = initOption.option.noDataContent // 无数据时文字显示 == 默认不传使用antd的默认模板
-      if (this.$module.pagination) {
-        // 存在分页相关设置
-        if (!this.$func.page) {
-          if (!this.$getData) {
-            this.$exportMsg('选择器存在分页器时需要定义page回调或者$getData函数供分页时调用')
-          }
-          this.$func.page = (act, data) => {
-            this.$loadData(true, this.$option.search.value).then(() => {
-              //
-            }, err => { this.$exportMsg('loadData失败！', 'error', { data: err }) })
-          }
-        }
-      }
-      // 添加默认的重置选项数据
-      if (!this.$func.resetList) {
-        this.$func.resetList = () => {
-          this.$option.list = []
-          this.$func.resetPagination!()
-        }
-      }
-      // 添加默认的重置分页器函数
-      if (!this.$func.resetPagination) {
-        this.$func.resetPagination = () => {
-          if (this.$module.pagination) {
-            this.$module.pagination.setTotal(0)
-          }
-        }
-      }
+      // if (this.$module.pagination) {
+      //   // 存在分页相关设置
+      //   if (!this.$func.page) {
+      //     if (!this.$getData) {
+      //       this.$exportMsg('选择器存在分页器时需要定义page回调或者$getData函数供分页时调用')
+      //     }
+      //     this.$func.page = (act, data) => {
+      //       this.$loadData(true, this.$option.search.value).then(() => {
+      //         //
+      //       }, err => { this.$exportMsg('loadData失败！', 'error', { data: err }) })
+      //     }
+      //   }
+      // }
+      // // 添加默认的重置选项数据
+      // if (!this.$func.resetList) {
+      //   this.$func.resetList = () => {
+      //     this.$option.list = []
+      //     this.$resetPagination()
+      //   }
+      // }
     } else if (this.type == 'cascader') {
       // 级联选择
       this.$option.list = initOption.option.list || []
