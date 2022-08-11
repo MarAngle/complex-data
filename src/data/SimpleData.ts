@@ -1,5 +1,5 @@
 import $func from 'complex-func'
-import { objectUnknown, objectFunction, baseObject, anyFunction } from './../../ts'
+import { objectUnknown, objectFunction, baseObject, anyFunction, anyPromiseFunction } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -23,6 +23,7 @@ class SimpleData extends Data {
 	$prop: string;
 	$func: SimpleDataFunc;
 	$extra: objectUnknown;
+  $getData?: anyPromiseFunction
   constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()

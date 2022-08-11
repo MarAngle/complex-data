@@ -94,6 +94,9 @@ class ModuleData extends Data {
     }
     this.$installData(modName, modData)
   }
+  $getData(modName: moduleKeys) {
+    return this[modName]
+  }
   /**
    * 卸载模块
    * @param {string} modName 模块名

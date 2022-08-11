@@ -3,7 +3,7 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import ModuleData, { ModuleDataInitOption, moduleKeys } from './../mod/ModuleData'
 import { formatInitOption } from '../utils'
 import { LifeDataInitOption } from '../mod/LifeData'
-import { anyFunction, anyPromiseFunction, objectAny } from '../../ts'
+import { anyFunction, objectAny } from '../../ts'
 import { offsetType } from '../mod/UpdateData'
 import DictionaryItem, { DictionaryItemInitOption } from '../mod/DictionaryItem'
 import { formatOption, formatOptionBuild, formDataOption } from '../mod/DictionaryList'
@@ -29,7 +29,6 @@ export type BaseDataReloadOption = undefined | boolean | BaseDataReloadOptionTyp
 
 class BaseData extends DefaultData {
   $module: ModuleData
-  $getData?: anyPromiseFunction
   constructor(initOption: BaseDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
@@ -48,6 +47,14 @@ class BaseData extends DefaultData {
    */
   $setModule(modName: moduleKeys, data?: any) {
     this.$module.$setData(modName, data)
+  }
+  /**
+   * 设置模块
+   * @param {string} modName 模块名
+   * @param {object} data 模块实例
+   */
+  $getModule(modName: moduleKeys) {
+    return this.$module.$getData(modName)
   }
   /**
    * 加载模块
