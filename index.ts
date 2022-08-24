@@ -24,6 +24,8 @@ import DefaultEdit from './src/mod/DefaultEdit'
 
 import ListData from './src/core/ListData'
 
+import dictionaryFormatOption from './dictionaryFormatOption'
+
 
 export {
   Data,
@@ -51,4 +53,6 @@ export {
   DefaultEdit,
 
   ListData,
+
+  dictionaryFormatOption
 }
