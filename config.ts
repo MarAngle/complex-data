@@ -5,7 +5,8 @@ export interface DictType {
   default: any,
   width?: string,
   option?: objectAny,
-  placeholder?: (label: InterfaceData<string>) => baseObject<string>
+  placeholder?: (label: InterfaceData<string>) => baseObject<string>,
+  message?: (label: InterfaceData<string>) => baseObject<string>
 }
 
 const config = {

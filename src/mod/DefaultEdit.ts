@@ -16,10 +16,11 @@ interface valueType {
 export interface DefaultEditInitOption extends BaseDataInitOption {
   type?: string
   reload?: boolean
-  required?: boolean
   multiple?: boolean
+  required?: InterfaceDataInitOption<boolean>
   disabled?: InterfaceDataInitOption<boolean>
   placeholder?: InterfaceDataInitOption<string>
+  message?: InterfaceDataInitOption<string>
   mainWidth?: string | number
   width?: string | number
   option?: objectAny
@@ -27,6 +28,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   value?: valueType
   on?: objectFunction
   customize?: unknown
+  rules?: InterfaceDataInitOption<any>,
   tips?: string | {
     data: string,
     location?: string
@@ -41,12 +43,14 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
 class DefaultEdit extends BaseData {
   type: string
   reload: boolean
-  required: boolean
   multiple!: boolean
+  required: InterfaceData<boolean>
   disabled: InterfaceData<boolean>
   placeholder?: InterfaceData<string>
+  message!: InterfaceData<string | undefined>
   $mainWidth?: string
   $width?: string
+  $rules!: InterfaceData<any>
   $value!: {
     default: any,
     init: any,
@@ -83,7 +87,7 @@ class DefaultEdit extends BaseData {
     this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
     this.type = initOption.type || 'input'
     this.reload = initOption.reload || false // 异步二次加载判断值
-    this.required = initOption.required || false
+    this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
     this.$option = {}
     this.$tips = {
@@ -105,6 +109,7 @@ class DefaultEdit extends BaseData {
     this.setMultiple(initOption.multiple || false)
     this.$initSlot(initOption)
     this.$initOption(initOption, defaultOption)
+    this.$initRules(initOption, defaultOption)
     this.$triggerCreateLife('DefaultEdit', 'created')
   }
   $initPlaceholder(initOption: DefaultEditInitOption, defaultOption?: DictType) {
@@ -299,6 +304,36 @@ class DefaultEdit extends BaseData {
     } else if (this.type == 'slot') {
       // 插槽
     }
+  }
+  $initRules(initOption: DefaultEditInitOption, defaultOption?: DictType) {
+    if (initOption.rules) {
+      this.$rules = new InterfaceData(initOption.rules)
+    } else {
+      this.$rules = new InterfaceData([{}] as any)
+    }
+    let message = new InterfaceData(initOption.message)
+    if (defaultOption) {
+      if (!message.isInit()) {
+        if (defaultOption.message) {
+          message = new InterfaceData(defaultOption.message((this.$getParent() as DictionaryItem).$getInterfaceData('label')))
+        } else {
+          message = this.placeholder as InterfaceData<string>
+        }
+      }
+    }
+    this.message = message
+    this.$rules.map((data, prop) => {
+      const ruleList = data[prop]
+      for (const n in ruleList) {
+        const rule = ruleList[n]
+        if (rule.required === undefined) {
+          rule.required = this.required.getData(prop)
+        }
+        if (rule.message === undefined && this.message.isInit()) {
+          rule.message = this.message.getData(prop)
+        }
+      }
+    })
   }
   setValueData(data: any, prop = 'default') {
     this.$value[prop] = data

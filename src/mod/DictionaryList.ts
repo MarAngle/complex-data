@@ -406,7 +406,7 @@ class DictionaryList extends DefaultData {
    * @param {string[]} [option.limit] 限制重置字段=>被限制字段不会进行重新赋值操作
    * @returns {object}
    */
-   $buildFormData(modList: DictionaryItem[], modType: string, originData: any, option:formDataOption = {}) {
+   $buildFormData(modList: DictionaryItem[], modType: string, originData?: any, option:formDataOption = {}) {
     const formData = option.form || {}
     const from = option.from
     const limit = $func.getLimitData(option.limit)
