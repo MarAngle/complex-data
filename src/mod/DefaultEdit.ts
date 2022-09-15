@@ -24,14 +24,15 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   mainWidth?: string | number
   width?: string | number
   option?: objectAny
-  localOption?: objectAny
+  localProps?: objectAny
   value?: valueType
   on?: objectFunction
   customize?: unknown
   rules?: InterfaceDataInitOption<any>,
   tips?: string | {
     data: string,
-    location?: string
+    location?: string,
+    localProps?: objectAny
   }
   slot?: {
     type?: string,
@@ -58,11 +59,12 @@ class DefaultEdit extends BaseData {
     [prop: PropertyKey]: any
   }
   $option: objectAny
-  $localOption: objectAny
+  $localProps: objectAny
   $on: objectFunction
   $tips!: {
     data: string,
-    location: string
+    location: string,
+    localProps: objectAny
   }
   $slot!: {
     type: string,
@@ -92,13 +94,14 @@ class DefaultEdit extends BaseData {
     this.$option = {}
     this.$tips = {
       data: '',
-      location: ''
+      location: '',
+      localProps: {}
     }
     // 组件事件监控
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
     // main = { props: {} } item = { props: {} }
-    this.$localOption = initOption.localOption || {}
+    this.$localProps = initOption.localProps || {}
     const defaultOption = config.DefaultEdit.option.getData(this.type)
     if (!defaultOption) {
       this.$exportMsg(`对应的${this.type}不存在预定义，请检查代码或进行扩展！`)
@@ -128,15 +131,18 @@ class DefaultEdit extends BaseData {
   $initTips (initOption: DefaultEditInitOption) {
     // tips提示
     if (!initOption.tips) {
-      this.$tips.data =''
-      this.$tips.location =''
+      this.$tips.data = ''
+      this.$tips.location = ''
+      this.$tips.localProps = {}
     } else {
       if (typeof initOption.tips != 'object') {
         this.$tips.data = initOption.tips || ''
         this.$tips.location = 'top'
+        this.$tips.localProps = {}
       } else {
         this.$tips.data = initOption.tips.data
         this.$tips.location = initOption.tips.location || 'top'
+        this.$tips.localProps = initOption.tips.localProps || {}
       }
     }
   }
