@@ -2,7 +2,7 @@ import $func from 'complex-func'
 import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from './../../src/mod/InterfaceData'
 import config, { DictType } from '../../config'
-import { objectAny, objectFunction } from '../../ts'
+import { anyFunction, objectAny, objectFunction } from '../../ts'
 import DictionaryItem from './DictionaryItem'
 
 
@@ -37,7 +37,8 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   slot?: {
     type?: string,
     name?: string,
-    label?: string
+    label?: string,
+    render?: anyFunction
   }
 }
 
@@ -69,7 +70,8 @@ class DefaultEdit extends BaseData {
   $slot!: {
     type: string,
     name: string,
-    label: string
+    label: string,
+    render?: anyFunction
   }
   $customize?: unknown
   constructor(initOption: DefaultEditInitOption) {
