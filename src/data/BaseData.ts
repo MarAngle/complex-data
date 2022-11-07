@@ -3,11 +3,10 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import ModuleData, { ModuleDataInitOption, moduleKeys } from './../lib/ModuleData'
 import { formatInitOption } from '../utils'
 import { LifeDataInitOption } from '../lib/LifeData'
-import { anyFunction, objectAny } from '../../ts'
+import { anyFunction, anyPromiseFunction, objectAny } from '../../ts'
 import { offsetType } from '../lib/UpdateData'
 import DictionaryItem, { DictionaryItemInitOption } from '../lib/DictionaryItem'
 import { formatOption, formatOptionBuild, formDataOption } from '../lib/DictionaryList'
-
 
 export interface forceObjectType {
   [prop: string]: boolean | string
@@ -17,23 +16,32 @@ export type forceType = boolean | forceObjectType
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   life?: LifeDataInitOption,
-  module?: ModuleDataInitOption
+  module?: ModuleDataInitOption,
+  getData?: anyPromiseFunction
 }
-
 
 export interface BaseDataReloadOptionType {
   [prop: string]: undefined | boolean
 }
 export type BaseDataReloadOption = undefined | boolean | BaseDataReloadOptionType
 
-
 class BaseData extends DefaultData {
   $module: ModuleData
+  $data: {
+    list: any[]
+    current: objectAny
+  }
+  $getData?: anyPromiseFunction | undefined
   constructor(initOption: BaseDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
+    this.$data = {
+      list: [],
+      current: {}
+    }
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)
+    this.$getData = initOption.getData
     if (this.$getData) {
       this.$initLoadDepend()
     }
