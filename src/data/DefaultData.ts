@@ -2,27 +2,18 @@ import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import LifeData, { LifeDataInitOption } from './../mod/LifeData'
 import { FuncDataItem } from '../mod/FuncData'
 import { formatInitOption } from '../utils'
-import { objectAny } from '../../ts'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
-  life?: LifeDataInitOption,
-  data?: objectAny
+  life?: LifeDataInitOption
 }
-
 
 class DefaultData extends SimpleData {
   $life: LifeData;
-  $data: {
-    list?: any[],
-    $current?: objectAny,
-    [prop: PropertyKey]: any
-  }
   constructor (initOption: DefaultDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$life = new LifeData(initOption.life)
     this.$triggerCreateLife('DefaultData', 'beforeCreate', initOption)
-    this.$data = initOption.data || {}
     this.$triggerCreateLife('DefaultData', 'created', initOption)
   }
   /**
