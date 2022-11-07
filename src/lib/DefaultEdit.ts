@@ -1,6 +1,6 @@
 import $func from 'complex-func'
 import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
-import InterfaceData, { InterfaceDataInitOption } from './../../src/mod/InterfaceData'
+import InterfaceData, { InterfaceDataInitOption } from './../../src/lib/InterfaceData'
 import config, { DictType } from '../../config'
 import { anyFunction, objectAny, objectFunction } from '../../ts'
 import DictionaryItem from './DictionaryItem'

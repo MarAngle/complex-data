@@ -1,10 +1,10 @@
 import $func from 'complex-func'
 import { formatInitOption } from '../utils'
 import dictionaryFormatOption from './../../dictionaryFormatOption'
-import SimpleData, { SimpleDataFunc, SimpleDataInitOption } from '../data/SimpleData'
+import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
-import { anyFunction, baseObject, objectAny, objectUnknown } from '../../ts'
+import { baseObject, objectAny, objectUnknown } from '../../ts'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
 type payloadType = { targetData: objectUnknown, originData?: objectUnknown, type: string, from?: string }
@@ -20,15 +20,6 @@ export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
   prop: string
 }
 
-export interface DictionaryItemFunc extends SimpleDataFunc {
-  format?: false | baseFuncType<unknown>
-  defaultGetData: false | baseFuncType<unknown>
-  show: false | baseFuncType<unknown>
-  edit: false | baseFuncType<unknown>
-  post: false | baseFuncType<unknown>
-  check: false | baseFuncType<boolean>
-}
-
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
   prop: string,
   label?: string | baseObject<string>
@@ -40,15 +31,36 @@ export interface DictionaryItemInitOption extends SimpleDataInitOption {
   layout?: LayoutDataInitOption,
   mod?: objectUnknown,
   dictionary?: DictionaryListInitOption,
-  func?: DictionaryItemFunc
+  format?: false | baseFuncType<unknown>
+  defaultGetData?: false | baseFuncType<unknown>
+  show?: false | baseFuncType<unknown>
+  edit?: false | baseFuncType<unknown>
+  post?: false | baseFuncType<unknown>
+  check?: false | baseFuncType<boolean>
 }
 
 export interface DictionaryItemPayload {
   layout?: LayoutDataInitOption
 }
 
+export type funcKeys = 'show' | 'edit' | 'post' | 'check'
 export type interfaceKeys = 'label' | 'type' | 'showProp' | 'showType' | 'originProp' | 'modType'
 
+const defaultGetData = function (this: DictionaryItem, data: unknown, { type }: payloadType) {
+  const showProp = this.$getInterface('showProp', type)
+  if (showProp) {
+    if (data && $func.getType(data) == 'object') {
+      return $func.getProp(data as objectUnknown, showProp)
+    } else {
+      return undefined
+    }
+  } else {
+    return data
+  }
+}
+const defaultCheck = function (data: unknown) {
+  return $func.isExist(data)
+}
 
 class DictionaryItem extends SimpleData {
   prop: string
@@ -62,6 +74,12 @@ class DictionaryItem extends SimpleData {
     originProp: InterfaceData<string>
     modType: InterfaceData<string>
   }
+  format?: false | baseFuncType<unknown>
+  defaultGetData?: false | baseFuncType<unknown>
+  show?: false | baseFuncType<unknown>
+  edit?: false | baseFuncType<unknown>
+  post?: false | baseFuncType<unknown>
+  check?: false | baseFuncType<boolean>
   $layout!: LayoutData
   $mod: {
     [prop: string]: DictionaryItemModType
@@ -69,6 +87,14 @@ class DictionaryItem extends SimpleData {
   constructor (initOption: DictionaryItemInitOption, payload: DictionaryItemPayload = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
+    // 加载基本自定义函数
+    this.format = initOption.format
+    this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData : initOption.defaultGetData
+    this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
+    this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
+    this.post = initOption.post === undefined ? this.defaultGetData : initOption.post
+    this.check = initOption.check === undefined ? defaultCheck : initOption.check
+    // 自定义函数加载完成
     const originFromType = $func.getType(initOption.originFrom)
     if (originFromType === 'array') {
       this.originFrom = initOption.originFrom as string[]
@@ -102,7 +128,6 @@ class DictionaryItem extends SimpleData {
 
     this.$mod = {}
     dictionaryFormatOption.format(this, initOption.mod)
-    this.$formatFunc()
   }
   /**
    * 获取接口数据对象
@@ -143,46 +168,6 @@ class DictionaryItem extends SimpleData {
       return this.$layout
     }
   }
-  /**
-   * 格式化func函数
-   */
-  $formatFunc () {
-    if (this.$func.defaultGetData === undefined) {
-      this.$func.defaultGetData = (data: unknown, { type }) => {
-        const showProp = this.$getInterface('showProp', type)
-        if (showProp) {
-          if (data && $func.getType(data) == 'object') {
-            return $func.getProp(data as objectUnknown, showProp)
-          } else {
-            return undefined
-          }
-        } else {
-          return data
-        }
-      }
-    }
-    if (this.$func.show === undefined) {
-      this.$func.show = this.$func.defaultGetData
-    }
-    if (this.$func.edit === undefined) {
-      this.$func.edit = this.$func.defaultGetData
-    }
-    if (this.$func.post === undefined) {
-      this.$func.post = (data, payload) => {
-        const mod = this.$getMod(payload.type) as any
-        if (mod && mod.$func && mod.$func.post) {
-          return mod.$func.post(data, payload)
-        } else {
-          return data
-        }
-      }
-    }
-    if (this.$func.check === undefined) {
-      this.$func.check = (data) => {
-        return $func.isExist(data)
-      }
-    }
-  }
   $getModData(modType: string, payload?: objectAny) {
     return dictionaryFormatOption.unformat(this, modType, payload)
   }
@@ -209,8 +194,8 @@ class DictionaryItem extends SimpleData {
    * @param {object} payload 参数
    * @returns {*}
    */
-  $triggerFunc (funcName: string, originData: unknown, payload: payloadType) {
-    const itemFunc = this.$func[funcName]
+  $triggerFunc (funcName: funcKeys, originData: unknown, payload: payloadType) {
+    const itemFunc = this[funcName]
     if (itemFunc) {
       return itemFunc(originData, payload)
     } else {
@@ -241,7 +226,7 @@ class DictionaryItem extends SimpleData {
    * @param {string} [formatFuncName] 需要触发的数据格式化函数名称
    * @param {object} [payload] originData(接口源数据)/targetData(本地目标数据)/type(数据来源接口)
    */
-  $formatData(targetData: objectAny, prop: string, oData: any, type: string, formatFuncName: string, payload: {
+  $formatData(targetData: objectAny, prop: string, oData: any, type: string, formatFuncName: funcKeys, payload: {
     targetData: objectAny,
     originData: objectAny,
     depth?: number,
