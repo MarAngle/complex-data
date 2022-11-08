@@ -25,7 +25,7 @@ export interface BaseDataReloadOptionType {
 }
 export type BaseDataReloadOption = undefined | boolean | BaseDataReloadOptionType
 
-class BaseData<DATA = undefined></DATA> extends DefaultData<DATA> {
+class BaseData<DATA = undefined> extends DefaultData<DATA> {
   $module: ModuleData
   $data: {
     list: any[]

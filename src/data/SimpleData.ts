@@ -3,7 +3,7 @@ import { objectUnknown } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
-export interface SimpleDataInitOption<DATA> {
+export interface SimpleDataInitOption<DATA = undefined> {
   name?: string,
   prop?: string,
   data?: DATA,
@@ -11,7 +11,7 @@ export interface SimpleDataInitOption<DATA> {
   extra?: objectUnknown
 }
 
-class SimpleData<DATA> extends Data {
+class SimpleData<DATA = undefined> extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
