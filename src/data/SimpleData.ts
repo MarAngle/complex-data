@@ -1,5 +1,5 @@
 import $func from 'complex-func'
-import { objectUnknown, anyPromiseFunction } from './../../ts'
+import { objectUnknown } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -11,21 +11,18 @@ export interface SimpleDataInitOption<DATA> {
   extra?: objectUnknown
 }
 
-
 class SimpleData<DATA> extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
-	$extra: objectUnknown;
   data?: DATA
-  $getData?: anyPromiseFunction
+	$extra!: objectUnknown;
   constructor (initOption: SimpleDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
     this.$prop = initOption.prop || ''
     this.data = initOption.data
-    this.$extra = {}
     this.$setParent(initOption.parent)
     this.$initExtra(initOption.extra)
   }
@@ -55,11 +52,9 @@ class SimpleData<DATA> extends Data {
   $initExtra (extraData?: objectUnknown) {
     this.$clearExtra()
     if ($func.getType(extraData) == 'object') {
-      for (const n in extraData) {
-        this.$setExtra(n, extraData[n])
-      }
+      this.$extra = extraData!
     } else if (extraData !== undefined) {
-      this.$exportMsg(`初始化extra出错，数据必须为对象`)
+      this.$exportMsg(`初始化extra出错，数据必须为对象！`)
     }
   }
   /**
