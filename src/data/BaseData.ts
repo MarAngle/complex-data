@@ -27,18 +27,10 @@ export type BaseDataReloadOption = undefined | boolean | BaseDataReloadOptionTyp
 
 class BaseData<DATA = undefined> extends DefaultData<DATA> {
   $module: ModuleData
-  $data: {
-    list: any[]
-    current: objectAny
-  }
   $getData?: anyPromiseFunction | undefined
   constructor(initOption: BaseDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super(initOption)
-    this.$data = {
-      list: [],
-      current: {}
-    }
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)
     this.$getData = initOption.getData
@@ -522,13 +514,13 @@ $reloadData (option: BaseDataReloadOption, ...args: any[]) {
   const force = option.force === undefined ? {} : option.force
   const promise = this.$loadData(force, ...args)
   if (sync) {
-    promise.then((res) => {
+    promise.then((res: any) => {
       // 触发生命周期重载完成事件
       this.$triggerLife('reloaded', this, {
         res: res,
         args: args
       })
-    }, err => {
+    }, (err: any) => {
       console.error(err)
       // 触发生命周期重载失败事件
       this.$triggerLife('reloadFail', this, {
@@ -538,14 +530,14 @@ $reloadData (option: BaseDataReloadOption, ...args: any[]) {
     })
   } else {
     return new Promise((resolve, reject) => {
-      promise.then(res => {
+      promise.then((res: any) => {
         // 触发生命周期重载完成事件
         this.$triggerLife('reloaded', this, {
           res: res,
           args: args
         })
         resolve(res)
-      }, err => {
+      }, (err: any) => {
         console.error(err)
         // 触发生命周期重载失败事件
         this.$triggerLife('reloadFail', this, {
