@@ -27,7 +27,7 @@ export interface ModuleDataInitOption {
 export type moduleKeys = keyof ModuleDataInitOption
 
 class ModuleData extends Data {
-  $parent?: BaseData
+  $parent?: BaseData<any>
   option?: OptionData
   status?: StatusData
   promise?: PromiseData
@@ -36,7 +36,7 @@ class ModuleData extends Data {
   choice?: ChoiceData
   dictionary?: DictionaryList
   // search?: SearchData
-  constructor (initOption: undefined | ModuleDataInitOption, parent?: BaseData) {
+  constructor (initOption: undefined | ModuleDataInitOption, parent?: BaseData<any>) {
     super()
     this.setParent(parent)
     this.$initModule(initOption)
@@ -68,11 +68,11 @@ class ModuleData extends Data {
       if (modData === true) {
         return new ModuleClassData()
       } else if (modData && !(modData instanceof ModuleClassData)) {
-        const parent = this.$getParent()
-        const formatFuncName = '$formatModule' + ModuleClassData.$name
-        if (parent && (parent as any)[formatFuncName]) {
-          modData = (parent as any)[formatFuncName](modData)
-        }
+        // const parent = this.$getParent()
+        // const formatFuncName = '$formatModule' + ModuleClassData.$name
+        // if (parent && (parent as any)[formatFuncName]) {
+        //   modData = (parent as any)[formatFuncName](modData)
+        // }
         return new ModuleClassData(modData)
       }
     }

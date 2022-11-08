@@ -8,15 +8,17 @@ export interface SimpleDataInitOption<DATA = undefined> {
   prop?: string,
   data?: DATA,
   parent?: Data,
-  extra?: objectUnknown
+  extra?: objectUnknown,
+  // method?: objectFunction
 }
 
 class SimpleData<DATA = undefined> extends Data {
-	$parent?: Data;
-	$name: string;
-	$prop: string;
+	$parent?: Data
+	$name: string
+	$prop: string
   data?: DATA
-	$extra!: objectUnknown;
+	$extra!: objectUnknown
+  // $method: METHOD
   constructor (initOption: SimpleDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super()
