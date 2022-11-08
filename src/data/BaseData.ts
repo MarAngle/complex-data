@@ -14,7 +14,7 @@ export interface forceObjectType {
 
 export type forceType = boolean | forceObjectType
 
-export interface BaseDataInitOption extends DefaultDataInitOption {
+export interface BaseDataInitOption<DATA> extends DefaultDataInitOption<DATA> {
   life?: LifeDataInitOption,
   module?: ModuleDataInitOption,
   getData?: anyPromiseFunction
@@ -25,14 +25,14 @@ export interface BaseDataReloadOptionType {
 }
 export type BaseDataReloadOption = undefined | boolean | BaseDataReloadOptionType
 
-class BaseData extends DefaultData {
+class BaseData<DATA> extends DefaultData<DATA> {
   $module: ModuleData
   $data: {
     list: any[]
     current: objectAny
   }
   $getData?: anyPromiseFunction | undefined
-  constructor(initOption: BaseDataInitOption) {
+  constructor(initOption: BaseDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$data = {

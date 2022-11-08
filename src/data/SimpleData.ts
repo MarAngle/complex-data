@@ -3,26 +3,28 @@ import { objectUnknown, anyPromiseFunction } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
-export interface SimpleDataInitOption {
+export interface SimpleDataInitOption<DATA> {
   name?: string,
   prop?: string,
+  data?: DATA,
   parent?: Data,
-  extra?: objectUnknown,
-  root?: objectUnknown
+  extra?: objectUnknown
 }
 
 
-class SimpleData extends Data {
+class SimpleData<DATA> extends Data {
 	$parent?: Data;
 	$name: string;
 	$prop: string;
 	$extra: objectUnknown;
+  data?: DATA
   $getData?: anyPromiseFunction
-  constructor (initOption: SimpleDataInitOption) {
+  constructor (initOption: SimpleDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
-    this.$prop = initOption.prop || '';
+    this.$prop = initOption.prop || ''
+    this.data = initOption.data
     this.$extra = {}
     this.$setParent(initOption.parent)
     this.$initExtra(initOption.extra)

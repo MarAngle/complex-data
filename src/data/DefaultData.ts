@@ -3,13 +3,13 @@ import LifeData, { LifeDataInitOption } from './../lib/LifeData'
 import { FuncDataItem } from '../lib/FuncData'
 import { formatInitOption } from '../utils'
 
-export interface DefaultDataInitOption extends SimpleDataInitOption {
+export interface DefaultDataInitOption<DATA> extends SimpleDataInitOption<DATA> {
   life?: LifeDataInitOption
 }
 
-class DefaultData extends SimpleData {
+class DefaultData<DATA> extends SimpleData<DATA> {
   $life: LifeData;
-  constructor (initOption: DefaultDataInitOption) {
+  constructor (initOption: DefaultDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$life = new LifeData(initOption.life)
