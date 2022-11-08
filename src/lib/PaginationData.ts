@@ -5,7 +5,6 @@ import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 
-
 type optionProps = {
   jumper?: boolean,
   size?: boolean
@@ -16,7 +15,6 @@ type sizeObjectType = {
   list?: string[]
 }
 
-
 type sizeType = number | sizeObjectType
 
 export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
@@ -24,7 +22,6 @@ export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
   props?: optionProps,
   option?: objectAny
 }
-
 
 export type PaginationDataInitOption = undefined | true | PaginationDataInitOptionObject
 

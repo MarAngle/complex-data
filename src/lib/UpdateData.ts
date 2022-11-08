@@ -1,13 +1,11 @@
 import $func from 'complex-func'
 import config from '../../config'
-import { anyFunction } from '../../ts'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
 */
-
 
 export type offsetObjectType = {
   start?: number,
@@ -16,15 +14,15 @@ export type offsetObjectType = {
 
 export type offsetType = number | offsetObjectType
 
-
 type triggerType = (func: UpdateData["$triggerNext"], index: number) => void
+type getOffsetType = (offset: number, currentIndex: number) => number
+type checkType = (currentIndex: number) => boolean | Promise<any>
 
 export interface UpdateDataInitOption extends DefaultDataInitOption {
   offset?: offsetType,
-  methods: {
-    trigger: triggerType,
-    [prop: string]: anyFunction
-  }
+  trigger: triggerType,
+  getOffset?: getOffsetType,
+  check?: checkType
 }
 
 class UpdateData extends DefaultData {
@@ -46,6 +44,13 @@ class UpdateData extends DefaultData {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)
+    this.trigger = initOption.trigger
+    if (initOption.getOffset) {
+      this.getOffset = initOption.getOffset
+    }
+    if (initOption.check) {
+      this.check = initOption.check
+    }
     this.load = {
       update: false, // 更新状态判断值，true说明update正在进行中，此时每间隔一段时间则进行触发操作
       operate: false, // 触发操作判断值，true说明trigger正在进行中
@@ -75,10 +80,10 @@ class UpdateData extends DefaultData {
   /**
    * 获取间隔
    * @param {number} offset 间隔
-   * @param {number} currentnum 当前次数
+   * @param {number} currentIndex 当前次数
    * @returns {number}
    */
-  getOffset (offset: number, currentnum: number) {
+  getOffset (offset: number, currentIndex: number): number {
     return offset
   }
   /**
@@ -92,10 +97,10 @@ class UpdateData extends DefaultData {
   }
   /**
    * 检查下一步是否继续，next判断
-   * @param {number} currentnum 当前次数
+   * @param {number} currentIndex 当前次数
    * @returns {boolean}
    */
-  check (currentnum: number): boolean | Promise<any> {
+  check (currentIndex: number): boolean | Promise<any> {
     return true
   }
   /**

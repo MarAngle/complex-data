@@ -1,7 +1,6 @@
 import $func from 'complex-func'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
-
 import OptionData from './OptionData'
 import StatusData, { StatusDataInitOption } from './StatusData'
 import PromiseData, { PromiseDataInitData } from './PromiseData'
@@ -13,8 +12,6 @@ import { objectUnknown } from '../../ts'
 // import SearchData, { SearchDataInitOption } from './../data/SearchData'
 
 const ModuleDictionaryMap: Map<string, any> = new Map()
-
-
 
 export interface ModuleDataInitOption {
   option?: objectUnknown
@@ -166,7 +163,6 @@ class ModuleData extends Data {
 }
 
 ModuleData.$name = 'ModuleData'
-
 
 ModuleData.setDictionary('status', StatusData)
 ModuleData.setDictionary('promise', PromiseData)

@@ -2,11 +2,9 @@ import $func from 'complex-func'
 import { baseObject, objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
-
 export type mapFunction<D> = (data: baseObject<D>, prop: string) => void
 
 export type InterfaceDataInitOption<D> = D | baseObject<D>
-
 
 class InterfaceData<D> extends Data {
   init: boolean

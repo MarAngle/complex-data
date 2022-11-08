@@ -3,9 +3,6 @@ import config from '../../config'
 import Data from './../data/Data'
 import InterfaceData from './InterfaceData'
 
-
-
-
 export type LayoutDataDataTypeObject = {
   span: number,
   offset?: number,
@@ -18,6 +15,7 @@ export type LayoutDataDataTypeObject = {
   xl?: number
   xxl?: number
 }
+
 export type LayoutDataDataType = number | LayoutDataDataTypeObject
 
 export interface LayoutDataInitOptionType {
