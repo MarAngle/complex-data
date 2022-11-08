@@ -11,7 +11,6 @@ import PageList from './PageList'
 
 // const propList = ['id', 'parentId', 'children']
 
-
 export type formatOptionBuild = LimitDataInitOption | LimitData
 
 export interface formatOption {
@@ -207,8 +206,6 @@ class DictionaryList extends DefaultData {
       ditem.$dictionary = this
     }
   }
-
-
 
   /**
    * 格式化列表数据
@@ -448,7 +445,7 @@ class DictionaryList extends DefaultData {
           targetData: editData,
           originData: formData,
           type: modType
-        })
+        }) as boolean
         // empty状态下传递数据 或者 checkFg为真时传递数据 也就是empty为false状态的非真数据不传递
         if (!add) {
           add = this.$option.getData('empty') as boolean

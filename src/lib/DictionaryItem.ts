@@ -7,7 +7,7 @@ import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './Layout
 import { baseObject, objectAny, objectUnknown } from '../../ts'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
-type payloadType = { targetData: objectUnknown, originData?: objectUnknown, type: string, from?: string }
+type payloadType = { targetData: objectUnknown, originData?: objectUnknown, type: string, from?: string, depth?: number }
 
 type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
 
@@ -43,7 +43,7 @@ export interface DictionaryItemPayload {
   layout?: LayoutDataInitOption
 }
 
-export type funcKeys = 'show' | 'edit' | 'post' | 'check'
+export type funcKeys = 'format' | 'defaultGetData' | 'show' | 'edit' | 'post' | 'check'
 export type interfaceKeys = 'label' | 'type' | 'showProp' | 'showType' | 'originProp' | 'modType'
 
 const defaultGetData = function (this: DictionaryItem, data: unknown, { type }: payloadType) {
