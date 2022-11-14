@@ -55,6 +55,8 @@ const timeUtils = {
       if (option.data == 'current') {
         if (option.start == true) {
           return _func.current.getData('moment:start')
+        } else if (option.end == true) {
+          return _func.current.getData('moment:end')
         } else {
           return _func.current.getData('moment')
         }
