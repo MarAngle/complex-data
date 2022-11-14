@@ -6,6 +6,8 @@ _func.current.setCallback(function(currentDate, from) {
   _func.current.setData(moment(currentDate), 'moment')
   let today = _func.current.getData('today')
   _func.current.setData(moment(today), 'moment:start')
+  let todayEnd = _func.current.getData('todayEnd')
+  _func.current.setData(moment(todayEnd), 'moment:end')
   let nextday = _func.current.getData('nextday')
   _func.current.setData(moment(nextday), 'moment:nextday')
 })
