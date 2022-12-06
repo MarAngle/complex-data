@@ -29,8 +29,10 @@ class SearchData extends ComplexData {
    */
   initSearchData({
     title,
-    menu
+    menu,
+    pageList
   }) {
+    this.usePageList = pageList
     this.setInit(true)
     this.initTitle(title)
     this.initMenu(menu)
@@ -95,7 +97,9 @@ class SearchData extends ComplexData {
         }
       }
       this.form[modType].modlist = this.getDictionaryModList('build')
-      this.form[modType].mainlist = this.getDictionaryPageListByModList('build', this.form[modType].modlist)
+      this.form[modType].mainlist = this.getDictionaryPageListByModList('build', this.form[modType].modlist, {
+        usePageList: this.usePageList
+      })
       this.resetSearchFormData('init')
     }
   }
@@ -115,6 +119,9 @@ class SearchData extends ComplexData {
         from: from,
         limit: option.limit
       })
+      if (this.usePageList) {
+        this.form[modType].mainlist.setData(this.form[modType].form.data)
+      }
       if (copyToPost) {
         this.setData(modType)
       }
