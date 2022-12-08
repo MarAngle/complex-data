@@ -6,7 +6,7 @@ import { offsetType } from '../lib/UpdateData'
 import DictionaryItem, { DictionaryItemInitOption } from '../lib/DictionaryItem'
 import { formatOption, formatOptionBuild, formDataOption } from '../lib/DictionaryList'
 import { formatInitOption } from '../utils'
-import { anyFunction, anyPromiseFunction, objectAny } from '../../ts'
+import { anyFunction, anyPromiseFunction } from '../../ts'
 
 export interface forceObjectType {
   [prop: string]: boolean | string
@@ -239,7 +239,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {object} [payload] 参数
    * @returns {DictionaryItem[]}
    */
-  $getDictionaryPageList (modType: string, payload?: objectAny) {
+  $getDictionaryPageList (modType: string, payload?: Record<PropertyKey, any>) {
     return this.$module.dictionary!.$getPageList(modType, payload)
   }
   /**
@@ -248,7 +248,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {object} [payload] 参数
    * @returns {DictionaryItem[]}
    */
-   $buildDictionaryPageList (modType: string, list: DictionaryItem[], payload?: objectAny) {
+   $buildDictionaryPageList (modType: string, list: DictionaryItem[], payload?: Record<PropertyKey, any>) {
     return this.$module.dictionary!.$buildPageList(modType, list, payload)
   }
 
@@ -273,7 +273,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {object} [option] 设置项
    * @returns {object}
    */
-   $buildData (originData:objectAny, originFrom?: string, option?: formatOptionBuild) {
+   $buildData (originData:Record<PropertyKey, any>, originFrom?: string, option?: formatOptionBuild) {
     return this.$module.dictionary!.buildData(originData, originFrom, option)
   }
   /**
@@ -284,7 +284,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {object} [option] 设置项
    * @returns {object}
    */
-   $updateData (targetData: objectAny, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild) {
+   $updateData (targetData: Record<PropertyKey, any>, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild) {
     return this.$module.dictionary!.updateData(targetData, originData, originFrom, option)
   }
   /**
@@ -294,7 +294,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {string} [originFrom] 来源originFrom
    * @param {object} [option] 设置项
    */
-   $formatListData (targetList: objectAny[], originList: objectAny[], originFrom = 'list', option:formatOption = {}) {
+   $formatListData (targetList: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[], originFrom = 'list', option:formatOption = {}) {
     this.$module.dictionary!.formatListData(targetList, originList, originFrom, option)
     this.$syncData('formatListData')
   }
@@ -319,7 +319,7 @@ class BaseData<DATA = undefined> extends DefaultData<DATA> {
    * @param {string} modType modType
    * @returns {object}
    */
-  $buildEditData (formData: objectAny, modList: DictionaryItem[], modType: string) {
+  $buildEditData (formData: Record<PropertyKey, any>, modList: DictionaryItem[], modType: string) {
     return this.$module.dictionary!.$buildEditData(formData, modList, modType)
   }
   /* --- dictionary end --- */
@@ -673,7 +673,7 @@ $triggerGetData (...args: any[]) {
    * 清空对象
    * @param {object} data 对象
    */
-  $resetObject(data: objectAny = {}) {
+  $resetObject(data: Record<PropertyKey, any> = {}) {
     for (const prop in data) {
       delete data[prop]
     }

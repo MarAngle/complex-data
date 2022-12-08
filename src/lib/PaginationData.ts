@@ -1,6 +1,5 @@
 import $func from 'complex-func'
 import config from '../../config'
-import { objectAny } from '../../ts'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
@@ -20,7 +19,7 @@ type sizeType = number | sizeObjectType
 export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
   size?: sizeType,
   props?: optionProps,
-  option?: objectAny
+  option?: Record<PropertyKey, any>
 }
 
 export type PaginationDataInitOption = undefined | true | PaginationDataInitOptionObject
@@ -37,7 +36,7 @@ class PaginationData extends DefaultData {
   num: {
     total: number
   }
-  option: objectAny
+  option: Record<PropertyKey, any>
   constructor (initOption?: PaginationDataInitOption) {
     initOption = formatInitOption(initOption) as PaginationDataInitOptionObject
     super(initOption)
@@ -88,7 +87,7 @@ class PaginationData extends DefaultData {
    * @param {object} props
    * @param {object} option
    */
-  $initOption(props:optionProps = {}, option: objectAny = {}) {
+  $initOption(props:optionProps = {}, option: Record<PropertyKey, any> = {}) {
     if (!option.props) {
       option.props = {}
     }

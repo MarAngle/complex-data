@@ -1,5 +1,4 @@
 import $func from 'complex-func'
-import { objectUnknown } from './../../ts'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
@@ -8,8 +7,7 @@ export interface SimpleDataInitOption<DATA = undefined> {
   prop?: string,
   data?: DATA,
   parent?: Data,
-  extra?: objectUnknown,
-  // method?: objectFunction
+  extra?: Record<PropertyKey, any>
 }
 
 class SimpleData<DATA = undefined> extends Data {
@@ -17,8 +15,7 @@ class SimpleData<DATA = undefined> extends Data {
 	$name: string
 	$prop: string
   data?: DATA
-	$extra!: objectUnknown
-  // $method: METHOD
+	$extra!: Record<PropertyKey, any>
   constructor (initOption: SimpleDataInitOption<DATA>) {
     initOption = formatInitOption(initOption)
     super()
@@ -51,7 +48,7 @@ class SimpleData<DATA = undefined> extends Data {
    * 加载额外数据
    * @param {object} [extraData] 额外数据对象
    */
-  $initExtra (extraData?: objectUnknown) {
+  $initExtra (extraData?: Record<PropertyKey, any>) {
     this.$clearExtra()
     if ($func.getType(extraData) == 'object') {
       this.$extra = extraData!
@@ -64,7 +61,7 @@ class SimpleData<DATA = undefined> extends Data {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  $setExtra (prop: string, data: unknown) {
+  $setExtra (prop: string, data: any) {
     this.$extra[prop] = data
   }
   /**
@@ -72,14 +69,8 @@ class SimpleData<DATA = undefined> extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  $getExtra (prop:string): unknown
-  $getExtra (): objectUnknown
-  $getExtra (prop?:string){
-    if (!prop) {
-      return this.$extra
-    } else {
-      return this.$extra[prop]
-    }
+  $getExtra (prop:string){
+    return this.$extra[prop]
   }
   /**
    * 获取额外数据

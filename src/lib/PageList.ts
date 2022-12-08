@@ -1,6 +1,5 @@
 import $func from 'complex-func'
 import Watcher from 'complex-func/src/data/observe/Watcher'
-import { objectAny } from '../../ts'
 import Data from './../data/Data'
 import { DictionaryItemModType } from './DictionaryItem'
 
@@ -11,7 +10,7 @@ class PageList extends Data {
   }
   $watch: Map<string, Watcher>
   $order: string[]
-  $data: null | objectAny
+  $data: null | Record<PropertyKey, any>
   data: DictionaryItemModType[]
   constructor (list?: DictionaryItemModType[]) {
     super()
@@ -136,7 +135,7 @@ class PageList extends Data {
       this.$addItemByPreIndex(totalIndex - 1, target)
     }
   }
-  setData(data: objectAny) {
+  setData(data: Record<PropertyKey, any>) {
     $func.observe(data)
     this.$data = data
     this.$observe()

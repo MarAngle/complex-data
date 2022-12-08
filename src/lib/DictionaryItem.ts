@@ -4,10 +4,9 @@ import dictionaryFormatOption from './../../dictionaryFormatOption'
 import SimpleData, { SimpleDataInitOption } from '../data/SimpleData'
 import InterfaceData from './InterfaceData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
-import { baseObject, objectAny, objectUnknown } from '../../ts'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 
-type payloadType = { targetData: objectUnknown, originData?: objectUnknown, type: string, from?: string, depth?: number }
+type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
 
 type baseFuncType<RES> = (data: unknown, payload: payloadType) => RES
 
@@ -22,14 +21,14 @@ export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
 
 export interface DictionaryItemInitOption<DATA = undefined> extends SimpleDataInitOption<DATA> {
   prop: string,
-  label?: string | baseObject<string>
-  type?: string | baseObject<string>
-  showProp?: string | baseObject<string>
-  showType?: string | baseObject<string>
-  originProp?: string | baseObject<string>
+  label?: string | Record<PropertyKey, string>
+  type?: string | Record<PropertyKey, string>
+  showProp?: string | Record<PropertyKey, string>
+  showType?: string | Record<PropertyKey, string>
+  originProp?: string | Record<PropertyKey, string>
   originFrom?: string | string[],
   layout?: LayoutDataInitOption,
-  mod?: objectUnknown,
+  mod?: Record<PropertyKey, unknown>,
   dictionary?: DictionaryListInitOption,
   format?: false | baseFuncType<unknown>
   defaultGetData?: false | baseFuncType<unknown>
@@ -50,7 +49,7 @@ const defaultGetData = function (this: DictionaryItem, data: unknown, { type }: 
   const showProp = this.$getInterface('showProp', type)
   if (showProp) {
     if (data && $func.getType(data) == 'object') {
-      return $func.getProp(data as objectUnknown, showProp)
+      return $func.getProp(data as Record<PropertyKey, unknown>, showProp)
     } else {
       return undefined
     }
@@ -168,7 +167,7 @@ class DictionaryItem<DATA = undefined> extends SimpleData<DATA> {
       return this.$layout
     }
   }
-  $getModData(modType: string, payload?: objectAny) {
+  $getModData(modType: string, payload?: Record<PropertyKey, any>) {
     return dictionaryFormatOption.unformat(this, modType, payload)
   }
   /**
@@ -226,9 +225,9 @@ class DictionaryItem<DATA = undefined> extends SimpleData<DATA> {
    * @param {string} [formatFuncName] 需要触发的数据格式化函数名称
    * @param {object} [payload] originData(接口源数据)/targetData(本地目标数据)/type(数据来源接口)
    */
-  $formatData(targetData: objectAny, prop: string, oData: any, type: string, formatFuncName: funcKeys, payload: {
-    targetData: objectAny,
-    originData: objectAny,
+  $formatData(targetData: Record<PropertyKey, any>, prop: string, oData: any, type: string, formatFuncName: funcKeys, payload: {
+    targetData: Record<PropertyKey, any>,
+    originData: Record<PropertyKey, any>,
     depth?: number,
     type: string
   }) {

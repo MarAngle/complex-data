@@ -1,10 +1,9 @@
 import $func from 'complex-func'
-import { objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
 class OptionData extends Data {
-  data: objectUnknown
-  constructor (structData?:objectUnknown) {
+  data: Record<PropertyKey, unknown>
+  constructor (structData?:Record<PropertyKey, unknown>) {
     super()
     this.data = structData || {}
   }
@@ -24,7 +23,7 @@ class OptionData extends Data {
    * 加载设置
    * @param {object} data 设置总数据
    */
-  $initData (data:objectUnknown = {}) {
+  $initData (data:Record<PropertyKey, unknown> = {}) {
     if ($func.getType(data) == 'object') {
       for (const n in data) {
         this.setData(n, data[n], 'init')
@@ -92,13 +91,13 @@ class OptionData extends Data {
    * @param {*} option 要设置的数据
    * @param {string} type 操作来源
    */
-  $setDataNext (data: objectUnknown, prop: string, optiondata: unknown, type: string) {
+  $setDataNext (data: Record<PropertyKey, unknown>, prop: string, optiondata: unknown, type: string) {
     const check = this.$checkData(data[prop], optiondata, type)
     if (check.fg) {
       // init状态下的object直接赋值
       if (check.target == 'object' && type != 'init') {
-        for (const n in (optiondata as objectUnknown)) {
-          this.$setDataNext(data[prop] as objectUnknown, n, (optiondata as objectUnknown)[n], type)
+        for (const n in (optiondata as Record<PropertyKey, unknown>)) {
+          this.$setDataNext(data[prop] as Record<PropertyKey, unknown>, n, (optiondata as Record<PropertyKey, unknown>)[n], type)
         }
       } else {
         data[prop] = optiondata
@@ -112,7 +111,7 @@ class OptionData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  getData(): objectUnknown
+  getData(): Record<PropertyKey, unknown>
   getData(prop: string): unknown
   getData (prop?: string) {
     if (prop) {

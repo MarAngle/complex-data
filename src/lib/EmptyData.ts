@@ -1,5 +1,4 @@
 import $func from 'complex-func'
-import { objectUnknown } from '../../ts'
 
 const ProxyCanUse = $func.getCanUse('Proxy')
 const proxyOption = {
@@ -17,7 +16,7 @@ const proxyOption = {
 class EmptyData {
   $name: string
   [prop: PropertyKey]: unknown
-  constructor (name = '', data?: objectUnknown) {
+  constructor (name = '', data?: Record<PropertyKey, unknown>) {
     this.$name = name
     if (data) {
       for (const n in data) {

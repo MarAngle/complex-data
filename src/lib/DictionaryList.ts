@@ -6,7 +6,6 @@ import OptionData from './OptionData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
-import { objectAny } from '../../ts'
 import PageList from './PageList'
 
 // const propList = ['id', 'parentId', 'children']
@@ -37,7 +36,7 @@ type propDataType<T> = {
 }
 
 export interface formDataOption {
-  form?: objectAny,
+  form?: Record<PropertyKey, any>,
   from?: string,
   limit?: LimitData | LimitDataInitOption,
 }
@@ -216,7 +215,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {boolean} [formatPrototype] 是否格式化原型
    * @param {number} [depth] 深度
    */
-   formatListData (targetList: objectAny[], originList: objectAny[], originFrom = 'list', option:formatOption = {}, formatPrototype = true, depth?: number) {
+   formatListData (targetList: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[], originFrom = 'list', option:formatOption = {}, formatPrototype = true, depth?: number) {
     if (option.clear === undefined || option.clear) {
       $func.clearArray(targetList)
     }
@@ -234,7 +233,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  buildData(originData:objectAny, originFrom = 'list', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+  buildData(originData:Record<PropertyKey, any>, originFrom = 'list', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
     return this.updateData({}, originData, originFrom, option, formatPrototype, depth)
   }
   /**
@@ -246,7 +245,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  updateData(targetData: objectAny, originData: formatOptionBuild, originFrom = 'info', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+  updateData(targetData: Record<PropertyKey, any>, originData: formatOptionBuild, originFrom = 'info', option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
     return this.formatData(targetData, originData, originFrom, option, formatPrototype, depth)
   }
   /**
@@ -259,7 +258,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  formatData(targetData: objectAny, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
+  formatData(targetData: Record<PropertyKey, any>, originData: formatOptionBuild, originFrom?: string, option?: formatOptionBuild, formatPrototype?: boolean, depth?: number) {
     if (!targetData) {
       targetData = {}
     }
@@ -280,7 +279,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
     }
     return this.$formatDataStart(targetData, originData, originFrom, option as LimitData, !!formatPrototype, depth)
   }
-  $formatPrototype(targetData: objectAny, depth: number) {
+  $formatPrototype(targetData: Record<PropertyKey, any>, depth: number) {
     const currentPrototype = Object.create(Object.getPrototypeOf(targetData))
     currentPrototype.$depth = depth
     Object.setPrototypeOf(targetData, currentPrototype)
@@ -295,7 +294,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  $formatDataStart(targetData: objectAny, originData: objectAny, originFrom: string, option: LimitData, formatPrototype: boolean, depth = 0) {
+  $formatDataStart(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: LimitData, formatPrototype: boolean, depth = 0) {
     for (const ditem of this.$data.values()) {
       this.$formatDataNext(ditem, targetData, originData, originFrom, option, formatPrototype, depth)
     }
@@ -315,7 +314,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {number} [depth] 深度
    * @returns {object}
    */
-  $formatDataNext(ditem: DictionaryItem, targetData: objectAny, originData: objectAny, originFrom: string, option: LimitData, formatPrototype: boolean, depth: number) {
+  $formatDataNext(ditem: DictionaryItem, targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: LimitData, formatPrototype: boolean, depth: number) {
     let build = false
     if (ditem.$isOriginFrom(originFrom)) {
       build = true
@@ -369,10 +368,10 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
     }
     return list
   }
-  $getPageList(modType: string, payload?: objectAny) {
+  $getPageList(modType: string, payload?: Record<PropertyKey, any>) {
     return this.$buildPageList(modType, this.$getList(modType), payload)
   }
-  $buildPageList(modType: string, list: DictionaryItem[], payload?: objectAny) {
+  $buildPageList(modType: string, list: DictionaryItem[], payload?: Record<PropertyKey, any>) {
     const pageList = new PageList()
     for (let n = 0; n < list.length; n++) {
       const ditem = list[n]
@@ -429,7 +428,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
    * @param {string} modType modType
    * @returns {object}
    */
-  $buildEditData(formData: objectAny, modList: DictionaryItem[], modType: string) {
+  $buildEditData(formData: Record<PropertyKey, any>, modList: DictionaryItem[], modType: string) {
     const editData = {}
     for (let n = 0; n < modList.length; n++) {
       const ditem = modList[n]

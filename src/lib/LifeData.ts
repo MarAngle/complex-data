@@ -25,7 +25,7 @@ export interface LifeDataInitOption {
 }
 
 class LifeData extends Data {
-  data: baseObject<LifeItem>;
+  data: Record<PropertyKey, LifeItem>;
   constructor (initOption?: LifeDataInitOption) {
     super()
     this.data = {}

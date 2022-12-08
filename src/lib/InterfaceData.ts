@@ -1,14 +1,13 @@
 import $func from 'complex-func'
-import { baseObject, objectUnknown } from '../../ts'
 import Data from './../data/Data'
 
-export type mapFunction<D> = (data: baseObject<D>, prop: string) => void
+export type mapFunction<D> = (data: Record<PropertyKey, D>, prop: string) => void
 
-export type InterfaceDataInitOption<D> = D | baseObject<D>
+export type InterfaceDataInitOption<D> = D | Record<PropertyKey, D>
 
 class InterfaceData<D> extends Data {
   init: boolean
-  data: baseObject<D | undefined>
+  data: Record<PropertyKey, D | undefined>
   constructor (initOption?: InterfaceDataInitOption<D | undefined>) {
     super()
     this.init = false
@@ -27,8 +26,8 @@ class InterfaceData<D> extends Data {
       if (type !== 'object') {
         this.setData('default', initOption as D)
       } else {
-        for (const n in (initOption as baseObject<D>)) {
-          this.setData(n, (initOption as baseObject<D>)[n])
+        for (const n in (initOption as Record<PropertyKey, D>)) {
+          this.setData(n, (initOption as Record<PropertyKey, D>)[n])
         }
       }
       this.init = true
@@ -84,7 +83,7 @@ class InterfaceData<D> extends Data {
     const value = this.getData('default')
     const type = typeof value
     if (type == 'object' || type == 'function') {
-      return (value as unknown as objectUnknown).toString()
+      return (value as unknown as Record<PropertyKey, unknown>).toString()
     } else if (type != 'string') {
       return String(value)
     } else {
