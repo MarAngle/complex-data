@@ -19,14 +19,14 @@ type triggerType = (func: UpdateData["$triggerNext"], index: number) => void
 type getOffsetType = (offset: number, currentIndex: number) => number
 type checkType = (currentIndex: number) => boolean | Promise<any>
 
-export interface UpdateDataInitOption<DATA = undefined> extends DefaultDataInitOption<DATA> {
+export interface UpdateDataInitOption extends DefaultDataInitOption {
   offset?: offsetType,
   trigger: triggerType,
   getOffset?: getOffsetType,
   check?: checkType
 }
 
-class UpdateData<DATA = undefined> extends DefaultData<DATA> {
+class UpdateData extends DefaultData {
   load: {
     update: boolean
     operate: boolean
@@ -41,7 +41,7 @@ class UpdateData<DATA = undefined> extends DefaultData<DATA> {
   }
   timer: undefined | number
   trigger!: triggerType
-  constructor (initOption: UpdateDataInitOption<DATA>) {
+  constructor (initOption: UpdateDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)

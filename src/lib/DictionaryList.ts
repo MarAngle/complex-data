@@ -41,19 +41,19 @@ export interface formDataOption {
   limit?: LimitData | LimitDataInitOption,
 }
 
-export interface DictionaryListInitOption<DATA = undefined> extends DefaultDataInitOption<DATA> {
+export interface DictionaryListInitOption extends DefaultDataInitOption {
   option?: optionType,
   layout?: LayoutDataInitOption,
   propData?: propDataType<string | propDataItemType>,
   list?: DictionaryItemInitOption[]
 }
 
-class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
+class DictionaryList extends DefaultData {
   $data: Map<string, DictionaryItem>
   $layout!: LayoutData
   $option: OptionData
   $propData: propDataType<propDataItemType>
-  constructor (initOption: DictionaryListInitOption<DATA>) {
+  constructor (initOption: DictionaryListInitOption) {
     super(initOption)
     this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
     this.$option = new OptionData({
@@ -202,7 +202,7 @@ class DictionaryList<DATA = undefined> extends DefaultData<DATA> {
       }
       ditem.$dictionary = new DictionaryList(initOption)
     } else if (type == 'self') {
-      ditem.$dictionary = this as DictionaryList
+      ditem.$dictionary = this
     }
   }
 

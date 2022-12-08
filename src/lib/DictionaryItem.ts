@@ -19,7 +19,7 @@ export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
   prop: string
 }
 
-export interface DictionaryItemInitOption<DATA = undefined> extends SimpleDataInitOption<DATA> {
+export interface DictionaryItemInitOption extends SimpleDataInitOption {
   prop: string,
   label?: string | Record<PropertyKey, string>
   type?: string | Record<PropertyKey, string>
@@ -61,7 +61,7 @@ const defaultCheck = function (data: unknown) {
   return $func.isExist(data)
 }
 
-class DictionaryItem<DATA = undefined> extends SimpleData<DATA> {
+class DictionaryItem extends SimpleData {
   prop: string
   originFrom: string[]
   $dictionary?: DictionaryList
@@ -83,7 +83,7 @@ class DictionaryItem<DATA = undefined> extends SimpleData<DATA> {
   $mod: {
     [prop: string]: DictionaryItemModType
   }
-  constructor (initOption: DictionaryItemInitOption<DATA>, payload: DictionaryItemPayload = {}) {
+  constructor (initOption: DictionaryItemInitOption, payload: DictionaryItemPayload = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
     // 加载基本自定义函数
@@ -126,7 +126,7 @@ class DictionaryItem<DATA = undefined> extends SimpleData<DATA> {
     this.$setLayout(initOption.layout, payload.layout)
 
     this.$mod = {}
-    dictionaryFormatOption.format(this as DictionaryItem, initOption.mod)
+    dictionaryFormatOption.format(this, initOption.mod)
   }
   /**
    * 获取接口数据对象

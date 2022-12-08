@@ -2,26 +2,23 @@ import $func from 'complex-func'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
-export interface SimpleDataInitOption<DATA = undefined> {
+export interface SimpleDataInitOption {
   name?: string,
   prop?: string,
-  data?: DATA,
   parent?: Data,
   extra?: Record<PropertyKey, any>
 }
 
-class SimpleData<DATA = undefined> extends Data {
+class SimpleData extends Data {
 	$parent?: Data
 	$name: string
 	$prop: string
-  data?: DATA
 	$extra!: Record<PropertyKey, any>
-  constructor (initOption: SimpleDataInitOption<DATA>) {
+  constructor (initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
     this.$prop = initOption.prop || ''
-    this.data = initOption.data
     this.$setParent(initOption.parent)
     this.$initExtra(initOption.extra)
   }

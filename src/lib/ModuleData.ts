@@ -26,7 +26,7 @@ export interface ModuleDataInitOption {
 export type moduleKeys = keyof ModuleDataInitOption
 
 class ModuleData extends Data {
-  $parent?: BaseData<any>
+  $parent?: BaseData
   option?: OptionData
   status?: StatusData
   promise?: PromiseData
@@ -35,7 +35,7 @@ class ModuleData extends Data {
   choice?: ChoiceData
   dictionary?: DictionaryList
   // search?: SearchData
-  constructor (initOption: undefined | ModuleDataInitOption, parent?: BaseData<any>) {
+  constructor (initOption: undefined | ModuleDataInitOption, parent?: BaseData) {
     super()
     this.setParent(parent)
     this.$initModule(initOption)
