@@ -2,7 +2,7 @@ import $func from 'complex-func'
 import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from './../../src/lib/InterfaceData'
 import config, { DictType } from '../../config'
-import { anyFunction, objectAny, objectFunction } from '../../ts'
+import { anyFunction, objectFunction } from '../../ts'
 import DictionaryItem from './DictionaryItem'
 
 
@@ -23,8 +23,8 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   message?: InterfaceDataInitOption<string>
   mainWidth?: string | number
   width?: string | number
-  option?: objectAny
-  localProps?: objectAny
+  option?: Record<PropertyKey, any>
+  localOption?: Record<PropertyKey, any>
   value?: valueType
   on?: objectFunction
   customize?: unknown
@@ -32,7 +32,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   tips?: string | {
     data: string,
     location?: string,
-    localProps?: objectAny
+    localOption?: Record<PropertyKey, any>
   }
   slot?: {
     type?: string,
@@ -59,13 +59,13 @@ class DefaultEdit extends BaseData {
     reset: any,
     [prop: PropertyKey]: any
   }
-  $option: objectAny
-  $localProps: objectAny
+  $option: Record<PropertyKey, any>
+  $localOption: Record<PropertyKey, any>
   $on: objectFunction
   $tips!: {
     data: string,
     location: string,
-    localProps: objectAny
+    localOption: Record<PropertyKey, any>
   }
   $slot!: {
     type: string,
@@ -97,13 +97,13 @@ class DefaultEdit extends BaseData {
     this.$tips = {
       data: '',
       location: '',
-      localProps: {}
+      localOption: {}
     }
     // 组件事件监控
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
     // main = { props: {} } item = { props: {} }
-    this.$localProps = initOption.localProps || {}
+    this.$localOption = initOption.localOption || {}
     const defaultOption = config.DefaultEdit.option.getData(this.type)
     if (!defaultOption) {
       this.$exportMsg(`对应的${this.type}不存在预定义，请检查代码或进行扩展！`)
@@ -135,16 +135,16 @@ class DefaultEdit extends BaseData {
     if (!initOption.tips) {
       this.$tips.data = ''
       this.$tips.location = ''
-      this.$tips.localProps = {}
+      this.$tips.localOption = {}
     } else {
       if (typeof initOption.tips != 'object') {
         this.$tips.data = initOption.tips || ''
         this.$tips.location = 'top'
-        this.$tips.localProps = {}
+        this.$tips.localOption = {}
       } else {
         this.$tips.data = initOption.tips.data
         this.$tips.location = initOption.tips.location || 'top'
-        this.$tips.localProps = initOption.tips.localProps || {}
+        this.$tips.localOption = initOption.tips.localOption || {}
       }
     }
   }
