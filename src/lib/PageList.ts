@@ -1,18 +1,18 @@
 import $func from 'complex-func'
 import Watcher from 'complex-func/src/data/observe/Watcher'
 import Data from './../data/Data'
-import { DictionaryItemModType } from './DictionaryItem'
+import { PageData } from './DictionaryItem'
 
 class PageList extends Data {
   $map: {
-    data: Map<string, DictionaryItemModType>,
-    hidden: Map<string, DictionaryItemModType>
+    data: Map<string, PageData>,
+    hidden: Map<string, PageData>
   }
   $watch: Map<string, Watcher>
   $order: string[]
   $data: null | Record<PropertyKey, any>
-  data: DictionaryItemModType[]
-  constructor (list?: DictionaryItemModType[]) {
+  data: PageData[]
+  constructor (list?: PageData[]) {
     super()
     this.$map = {
       data: new Map(),
@@ -29,12 +29,12 @@ class PageList extends Data {
       }
     }
   }
-  push(target: DictionaryItemModType) {
+  push(target: PageData) {
     this.data.push(target)
     this.$order.push(target.prop)
     this.$map.data.set(target.prop, target)
   }
-  unshift(target: DictionaryItemModType) {
+  unshift(target: PageData) {
     this.data.unshift(target)
     this.$order.unshift(target.prop)
     this.$map.data.set(target.prop, target)
@@ -55,7 +55,7 @@ class PageList extends Data {
     this.$map.data.delete(deleteItemProp)
     this.$map.hidden.delete(deleteItemProp)
   }
-  $addItemByPreIndex(preIndex: number, target: DictionaryItemModType) {
+  $addItemByPreIndex(preIndex: number, target: PageData) {
     let preCurrentIndex = -1
     for (preIndex; preIndex >= 0; preIndex--) {
       // 获取总顺序
@@ -97,7 +97,7 @@ class PageList extends Data {
   getItem(prop: string) {
     return this.$map.data.get(prop)
   }
-  addItem(target: DictionaryItemModType, preProp?: string) {
+  addItem(target: PageData, preProp?: string) {
     if (preProp) {
       const preIndex = this.$order.indexOf(preProp)
       this.$addItemByPreIndex(preIndex, target)

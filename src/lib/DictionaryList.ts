@@ -1,7 +1,7 @@
 import $func from 'complex-func'
 import LimitData, { LimitDataInitOption } from 'complex-func/src/build/LimitData'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
-import DictionaryItem, { DictionaryItemInitOption } from './DictionaryItem'
+import DictionaryItem, { DictionaryItemInitOption, PageData } from './DictionaryItem'
 import OptionData from './OptionData'
 import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
 import BaseData from '../data/BaseData'
@@ -375,7 +375,7 @@ class DictionaryList extends DefaultData {
     const pageList = new PageList()
     for (let n = 0; n < list.length; n++) {
       const ditem = list[n]
-      const pitem = ditem.$getModData(modType, payload)
+      const pitem = ditem.$getModData(modType, payload) as PageData
       if (ditem.$dictionary) {
         const mod = ditem.$getMod(modType)
         if (mod && mod.$children) {

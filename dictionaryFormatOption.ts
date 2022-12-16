@@ -1,10 +1,10 @@
-import DictionaryItem, { DictionaryItemModTypeFormat } from "./src/lib/DictionaryItem"
+import DictionaryItem, { PageData } from "./src/lib/DictionaryItem"
 import { objectAny } from "./ts"
 
 
 export interface formatOptionItemType {
   format?: (ditem:DictionaryItem, name: string, modItemData: objectAny) => objectAny,
-  unformat?: (ditem:DictionaryItem, name: string, payload?: objectAny) => DictionaryItemModTypeFormat
+  unformat?: (ditem:DictionaryItem, name: string, payload?: objectAny) => PageData
 }
 
 const DictionaryMap: Map<string, formatOptionItemType> = new Map()

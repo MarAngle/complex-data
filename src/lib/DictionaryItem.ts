@@ -15,8 +15,9 @@ export interface DictionaryItemModType {
   [prop: PropertyKey]: any
 }
 
-export interface DictionaryItemModTypeFormat extends DictionaryItemModType {
-  prop: string
+export interface PageData {
+  prop: string,
+  [prop: PropertyKey]: any
 }
 
 export interface DictionaryItemInitOption extends SimpleDataInitOption {
