@@ -14,16 +14,18 @@ const lifeId = new IdData({
   ]
 })
 
-export type LifeItemDataObject = {
+type LifeItemDataFunction = (...args:any[]) => any
+
+export interface LifeItemDataObject {
   id?: string,
-  data: (...args:any[]) => any,
+  data: LifeItemDataFunction,
   index?: number,
   replace?: boolean,
   immediate?: boolean,
   once?: boolean
 }
 
-export type LifeItemDataType = (...args:any[]) => any | LifeItemDataObject
+export type LifeItemDataType = LifeItemDataFunction | LifeItemDataObject
 
 export interface LifeItemInitOption {
   name: string,
@@ -81,11 +83,11 @@ class LifeItem extends Data {
       const dataIsArray = isArray(data)
       if (dataIsArray) {
         resId = []
-        for (let n = 0; n < (data as LifeItemDataType[]).length; n++) {
-          resId.push(this.$formatData((data  as LifeItemDataType[])[n]))
+        for (let n = 0; n < data.length; n++) {
+          resId.push(this.$formatData(data[n]))
         }
       } else {
-        resId = this.$formatData(data as LifeItemDataType)
+        resId = this.$formatData(data)
       }
     }
     return resId
@@ -100,7 +102,7 @@ class LifeItem extends Data {
     let next = true
     if (dataType === 'function') {
       data = {
-        data: data as (...args:any[]) => any
+        data: data as LifeItemDataFunction
       }
     } else if (dataType !== 'object') {
       next = false
