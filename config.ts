@@ -26,10 +26,14 @@ const config = {
     ]
   },
   PaginationData: {
-    size: 10,
-    sizeList: ['10', '20', '50', '100'],
-    jumperChange: true,
-    sizeChange: true
+    size: {
+      current: 10,
+      list: ['10', '20', '50', '100'],
+      change: true
+    },
+    jumper: {
+      change: true
+    }
   },
   LayoutData: {
     grid: 24,

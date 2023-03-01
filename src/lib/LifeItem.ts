@@ -33,9 +33,9 @@ export interface LifeItemInitOption {
 }
 
 class LifeItem extends Data {
-  name: string;
-  data: Map<string, LifeItemDataObject>;
   static $name = 'LifeItem'
+  name: string;
+  data: Map<string, LifeItemDataObject>
   constructor (initOption: LifeItemInitOption) {
     initOption = formatInitOption(initOption)
     super()

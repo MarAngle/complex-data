@@ -1,9 +1,14 @@
+import { isComplex, getProp, getType } from 'complex-utils'
+
 import Data from './../data/Data'
+
+export type OptionDataInitOption = Record<PropertyKey, unknown>
+
 
 class OptionData extends Data {
   static $name = 'OptionData'
   data: Record<PropertyKey, unknown>
-  constructor (structData?:Record<PropertyKey, unknown>) {
+  constructor (structData?:OptionDataInitOption) {
     super()
     this.data = structData || {}
   }
@@ -24,7 +29,7 @@ class OptionData extends Data {
    * @param {object} data 设置总数据
    */
   $initData (data:Record<PropertyKey, unknown> = {}) {
-    if ($func.getType(data) == 'object') {
+    if (getType(data) == 'object') {
       for (const n in data) {
         this.setData(n, data[n], 'init')
       }
@@ -51,8 +56,8 @@ class OptionData extends Data {
    */
   $checkData (target: unknown, option: unknown, type: string) {
     const check = {
-      target: $func.getType(target),
-      option: $func.getType(option),
+      target: getType(target),
+      option: getType(option),
       fg: false
     }
     if (check.target === 'undefined' || check.option === 'undefined') {
@@ -70,7 +75,7 @@ class OptionData extends Data {
     } else if (check.target == check.option) {
       check.fg = true
       return check
-    } else if (!$func.isComplex(check.target) && !$func.isComplex(check.option)) {
+    } else if (!isComplex(check.target) && !isComplex(check.option)) {
       check.fg = true
       return check
     } else {
@@ -115,7 +120,7 @@ class OptionData extends Data {
   getData(prop: string): unknown
   getData (prop?: string) {
     if (prop) {
-      return $func.getProp(this.data, prop)
+      return getProp(this.data, prop)
     } else {
       return this.data
     }

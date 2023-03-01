@@ -24,8 +24,8 @@ export interface LifeDataInitOption {
 }
 
 class LifeData extends Data {
-  data: Record<PropertyKey, LifeItem>
   static $name = 'LifeData'
+  data: Record<PropertyKey, LifeItem>
   constructor (initOption?: LifeDataInitOption) {
     super()
     this.data = {}

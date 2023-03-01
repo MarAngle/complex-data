@@ -47,8 +47,8 @@ export interface IdDataInitOption {
 }
 
 class IdData {
-  list: finalFunction[]
   static $name = 'IdData'
+  list: finalFunction[]
   constructor (initOption: IdDataInitOption) {
     this.list = []
     this.$initMain(initOption)

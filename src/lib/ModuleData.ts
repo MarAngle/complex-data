@@ -1,7 +1,7 @@
 import { exportMsg, getType } from 'complex-utils'
 import Data from '../data/Data'
 import BaseData from '../data/BaseData'
-import OptionData from './OptionData'
+import OptionData, { OptionDataInitOption } from './OptionData'
 import StatusData, { StatusDataInitOption } from './StatusData'
 import PromiseData, { PromiseDataInitData } from './PromiseData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
@@ -13,7 +13,7 @@ import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 const ModuleDictionaryMap: Map<string, any> = new Map()
 
 export interface ModuleDataInitOption {
-  option?: Record<PropertyKey, unknown>
+  option?: OptionDataInitOption
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
   update?: UpdateDataInitOption
