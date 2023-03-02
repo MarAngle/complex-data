@@ -41,6 +41,9 @@ class StatusData extends Data {
       delete this.data[target]
     }
   }
+  getItem(target = 'operate') {
+    return this.data[target]
+  }
   getCurrent(target = 'operate') {
     return this.data[target].getCurrent()
   }

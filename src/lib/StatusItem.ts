@@ -1,6 +1,6 @@
 import Data from "../data/Data"
 
-export type valueType = 'un' | 'wait' | 'ing' | 'end' | 'fail'
+export type valueType = 'un' | 'ing' | 'success' | 'fail' | 'end'
 
 export interface itemType {
   value: valueType,
@@ -21,10 +21,22 @@ type countOptionOption = {
   type: 'count'
 }
 
+interface triggerTypeData {
+  from: valueType[],
+  to: valueType
+}
+
+export interface triggerType {
+  start: triggerTypeData,
+  success: triggerTypeData,
+  fail: triggerTypeData,
+}
+
 type StatusItemInitOptionOption = Partial<defaultOption> | countOptionOption
 
 export type StatusItemInitOption = {
   list: itemType[],
+  trigger: triggerType
   current?: valueType,
   default?: valueType,
   option?: StatusItemInitOptionOption
@@ -34,6 +46,7 @@ class StatusItem extends Data {
   static $name = 'StatusItem'
   option: defaultOption | countOption
   list: Map<valueType, itemType>
+  trigger: triggerType
   current: valueType
   default: valueType
   constructor (initOption: StatusItemInitOption) {
@@ -54,6 +67,7 @@ class StatusItem extends Data {
         type: 'default'
       }
     }
+    this.trigger = initOption.trigger
     this.list = new Map()
     for (const n in initOption.list) {
       this.list.set(initOption.list[n].value, initOption.list[n])
@@ -88,6 +102,17 @@ class StatusItem extends Data {
       value = this.current
     }
     return this.list.get(value)
+  }
+  triggerChange(target: keyof triggerType, strict?: boolean) {
+    const current = this.getCurrent()
+    const triggerDict = this.trigger[target]
+    if (strict) {
+      if (triggerDict.from.indexOf(current) == 0) {
+        return false
+      }
+    }
+    this.setData(triggerDict.to)
+    return true
   }
   /**
    * 重置计算值

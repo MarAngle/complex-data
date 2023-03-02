@@ -40,6 +40,15 @@ class BaseData extends DefaultData {
     }
     this.$triggerCreateLife('BaseData', 'created', initOption)
   }
+  /**
+   * 将第一个传参的第一个参数无值时转换为空对象
+   * @param {*[]} args 参数列表
+   */
+  static formatResetOption(args: any[]) {
+    if (!args[0]) {
+      args[0] = {}
+    }
+  }
   /* --- module start --- */
   $setModule(...args: Parameters<ModuleData['$setData']>) {
     this.$module.$setData(...args)
@@ -56,6 +65,9 @@ class BaseData extends DefaultData {
   /* --- module end --- */
 
   /* --- status start --- */
+  $getStatusItem(...args: Parameters<StatusData['getItem']>) {
+    return this.$module.status!.getItem(...args)
+  }
   $setStatus(...args: Parameters<StatusData['setData']>) {
     this.$module.status!.setData(...args)
   }
@@ -259,9 +271,31 @@ class BaseData extends DefaultData {
       })
     }
   }
+  $triggerPromiseByStatus(promise: Promise<unknown>, statusProp: string, strict?: boolean) {
+    const statusItem = this.$getStatusItem(statusProp)
+    if (statusItem) {
+      if (statusItem.triggerChange('start', strict)) {
+        return new Promise((resolve, reject) => {
+          promise.then((res: unknown) => {
+            statusItem.triggerChange('success')
+            resolve(res)
+          }).catch(error => {
+            statusItem.triggerChange('fail')
+            reject(error)
+          })
+        })
+      } else {
+        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerPromiseByStatus函数在严格校验下不允许被触发！`)
+        return Promise.reject({ status: 'fail', code: 'strict fail' })
+      }
+    } else {
+      this.$exportMsg(`${statusProp}状态不存在，$triggerPromiseByStatus函数失败！`)
+      return Promise.reject({ status: 'fail', code: 'no status' })
+    }
+  }
   $triggerMethodByOperate (target: string | ((...args: any[]) => any), ...args: any[]) {
     const operate = this.$getStatus()
-    if (operate == 'wait') {
+    if (operate == 'un') {
       return this.$triggerMethod(target, ...args)
     } else {
       this.$exportMsg(`当前操作状态为:${operate}，${target}函数操作互斥，$triggerMethodByOperate函数失败！`)
@@ -314,10 +348,10 @@ class BaseData extends DefaultData {
       if (next.data) {
         this.$setStatus('ing')
         next.promise!.then(res => {
-          this.$setStatus('wait')
+          this.$setStatus('un')
           resolve(res)
         }, err => {
-          this.$setStatus('wait')
+          this.$setStatus('un')
           console.error(err)
           reject(err)
         })
@@ -328,17 +362,6 @@ class BaseData extends DefaultData {
     })
   }
   /* --- load end --- */
-
-
-  /**
-   * 将第一个传参的第一个参数无值时转换为空对象
-   * @param {*[]} args 参数列表
-   */
-  $formatResetOption(args: any[]) {
-    if (!args[0]) {
-      args[0] = {}
-    }
-  }
   /**
    * 获取reset操作对应prop时机时的重置操作判断
    * @param {object} [resetOption]
@@ -353,7 +376,7 @@ class BaseData extends DefaultData {
    * @param  {...any} args 参数
    */
   $reset(...args: any[]) {
-    this.$formatResetOption(args)
+    BaseData.formatResetOption(args)
     this.$triggerLife('beforeReset', this, ...args)
     this.$triggerLife('reseted', this, ...args)
   }
@@ -362,7 +385,7 @@ class BaseData extends DefaultData {
    * @param  {...any} args 参数
    */
   $destroy(...args: any[]) {
-    this.$formatResetOption(args)
+    BaseData.formatResetOption(args)
     this.$triggerLife('beforeDestroy', this, ...args)
     this.$reset(...args)
     this.$triggerLife('destroyed', this, ...args)

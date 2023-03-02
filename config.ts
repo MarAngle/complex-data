@@ -48,6 +48,20 @@ const config = {
       {
         prop: 'load',
         data: {
+          trigger: {
+            start: {
+              from: ['un', 'fail'],
+              to: 'ing'
+            },
+            success: {
+              from: ['ing'],
+              to: 'success'
+            },
+            fail: {
+              from: ['ing'],
+              to: 'fail'
+            }
+          },
           list: [
             {
               value: 'un',
@@ -58,7 +72,7 @@ const config = {
               label: '加载中'
             },
             {
-              value: 'end',
+              value: 'success',
               label: '已加载'
             },
             {
@@ -71,10 +85,24 @@ const config = {
       {
         prop: 'update',
         data: {
+          trigger: {
+            start: {
+              from: ['un'],
+              to: 'ing'
+            },
+            success: {
+              from: ['ing'],
+              to: 'un'
+            },
+            fail: {
+              from: ['ing'],
+              to: 'fail'
+            }
+          },
           list: [
             {
-              value: 'wait',
-              label: '等待更新'
+              value: 'un',
+              label: '未更新'
             },
             {
               value: 'ing',
@@ -90,10 +118,24 @@ const config = {
       {
         prop: 'operate',
         data: {
+          trigger: {
+            start: {
+              from: ['un'],
+              to: 'ing'
+            },
+            success: {
+              from: ['ing'],
+              to: 'un'
+            },
+            fail: {
+              from: ['ing'],
+              to: 'un'
+            }
+          },
           list: [
             {
-              value: 'wait',
-              label: '等待操作'
+              value: 'un',
+              label: '未操作'
             },
             {
               value: 'ing',
