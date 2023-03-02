@@ -1,8 +1,9 @@
 import { getType, getProp, setProp, formatNum, isExist } from 'complex-utils'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
+import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 import InterfaceData, { InterfaceDataInitOption } from './InterfaceData'
-import LayoutData, { LayoutDataFormatData, LayoutDataInitOption } from './LayoutData'
+import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 
 type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
 
@@ -17,14 +18,20 @@ interface customerFunction {
   check?: false | baseFunction<boolean>
 }
 
+export interface parentOptionType {
+  layout?: LayoutDataInitOption
+}
 
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
+  prop: string,
   originProp?: InterfaceDataInitOption<string>
   label?: InterfaceDataInitOption<string>
   type?: InterfaceDataInitOption<string>
   showProp?: InterfaceDataInitOption<string>
   showType?: InterfaceDataInitOption<string>
-  originFrom?: string | string[],
+  originFrom?: string | string[]
+  layout?: LayoutDataInitOption
+  dictionary?: DictionaryListInitOption
 }
 
 
@@ -47,10 +54,11 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
-class DictionaryData extends SimpleData implements customerFunction {
+class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
   prop: string
   originFrom: string[]
+  $dictionary?: DictionaryList
   $interface: {
     originProp: InterfaceData<string>
     label: InterfaceData<string>
@@ -58,15 +66,17 @@ class DictionaryData extends SimpleData implements customerFunction {
     showProp: InterfaceData<string>
     showType: InterfaceData<string>
   }
+  $layout!: LayoutData
   format?: false | baseFunction<unknown>
   defaultGetData?: false | baseFunction<unknown>
   show?: false | baseFunction<unknown>
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   check?: false | baseFunction<boolean>
-  constructor (initOption: DictionaryDataInitOption) {
+  constructor (initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
+    this.prop = this.$prop
     // 加载基本自定义函数
     this.format = initOption.format
     this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData : initOption.defaultGetData
@@ -92,15 +102,10 @@ class DictionaryData extends SimpleData implements customerFunction {
       showProp: new InterfaceData(initOption.showProp),
       type: new InterfaceData(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string'),
       showType: new InterfaceData(initOption.showType),
-      originProp: new InterfaceData(initOption.originProp || this.$prop),
+      originProp: new InterfaceData(initOption.originProp || this.prop),
     }
-    // 设置prop
-    if (!this.$prop) {
-      this.prop = this.$getInterface('originProp')!
-    } else {
-      this.prop = this.$prop
-    }
-    this.$mod = {}
+    this.$setLayout(initOption.layout || parentOption.layout)
+    // this.$mod = {}
   }
   $getInterfaceData (target: interfaceKeys) {
     return this.$interface[target]
@@ -110,6 +115,15 @@ class DictionaryData extends SimpleData implements customerFunction {
   }
   $setInterface (target: interfaceKeys, prop: string, data: string, useSetData?: boolean) {
     this.$interface[target].setData(prop, data, useSetData)
+  }
+  $setLayout (data?: LayoutDataInitOption) {
+    this.$layout = new LayoutData(data)
+  }
+  $getLayout (prop?: string) {
+    return this.$layout.getData(prop)
+  }
+  $getLayoutData () {
+    return this.$layout
   }
 }
 

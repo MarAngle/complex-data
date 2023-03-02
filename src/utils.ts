@@ -15,3 +15,13 @@ export const formatInitOption = function(initOption?: any, defaultInitOption?: a
   }
   return initOption
 }
+
+export const buildOptionData = function<D>(structData: D, initData?: Partial<D>) {
+  if (initData) {
+    for (const prop in initData) {
+      structData[prop] = initData[prop]!
+    }
+  }
+  return structData
+}
+

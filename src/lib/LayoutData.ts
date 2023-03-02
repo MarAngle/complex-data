@@ -3,6 +3,12 @@ import config from '../../config'
 import Data from './../data/Data'
 import InterfaceData from './InterfaceData'
 
+export interface HasLayoutData {
+  $setLayout: (layout: LayoutDataInitOption) => void
+  $getLayout: (prop?: string) => LayoutDataFormatData
+  $getLayoutData: () => LayoutData
+}
+
 export type LayoutDataDataTypeObject = {
   span: number,
   offset?: number,

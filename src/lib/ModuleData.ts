@@ -1,7 +1,6 @@
 import { exportMsg, getType } from 'complex-utils'
 import Data from '../data/Data'
 import BaseData from '../data/BaseData'
-import OptionData, { OptionDataInitOption } from './OptionData'
 import StatusData, { StatusDataInitOption } from './StatusData'
 import PromiseData, { PromiseDataInitData } from './PromiseData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
@@ -13,7 +12,7 @@ import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
 const ModuleDictionaryMap: Map<string, any> = new Map()
 
 export interface ModuleDataInitOption {
-  option?: OptionDataInitOption
+  // option?: OptionDataInitOption
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
   update?: UpdateDataInitOption
@@ -28,7 +27,7 @@ export type moduleKeys = keyof ModuleDataInitOption
 class ModuleData extends Data {
   static $name = 'ModuleData'
   $parent!: BaseData
-  option?: OptionData
+  // option?: OptionData
   status?: StatusData
   promise?: PromiseData
   update?: UpdateData
@@ -172,7 +171,6 @@ class ModuleData extends Data {
 
 ModuleData.setDictionary('status', StatusData)
 ModuleData.setDictionary('promise', PromiseData)
-ModuleData.setDictionary('option', OptionData)
 ModuleData.setDictionary('pagination', PaginationData)
 ModuleData.setDictionary('choice', ChoiceData)
 ModuleData.setDictionary('update', UpdateData)
