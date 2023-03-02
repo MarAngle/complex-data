@@ -39,7 +39,7 @@ class PaginationData extends DefaultData {
     change: boolean
   }
   $localOption: Record<PropertyKey, any>
-  constructor (initOption?: PaginationDataInitOption) {
+  constructor(initOption?: PaginationDataInitOption) {
     initOption = formatInitOption(initOption) as PaginationDataInitOptionObject
     super(initOption)
     this.$triggerCreateLife('PaginationData', 'beforeCreate', initOption)
@@ -107,7 +107,7 @@ class PaginationData extends DefaultData {
   /**
    * 计算页码相关数据
    */
-  $autoCountTotal (unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
+  $autoCountTotal(unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     const total = getNum(this.getNum() / this.getSize(), 'ceil', 0)
     this.total = total < 1 ? 1 : total
     if (!unCountCurrent && this.getCurrent() > this.total) {
@@ -118,14 +118,14 @@ class PaginationData extends DefaultData {
    * 获取总页码
    * @returns {number}
    */
-  getTotal (): number {
+  getTotal(): number {
     return this.total
   }
   /**
    * 设置当前页
    * @param {number} current 当前页
    */
-  setCurrent (current: number, unTriggerCurrentLife?: boolean) {
+  setCurrent(current: number, unTriggerCurrentLife?: boolean) {
     const total = this.getTotal()
     if (current < 1) {
       current = 1
@@ -143,7 +143,7 @@ class PaginationData extends DefaultData {
    * 获取当前页
    * @returns {number}
    */
-  getCurrent () {
+  getCurrent() {
     return this.current
   }
   /**
@@ -164,7 +164,7 @@ class PaginationData extends DefaultData {
    * 获取当前size
    * @returns {number}
    */
-  getSize () {
+  getSize() {
     return this.size.current
   }
   /**
@@ -172,7 +172,7 @@ class PaginationData extends DefaultData {
    * @param {number} size size参数
    * @param {number} page page参数
    */
-  setCurrentAndSize (data: { current: number, size: number }, unTriggerCurrentAndSizeLife?: boolean) {
+  setCurrentAndSize(data: { current: number, size: number }, unTriggerCurrentAndSizeLife?: boolean) {
     this.setSize(data.size, true)
     this.setCurrent(data.current)
     if (!unTriggerCurrentAndSizeLife) {
@@ -202,7 +202,7 @@ class PaginationData extends DefaultData {
   /**
    * 重置
    */
-  reset () {
+  reset() {
     this.setNum(0, true)
     this.setCurrent(1)
   }
@@ -231,7 +231,7 @@ class PaginationData extends DefaultData {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install (target: BaseData) {
+  $install(target: BaseData) {
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {

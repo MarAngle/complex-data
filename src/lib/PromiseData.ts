@@ -16,7 +16,7 @@ export interface PromiseDataInitData {
 class PromiseData extends Data {
   static $name = 'PromiseData'
   data: dataType
-  constructor (initOption?: PromiseDataInitData) {
+  constructor(initOption?: PromiseDataInitData) {
     super()
     this.data = {}
     if (initOption) {
@@ -27,7 +27,7 @@ class PromiseData extends Data {
    * 加载数据
    * @param {*} data 数据
    */
-  $initData (data: dataType = {}) {
+  $initData(data: dataType = {}) {
     for (const n in data) {
       this.setData(n, data[n])
     }
@@ -38,7 +38,7 @@ class PromiseData extends Data {
    * @param {Promise} data Promise数据
    * @returns {Promise}
    */
-  setData (prop: PropertyKey, data: Promise<any>) {
+  setData(prop: PropertyKey, data: Promise<any>) {
     this.data[prop] = data
     return data
   }
@@ -47,7 +47,7 @@ class PromiseData extends Data {
    * @param {string} prop 属性
    * @returns {Promise}
    */
-  getData (prop: PropertyKey) {
+  getData(prop: PropertyKey) {
     return this.data[prop]
   }
   /**
@@ -57,7 +57,7 @@ class PromiseData extends Data {
    * @param {object} [option.correct = 'reload'] '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
    * @returns {Promise}
    */
-  triggerData (prop: PropertyKey, option: PromiseOptionType = {}) {
+  triggerData(prop: PropertyKey, option: PromiseOptionType = {}) {
     return new Promise((resolve, reject) => {
       if (option.correct === undefined) {
         option.correct = 'reload' // '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
