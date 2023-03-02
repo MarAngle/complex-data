@@ -271,95 +271,76 @@ class BaseData extends DefaultData {
       })
     }
   }
-  $triggerPromiseByStatus(promise: Promise<unknown>, statusProp: string, strict?: boolean) {
+  $triggerMethodByStatus(method: string | ((...args: any[]) => any), args: any[], statusProp: string, strict?: boolean) {
     const statusItem = this.$getStatusItem(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict)) {
-        return new Promise((resolve, reject) => {
-          promise.then((res: unknown) => {
-            statusItem.triggerChange('success')
-            resolve(res)
-          }).catch(error => {
-            statusItem.triggerChange('fail')
-            reject(error)
+        const next = this.$runMethod(method, args)
+        if (next.promise) {
+          return new Promise((resolve, reject) => {
+            next.promise!.then((res: unknown) => {
+              statusItem.triggerChange('success')
+              resolve(res)
+            }).catch(error => {
+              statusItem.triggerChange('fail')
+              reject(error)
+            })
           })
-        })
+        } else {
+          this.$exportMsg(next.msg)
+          return Promise.reject({ status: 'fail', code: next.code })
+        }
       } else {
         this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerPromiseByStatus函数在严格校验下不允许被触发！`)
-        return Promise.reject({ status: 'fail', code: 'strict fail' })
+        return Promise.reject({ status: 'fail', code: 'status clash' })
       }
     } else {
       this.$exportMsg(`${statusProp}状态不存在，$triggerPromiseByStatus函数失败！`)
       return Promise.reject({ status: 'fail', code: 'no status' })
     }
   }
-  $triggerMethodByOperate (target: string | ((...args: any[]) => any), ...args: any[]) {
-    const operate = this.$getStatus()
-    if (operate == 'un') {
-      return this.$triggerMethod(target, ...args)
-    } else {
-      this.$exportMsg(`当前操作状态为:${operate}，${target}函数操作互斥，$triggerMethodByOperate函数失败！`)
-      return Promise.reject({ status: 'fail', code: 'clash' })
-    }
-  }
-  $triggerMethod(target: string | ((...args: any[]) => any), ...args: any[]) {
+  $runMethod(method: string | ((...args: any[]) => any), args: any[]) {
     const next: {
-      data: boolean,
       promise: null | Promise<any>,
       msg: string,
       code: string
     } = {
-      data: false,
       promise: null,
       msg: '',
       code: ''
     }
-    switch (typeof target) {
+    switch (typeof method) {
       case 'string':
-        if ((this as any)[target]) {
-          if (typeof ((this as any)[target]) === 'function') {
-            next.promise = (this as any)[target](...args)
+        if ((this as any)[method]) {
+          if (typeof ((this as any)[method]) === 'function') {
+            next.promise = (this as any)[method](...args)
           } else {
-            next.msg = `${target}属性非函数类型，$triggerMethod函数触发失败！`
+            next.msg = `${method}属性非函数类型，$triggerMethod函数触发失败！`
             next.code = 'not function'
           }
         } else {
-          next.msg = `不存在${target}函数，$triggerMethod函数触发失败！`
+          next.msg = `不存在${method}函数，$triggerMethod函数触发失败！`
           next.code = 'no method'
         }
         break;
       case 'function':
-        next.promise = target(...args)
+        next.promise = method(...args)
         break;
       default:
-        next.msg = `target参数接受string/function[promise]，当前值为${target}，$triggerMethod函数触发失败！`
+        next.msg = `method参数接受string/function[promise]，当前值为${method}，$triggerMethod函数触发失败！`
         next.code = 'not function'
         break;
     }
-    if (next.promise) {
-      if (isPromise(next.promise)) {
-        next.data = true
-      } else {
-        next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，$triggerMethod函数触发失败！`
-        next.code = 'not promise'
-      }
+    if (next.promise && !isPromise(next.promise)) {
+      next.promise = null
+      next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，$triggerMethod函数触发失败！`
+      next.code = 'not promise'
     }
-    return new Promise((resolve, reject) => {
-      if (next.data) {
-        this.$setStatus('ing')
-        next.promise!.then(res => {
-          this.$setStatus('un')
-          resolve(res)
-        }, err => {
-          this.$setStatus('un')
-          console.error(err)
-          reject(err)
-        })
-      } else {
-        this.$exportMsg(next.msg)
-        reject({ status: 'fail', code: next.code })
-      }
-    })
+    return next
+  }
+
+  $triggerMethod(method: string | ((...args: any[]) => any), args: any[] = [], strict?: boolean) {
+    return this.$triggerMethodByStatus(method, args, 'operate', strict)
   }
   /* --- load end --- */
   /**
