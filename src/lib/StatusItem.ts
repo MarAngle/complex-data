@@ -123,19 +123,17 @@ class StatusItem extends Data {
     }
     return fg
   }
+  getCurrentProp(prop: valueType): valueType {
+    return this.current[prop]
+  }
+
   /**
    * 获取值
    * @param {string} [prop] 整个或者属性值
    * @returns {*}
    */
-  getData(): itemType
-  getData(prop: valueType): valueType
-  getData (prop?: valueType): itemType | valueType {
-    if (prop) {
-      return this.current[prop]
-    } else {
-      return this.current
-    }
+  getCurrent (): itemType {
+    return this.current
   }
   /**
    * 重置

@@ -1,10 +1,24 @@
+import { getType, isPromise } from 'complex-utils'
 import PaginationData from '../lib/PaginationData'
-import PromiseData from '../lib/PromiseData'
+import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
+import StatusData from '../lib/StatusData'
 import { formatInitOption } from '../utils'
-import ModuleData, { ModuleDataInitOption, moduleKeys } from './../lib/ModuleData'
+import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
 
+export interface forceObjectType {
+  correct?: PromiseOptionType['correct']
+  [prop: string]: undefined | boolean | string
+}
+
+export type forceType = boolean | forceObjectType
+
 type promiseFunction = (...args:any[]) => Promise<any>
+
+export interface ReloadOptionType {
+  [prop: string]: undefined | boolean
+}
+export type ReloadOption = undefined | boolean | ReloadOptionType
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   module?: ModuleDataInitOption,
@@ -40,17 +54,22 @@ class BaseData extends DefaultData {
     return this.$module.$uninstallData(...args)
   }
   /* --- module end --- */
+
   /* --- status start --- */
-  $setStatus(data: string, prop = 'operate', act?: 'init' | 'reset') {
-    this.$module.status!.setData(prop, data, act)
+  $setStatus(...args: Parameters<StatusData['setData']>) {
+    this.$module.status!.setData(...args)
   }
-  $getStatus(prop = 'operate') {
-    return this.$module.status!.getData(prop)
+  $getStatus(...args: Parameters<StatusData['getCurrent']>) {
+    return this.$module.status!.getCurrent(...args)
+  }
+  $getStatusProp(...args: Parameters<StatusData['getCurrentProp']>) {
+    return this.$module.status!.getCurrentProp(...args)
   }
   $resetStatus() {
     this.$module.status!.reset()
   }
   /* --- status end --- */
+
   /* --- promise start --- */
   $setPromise(...args: Parameters<PromiseData['setData']>) {
     return this.$module.promise!.setData(...args)
@@ -62,10 +81,13 @@ class BaseData extends DefaultData {
     return this.$module.promise!.triggerData(...args)
   }
   /* --- promise end --- */
+
   /* --- update start --- */
   /* --- update end --- */
+
   /* --- dictionary start --- */
   /* --- dictionary end --- */
+
   /* --- pagination start --- */
   $setPageData(data: number, prop?: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
     if (this.$module.pagination) {
@@ -121,7 +143,13 @@ class BaseData extends DefaultData {
   // }
   /* --- pagination end --- */
 
+  /* --- choice start --- */
+  /* --- choice end --- */
 
+  /* --- search start --- */
+  /* --- search end --- */
+
+  /* --- load start --- */
   $initLoadDepend() {
     if (!this.$module.status) {
       this.$setModule('status', true)
@@ -130,6 +158,142 @@ class BaseData extends DefaultData {
       this.$setModule('promise', true)
     }
   }
+  $loadData(force?: forceType, ...args: any[]) {
+   if (force === true) {
+     force = {}
+   }
+   const loadStatus = this.$getStatus('load')
+   if (loadStatus.value == 'unload') {
+     this.$triggerGetData(...args)
+   } else if (loadStatus.value == 'loading') {
+     // 直接then
+     if (force && force.ing) {
+       this.$triggerGetData(...args)
+     }
+   } else if (loadStatus.value == 'loaded') {
+     if (force) {
+       this.$triggerGetData(...args)
+     }
+   }
+   return this.$triggerPromise('load', {
+     errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+     correct: force ? force.correct : undefined
+   })
+  }
+  $reloadData (option: ReloadOption, ...args: any[]) {
+    switch (typeof option) {
+      case 'boolean':
+        option = {
+          force: option
+        }
+        break;
+      case 'object':
+        break;
+      default:
+        option = {}
+        break;
+    }
+    this.$triggerLife('beforeReload', this, option, ...args)
+    // 同步判断值
+    const sync = option.sync
+    const force = option.force === undefined ? {} : option.force
+    const promise = this.$loadData(force, ...args)
+    if (sync) {
+      promise.then((res: any) => {
+        // 触发生命周期重载完成事件
+        this.$triggerLife('reloaded', this, {
+          res: res,
+          args: args
+        })
+      }, (err: any) => {
+        console.error(err)
+        // 触发生命周期重载失败事件
+        this.$triggerLife('reloadFail', this, {
+          res: err,
+          args: args
+        })
+      })
+    } else {
+      return new Promise((resolve, reject) => {
+        promise.then((res: any) => {
+          // 触发生命周期重载完成事件
+          this.$triggerLife('reloaded', this, {
+            res: res,
+            args: args
+          })
+          resolve(res)
+        }, (err: any) => {
+          console.error(err)
+          // 触发生命周期重载失败事件
+          this.$triggerLife('reloadFail', this, {
+            res: err,
+            args: args
+          })
+          reject(err)
+        })
+      })
+    }
+  }
+  $triggerMethod (target: string | ((...args: any[]) => any), ...args: any[]) {
+    const next: {
+      data: boolean,
+      promise: null | Promise<any>,
+      msg: string,
+      code: string
+    } = {
+      data: false,
+      promise: null,
+      msg: '',
+      code: ''
+    }
+    const type = getType(target)
+    if (type === 'string') {
+      if ((this as any)[(target as string)]) {
+        if (getType((this as any)[(target as string)]) === 'function') {
+          next.promise = (this as any)[(target as string)](...args)
+        } else {
+          next.msg = `${target}属性非函数类型，$triggerMethod函数触发失败！`
+          next.code = 'not function'
+        }
+      } else {
+        next.msg = `不存在${target}函数，$triggerMethod函数触发失败！`
+        next.code = 'no method'
+      }
+    } else if (type === 'function') {
+      next.promise = target(...args)
+    } else {
+      next.msg = `target参数接受string/function[promise]，当前值为${target}，$triggerMethod函数触发失败！`
+      next.code = 'not function'
+    }
+    if (next.promise) {
+      if (isPromise(next.promise)) {
+        next.data = true
+      } else {
+        next.msg = `target参数为function时需要返回promise，当前返回${next.promise}，$triggerMethod函数触发失败！`
+        next.code = 'not promise'
+      }
+    }
+    return new Promise((resolve, reject) => {
+      if (next.data) {
+        this.$setStatus('operating')
+        next.promise!.then(res => {
+          this.$setStatus('operated')
+          resolve(res)
+        }, err => {
+          this.$setStatus('operated')
+          console.error(err)
+          reject(err)
+        })
+      } else {
+        this.$exportMsg(next.msg)
+        reject({ status: 'fail', code: next.code })
+      }
+    })
+  }
+  /* --- load end --- */
+
+
+
 }
 
 export default BaseData

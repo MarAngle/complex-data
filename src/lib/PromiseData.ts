@@ -4,7 +4,7 @@ type dataType = {
   [prop: PropertyKey]: Promise<any>
 }
 
-type optionType = {
+export type PromiseOptionType = {
   correct?: 'reload',
   errmsg?: string
 }
@@ -57,7 +57,7 @@ class PromiseData extends Data {
    * @param {object} [option.correct = 'reload'] '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
    * @returns {Promise}
    */
-  triggerData (prop: PropertyKey, option: optionType = {}) {
+  triggerData (prop: PropertyKey, option: PromiseOptionType = {}) {
     return new Promise((resolve, reject) => {
       if (option.correct === undefined) {
         option.correct = 'reload' // '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑

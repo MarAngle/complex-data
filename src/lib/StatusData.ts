@@ -47,12 +47,17 @@ class StatusData extends Data {
    * @param {string} [prop] 获取整个或者属性值
    * @returns {*}
    */
-  getData (target: string, prop?: valueType) {
-    if (prop) {
-      return this.data[target].getData(prop)
-    } else {
-      return this.data[target].getData()
-    }
+  getCurrentProp (target = 'operate', ...args: Parameters<StatusItem['getCurrentProp']>) {
+    return this.data[target].getCurrentProp(...args)
+  }
+  /**
+   * 获取指定status的prop属性
+   * @param {string} target 指定status
+   * @param {string} [prop] 获取整个或者属性值
+   * @returns {*}
+   */
+  getCurrent (target = 'operate') {
+    return this.data[target].getCurrent()
   }
   /**
    * 设置指定status的值
@@ -60,7 +65,7 @@ class StatusData extends Data {
    * @param {string} data 指定的属性值
    * @param {'init' | 'reset'} [act] 操作判断值
    */
-  setData (target: string, data: valueType, act?: 'init' | 'reset') {
+  setData (data: valueType, target = 'operate', act?: 'init' | 'reset') {
     this.data[target].setData(data, act)
   }
   /**
