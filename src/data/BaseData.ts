@@ -66,34 +66,37 @@ class BaseData extends DefaultData {
   /* --- dictionary start --- */
   /* --- dictionary end --- */
   /* --- pagination start --- */
-  $getPageData (prop?: Parameters<PaginationData['getData']>[0]) {
-    let data
+  $setPageData(data: number, prop?: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
     if (this.$module.pagination) {
-      if (prop) {
-        data = this.$module.pagination.getData(prop)
-      } else {
-        data = this.$module.pagination.getData()
+      if (prop == 'current') {
+        this.$module.pagination.setCurrent(data, unTriggerLife)
+      } else if (prop == 'size') {
+        this.$module.pagination.setSize(data, unTriggerLife) // { size, page }
+      } else if (prop == 'num') {
+        this.$module.pagination.setNum(data)
       }
     }
-    return data
+  }
+  $getPageData (prop?: Parameters<PaginationData['getData']>[0]) {
+    if (this.$module.pagination) {
+      return this.$module.pagination.getData(prop)
+    }
+  }
+  $getPageObject (propList?: Parameters<PaginationData['getDataObject']>[0]) {
+    if (this.$module.pagination) {
+      return this.$module.pagination.getDataObject(propList)
+    }
+  }
+  $setPageCurrentAndSize(...args: Parameters<PaginationData['setCurrentAndSize']>) {
+    if (this.$module.pagination) {
+      this.$module.pagination.setCurrentAndSize(...args)
+    }
   }
   $resetPagination () {
     if (this.$module.pagination) {
       this.$module.pagination.reset()
     }
   }
-  $setPageData(data: number, prop?: 'page' | 'size' | 'num', unTriggerLife?: boolean) {
-    if (this.$module.pagination) {
-      if (prop == 'page') {
-        this.$module.pagination.setPage(data as number, unTriggerLife)
-      } else if (prop == 'size') {
-        this.$module.pagination.setSize(data as number, unTriggerLife) // { size, page }
-      } else if (prop == 'num') {
-        this.$module.pagination.setTotal(data as number)
-      }
-    }
-  }
-  $setPageSize
   /**
    * 设置分页器数据
    * @param {number} data 需要设置的属性值

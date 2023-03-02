@@ -23,6 +23,8 @@ export type PaginationDataInitOption = undefined | true | PaginationDataInitOpti
 
 export type pageProp = 'current' | 'total' | 'num' | 'size'
 
+export type pageData = Partial<Record<pageProp, number>>
+
 class PaginationData extends DefaultData {
   static $name = 'PaginationData'
   current: number
@@ -89,22 +91,12 @@ class PaginationData extends DefaultData {
     return this.$localOption
   }
   /**
-   * 计算页码相关数据
-   */
-  $autoCountTotal (unCountCurrent?: boolean, untriggerLife?: boolean) {
-    const total = getNum(this.getNum() / this.getSize(), 'ceil', 0)
-    this.total = total < 1 ? 1 : total
-    if (!unCountCurrent && this.getCurrent() > this.total) {
-      this.setCurrent(this.total, untriggerLife)
-    }
-  }
-  /**
    * 设置总数
    * @param {number} num 总数
    */
-  setNum(num: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
+  setNum(num: number, unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     this.num = num < 0 ? 0 : num
-    this.$autoCountTotal(unCountCurrent, untriggerLife)
+    this.$autoCountTotal(unCountCurrent, unTriggerCurrentLife)
   }
   /**
    * 获取总数
@@ -113,21 +105,13 @@ class PaginationData extends DefaultData {
     return this.num
   }
   /**
-   * 设置当前页
-   * @param {number} current 当前页
+   * 计算页码相关数据
    */
-  setCurrent (current: number, untriggerLife?: boolean) {
-    const total = this.getTotal()
-    if (current < 1) {
-      current = 1
-    } else if (current > total) {
-      current = total
-    }
-    if (this.current != current) {
-      this.current = current
-      if (!untriggerLife) {
-        this.$triggerLife('change', this, 'current', current)
-      }
+  $autoCountTotal (unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
+    const total = getNum(this.getNum() / this.getSize(), 'ceil', 0)
+    this.total = total < 1 ? 1 : total
+    if (!unCountCurrent && this.getCurrent() > this.total) {
+      this.setCurrent(this.total, unTriggerCurrentLife)
     }
   }
   /**
@@ -138,29 +122,21 @@ class PaginationData extends DefaultData {
     return this.total
   }
   /**
-   * 更改页面条数和页码
-   * @param {number} size size参数
-   * @param {number} page page参数
+   * 设置当前页
+   * @param {number} current 当前页
    */
-  setCurrentAndSize (data: { current: number, size: number }, untriggerLife?: boolean) {
-    this.setSize(data.size, true)
-    this.setCurrent(data.current)
-    if (!untriggerLife) {
-      this.$triggerLife('change', this, 'currentAndSize', data)
+  setCurrent (current: number, unTriggerCurrentLife?: boolean) {
+    const total = this.getTotal()
+    if (current < 1) {
+      current = 1
+    } else if (current > total) {
+      current = total
     }
-  }
-  /**
-   * 更改页面条数
-   * @param {number} size size参数
-   */
-  setSize(size: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
-    this.size.current = size
-    this.$autoCountTotal(unCountCurrent, true)
-    if (!untriggerLife) {
-      this.$triggerLife('change', this, 'size', {
-        size: size,
-        page: this.getCurrent()
-      })
+    if (this.current != current) {
+      this.current = current
+      if (!unTriggerCurrentLife) {
+        this.$triggerLife('change', this, 'current', current)
+      }
     }
   }
   /**
@@ -171,13 +147,39 @@ class PaginationData extends DefaultData {
     return this.current
   }
   /**
+   * 更改页面条数
+   * @param {number} size size参数
+   */
+  setSize(size: number, unCountCurrent?: boolean, unTriggerSizeLife?: boolean) {
+    this.size.current = size
+    this.$autoCountTotal(unCountCurrent, true)
+    if (!unTriggerSizeLife) {
+      this.$triggerLife('change', this, 'size', {
+        size: size,
+        page: this.getCurrent()
+      })
+    }
+  }
+  /**
    * 获取当前size
    * @returns {number}
    */
   getSize () {
     return this.size.current
   }
-  getData(prop: pageProp) {
+  /**
+   * 更改页面条数和页码
+   * @param {number} size size参数
+   * @param {number} page page参数
+   */
+  setCurrentAndSize (data: { current: number, size: number }, unTriggerCurrentAndSizeLife?: boolean) {
+    this.setSize(data.size, true)
+    this.setCurrent(data.current)
+    if (!unTriggerCurrentAndSizeLife) {
+      this.$triggerLife('change', this, 'currentAndSize', data)
+    }
+  }
+  getData(prop: pageProp = 'current') {
     let data
     if (prop == 'current') {
       data = this.getCurrent()
@@ -190,11 +192,18 @@ class PaginationData extends DefaultData {
     }
     return data
   }
+  getDataObject(propList: pageProp[] = ['current', 'size']) {
+    const data: pageData = {}
+    for (const prop in propList) {
+      data[prop as pageProp] = this.getData(prop as pageProp)
+    }
+    return data
+  }
   /**
    * 重置
    */
   reset () {
-    this.setNum(0)
+    this.setNum(0, true)
     this.setCurrent(1)
   }
   /**
@@ -242,8 +251,8 @@ class PaginationData extends DefaultData {
             this.setCurrent(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop == 'size') {
             this.setSize(pageResetOption.data, pageResetOption.untriggerLife)
-          } else if (pageResetOption.prop == 'sizeAndPage') {
-            this.setSizeAndPage(pageResetOption.data, pageResetOption.untriggerLife)
+          } else if (pageResetOption.prop == 'currentAndSize') {
+            this.setCurrentAndSize(pageResetOption.data, pageResetOption.untriggerLife)
           }
         }
       }
