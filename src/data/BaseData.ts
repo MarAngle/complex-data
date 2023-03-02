@@ -201,7 +201,7 @@ class BaseData extends DefaultData {
       }
     }
     return this.$triggerPromise('load', {
-      errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+      errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus})`),
       correct: force ? force.correct : undefined
     })
   }
@@ -259,6 +259,15 @@ class BaseData extends DefaultData {
       })
     }
   }
+  $triggerMethodByOperate (target: string | ((...args: any[]) => any), ...args: any[]) {
+    const operate = this.$getStatus()
+    if (operate == 'wait') {
+      return this.$triggerMethod(target, ...args)
+    } else {
+      this.$exportMsg(`当前操作状态为:${operate}，${target}函数操作互斥，$triggerMethodByOperate函数失败！`)
+      return Promise.reject({ status: 'fail', code: 'clash' })
+    }
+  }
   $triggerMethod(target: string | ((...args: any[]) => any), ...args: any[]) {
     const next: {
       data: boolean,
@@ -271,24 +280,27 @@ class BaseData extends DefaultData {
       msg: '',
       code: ''
     }
-    const type = getType(target)
-    if (type === 'string') {
-      if ((this as any)[(target as string)]) {
-        if (getType((this as any)[(target as string)]) === 'function') {
-          next.promise = (this as any)[(target as string)](...args)
+    switch (typeof target) {
+      case 'string':
+        if ((this as any)[target]) {
+          if (typeof ((this as any)[target]) === 'function') {
+            next.promise = (this as any)[target](...args)
+          } else {
+            next.msg = `${target}属性非函数类型，$triggerMethod函数触发失败！`
+            next.code = 'not function'
+          }
         } else {
-          next.msg = `${target}属性非函数类型，$triggerMethod函数触发失败！`
-          next.code = 'not function'
+          next.msg = `不存在${target}函数，$triggerMethod函数触发失败！`
+          next.code = 'no method'
         }
-      } else {
-        next.msg = `不存在${target}函数，$triggerMethod函数触发失败！`
-        next.code = 'no method'
-      }
-    } else if (type === 'function') {
-      next.promise = target(...args)
-    } else {
-      next.msg = `target参数接受string/function[promise]，当前值为${target}，$triggerMethod函数触发失败！`
-      next.code = 'not function'
+        break;
+      case 'function':
+        next.promise = target(...args)
+        break;
+      default:
+        next.msg = `target参数接受string/function[promise]，当前值为${target}，$triggerMethod函数触发失败！`
+        next.code = 'not function'
+        break;
     }
     if (next.promise) {
       if (isPromise(next.promise)) {
