@@ -1,4 +1,5 @@
 import PaginationData from '../lib/PaginationData'
+import PromiseData from '../lib/PromiseData'
 import { formatInitOption } from '../utils'
 import ModuleData, { ModuleDataInitOption, moduleKeys } from './../lib/ModuleData'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
@@ -26,17 +27,17 @@ class BaseData extends DefaultData {
     this.$triggerCreateLife('BaseData', 'created', initOption)
   }
   /* --- module start --- */
-  $setModule(modName: moduleKeys, data?: any) {
-    this.$module.$setData(modName, data)
+  $setModule(...args: Parameters<ModuleData['$setData']>) {
+    this.$module.$setData(...args)
   }
-  $getModule(modName: moduleKeys) {
-    return this.$module.$getData(modName)
+  $getModule(...args: Parameters<ModuleData['$getData']>) {
+    return this.$module.$getData(...args)
   }
-  $installModule(modName: moduleKeys, data: any) {
-    return this.$module.$installData(modName, data)
+  $installModule(...args: Parameters<ModuleData['$installData']>) {
+    return this.$module.$installData(...args)
   }
-  $uninstallModule(modName: moduleKeys) {
-    return this.$module.$uninstallData(modName)
+  $uninstallModule(...args: Parameters<ModuleData['$uninstallData']>) {
+    return this.$module.$uninstallData(...args)
   }
   /* --- module end --- */
   /* --- status start --- */
@@ -51,14 +52,14 @@ class BaseData extends DefaultData {
   }
   /* --- status end --- */
   /* --- promise start --- */
-  $setPromise(prop: string, promisedata: Promise<any>) {
-    return this.$module.promise!.setData(prop, promisedata)
+  $setPromise(...args: Parameters<PromiseData['setData']>) {
+    return this.$module.promise!.setData(...args)
   }
-  $getPromise(prop: string) {
-    return this.$module.promise!.getData(prop)
+  $getPromise(...args: Parameters<PromiseData['getData']>) {
+    return this.$module.promise!.getData(...args)
   }
-  $triggerPromise(prop: string, option = {}) {
-    return this.$module.promise!.triggerData(prop, option)
+  $triggerPromise(...args: Parameters<PromiseData['triggerData']>) {
+    return this.$module.promise!.triggerData(...args)
   }
   /* --- promise end --- */
   /* --- update start --- */
@@ -123,10 +124,10 @@ class BaseData extends DefaultData {
 
   $initLoadDepend() {
     if (!this.$module.status) {
-      this.$setModule('status')
+      this.$setModule('status', true)
     }
     if (!this.$module.promise) {
-      this.$setModule('promise')
+      this.$setModule('promise', true)
     }
   }
 }

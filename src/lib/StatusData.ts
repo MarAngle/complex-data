@@ -47,8 +47,6 @@ class StatusData extends Data {
    * @param {string} [prop] 获取整个或者属性值
    * @returns {*}
    */
-  getData(target: string): itemType
-  getData(target: string, prop: valueType): valueType
   getData (target: string, prop?: valueType) {
     if (prop) {
       return this.data[target].getData(prop)

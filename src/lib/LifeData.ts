@@ -84,9 +84,9 @@ class LifeData extends Data {
    * @param {*} data LifeItem参数
    * @returns {string | string} id/idList
    */
-  on (name: string, data: LifeItemDataType | LifeItemDataType []) {
+  on (name: string, ...args: Parameters<LifeItem['build']>) {
     const funcItem = this.get(name, true)
-    return funcItem.build(data)
+    return funcItem.build(...args)
   }
   /**
    * 触发生命周期指定id函数
@@ -94,16 +94,16 @@ class LifeData extends Data {
    * @param {string} id 指定ID
    * @param  {...any} args 参数
    */
-  emit (name: string, id: string, ...args: any[]) {
+  emit (name: string, ...args: Parameters<LifeItem['emit']>) {
     const funcItem = this.get(name, true)
-    funcItem.emit(id, ...args)
+    funcItem.emit(...args)
   }
   /**
    * 触发生命周期
    * @param {string} name 生命周期
    * @param  {...any} args 参数
    */
-  trigger (name: string, ...args: any[]) {
+  trigger (name: string, ...args: Parameters<LifeItem['trigger']>) {
     const funcItem = this.get(name, true)
     funcItem.trigger(...args)
   }
@@ -113,10 +113,10 @@ class LifeData extends Data {
    * @param {string} id 指定ID
    * @returns {boolean}
    */
-  off (name: string, id: string): boolean {
+  off (name: string, ...args: Parameters<LifeItem['off']>): boolean {
     const funcItem = this.get(name, false)
     if (funcItem) {
-      return funcItem.off(id)
+      return funcItem.off(...args)
     } else {
       return false
     }

@@ -67,7 +67,7 @@ class ModuleData extends Data {
   static getDictionary(modName: moduleKeys) {
     return ModuleDictionaryMap.get(modName)
   }
-  $buildModuleData(modName: moduleKeys, modData: any) {
+  $buildModuleData(modName: moduleKeys, modData?: any) {
     const ModuleClassData = ModuleData.getDictionary(modName)
     if (ModuleClassData) {
       if (modData === true) {
@@ -84,7 +84,7 @@ class ModuleData extends Data {
    * @param {object} modData 模块实例
    * @param {boolean} [build] 自动构建判断值，默认为真
    */
-  $setData(modName: moduleKeys, modData: any, build = true) {
+  $setData(modName: moduleKeys, modData?: any, build = true) {
     this.$uninstallData(modName)
     if (build) {
       modData = this.$buildModuleData(modName, modData)
