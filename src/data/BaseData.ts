@@ -1,4 +1,4 @@
-import { getType, isPromise } from 'complex-utils'
+import { getProp, getType, isPromise } from 'complex-utils'
 import PaginationData from '../lib/PaginationData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
@@ -13,7 +13,7 @@ export interface forceObjectType {
 
 export type forceType = boolean | forceObjectType
 
-type promiseFunction = (...args:any[]) => Promise<any>
+type promiseFunction = (...args: any[]) => Promise<any>
 
 export interface ReloadOptionType {
   [prop: string]: undefined | boolean
@@ -62,8 +62,8 @@ class BaseData extends DefaultData {
   $getStatus(...args: Parameters<StatusData['getCurrent']>) {
     return this.$module.status!.getCurrent(...args)
   }
-  $getStatusProp(...args: Parameters<StatusData['getCurrentProp']>) {
-    return this.$module.status!.getCurrentProp(...args)
+  $getStatusData(...args: Parameters<StatusData['getData']>) {
+    return this.$module.status!.getData(...args)
   }
   $resetStatus() {
     this.$module.status!.reset()
@@ -100,12 +100,12 @@ class BaseData extends DefaultData {
       }
     }
   }
-  $getPageData (prop?: Parameters<PaginationData['getData']>[0]) {
+  $getPageData(prop?: Parameters<PaginationData['getData']>[0]) {
     if (this.$module.pagination) {
       return this.$module.pagination.getData(prop)
     }
   }
-  $getPageObject (propList?: Parameters<PaginationData['getDataObject']>[0]) {
+  $getPageObject(propList?: Parameters<PaginationData['getDataObject']>[0]) {
     if (this.$module.pagination) {
       return this.$module.pagination.getDataObject(propList)
     }
@@ -115,7 +115,7 @@ class BaseData extends DefaultData {
       this.$module.pagination.setCurrentAndSize(...args)
     }
   }
-  $resetPagination () {
+  $resetPagination() {
     if (this.$module.pagination) {
       this.$module.pagination.reset()
     }
@@ -158,29 +158,54 @@ class BaseData extends DefaultData {
       this.$setModule('promise', true)
     }
   }
-  $loadData(force?: forceType, ...args: any[]) {
-   if (force === true) {
-     force = {}
-   }
-   const loadStatus = this.$getStatus('load')
-   if (loadStatus.value == 'unload') {
-     this.$triggerGetData(...args)
-   } else if (loadStatus.value == 'loading') {
-     // 直接then
-     if (force && force.ing) {
-       this.$triggerGetData(...args)
-     }
-   } else if (loadStatus.value == 'loaded') {
-     if (force) {
-       this.$triggerGetData(...args)
-     }
-   }
-   return this.$triggerPromise('load', {
-     errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
-     correct: force ? force.correct : undefined
-   })
+  $triggerGetData(...args: any[]) {
+    return this.$setPromise('load', new Promise((resolve, reject) => {
+      // 触发生命周期加载前事件
+      this.$triggerLife('beforeLoad', this, ...args)
+      this.$setStatus('ing', 'load')
+      args.unshift('$getData')
+      this.$triggerMethod(...(args as [string, ...any])).then(res => {
+        this.$setStatus('end', 'load')
+        // 触发生命周期加载完成事件
+        this.$triggerLife('loaded', this, {
+          res: res,
+          args: args
+        })
+        resolve(res)
+      }, err => {
+        this.$setStatus('fail', 'load')
+        // 触发生命周期加载失败事件
+        this.$triggerLife('loadFail', this, {
+          res: err,
+          args: args
+        })
+        reject(err)
+      })
+    }))
   }
-  $reloadData (option: ReloadOption, ...args: any[]) {
+  $loadData(force?: forceType, ...args: any[]) {
+    if (force === true) {
+      force = {}
+    }
+    const loadStatus = this.$getStatus('load')
+    if (loadStatus == 'un' || loadStatus == 'fail') {
+      this.$triggerGetData(...args)
+    } else if (loadStatus == 'ing') {
+      // 直接then
+      if (force && force.ing) {
+        this.$triggerGetData(...args)
+      }
+    } else if (loadStatus == 'end') {
+      if (force) {
+        this.$triggerGetData(...args)
+      }
+    }
+    return this.$triggerPromise('load', {
+      errmsg: this.$createMsg(`promise模块无load数据(load状态:${loadStatus.value})`),
+      correct: force ? force.correct : undefined
+    })
+  }
+  $reloadData(option: ReloadOption, ...args: any[]) {
     switch (typeof option) {
       case 'boolean':
         option = {
@@ -234,7 +259,7 @@ class BaseData extends DefaultData {
       })
     }
   }
-  $triggerMethod (target: string | ((...args: any[]) => any), ...args: any[]) {
+  $triggerMethod(target: string | ((...args: any[]) => any), ...args: any[]) {
     const next: {
       data: boolean,
       promise: null | Promise<any>,
@@ -275,12 +300,12 @@ class BaseData extends DefaultData {
     }
     return new Promise((resolve, reject) => {
       if (next.data) {
-        this.$setStatus('operating')
+        this.$setStatus('ing')
         next.promise!.then(res => {
-          this.$setStatus('operated')
+          this.$setStatus('wait')
           resolve(res)
         }, err => {
-          this.$setStatus('operated')
+          this.$setStatus('wait')
           console.error(err)
           reject(err)
         })
@@ -293,6 +318,43 @@ class BaseData extends DefaultData {
   /* --- load end --- */
 
 
+  /**
+   * 将第一个传参的第一个参数无值时转换为空对象
+   * @param {*[]} args 参数列表
+   */
+  $formatResetOption(args: any[]) {
+    if (!args[0]) {
+      args[0] = {}
+    }
+  }
+  /**
+   * 获取reset操作对应prop时机时的重置操作判断
+   * @param {object} [resetOption]
+   * @param {*} [prop] 当前的reset操作的时机
+   * @returns {boolean}
+   */
+  $parseResetOption(resetOption = {}, prop: string) {
+    return getProp(resetOption, prop)
+  }
+  /**
+   * 重置回调操作=>不清除额外数据以及生命周期函数
+   * @param  {...any} args 参数
+   */
+  $reset(...args: any[]) {
+    this.$formatResetOption(args)
+    this.$triggerLife('beforeReset', this, ...args)
+    this.$triggerLife('reseted', this, ...args)
+  }
+  /**
+   * 销毁回调操作
+   * @param  {...any} args 参数
+   */
+  $destroy(...args: any[]) {
+    this.$formatResetOption(args)
+    this.$triggerLife('beforeDestroy', this, ...args)
+    this.$reset(...args)
+    this.$triggerLife('destroyed', this, ...args)
+  }
 
 }
 

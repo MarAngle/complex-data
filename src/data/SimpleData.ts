@@ -11,11 +11,11 @@ export interface SimpleDataInitOption {
 
 class SimpleData extends Data {
   static $name = 'SimpleData'
-	$parent?: Data
-	$name: string
-	$prop: string
-	$extra!: Record<PropertyKey, any>
-  constructor (initOption: SimpleDataInitOption) {
+  $parent?: Data
+  $name: string
+  $prop: string
+  $extra!: Record<PropertyKey, any>
+  constructor(initOption: SimpleDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
@@ -31,7 +31,7 @@ class SimpleData extends Data {
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
    * @param {object} parent 父数据
    */
-  $setParent (parent?: Data) {
+  $setParent(parent?: Data) {
     Object.defineProperty(this, '$parent', {
       enumerable: false,
       configurable: true,
@@ -51,7 +51,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  $setExtra (prop: string, data: any) {
+  $setExtra(prop: string, data: any) {
     this.$extra[prop] = data
   }
   /**
@@ -59,7 +59,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  $getExtra (prop:string){
+  $getExtra(prop: string) {
     return this.$extra[prop]
   }
   /**
@@ -67,7 +67,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  $clearExtra (prop?:string) {
+  $clearExtra(prop?: string) {
     if (!prop) {
       this.$extra = {}
     } else {
@@ -77,10 +77,10 @@ class SimpleData extends Data {
   /**
    * 重置额外数据，清除全部数据
    */
-  $resetExtra () {
+  $resetExtra() {
     this.$clearExtra()
   }
-  $selfName (): string {
+  $selfName(): string {
     let parentName = ''
     const parent = this.$getParent()
     if (parent && parent.$selfName) {

@@ -21,15 +21,15 @@ class Data extends UtilsBaseData {
       value: createId()
     })
   }
-  $syncData(...args: any[]) {}
-  $getId (prop = ''): string {
+  $syncData(...args: any[]) { }
+  $getId(prop = ''): string {
     return this.$id + prop
   }
   $selfName(): string {
     return `CLASS:${super.$selfName()}-ID:${this.$getId()}`
   }
-  $install (target: BaseData) {}
-  $uninstall (target: BaseData) {}
+  $install(target: BaseData) { }
+  $uninstall(target: BaseData) { }
 }
 
 

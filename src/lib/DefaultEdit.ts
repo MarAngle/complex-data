@@ -130,7 +130,7 @@ class DefaultEdit extends BaseData {
     }
   }
   // 格式化编辑数据
-  $initTips (initOption: DefaultEditInitOption) {
+  $initTips(initOption: DefaultEditInitOption) {
     // tips提示
     if (!initOption.tips) {
       this.$tips.data = ''
@@ -155,7 +155,7 @@ class DefaultEdit extends BaseData {
       if (type == 'number') {
         this.$mainWidth = initOption.mainWidth + 'px'
       } else {
-        this.$mainWidth = initOption.mainWidth as string 
+        this.$mainWidth = initOption.mainWidth as string
       }
     }
     if (initOption.width) {
@@ -170,7 +170,7 @@ class DefaultEdit extends BaseData {
     }
   }
   // slot格式化编辑数据
-  $initSlot (initOption: DefaultEditInitOption) { // label / front / end
+  $initSlot(initOption: DefaultEditInitOption) { // label / front / end
     this.$slot = initOption.slot || {} as any
     if (!this.$slot.type) { // slot类型 auto/main/item/model
       this.$slot.type = 'auto'

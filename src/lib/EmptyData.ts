@@ -2,7 +2,7 @@ import { getCanUse, exportMsg } from 'complex-utils'
 
 const ProxyCanUse = getCanUse('Proxy')
 const proxyOption = {
-  get: function(target: EmptyData, key: PropertyKey) {
+  get: function (target: EmptyData, key: PropertyKey) {
     exportMsg(`非预期操作提醒: 正在对空数据对象(${target.$name})进行属性[${key as string}]的获取操作！`)
     if (target[key] !== undefined) {
       return target[key]
@@ -16,7 +16,7 @@ const proxyOption = {
 class EmptyData {
   $name: string
   [prop: PropertyKey]: unknown
-  constructor (name = '', data?: Record<PropertyKey, unknown>) {
+  constructor(name = '', data?: Record<PropertyKey, unknown>) {
     this.$name = name
     if (data) {
       for (const n in data) {

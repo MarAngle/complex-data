@@ -1,11 +1,11 @@
 import Data from "../data/Data"
 
-export type valueType = string
+export type valueType = 'un' | 'wait' | 'ing' | 'end' | 'fail'
 
 export interface itemType {
   value: valueType,
-  label: valueType,
-  [prop: string]: valueType
+  label: string,
+  [prop: string]: unknown
 }
 
 type defaultOption = {
@@ -14,13 +14,11 @@ type defaultOption = {
 
 type countOption = {
   type: 'count',
-  prop: string,
   num: number
 }
 
 type countOptionOption = {
-  type: 'count',
-  prop: string
+  type: 'count'
 }
 
 type StatusItemInitOptionOption = Partial<defaultOption> | countOptionOption
@@ -31,14 +29,13 @@ export type StatusItemInitOption = {
   default?: valueType,
   option?: StatusItemInitOptionOption
 }
+
 class StatusItem extends Data {
   static $name = 'StatusItem'
   option: defaultOption | countOption
-  list: {
-    [prop: string]: itemType
-  }
-  current: itemType
-  default: string
+  list: Map<valueType, itemType>
+  current: valueType
+  default: valueType
   constructor (initOption: StatusItemInitOption) {
     if (!initOption.list || initOption.list.length == 0) {
       console.error(`StatusItem未设置初始化列表`)
@@ -50,51 +47,47 @@ class StatusItem extends Data {
     if (initOption.option.type == 'count') {
       this.option = {
         type: initOption.option.type,
-        prop: initOption.option.prop,
         num: 0
-      }
-      if (!this.option.prop) {
-        this.$exportMsg(`StatusItem设置count类型需要传递taget目标值!`)
       }
     } else {
       this.option = {
         type: 'default'
       }
     }
-    this.list = {}
-    this.current = {
-      value: '',
-      label: ''
-    }
+    this.list = new Map()
     for (const n in initOption.list) {
-      this.list[initOption.list[n].value] = initOption.list[n]
+      this.list.set(initOption.list[n].value, initOption.list[n])
     }
     const current = initOption.current || initOption.list[0].value
-    this.setData(current, 'init')
+    this.current = current
     this.default = initOption.default || current // value值
   }
   /**
    * 设置当前值
-   * @param {string} prop 指定的属性值
-   * @param {'init' | 'reset'} [act] 操作判断值
+   * @param {string} value 指定的属性值
+   * @param {'reset'} [act] 操作判断值
    */
-  setData (prop: string, act?: 'init' | 'reset') {
-    if (this.list[prop]) {
+  setData (value: valueType, act?: 'reset') {
+    const data = this.list.get(value)
+    if (data) {
       let build = true
       if (!act) {
-        build = this.$triggerTarget(prop)
-      } else if (act == 'init') {
-        //
+        build = this.$triggerTarget(value)
       } else if (act == 'reset') {
         this.$resetTarget()
       }
-      if (build && this.current.value != this.list[prop].value) {
-        this.current.value = this.list[prop].value
-        this.current.label = this.list[prop].label
+      if (build && this.current != data.value) {
+        this.current = data.value
       }
     } else {
-      this.$exportMsg(`当前加载判断值${prop}不存在`)
+      this.$exportMsg(`当前加载判断值${value}不存在`)
     }
+  }
+  getData(value?: valueType) {
+    if (!value) {
+      value = this.current
+    }
+    return this.list.get(value)
   }
   /**
    * 重置计算值
@@ -109,10 +102,10 @@ class StatusItem extends Data {
    * @param {string} prop 属性值
    * @returns {boolean}
    */
-  $triggerTarget (prop: string) {
+  $triggerTarget (value: valueType) {
     let fg = true
     if (this.option.type == 'count') {
-      if (this.option.prop == prop) {
+      if (value == 'ing') {
         this.option.num++
       } else {
         this.option.num--
@@ -123,16 +116,13 @@ class StatusItem extends Data {
     }
     return fg
   }
-  getCurrentProp(prop: valueType): valueType {
-    return this.current[prop]
-  }
 
   /**
    * 获取值
    * @param {string} [prop] 整个或者属性值
    * @returns {*}
    */
-  getCurrent (): itemType {
+  getCurrent (): valueType {
     return this.current
   }
   /**

@@ -26,7 +26,7 @@ export interface LifeDataInitOption {
 class LifeData extends Data {
   static $name = 'LifeData'
   data: Record<PropertyKey, LifeItem>
-  constructor (initOption?: LifeDataInitOption) {
+  constructor(initOption?: LifeDataInitOption) {
     super()
     this.data = {}
     if (initOption) {
@@ -47,7 +47,7 @@ class LifeData extends Data {
    * @param {object} [initOption] 生命周期参数
    * @param {boolean} [reset = true] 是否重置
    */
-  $initData (initOption: LifeDataInitOption = {}, reset = true) {
+  $initData(initOption: LifeDataInitOption = {}, reset = true) {
     if (reset) {
       this.reset()
     }
@@ -84,7 +84,7 @@ class LifeData extends Data {
    * @param {*} data LifeItem参数
    * @returns {string | string} id/idList
    */
-  on (name: string, ...args: Parameters<LifeItem['build']>) {
+  on(name: string, ...args: Parameters<LifeItem['build']>) {
     const funcItem = this.get(name, true)
     return funcItem.build(...args)
   }
@@ -94,7 +94,7 @@ class LifeData extends Data {
    * @param {string} id 指定ID
    * @param  {...any} args 参数
    */
-  emit (name: string, ...args: Parameters<LifeItem['emit']>) {
+  emit(name: string, ...args: Parameters<LifeItem['emit']>) {
     const funcItem = this.get(name, true)
     funcItem.emit(...args)
   }
@@ -103,7 +103,7 @@ class LifeData extends Data {
    * @param {string} name 生命周期
    * @param  {...any} args 参数
    */
-  trigger (name: string, ...args: Parameters<LifeItem['trigger']>) {
+  trigger(name: string, ...args: Parameters<LifeItem['trigger']>) {
     const funcItem = this.get(name, true)
     funcItem.trigger(...args)
   }
@@ -113,7 +113,7 @@ class LifeData extends Data {
    * @param {string} id 指定ID
    * @returns {boolean}
    */
-  off (name: string, ...args: Parameters<LifeItem['off']>): boolean {
+  off(name: string, ...args: Parameters<LifeItem['off']>): boolean {
     const funcItem = this.get(name, false)
     if (funcItem) {
       return funcItem.off(...args)
@@ -125,7 +125,7 @@ class LifeData extends Data {
    * 清除生命周期
    * @param {string} name 生命周期
    */
-  clear (name: string) {
+  clear(name: string) {
     const funcItem = this.get(name, false)
     if (funcItem) {
       funcItem.clear()
@@ -134,7 +134,7 @@ class LifeData extends Data {
   /**
    * 重置
    */
-  reset () {
+  reset() {
     for (const name in this.data) {
       this.clear(name)
     }
@@ -142,7 +142,7 @@ class LifeData extends Data {
   /**
    * 销毁
    */
-  destroy () {
+  destroy() {
     this.reset()
     this.data = {}
   }

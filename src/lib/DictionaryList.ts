@@ -66,7 +66,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $option: RequiredDictionaryListOption
   $propData: propDataType<propDataItemType>
   $layout!: LayoutData
-  constructor (initOption: DictionaryListInitOption) {
+  constructor(initOption: DictionaryListInitOption) {
     super(initOption)
     this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
     this.$option = buildOptionData<RequiredDictionaryListOption>({
@@ -86,19 +86,19 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     this.$initDictionaryList(initOption.list, 'init')
     this.$triggerCreateLife('DictionaryList', 'created', initOption)
   }
-  $setPropData (data: any, target: keyof propDataItemType = 'data', prop: propDataKeys = 'id') {
+  $setPropData(data: any, target: keyof propDataItemType = 'data', prop: propDataKeys = 'id') {
     this.$propData[prop][target] = data
   }
-  $getPropData (target: keyof propDataItemType = 'data', prop: propDataKeys = 'id') {
+  $getPropData(target: keyof propDataItemType = 'data', prop: propDataKeys = 'id') {
     return this.$propData[prop][target]
   }
-  $parseOptionFromParent (optiondata: DictionaryDataInitOption, parentData?: Data | DictionaryData, isChildren?: boolean) {
+  $parseOptionFromParent(optiondata: DictionaryDataInitOption, parentData?: Data | DictionaryData, isChildren?: boolean) {
     if (isChildren && !optiondata.originFrom && parentData && (parentData as DictionaryData).originFrom) {
       optiondata.originFrom = (parentData as DictionaryData).originFrom
     }
   }
   // 重新创建字典列表
-  rebuildData (initOption: DictionaryDataInitOption[], type = 'replace') {
+  rebuildData(initOption: DictionaryDataInitOption[], type = 'replace') {
     this.$initDictionaryList(initOption, type)
   }
   $initDictionaryList(initOptionList: DictionaryDataInitOption[] = [], type = 'replace') {
@@ -146,7 +146,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     }
   }
-  $parseChildrenBuildType (ditem: DictionaryData, originOption: DictionaryDataInitOption) {
+  $parseChildrenBuildType(ditem: DictionaryData, originOption: DictionaryDataInitOption) {
     let initOption: DictionaryListInitOption | string | undefined = originOption.dictionary
     let type: undefined | 'self' | 'build'
     if (this.$option.tree && (this.$getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
@@ -162,7 +162,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
     return type
   }
-  $initDictionaryDataChildren (ditem: DictionaryData, originOption: DictionaryDataInitOption, isChildren = true) {
+  $initDictionaryDataChildren(ditem: DictionaryData, originOption: DictionaryDataInitOption, isChildren = true) {
     const type = this.$parseChildrenBuildType(ditem, originOption)
     if (type == 'build') {
       const initOption = originOption.dictionary as DictionaryListInitOption
@@ -195,16 +195,16 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     }
   }
-  $setLayout (data?: LayoutDataInitOption) {
+  $setLayout(data?: LayoutDataInitOption) {
     this.$layout = new LayoutData(data)
   }
-  $getLayout (prop?: string) {
+  $getLayout(prop?: string) {
     return this.$layout.getData(prop)
   }
-  $getLayoutData () {
+  $getLayoutData() {
     return this.$layout
   }
-  $install (target: BaseData) {
+  $install(target: BaseData) {
     // 监听事件
     this.$onLife('updated', {
       id: target.$getId('dictionaryUpdated'),
@@ -213,7 +213,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     })
   }
-   $uninstall (target: BaseData) {
+  $uninstall(target: BaseData) {
     // 停止监听事件
     this.$offLife('updated', target.$getId('dictionaryUpdated'))
   }

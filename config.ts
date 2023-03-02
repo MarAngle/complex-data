@@ -50,16 +50,20 @@ const config = {
         data: {
           list: [
             {
-              value: 'unload',
+              value: 'un',
               label: '未加载'
             },
             {
-              value: 'loading',
+              value: 'ing',
               label: '加载中'
             },
             {
-              value: 'loaded',
+              value: 'end',
               label: '已加载'
+            },
+            {
+              value: 'fail',
+              label: '加载失败'
             }
           ]
         }
@@ -69,12 +73,16 @@ const config = {
         data: {
           list: [
             {
-              value: 'updated',
+              value: 'wait',
               label: '等待更新'
             },
             {
-              value: 'updating',
+              value: 'ing',
               label: '更新中'
+            },
+            {
+              value: 'fail',
+              label: '更新失败'
             }
           ]
         }
@@ -84,17 +92,16 @@ const config = {
         data: {
           list: [
             {
-              value: 'operated',
+              value: 'wait',
               label: '等待操作'
             },
             {
-              value: 'operating',
+              value: 'ing',
               label: '操作中'
             }
           ],
           option: {
-            type: 'count',
-            prop: 'operating'
+            type: 'count'
           }
         }
       }

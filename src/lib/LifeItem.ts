@@ -14,7 +14,7 @@ const lifeId = new IdData({
   ]
 })
 
-type LifeItemDataFunction = (...args:any[]) => any
+type LifeItemDataFunction = (...args: any[]) => any
 
 export interface LifeItemDataObject {
   id?: string,
@@ -36,7 +36,7 @@ class LifeItem extends Data {
   static $name = 'LifeItem'
   name: string;
   data: Map<string, LifeItemDataObject>
-  constructor (initOption: LifeItemInitOption) {
+  constructor(initOption: LifeItemInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.name = initOption.name
@@ -55,8 +55,8 @@ class LifeItem extends Data {
     } else {
       const size = this.data.size
       if (data.index < size) {
-        const mapList:LifeItemDataObject[] = []
-        this.data.forEach(function(value) {
+        const mapList: LifeItemDataObject[] = []
+        this.data.forEach(function (value) {
           mapList.push(value)
         })
         this.data.clear()
@@ -159,7 +159,7 @@ class LifeItem extends Data {
    * @param {string} id id
    * @returns {boolean}
    */
-  off (id: string) {
+  off(id: string) {
     return this.data.delete(id)
   }
   /**
@@ -171,7 +171,7 @@ class LifeItem extends Data {
   /**
    * 重置
    */
-  reset () {
+  reset() {
     this.clear()
   }
   /**
@@ -180,7 +180,7 @@ class LifeItem extends Data {
   destroy() {
     this.reset()
   }
-  $selfName () {
+  $selfName() {
     return `${super.$selfName()}-NAME:${this.name}`
   }
 }

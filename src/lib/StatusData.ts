@@ -2,7 +2,7 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
-import StatusItem, { StatusItemInitOption, itemType, valueType } from './StatusItem'
+import StatusItem, { StatusItemInitOption, valueType } from './StatusItem'
 
 type StatusDataInitOptionItem = {
   prop: string,
@@ -18,7 +18,7 @@ class StatusData extends Data {
   data: {
     [prop: string]: StatusItem
   }
-  constructor (initOption?: StatusDataInitOption) {
+  constructor(initOption?: StatusDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
     this.data = {}
@@ -41,37 +41,19 @@ class StatusData extends Data {
       delete this.data[target]
     }
   }
-  /**
-   * 获取指定status的prop属性
-   * @param {string} target 指定status
-   * @param {string} [prop] 获取整个或者属性值
-   * @returns {*}
-   */
-  getCurrentProp (target = 'operate', ...args: Parameters<StatusItem['getCurrentProp']>) {
-    return this.data[target].getCurrentProp(...args)
-  }
-  /**
-   * 获取指定status的prop属性
-   * @param {string} target 指定status
-   * @param {string} [prop] 获取整个或者属性值
-   * @returns {*}
-   */
-  getCurrent (target = 'operate') {
+  getCurrent(target = 'operate') {
     return this.data[target].getCurrent()
   }
-  /**
-   * 设置指定status的值
-   * @param {string} target 指定status
-   * @param {string} data 指定的属性值
-   * @param {'init' | 'reset'} [act] 操作判断值
-   */
-  setData (data: valueType, target = 'operate', act?: 'init' | 'reset') {
+  setData(data: valueType, target = 'operate', act?: 'reset') {
     this.data[target].setData(data, act)
+  }
+  getData(target = 'operate', ...args: Parameters<StatusItem['getData']>) {
+    return this.data[target].getData(...args)
   }
   /**
    * 重置
    */
-  reset () {
+  reset() {
     for (const n in this.data) {
       this.data[n].reset()
     }
@@ -80,7 +62,7 @@ class StatusData extends Data {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install (target: BaseData) {
+  $install(target: BaseData) {
     target.$onLife('beforeReset', {
       id: this.$getId('BeforeReset'),
       data: (instantiater, resetOption) => {

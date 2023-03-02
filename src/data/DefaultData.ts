@@ -9,7 +9,7 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 class DefaultData extends SimpleData {
   static $name = 'DefaultData'
   $life: LifeData;
-  constructor (initOption: DefaultDataInitOption) {
+  constructor(initOption: DefaultDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$life = new LifeData(initOption.life)
@@ -31,7 +31,7 @@ class DefaultData extends SimpleData {
    * @param {*} data 回调对象
    * @returns {string | string} id/idList
    */
-  $onLife (...args: Parameters<LifeData['on']>) {
+  $onLife(...args: Parameters<LifeData['on']>) {
     return this.$life.on(...args)
   }
   /**
@@ -40,7 +40,7 @@ class DefaultData extends SimpleData {
    * @param {string} id 指定ID
    * @param  {...any} args 参数
    */
-  $emitLife (...args: Parameters<LifeData['emit']>) {
+  $emitLife(...args: Parameters<LifeData['emit']>) {
     this.$life.emit(...args)
   }
   /**
@@ -49,7 +49,7 @@ class DefaultData extends SimpleData {
    * @param {string} id 指定ID
    * @returns {boolean}
    */
-  $offLife (...args: Parameters<LifeData['off']>): boolean {
+  $offLife(...args: Parameters<LifeData['off']>): boolean {
     return this.$life.off(...args)
   }
   /**
@@ -57,26 +57,26 @@ class DefaultData extends SimpleData {
    * @param {string} name 生命周期
    * @param  {...any} args 参数
    */
-  $triggerLife (...args: Parameters<LifeData['trigger']>) {
+  $triggerLife(...args: Parameters<LifeData['trigger']>) {
     this.$life.trigger(...args)
   }
   /**
    * 清除生命周期
    * @param {string} name 生命周期
    */
-  $clearLife (...args: Parameters<LifeData['clear']>) {
+  $clearLife(...args: Parameters<LifeData['clear']>) {
     this.$life.clear(...args)
   }
   /**
    * 生命周期重置
    */
-  $resetLife () {
+  $resetLife() {
     this.$life.reset()
   }
   /**
    * 生命周期销毁
    */
-  $destroyLife () {
+  $destroyLife() {
     this.$life.destroy()
   }
 }

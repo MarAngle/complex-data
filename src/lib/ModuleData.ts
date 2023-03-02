@@ -35,7 +35,7 @@ class ModuleData extends Data {
   choice?: ChoiceData
   dictionary?: DictionaryList
   // search?: SearchData
-  constructor (initOption: undefined | ModuleDataInitOption, parent: BaseData) {
+  constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.setParent(parent)
     if (initOption && getType(initOption) == 'object') {
@@ -125,7 +125,7 @@ class ModuleData extends Data {
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
    * @param {object} parent 父数据
    */
-  setParent (parent: BaseData) {
+  setParent(parent: BaseData) {
     Object.defineProperty(this, '$parent', {
       enumerable: false,
       configurable: true,

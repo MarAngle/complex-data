@@ -48,7 +48,7 @@ export type LayoutDataInitOption = LayoutDataInitOptionOption | LayoutData
 class LayoutData extends Data {
   static $name = 'LayoutData'
   data!: InterfaceData<LayoutDataFormatData>
-  constructor (initOption?: LayoutDataInitOption) {
+  constructor(initOption?: LayoutDataInitOption) {
     if (initOption && initOption.constructor === LayoutData) {
       return initOption
     } else {
@@ -60,7 +60,7 @@ class LayoutData extends Data {
    * 加载
    * @param {*} initOption 参数
    */
-  initData (initOption?: LayoutDataInitOptionOption) {
+  initData(initOption?: LayoutDataInitOptionOption) {
     if (!initOption) {
       initOption = {
         default: undefined
@@ -113,7 +113,7 @@ class LayoutData extends Data {
    * @param {string} prop 指定属性
    * @param {*} data 布局数据
    */
-  setData (prop: string, data: LayoutDataInitOptionType) {
+  setData(prop: string, data: LayoutDataInitOptionType) {
     this.data.setData(prop, this.formatLayout(data))
   }
   /**
@@ -121,14 +121,14 @@ class LayoutData extends Data {
    * @param {string} prop 指定属性
    * @returns {*}
    */
-  getData (prop?: string):LayoutDataFormatData  {
+  getData(prop?: string): LayoutDataFormatData {
     return this.data.getData(prop) as LayoutDataFormatData
   }
   /**
    * 获取布局全数据
    * @returns {object}
    */
-  getMain () {
+  getMain() {
     return this.data.getMain()
   }
 }

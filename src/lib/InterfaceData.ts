@@ -9,7 +9,7 @@ class InterfaceData<D> extends Data {
   static $name = 'InterfaceData'
   init: boolean
   data: Record<PropertyKey, D | undefined>
-  constructor (initOption?: InterfaceDataInitOption<D | undefined>) {
+  constructor(initOption?: InterfaceDataInitOption<D | undefined>) {
     super()
     this.init = false
     this.data = {
@@ -21,7 +21,7 @@ class InterfaceData<D> extends Data {
    * 加载
    * @param {*} initOption 参数
    */
-  $initMain (initOption?: InterfaceDataInitOption<D | undefined>) {
+  $initMain(initOption?: InterfaceDataInitOption<D | undefined>) {
     if (initOption !== undefined) {
       const type = getType(initOption)
       if (type !== 'object') {
@@ -46,7 +46,7 @@ class InterfaceData<D> extends Data {
    * @param {string} prop 属性
    * @param {*} data 值
    */
-  setData (prop: string, data: D, useSetData?: boolean) {
+  setData(prop: string, data: D, useSetData?: boolean) {
     if (useSetData === true) {
       setProp(this.data, prop, data, useSetData)
     } else {
@@ -58,7 +58,7 @@ class InterfaceData<D> extends Data {
    * @param {string} [prop] 属性值
    * @returns {*}
    */
-  getData (prop?: string) {
+  getData(prop?: string) {
     if (prop && this.data[prop] !== undefined) {
       return this.data[prop]
     }
@@ -68,7 +68,7 @@ class InterfaceData<D> extends Data {
    * 获取整个数据对象
    * @returns {object}
    */
-  getMain () {
+  getMain() {
     return this.data
   }
   /**
@@ -80,7 +80,7 @@ class InterfaceData<D> extends Data {
       fn(this.data, n)
     }
   }
-  toString (): string {
+  toString(): string {
     const value = this.getData('default')
     const type = typeof value
     if (type == 'object' || type == 'function') {

@@ -73,7 +73,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   check?: false | baseFunction<boolean>
-  constructor (initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
+  constructor(initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
     this.prop = this.$prop
@@ -107,22 +107,22 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     this.$setLayout(initOption.layout || parentOption.layout)
     // this.$mod = {}
   }
-  $getInterfaceData (target: interfaceKeys) {
+  $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]
   }
-  $getInterface (target: interfaceKeys, prop?: string) {
+  $getInterface(target: interfaceKeys, prop?: string) {
     return this.$interface[target].getData(prop)
   }
-  $setInterface (target: interfaceKeys, prop: string, data: string, useSetData?: boolean) {
+  $setInterface(target: interfaceKeys, prop: string, data: string, useSetData?: boolean) {
     this.$interface[target].setData(prop, data, useSetData)
   }
-  $setLayout (data?: LayoutDataInitOption) {
+  $setLayout(data?: LayoutDataInitOption) {
     this.$layout = new LayoutData(data)
   }
-  $getLayout (prop?: string) {
+  $getLayout(prop?: string) {
     return this.$layout.getData(prop)
   }
-  $getLayoutData () {
+  $getLayoutData() {
     return this.$layout
   }
 }

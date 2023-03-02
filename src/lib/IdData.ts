@@ -1,7 +1,7 @@
 
 import { fillString, getRandomData, getType } from 'complex-utils'
 
-type finalFunction = (...args:unknown[]) => string
+type finalFunction = (...args: unknown[]) => string
 
 interface baseRuleOptionTypeObjectId {
   type: 'id',
@@ -49,7 +49,7 @@ export interface IdDataInitOption {
 class IdData {
   static $name = 'IdData'
   list: finalFunction[]
-  constructor (initOption: IdDataInitOption) {
+  constructor(initOption: IdDataInitOption) {
     this.list = []
     this.$initMain(initOption)
   }
@@ -58,7 +58,7 @@ class IdData {
    * @param {object} option 参数
    * @param {object[]} option.list 参数
    */
-  $initMain ({ list }: IdDataInitOption) {
+  $initMain({ list }: IdDataInitOption) {
     this.list = []
     for (const n in list) {
       this.$initRuleData(list[n])
@@ -68,7 +68,7 @@ class IdData {
    * 生成规则对象option
    * @param {object | function} option 规则参数
    */
-  $initRuleData (option:ruleOptionType) {
+  $initRuleData(option: ruleOptionType) {
     if (option) {
       const type = getType(option)
       if (type == 'function') {
@@ -86,7 +86,7 @@ class IdData {
    * @param {*} option 基于规则参数生成函数
    * @returns {function}
    */
-  $buildFunc (option: ruleOptionTypeObject):finalFunction {
+  $buildFunc(option: ruleOptionTypeObject): finalFunction {
     if (option.type == 'random') {
       return function () {
         return getRandomData(option.size, option.letter)
@@ -139,7 +139,7 @@ class IdData {
    * 获取id
    * @returns {string}
    */
-  getData () {
+  getData() {
     let data = ''
     for (const n in this.list) {
       data = data + this.list[n]()
