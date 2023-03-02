@@ -4,8 +4,6 @@ import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 
-
-
 type sizeObjectType = {
   change?: boolean,
   current: number,
@@ -23,12 +21,13 @@ export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
 
 export type PaginationDataInitOption = undefined | true | PaginationDataInitOptionObject
 
+export type pageProp = 'current' | 'total' | 'num' | 'size'
+
 class PaginationData extends DefaultData {
   static $name = 'PaginationData'
-  page: {
-    current: number,
-    total: number
-  }
+  current: number
+  total: number
+  num: number
   size: {
     change: boolean,
     current: number,
@@ -37,16 +36,14 @@ class PaginationData extends DefaultData {
   jumper: {
     change: boolean
   }
-  num: number
   $localOption: Record<PropertyKey, any>
   constructor (initOption?: PaginationDataInitOption) {
     initOption = formatInitOption(initOption) as PaginationDataInitOptionObject
     super(initOption)
     this.$triggerCreateLife('PaginationData', 'beforeCreate', initOption)
-    this.page = {
-      current: 1,
-      total: 1
-    }
+    this.current = 1
+    this.total = 1
+    this.num = 0
     if (!initOption.size) {
       this.size = {
         change: true,
@@ -81,8 +78,6 @@ class PaginationData extends DefaultData {
     this.jumper = {
       change: !!initOption.jumper
     }
-
-    this.num = 0
     this.$localOption = initOption.localOption || {}
     this.$triggerCreateLife('PaginationData', 'created')
   }
@@ -96,42 +91,42 @@ class PaginationData extends DefaultData {
   /**
    * 计算页码相关数据
    */
-  $autoCountPage (unCountCurrent?: boolean, untriggerLife?: boolean) {
-    const total = getNum(this.getTotal() / this.getSize(), 'ceil', 0)
-    this.page.total = total <= 0 ? 1 : total
-    if (!unCountCurrent && this.getPage() > this.page.total) {
-      this.setPage(this.page.total, untriggerLife)
+  $autoCountTotal (unCountCurrent?: boolean, untriggerLife?: boolean) {
+    const total = getNum(this.getNum() / this.getSize(), 'ceil', 0)
+    this.total = total < 1 ? 1 : total
+    if (!unCountCurrent && this.getCurrent() > this.total) {
+      this.setCurrent(this.total, untriggerLife)
     }
   }
   /**
    * 设置总数
    * @param {number} num 总数
    */
-  setTotal(num: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
+  setNum(num: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
     this.num = num < 0 ? 0 : num
-    this.$autoCountPage(unCountCurrent, untriggerLife)
+    this.$autoCountTotal(unCountCurrent, untriggerLife)
   }
   /**
    * 获取总数
    */
-  getTotal(): number {
+  getNum(): number {
     return this.num
   }
   /**
    * 设置当前页
    * @param {number} current 当前页
    */
-  setPage (current: number, untriggerLife?: boolean) {
-    const totalPage = this.getTotalPage()
-    if (current <= 0) {
+  setCurrent (current: number, untriggerLife?: boolean) {
+    const total = this.getTotal()
+    if (current < 1) {
       current = 1
-    } else if (current > totalPage) {
-      current = totalPage
+    } else if (current > total) {
+      current = total
     }
-    if (this.page.current != current) {
-      this.page.current = current
+    if (this.current != current) {
+      this.current = current
       if (!untriggerLife) {
-        this.$triggerLife('change', this, 'page', current)
+        this.$triggerLife('change', this, 'current', current)
       }
     }
   }
@@ -139,33 +134,32 @@ class PaginationData extends DefaultData {
    * 获取总页码
    * @returns {number}
    */
-  getTotalPage (): number {
-    return this.page.total
+  getTotal (): number {
+    return this.total
   }
   /**
    * 更改页面条数和页码
    * @param {number} size size参数
    * @param {number} page page参数
    */
-  setSizeAndPage (current: { page: number, size: number }, untriggerLife?: boolean) {
-    this.size.current = current.size
-    this.$autoCountPage(true)
-    this.setPage(current.page, true)
+  setCurrentAndSize (data: { current: number, size: number }, untriggerLife?: boolean) {
+    this.setSize(data.size, true)
+    this.setCurrent(data.current)
     if (!untriggerLife) {
-      this.$triggerLife('change', this, 'size', current)
+      this.$triggerLife('change', this, 'currentAndSize', data)
     }
   }
   /**
    * 更改页面条数
    * @param {number} size size参数
    */
-  setSize(size: number, untriggerLife?: boolean) {
+  setSize(size: number, unCountCurrent?: boolean, untriggerLife?: boolean) {
     this.size.current = size
-    this.$autoCountPage(false, true)
+    this.$autoCountTotal(unCountCurrent, true)
     if (!untriggerLife) {
       this.$triggerLife('change', this, 'size', {
         size: size,
-        page: this.getPage()
+        page: this.getCurrent()
       })
     }
   }
@@ -173,8 +167,8 @@ class PaginationData extends DefaultData {
    * 获取当前页
    * @returns {number}
    */
-  getPage () {
-    return this.page.current
+  getCurrent () {
+    return this.current
   }
   /**
    * 获取当前size
@@ -183,30 +177,16 @@ class PaginationData extends DefaultData {
   getSize () {
     return this.size.current
   }
-  /**
-   * 获取当前数据
-   * @returns { page, size }
-   */
-  getCurrent (): { page: number, size: number } {
-    return {
-      page: this.getPage(),
-      size: this.getSize()
-    }
-  }
-  getData(): { page: number, size: number }
-  getData(prop: 'page' | 'size' | 'num' | 'totalPage'): number
-  getData(prop?: 'page' | 'size' | 'num' | 'totalPage') {
+  getData(prop: pageProp) {
     let data
-    if (prop == 'page') {
-      data = this.getPage()
+    if (prop == 'current') {
+      data = this.getCurrent()
     } else if (prop == 'size') {
       data = this.getSize()
     } else if (prop == 'num') {
+      data = this.getNum()
+    } else if (prop == 'total') {
       data = this.getTotal()
-    } else if (prop == 'totalPage') {
-      data = this.getTotalPage()
-    } else {
-      data = this.getCurrent()
     }
     return data
   }
@@ -214,8 +194,8 @@ class PaginationData extends DefaultData {
    * 重置
    */
   reset () {
-    this.setTotal(0)
-    this.setPage(1)
+    this.setNum(0)
+    this.setCurrent(1)
   }
   /**
    * 根据分页器从list中获取对应的数组
@@ -225,12 +205,12 @@ class PaginationData extends DefaultData {
    */
   formatList<T>(list: T[], unOrigin?: boolean): T[] {
     if (!unOrigin) {
-      this.setTotal(list.length)
+      this.setNum(list.length)
     }
-    let current = this.getPage()
-    const total = this.getTotalPage()
+    let current = this.getCurrent()
+    const total = this.getTotal()
     if (!unOrigin && current > total) {
-      this.setPage(total)
+      this.setCurrent(total)
       current = total
     }
     const size = this.getSize()
@@ -259,7 +239,7 @@ class PaginationData extends DefaultData {
             pageResetOption.untriggerLife = true
           }
           if (pageResetOption.prop == 'page') {
-            this.setPage(pageResetOption.data, pageResetOption.untriggerLife)
+            this.setCurrent(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop == 'size') {
             this.setSize(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop == 'sizeAndPage') {
