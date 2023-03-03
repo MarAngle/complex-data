@@ -42,6 +42,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
 }
 
 class DefaultEdit extends BaseData {
+  static $name = 'DefaultEdit'
   type: string
   reload: boolean
   multiple!: boolean
@@ -73,7 +74,6 @@ class DefaultEdit extends BaseData {
     render?: (...args: any[]) => any
   }
   $customize?: unknown
-  static $name = 'DefaultEdit'
   constructor(initOption: DefaultEditInitOption) {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
