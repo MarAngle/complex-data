@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Data as UtilsBaseData } from "complex-utils";
+import { Data as UtilsBaseData } from "complex-utils"
 import BaseData from './BaseData'
 let id = 0
 

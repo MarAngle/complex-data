@@ -1,10 +1,11 @@
 import { getType, getProp, setProp, LimitData } from 'complex-utils'
-import BaseData from '../data/BaseData';
-import Data from '../data/Data';
-import DefaultData, { DefaultDataInitOption } from "../data/DefaultData";
-import { buildOptionData } from '../utils';
-import DictionaryData, { DictionaryDataInitOption } from './DictionaryData';
-import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData';
+import BaseData from '../data/BaseData'
+import Data from '../data/Data'
+import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
+import { buildOptionData } from '../utils'
+import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
+import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
+import PageList from './PageList'
 
 type propDataItemType = {
   prop: string,

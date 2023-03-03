@@ -1,4 +1,4 @@
-import Data from "../data/Data";
+import Data from "../data/Data"
 
 class DependData extends Data {
   static $name = 'DependData'
