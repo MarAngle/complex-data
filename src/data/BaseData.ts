@@ -1,8 +1,8 @@
-import { getProp, getType, isPromise } from 'complex-utils'
+import { getProp, isPromise } from 'complex-utils'
 import PaginationData from '../lib/PaginationData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
-import { triggerCallBackType, valueType } from '../lib/StatusItem'
+import { triggerCallBackType } from '../lib/StatusItem'
 import { formatInitOption } from '../utils'
 import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
@@ -23,11 +23,17 @@ export type ReloadOption = undefined | boolean | ReloadOptionType
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   module?: ModuleDataInitOption,
-  getData?: promiseFunction
+  $getData?: promiseFunction
 }
+
+// type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
+
+
+// type BaseDataPromiseName = '$getData' | ''
 
 class BaseData extends DefaultData {
   static $name = 'BaseData'
+  static $promiseList = ['$getData']
   $module: ModuleData
   $getData?: promiseFunction
   constructor(initOption: BaseDataInitOption) {
@@ -35,7 +41,7 @@ class BaseData extends DefaultData {
     super(initOption)
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$module = new ModuleData(initOption.module, this)
-    this.$getData = initOption.getData
+    this.$getData = initOption.$getData
     if (this.$getData) {
       this.$initLoadDepend()
     }
@@ -189,30 +195,30 @@ class BaseData extends DefaultData {
     }])
     return this.$setPromise('load', promise)
   }
-  $triggerGetDataOld(...args: any[]) {
-    return this.$setPromise('load', new Promise((resolve, reject) => {
-      // 触发生命周期加载前事件
-      this.$triggerLife('beforeLoad', this, ...args)
-      this.$setStatus('ing', 'load')
-      this.$triggerMethod('$getData', args).then(res => {
-        this.$setStatus('success', 'load')
-        // 触发生命周期加载完成事件
-        this.$triggerLife('loaded', this, {
-          res: res,
-          args: args
-        })
-        resolve(res)
-      }, err => {
-        this.$setStatus('fail', 'load')
-        // 触发生命周期加载失败事件
-        this.$triggerLife('loadFail', this, {
-          res: err,
-          args: args
-        })
-        reject(err)
-      })
-    }))
-  }
+  // $triggerGetDataOld(...args: any[]) {
+  //   return this.$setPromise('load', new Promise((resolve, reject) => {
+  //     // 触发生命周期加载前事件
+  //     this.$triggerLife('beforeLoad', this, ...args)
+  //     this.$setStatus('ing', 'load')
+  //     this.$triggerMethod('$getData', args).then(res => {
+  //       this.$setStatus('success', 'load')
+  //       // 触发生命周期加载完成事件
+  //       this.$triggerLife('loaded', this, {
+  //         res: res,
+  //         args: args
+  //       })
+  //       resolve(res)
+  //     }, err => {
+  //       this.$setStatus('fail', 'load')
+  //       // 触发生命周期加载失败事件
+  //       this.$triggerLife('loadFail', this, {
+  //         res: err,
+  //         args: args
+  //       })
+  //       reject(err)
+  //     })
+  //   }))
+  // }
   $loadData(force?: forceType, ...args: any[]) {
     if (force === true) {
       force = {}
@@ -289,11 +295,11 @@ class BaseData extends DefaultData {
       })
     }
   }
-  $triggerMethodByStatus<M extends keyof T, T = BaseData>(method: M, args: Parameters<T[M]>, statusProp: string, strict?: boolean, triggerCallBack?: triggerCallBackType) {
+  $triggerMethodByStatus(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: triggerCallBackType) {
     const statusItem = this.$getStatusItem(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict, triggerCallBack)) {
-        const next = this.$runMethod<M, T>(method, args)
+        const next = this.$runMethod(method, args)
         if (next.promise) {
           return new Promise((resolve, reject) => {
             next.promise!.then((res: unknown) => {
@@ -317,7 +323,7 @@ class BaseData extends DefaultData {
       return Promise.reject({ status: 'fail', code: 'no status' })
     }
   }
-  $runMethod<M extends keyof T, T = BaseData>(method: M, args: Parameters<T[M]>) {
+  $runMethod(method: string, args: any[]) {
     const next: {
       promise: null | Promise<any>,
       msg: string,
@@ -329,15 +335,15 @@ class BaseData extends DefaultData {
     }
     switch (typeof method) {
       case 'string':
-        if ((this as unknown as T)[method]) {
-          if (typeof ((this as unknown as T)[method]) === 'function') {
-            next.promise = (this as unknown as T)[method](...args)
+        if ((this as unknown as any)[method]) {
+          if (typeof ((this as unknown as any)[method]) === 'function') {
+            next.promise = (this as unknown as any)[method](...args)
           } else {
-            next.msg = `${method}属性非函数类型，$triggerMethod函数触发失败！`
+            next.msg = `${method}属性非函数类型，$runMethod函数触发失败！`
             next.code = 'not function'
           }
         } else {
-          next.msg = `不存在${method}函数，$triggerMethod函数触发失败！`
+          next.msg = `不存在${method}函数，$runMethod函数触发失败！`
           next.code = 'no method'
         }
         break;
@@ -345,20 +351,19 @@ class BaseData extends DefaultData {
       //   next.promise = method(...args)
       //   break;
       default:
-        next.msg = `method参数接受string，当前值为${method}，$triggerMethod函数触发失败！`
+        next.msg = `method参数接受string，当前值为${method}，$runMethod函数触发失败！`
         next.code = 'not function'
         break;
     }
     if (next.promise && !isPromise(next.promise)) {
       next.promise = null
-      next.msg = `${method}需要返回promise，当前返回${next.promise}，$triggerMethod函数触发失败！`
+      next.msg = `${method}需要返回promise，当前返回${next.promise}，$runMethod函数触发失败！`
       next.code = 'not promise'
     }
     return next
   }
-
-  $triggerMethod<M extends keyof T, T = BaseData>(method: M, args: Parameters<T[M]>, strict?: boolean, triggerCallBack?: triggerCallBackType) {
-    return this.$triggerMethodByStatus<M,T>(method, args, 'operate', strict, triggerCallBack)
+  $triggerMethod(method: string, args: any[] = [], strict?: boolean, triggerCallBack?: triggerCallBackType) {
+    return this.$triggerMethodByStatus(method, args, 'operate', strict, triggerCallBack)
   }
   /* --- load end --- */
   /**
@@ -389,7 +394,6 @@ class BaseData extends DefaultData {
     this.$reset(...args)
     this.$triggerLife('destroyed', this, ...args)
   }
-
 }
 
 export default BaseData
