@@ -115,7 +115,7 @@ class ModuleData extends Data {
    * @param {string} modName 模块名
    * @param {object} modData 模块实例
    */
-  $installData(modName: moduleKeys, modData: Data) {
+  $installData(modName: moduleKeys, modData: any) {
     this[modName] = modData
     if (modData && modData.$install) {
       modData.$install(this.$getParent())
