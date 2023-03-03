@@ -80,11 +80,11 @@ class DefaultEdit extends BaseData {
     }
     if (initOption.module && initOption.module.pagination === true) {
       initOption.module.pagination = {
-        size: 10,
-        props: {
-          jumper: false,
-          size: false
-        }
+        size: {
+          change: false,
+          current: 10
+        },
+        jumper: false
       }
     }
     super(initOption)
