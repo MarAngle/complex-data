@@ -28,9 +28,6 @@ export interface BaseDataInitOption extends DefaultDataInitOption {
 
 // type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
 
-
-// type BaseDataPromiseName = '$getData' | ''
-
 class BaseData extends DefaultData {
   static $name = 'BaseData'
   static $promiseList = ['$getData']
@@ -178,7 +175,7 @@ class BaseData extends DefaultData {
     }
   }
   $triggerGetData(...args: any[]) {
-    const promise = this.$triggerMethod('$triggerMethodByStatus', ['$getData', args, 'load', false, (target, res) => {
+    const promise = this.$triggerMethodByStatusWidthOperate(['$getData', args, 'load', false, (target, res) => {
       if (target == 'start') {
         this.$triggerLife('beforeLoad', this, ...args)
       } else if (target == 'success') {
@@ -195,30 +192,6 @@ class BaseData extends DefaultData {
     }])
     return this.$setPromise('load', promise)
   }
-  // $triggerGetDataOld(...args: any[]) {
-  //   return this.$setPromise('load', new Promise((resolve, reject) => {
-  //     // 触发生命周期加载前事件
-  //     this.$triggerLife('beforeLoad', this, ...args)
-  //     this.$setStatus('ing', 'load')
-  //     this.$triggerMethod('$getData', args).then(res => {
-  //       this.$setStatus('success', 'load')
-  //       // 触发生命周期加载完成事件
-  //       this.$triggerLife('loaded', this, {
-  //         res: res,
-  //         args: args
-  //       })
-  //       resolve(res)
-  //     }, err => {
-  //       this.$setStatus('fail', 'load')
-  //       // 触发生命周期加载失败事件
-  //       this.$triggerLife('loadFail', this, {
-  //         res: err,
-  //         args: args
-  //       })
-  //       reject(err)
-  //     })
-  //   }))
-  // }
   $loadData(force?: forceType, ...args: any[]) {
     if (force === true) {
       force = {}
@@ -352,7 +325,7 @@ class BaseData extends DefaultData {
       //   break;
       default:
         next.msg = `method参数接受string，当前值为${method}，$runMethod函数触发失败！`
-        next.code = 'not function'
+        next.code = 'not string'
         break;
     }
     if (next.promise && !isPromise(next.promise)) {
@@ -365,7 +338,11 @@ class BaseData extends DefaultData {
   $triggerMethod(method: string, args: any[] = [], strict?: boolean, triggerCallBack?: triggerCallBackType) {
     return this.$triggerMethodByStatus(method, args, 'operate', strict, triggerCallBack)
   }
+  $triggerMethodByStatusWidthOperate(args: Parameters<BaseData['$triggerMethodByStatus']>, strict?: boolean, triggerCallBack?: triggerCallBackType) {
+    return this.$triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
+  }
   /* --- load end --- */
+  /* --- reset start --- */
   /**
    * 获取reset操作对应prop时机时的重置操作判断
    * @param {object} [resetOption]
@@ -394,6 +371,7 @@ class BaseData extends DefaultData {
     this.$reset(...args)
     this.$triggerLife('destroyed', this, ...args)
   }
+  /* --- reset end --- */
 }
 
 export default BaseData
