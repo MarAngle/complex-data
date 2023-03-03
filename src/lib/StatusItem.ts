@@ -32,6 +32,8 @@ export interface triggerType {
   fail: triggerTypeData,
 }
 
+export type triggerCallBackType = (target: keyof triggerType, ...args: any[]) => void
+
 type StatusItemInitOptionOption = Partial<defaultOption> | countOptionOption
 
 export type StatusItemInitOption = {
@@ -103,7 +105,7 @@ class StatusItem extends Data {
     }
     return this.list.get(value)
   }
-  triggerChange(target: keyof triggerType, strict?: boolean) {
+  triggerChange(target: keyof triggerType, strict?: boolean, triggerCallBack?: triggerCallBackType, args: any[] = []) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
     if (strict) {
@@ -112,6 +114,9 @@ class StatusItem extends Data {
       }
     }
     this.setData(triggerDict.to)
+    if (triggerCallBack) {
+      triggerCallBack(target, ...args)
+    }
     return true
   }
   /**
