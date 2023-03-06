@@ -9,7 +9,7 @@ import PageList from './PageList'
 
 export interface formatDataOption {
   clear?: boolean,
-  create?: boolean
+  format?: boolean
 }
 
 type propDataItemType = {
@@ -187,6 +187,9 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         initOption.layout = this.$getLayoutData()
       }
       ditem.$dictionary = new DictionaryList(initOption)
+      if (ditem.$simple) {
+        ditem.$simple = false
+      }
     } else if (type == 'self') {
       ditem.$dictionary = this
     }
@@ -203,7 +206,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
 
   /* --- Dictionany start --- */
   formatListData (targetList?: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[] = [], originFrom = 'list', option: formatDataOption = {}, depth?: number) {
-    if (option.create) {
+    if (!option.format) {
       if (!targetList) {
         targetList = []
       } else if (option.clear === undefined || option.clear) {
@@ -233,7 +236,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     for (const ditem of this.$data.values()) {
       ditem.$formatData(targetData, originData, originFrom, option, depth)
     }
-    return originData
+    return targetData
   }
 
   /* --- Dictionany end --- */
