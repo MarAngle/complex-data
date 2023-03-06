@@ -1,4 +1,4 @@
-import { getType, getProp, setProp, clearArray } from 'complex-utils'
+import { clearArray } from 'complex-utils'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"

@@ -1,11 +1,13 @@
 import { getProp, isPromise } from 'complex-utils'
+import { formatInitOption } from '../utils'
+import DefaultData, { DefaultDataInitOption } from "./DefaultData"
+import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
+import DictionaryList from '../lib/DictionaryList'
+import { DictionaryDataInitOption } from '../lib/DictionaryData'
 import PaginationData from '../lib/PaginationData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
-import { formatInitOption } from '../utils'
-import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
-import DefaultData, { DefaultDataInitOption } from "./DefaultData"
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -102,6 +104,20 @@ class BaseData extends DefaultData {
   /* --- update end --- */
 
   /* --- dictionary start --- */
+  $rebuildDictionary (...args: Parameters<DictionaryList['rebuildData']>) {
+    this.$module.dictionary!.rebuildData(...args)
+    this.$syncData('rebuildDictionary')
+  }
+  $getDictionaryItem (...args: Parameters<DictionaryList['getItem']>) {
+    return this.$module.dictionary!.getItem(...args)
+  }
+  $setDictionaryPropData (...args: Parameters<DictionaryList['$setPropData']>) {
+    this.$module.dictionary!.$setPropData(...args)
+    this.$syncData('setDictionaryPropData')
+  }
+  $getDictionaryPropData (...args: Parameters<DictionaryList['$getPropData']>) {
+    return this.$module.dictionary!.$getPropData(...args)
+  }
   /* --- dictionary end --- */
 
   /* --- pagination start --- */
