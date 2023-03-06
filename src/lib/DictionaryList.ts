@@ -1,4 +1,4 @@
-import { getType, getProp, setProp, LimitData } from 'complex-utils'
+import { getType, getProp, setProp, LimitData, clearArray } from 'complex-utils'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
@@ -6,6 +6,11 @@ import { buildOptionData } from '../utils'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 import PageList from './PageList'
+
+export interface formatDataOption {
+  clear?: boolean,
+  create?: boolean
+}
 
 type propDataItemType = {
   prop: string,
@@ -186,6 +191,52 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       ditem.$dictionary = this
     }
   }
+  $setLayout(data?: LayoutDataInitOption) {
+    this.$layout = new LayoutData(data)
+  }
+  $getLayout(prop?: string) {
+    return this.$layout.getData(prop)
+  }
+  $getLayoutData() {
+    return this.$layout
+  }
+
+  /* --- Dictionany start --- */
+  formatListData (targetList?: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[] = [], originFrom = 'list', option: formatDataOption = {}, depth?: number) {
+    if (option.create) {
+      if (!targetList) {
+        targetList = []
+      } else if (option.clear === undefined || option.clear) {
+        clearArray(targetList)
+      }
+      for (let i = 0; i < originList.length; i++) {
+        targetList!.push(this.createData(originList[i], originFrom, option, depth))
+      }
+      return targetList
+    } else {
+      for (let i = 0; i < originList.length; i++) {
+        originList[i] = this.formatData(originList[i], originList[i], originFrom, option, depth)
+      }
+      return originList
+    }
+  }
+  createData(originData:Record<PropertyKey, any>, originFrom = 'list', option?: formatDataOption, depth?: number) {
+    return this.formatData({}, originData, originFrom, option, depth)
+  }
+  updateData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom = 'info', option?: formatDataOption, depth?: number) {
+    return this.formatData(targetData, originData, originFrom, option, depth)
+  }
+  formatData(targetData: Record<PropertyKey, any> = {}, originData: Record<PropertyKey, any> = {}, originFrom = 'list', option: formatDataOption = {}, depth = 0) {
+    return this.$formatData(targetData, originData, originFrom, option, depth)
+  }
+  $formatData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: formatDataOption, depth = 0) {
+    for (const ditem of this.$data.values()) {
+      ditem.$formatData(targetData, originData, originFrom, option, depth)
+    }
+    return originData
+  }
+
+  /* --- Dictionany end --- */
   getItem(data: string) {
     return this.$data.get(data)
   }
@@ -196,15 +247,8 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     }
   }
-  $setLayout(data?: LayoutDataInitOption) {
-    this.$layout = new LayoutData(data)
-  }
-  $getLayout(prop?: string) {
-    return this.$layout.getData(prop)
-  }
-  $getLayoutData() {
-    return this.$layout
-  }
+
+
   $install(target: BaseData) {
     // 监听事件
     this.$onLife('updated', {

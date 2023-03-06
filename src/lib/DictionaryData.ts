@@ -1,7 +1,7 @@
 import { getType, getProp, setProp, formatNum, isExist } from 'complex-utils'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
-import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
+import DictionaryList, { DictionaryListInitOption, formatDataOption } from './DictionaryList'
 import InterfaceData, { InterfaceDataInitOption } from './InterfaceData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 
@@ -21,6 +21,8 @@ interface customerFunction {
 export interface parentOptionType {
   layout?: LayoutDataInitOption
 }
+
+export type funcKeys = keyof customerFunction
 
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
   prop: string,
@@ -124,6 +126,66 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   }
   $getLayoutData() {
     return this.$layout
+  }
+  /**
+   * 判断是否存在来源
+   * @param {string} originFrom 来源
+   * @returns {boolean}
+   */
+  $isOriginFrom (originFrom: string) {
+    return this.originFrom.indexOf(originFrom) > -1
+  }
+  $triggerFunc (funcName: funcKeys, originData: unknown, payload: payloadType) {
+    const itemFunc = this[funcName]
+    if (itemFunc) {
+      return itemFunc(originData, payload)
+    } else {
+      return originData
+    }
+  }
+  $formatData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: formatDataOption, depth: number) {
+    let build = false
+    if (this.$isOriginFrom(originFrom)) {
+      build = true
+    }
+    if (build) {
+      const type = this.$getInterface('type', originFrom)!
+      const originProp = this.$getInterface('originProp', originFrom)!
+      let originValue = getProp(originData, originProp)
+      if (this.$dictionary) {
+        depth++
+        if (type != 'array') {
+          if (getType(originValue) == 'object') {
+            if (option.create) {
+              // 新增模式
+              originValue = this.$dictionary.createData(originValue, originFrom, option, depth)
+            } else {
+              this.$dictionary.formatData(originValue, originValue, originFrom, option, depth)
+            }
+          } else {
+            originValue = {}
+          }
+        } else {
+          if (getType(originValue) == 'array') {
+            originValue = this.$dictionary.formatListData(targetData[this.prop], originValue, originFrom, option, depth)
+          } else {
+            originValue = []
+          }
+        }
+      }
+      let targetValue = this.$triggerFunc('format', originValue, {
+        targetData: targetData,
+        originData: originData,
+        depth: depth,
+        type: originFrom
+      })
+      if (type == 'number') {
+        targetValue = formatNum(targetValue)
+      } else if (type == 'boolean') {
+        targetValue = !!targetValue
+      }
+      setProp(targetData, this.prop, targetValue, true)
+    }
   }
 }
 
