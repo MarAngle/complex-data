@@ -1,4 +1,4 @@
-import { getType, getProp, setProp, LimitData, clearArray } from 'complex-utils'
+import { getType, getProp, setProp, clearArray } from 'complex-utils'
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
@@ -27,14 +27,14 @@ type propDataKeys = keyof propDataType<propDataItemType>
 
 export interface DictionaryListOption {
   isChildren?: boolean
-  build?: LimitData
+  // build?: LimitData
   empty?: boolean
   tree?: boolean
 }
 
 interface RequiredDictionaryListOption {
   isChildren: boolean
-  build: LimitData
+  // build: LimitData
   empty: boolean
   tree: boolean
 }
@@ -77,7 +77,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     this.$triggerCreateLife('DictionaryList', 'beforeCreate', initOption)
     this.$option = buildOptionData<RequiredDictionaryListOption>({
       isChildren: false,
-      build: new LimitData(),
+      // build: new LimitData(),
       empty: false,
       tree: false
     }, initOption.option)
@@ -99,8 +99,8 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     return this.$propData[prop][target]
   }
   $parseOptionFromParent(optiondata: DictionaryDataInitOption, parentData?: Data | DictionaryData, isChildren?: boolean) {
-    if (isChildren && !optiondata.originFrom && parentData && (parentData as DictionaryData).originFrom) {
-      optiondata.originFrom = (parentData as DictionaryData).originFrom
+    if (isChildren && !optiondata.originFrom && parentData && (parentData as DictionaryData).$originFrom) {
+      optiondata.originFrom = (parentData as DictionaryData).$originFrom
     }
   }
   // 重新创建字典列表
@@ -120,25 +120,22 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       // 判断是否为一级，不为一级需要将一级的默认属性添加
       this.$parseOptionFromParent(ditemOption, parentData, isChildren)
       let ditem = this.getItem(ditemOption.prop)
-      const act = {
-        build: true,
-        children: true
-      }
+      let build = true, children = true
       if (ditem) {
         if (type == 'init') {
           // 加载模式下不能出现相同字段=加载模式出发前会先清空
-          act.build = false
-          act.children = false
+          build = false
+          children = false
           this.$exportMsg(`字典列表加载:${ditemOption.prop}重复!`)
         } else if (type == 'push') {
           // 添加模式，不对相同ditem做处理，仅对子数据做处理
-          act.build = false
+          build = false
         } else if (type == 'replace') {
           // 重构模式，相同字段替换
         }
       }
       // 无对应值，直接添加
-      if (act.build) {
+      if (build) {
         // 构建字典数据
         ditemOption.parent = this
         ditem = new DictionaryData(ditemOption, {
@@ -146,7 +143,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         })
         this.$data.set(ditem.prop, ditem)
       }
-      if (act.children) {
+      if (children) {
         // 构建子字典列表
         this.$initDictionaryDataChildren(ditem!, ditemOption)
       }
@@ -171,25 +168,18 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $initDictionaryDataChildren(ditem: DictionaryData, originOption: DictionaryDataInitOption, isChildren = true) {
     const type = this.$parseChildrenBuildType(ditem, originOption)
     if (type == 'build') {
-      const initOption = originOption.dictionary as DictionaryListInitOption
-      if (!initOption.option) {
-        initOption.option = {}
+      const childInitOption = originOption.dictionary as DictionaryListInitOption
+      if (!childInitOption.option) {
+        childInitOption.option = {}
       }
-      if (initOption.option.isChildren === undefined) {
-        initOption.option.isChildren = isChildren
+      if (childInitOption.option.isChildren === undefined) {
+        childInitOption.option.isChildren = isChildren
       }
-      // 默认加载本级的build设置
-      if (!initOption.option.build) {
-        initOption.option.build = this.$option.build
+      childInitOption.parent = ditem
+      if (!childInitOption.layout) {
+        childInitOption.layout = this.$getLayoutData()
       }
-      initOption.parent = ditem
-      if (!initOption.layout) {
-        initOption.layout = this.$getLayoutData()
-      }
-      ditem.$dictionary = new DictionaryList(initOption)
-      if (ditem.$simple) {
-        ditem.$simple = false
-      }
+      ditem.$dictionary = new DictionaryList(childInitOption)
     } else if (type == 'self') {
       ditem.$dictionary = this
     }

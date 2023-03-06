@@ -60,7 +60,7 @@ const defaultCheck = function (data: unknown) {
 class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
   prop: string
-  originFrom: string[]
+  $originFrom: string[]
   $simple: boolean
   $dictionary?: DictionaryList
   $interface: {
@@ -91,13 +91,13 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     // 加载来源
     switch (typeof initOption.originFrom) {
       case 'object':
-        this.originFrom = initOption.originFrom
+        this.$originFrom = initOption.originFrom
         break;
       case 'string':
-        this.originFrom = [initOption.originFrom]
+        this.$originFrom = [initOption.originFrom]
         break;
       default:
-        this.originFrom = ['list']
+        this.$originFrom = ['list']
         break;
     }
     // 加载接口数据
@@ -141,7 +141,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
    * @returns {boolean}
    */
   $isOriginFrom (originFrom: string) {
-    return this.originFrom.indexOf(originFrom) > -1
+    return this.$originFrom.indexOf(originFrom) > -1
   }
   $triggerFunc (funcName: funcKeys, originData: unknown, payload: payloadType) {
     const itemFunc = this[funcName]
