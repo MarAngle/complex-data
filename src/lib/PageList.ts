@@ -1,6 +1,10 @@
 import { clearArray, observe, Watcher } from 'complex-utils'
 import Data from './../data/Data'
-import { PageData } from './DictionaryData'
+
+export interface PageData {
+  prop: string,
+  [prop: PropertyKey]: any
+}
 
 class PageList extends Data {
   static $name = 'PageList'

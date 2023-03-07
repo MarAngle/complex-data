@@ -1,4 +1,5 @@
-import { getType, getProp, setProp, formatNum, isExist } from 'complex-utils'
+import { getType, getProp, setProp, isExist } from 'complex-utils'
+import DictionaryFormat from '../../DictionaryFormat'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
 import DictionaryList, { DictionaryListInitOption, formatDataOption } from './DictionaryList'
@@ -10,12 +11,12 @@ type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Reco
 type baseFunction<RES> = (data: unknown, payload: payloadType) => RES
 
 interface customerFunction {
-  format?: false | baseFunction<unknown>
-  defaultGetData?: false | baseFunction<unknown>
-  show?: false | baseFunction<unknown>
-  edit?: false | baseFunction<unknown>
-  post?: false | baseFunction<unknown>
-  check?: false | baseFunction<boolean>
+  format?: false | baseFunction<unknown> // 来源=>本地 格式化函数
+  defaultGetData?: false | baseFunction<unknown> // 默认获取数据的函数
+  show?: false | baseFunction<unknown> // 数据=>展示 格式化
+  edit?: false | baseFunction<unknown> // 数据=>编辑 格式化
+  post?: false | baseFunction<unknown> // 编辑=>来源 格式化
+  check?: false | baseFunction<boolean> // 数据存在判断函数
 }
 
 export interface parentOptionType {
@@ -24,19 +25,33 @@ export interface parentOptionType {
 
 export type funcKeys = keyof customerFunction
 
-export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
-  prop: string,
-  simple?: boolean,
-  originProp?: InterfaceDataInitOption<string>
-  label?: InterfaceDataInitOption<string>
-  type?: InterfaceDataInitOption<string>
-  showProp?: InterfaceDataInitOption<string>
-  showType?: InterfaceDataInitOption<string>
-  originFrom?: string | string[]
-  layout?: LayoutDataInitOption
-  dictionary?: DictionaryListInitOption
+export interface DictionaryModType {
+  $children?: true | string,
+  [prop: PropertyKey]: any
 }
 
+export interface DictionanyModItemInitType {
+  $type?: string // 格式化类型，一般为list/edit...
+  $target?: string // 快捷格式化目标，内存指针指向对应的mod
+  [prop: PropertyKey]: unknown
+}
+
+export type DictionanyModInitType = Record<string, DictionanyModItemInitType | true>
+
+
+export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
+  prop: string, // 属性，本地唯一
+  simple?: boolean, // 简单快速处理判断值
+  originProp?: InterfaceDataInitOption<string> // 来源属性
+  label?: InterfaceDataInitOption<string> // 名称
+  type?: InterfaceDataInitOption<string> // 值类型
+  showProp?: InterfaceDataInitOption<string> // 展示的属性
+  showType?: InterfaceDataInitOption<string> // 展示的类型
+  originFrom?: string | string[] // 来源
+  layout?: LayoutDataInitOption // 布局
+  dictionary?: DictionaryListInitOption, // 子字典
+  mod?: DictionanyModInitType // 模块
+}
 
 type interfaceKeys = keyof DictionaryData['$interface']
 
@@ -57,6 +72,8 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
+
+
 class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
   prop: string
@@ -69,6 +86,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     type: InterfaceData<string>
     showProp: InterfaceData<string>
     showType: InterfaceData<string>
+    modType: InterfaceData<string>
   }
   $layout!: LayoutData
   format?: false | baseFunction<unknown>
@@ -77,6 +95,9 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   check?: false | baseFunction<boolean>
+  $mod: {
+    [prop: string]: DictionaryModType
+  }
   constructor(initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)
@@ -107,15 +128,11 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
       type: new InterfaceData(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string'),
       showType: new InterfaceData(initOption.showType),
       originProp: new InterfaceData(initOption.originProp || this.prop),
+      modType: new InterfaceData()
     }
     this.$setLayout(initOption.layout || parentOption.layout)
     this.$simple = initOption.simple === undefined ? false : initOption.simple
-    // if (!this.format) {
-    //   this.$simple = initOption.simple === undefined ? true : initOption.simple
-    // } else {
-    //   this.$simple = false
-    // }
-    // this.$mod = {}
+    this.$mod = DictionaryFormat.format(this, initOption.mod)
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]
