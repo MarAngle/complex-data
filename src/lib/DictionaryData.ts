@@ -171,7 +171,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
           // 新增模式
           targetValue = this.$dictionary!.createData(originValue, originFrom, option, depth)
         } else {
-          targetData = this.$dictionary!.formatData(originValue, originValue, originFrom, option, depth)
+          targetValue = this.$dictionary!.formatData(originValue, originValue, originFrom, option, depth)
         }
       } else {
         targetValue = {}
@@ -192,7 +192,8 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
         this.$formatDataBySimple(targetData, originData, originFrom, option)
         return
       }
-      let targetValue
+      const originProp = this.$getInterface('originProp', originFrom)!
+      let targetValue = getProp(originData, originProp)
       if (this.$dictionary) {
         targetValue = this.$formatDataByDictionary(targetData, originData, originFrom, option, depth)
       }
