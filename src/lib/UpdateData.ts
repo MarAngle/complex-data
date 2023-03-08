@@ -40,7 +40,7 @@ class UpdateData extends DefaultData {
   }
   timer: undefined | number
   trigger!: triggerType
-  constructor (initOption: UpdateDataInitOption) {
+  constructor(initOption: UpdateDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)
@@ -80,7 +80,7 @@ class UpdateData extends DefaultData {
    * @returns {number}
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getOffset (offset: number, currentNumber: number): number {
+  getOffset(offset: number, currentNumber: number): number {
     return offset
   }
   /**
@@ -88,7 +88,7 @@ class UpdateData extends DefaultData {
    * @param {number} offset 间隔
    * @returns {number}
    */
-  countOffset (offset: number) {
+  countOffset(offset: number) {
     return this.getOffset(offset, this.countNum())
   }
   /**
@@ -97,14 +97,14 @@ class UpdateData extends DefaultData {
    * @returns {boolean}
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  check (currentNumber: number): boolean | Promise<any> {
+  check(currentNumber: number): boolean | Promise<any> {
     return true
   }
   /**
    * 清除定时器
    * @param {boolean} next 不存在下一步时设置更新状态为停止更新
    */
-  clear (next?: boolean) {
+  clear(next?: boolean) {
     if (!next) {
       // 不存在下一步时设置更新状态为停止更新
       this.load.update = false
@@ -118,7 +118,7 @@ class UpdateData extends DefaultData {
    * 开始定时器
    * @param {number} offset 指定间隔，不存在读取默认
    */
-  start (force?: boolean, offset?: number) {
+  start(force?: boolean, offset?: number) {
     if (this.timer) {
       if (!force) {
         return
@@ -137,7 +137,7 @@ class UpdateData extends DefaultData {
    * 通过判断update判读是否设定触发
    * @param {number} offset 指定间隔，不存在读取默认
    */
-  $check (offset?: number) {
+  $check(offset?: number) {
     if (this.load.update) {
       this.$start(offset)
     } else {
@@ -165,7 +165,7 @@ class UpdateData extends DefaultData {
    * 继续进行下一次回调
    * @param {number} offset 指定间隔，不存在读取默认
    */
-   $next (this: UpdateData, offset?: false | number) {
+  $next(this: UpdateData, offset?: false | number) {
     // trigger结束
     this.load.operate = false
     this.$triggerLife('triggered', this, offset)
@@ -210,26 +210,26 @@ class UpdateData extends DefaultData {
    * 获取当前次数，包括已设置被删除的数量
    * @returns {number}
    */
-  getNum () {
+  getNum() {
     return this.num
   }
   /**
    * 当前次数+1
    */
-  countNum () {
+  countNum() {
     this.num++
     return this.num
   }
   /**
    * 重置当前次数
    */
-  resetNum () {
+  resetNum() {
     this.num = 0
   }
   /**
    * 重置
    */
-  reset () {
+  reset() {
     this.clear()
     this.resetNum()
   }
@@ -237,7 +237,7 @@ class UpdateData extends DefaultData {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install (target: BaseData) {
+  $install(target: BaseData) {
     target.$onLife('reseted', {
       id: this.$getId('Reseted'),
       data: (instantiater, resetOption) => {

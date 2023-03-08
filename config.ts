@@ -43,6 +43,11 @@ const config = {
   UpdateData: {
     offset: 10000
   },
+  DictionaryList: {
+    format: {
+      depth: Symbol('depth')
+    }
+  },
   StatusData: {
     list: [
       {

@@ -8,6 +8,7 @@ import PaginationData from '../lib/PaginationData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
+import UpdateData from '../lib/UpdateData'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -101,6 +102,21 @@ class BaseData extends DefaultData {
   /* --- promise end --- */
 
   /* --- update start --- */
+  $startUpdate(...args: Parameters<UpdateData['start']>) {
+    return this.$module.update!.start(...args)
+  }
+  $updateImmerdiate(...args: Parameters<UpdateData['updateImmerdiate']>) {
+    return this.$module.update!.updateImmerdiate(...args)
+  }
+  $resetUpdateNum(...args: Parameters<UpdateData['resetNum']>) {
+    return this.$module.update!.resetNum(...args)
+  }
+  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
+    return this.$module.update!.clear(...args)
+  }
+  $resetUpdate(...args: Parameters<UpdateData['reset']>) {
+    return this.$module.update!.reset(...args)
+  }
   /* --- update end --- */
 
   /* --- dictionary start --- */
@@ -117,6 +133,33 @@ class BaseData extends DefaultData {
   }
   $getDictionaryPropData (...args: Parameters<DictionaryList['$getPropData']>) {
     return this.$module.dictionary!.$getPropData(...args)
+  }
+  $getDictionaryList (...args: Parameters<DictionaryList['$getList']>) {
+    return this.$module.dictionary!.$getList(...args)
+  }
+  $getDictionaryPageList (...args: Parameters<DictionaryList['$getPageList']>) {
+    return this.$module.dictionary!.$getPageList(...args)
+  }
+  $buildDictionaryPageList (...args: Parameters<DictionaryList['$buildPageList']>) {
+    return this.$module.dictionary!.$buildPageList(...args)
+  }
+  $buildDictionaryFormData (...args: Parameters<DictionaryList['$buildFormData']>) {
+    return this.$module.dictionary!.$buildFormData(...args)
+  }
+  $buildEditData (...args: Parameters<DictionaryList['$buildEditData']>) {
+    return this.$module.dictionary!.$buildEditData(...args)
+  }
+  $createData (...args: Parameters<DictionaryList['createData']>) {
+    return this.$module.dictionary!.createData(...args)
+  }
+  $updateData (...args: Parameters<DictionaryList['updateData']>) {
+    return this.$module.dictionary!.updateData(...args)
+  }
+  $formatData (...args: Parameters<DictionaryList['formatData']>) {
+    return this.$module.dictionary!.formatData(...args)
+  }
+  $formatListData (...args: Parameters<DictionaryList['formatListData']>) {
+    return this.$module.dictionary!.formatListData(...args)
   }
   /* --- dictionary end --- */
 

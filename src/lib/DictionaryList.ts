@@ -9,10 +9,12 @@ import PageList, { PageData } from './PageList'
 import { buildOptionData } from '../utils'
 import DictionaryFormat from '../../DictionaryFormat'
 import DefaultEdit from './DefaultEdit'
+import config from '../../config'
 
 export interface formatDataOption {
   clear?: boolean,
-  format?: boolean
+  format?: boolean,
+  depth?: boolean
 }
 
 type propDataItemType = {
@@ -236,6 +238,10 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $formatData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: formatDataOption, depth = 0) {
     for (const ditem of this.$data.values()) {
       ditem.$formatData(targetData, originData, originFrom, option, depth)
+    }
+    if (option.depth !== false) {
+      // 默认保存对象深度信息
+      targetData[config.DictionaryList.format.depth] = depth
     }
     return targetData
   }
