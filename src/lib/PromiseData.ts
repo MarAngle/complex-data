@@ -72,14 +72,14 @@ class PromiseData extends Data {
           } else if (option.correct == 'reload') {
             this.triggerData(prop, option).then(res => {
               resolve(res)
-            }, err => {
+            }).catch(err => {
               reject(err)
             })
           } else {
             // reject
             reject({ status: 'fail', code: 'promise repeat' })
           }
-        }, err => {
+        }).catch(err => {
           reject(err)
         })
       } else {

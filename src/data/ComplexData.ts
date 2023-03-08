@@ -8,7 +8,6 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
   $updateData?: promiseFunction
 }
 
-
 class ComplexData extends BaseData {
   static $name = 'ComplexData'
   $updateData?: promiseFunction
@@ -19,8 +18,35 @@ class ComplexData extends BaseData {
     this.$updateData = initOption.$updateData
     this.$triggerCreateLife('ComplexData', 'created', initOption)
   }
+  /* --- load start --- */
+  $loadDataWidthDepend(...args: Parameters<BaseData['$loadData']>) {
+    return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      this.$module.depend!.$loadData().then(resList => {
+        this.$loadData(...args).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    })
+  }
+  $autoLoadData(...args: any[]) {
+    let next: string
+    const loadStatus = this.$getStatus('load')
+    if (loadStatus != 'success') {
+      next = 'load'
+    } else {
+      next = 'update'
+    }
+    if (next == 'load') {
+      return this.$loadData(true, ...args)
+    } else {
+      return this.$loadUpdateData(true, ...args)
+    }
+  }
+  /* --- load end --- */
   /* --- update start --- */
-
   $startUpdate(...args: Parameters<UpdateData['start']>) {
     return this.$module.update!.start(...args)
   }
@@ -73,20 +99,6 @@ class ComplexData extends BaseData {
     })
   }
   /* --- update end --- */
-  $autoLoadData(...args: any[]) {
-    let next: string
-    const loadStatus = this.$getStatus('load')
-    if (loadStatus != 'success') {
-      next = 'load'
-    } else {
-      next = 'update'
-    }
-    if (next == 'load') {
-      return this.$loadData(true, ...args)
-    } else {
-      return this.$loadUpdateData(true, ...args)
-    }
-  }
   /* --- pagination start --- */
   $setPageData(data: number, prop?: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
     if (this.$module.pagination) {

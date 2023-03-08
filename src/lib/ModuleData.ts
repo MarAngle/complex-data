@@ -7,12 +7,13 @@ import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
+import DependData, { DependDataInitOption } from './DependData'
 // import SearchData, { SearchDataInitOption } from './../data/SearchData'
 
 const ModuleDictionaryMap: Map<string, any> = new Map()
 
 export interface ModuleDataInitOption {
-  // option?: OptionDataInitOption
+  depend?: DependDataInitOption
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
   update?: UpdateDataInitOption
@@ -27,7 +28,7 @@ export type moduleKeys = keyof ModuleDataInitOption
 class ModuleData extends Data {
   static $name = 'ModuleData'
   $parent!: BaseData
-  // option?: OptionData
+  depend?: DependData
   status?: StatusData
   promise?: PromiseData
   update?: UpdateData

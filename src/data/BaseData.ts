@@ -170,7 +170,7 @@ class BaseData extends DefaultData {
           res: res,
           args: args
         })
-      }, (err: any) => {
+      }).catch(err => {
         console.error(err)
         // 触发生命周期重载失败事件
         this.$triggerLife('reloadFail', this, {
@@ -187,7 +187,7 @@ class BaseData extends DefaultData {
             args: args
           })
           resolve(res)
-        }, (err: any) => {
+        }).catch(err => {
           console.error(err)
           // 触发生命周期重载失败事件
           this.$triggerLife('reloadFail', this, {
@@ -209,9 +209,9 @@ class BaseData extends DefaultData {
             next.promise!.then((res: unknown) => {
               statusItem.triggerChange('success', false, triggerCallBack, [res])
               resolve(res)
-            }).catch(error => {
-              statusItem.triggerChange('fail', false, triggerCallBack, [error])
-              reject(error)
+            }).catch(err => {
+              statusItem.triggerChange('fail', false, triggerCallBack, [err])
+              reject(err)
             })
           })
         } else {
