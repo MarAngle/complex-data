@@ -2,13 +2,9 @@ import { getProp, isPromise } from 'complex-utils'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
 import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
-import DictionaryList from '../lib/DictionaryList'
-import { DictionaryDataInitOption } from '../lib/DictionaryData'
-import PaginationData from '../lib/PaginationData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
-import UpdateData from '../lib/UpdateData'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -17,7 +13,7 @@ export interface forceObjectType {
 
 export type forceType = boolean | forceObjectType
 
-type promiseFunction = (...args: any[]) => Promise<any>
+export type promiseFunction = (...args: any[]) => Promise<any>
 
 export interface ReloadOptionType {
   [prop: string]: undefined | boolean
@@ -33,7 +29,6 @@ export interface BaseDataInitOption extends DefaultDataInitOption {
 
 class BaseData extends DefaultData {
   static $name = 'BaseData'
-  static $promiseList = ['$getData']
   $module: ModuleData
   $getData?: promiseFunction
   constructor(initOption: BaseDataInitOption) {
@@ -100,129 +95,6 @@ class BaseData extends DefaultData {
     return this.$module.promise!.triggerData(...args)
   }
   /* --- promise end --- */
-
-  /* --- update start --- */
-  $startUpdate(...args: Parameters<UpdateData['start']>) {
-    return this.$module.update!.start(...args)
-  }
-  $updateImmerdiate(...args: Parameters<UpdateData['updateImmerdiate']>) {
-    return this.$module.update!.updateImmerdiate(...args)
-  }
-  $resetUpdateNum(...args: Parameters<UpdateData['resetNum']>) {
-    return this.$module.update!.resetNum(...args)
-  }
-  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
-    return this.$module.update!.clear(...args)
-  }
-  $resetUpdate(...args: Parameters<UpdateData['reset']>) {
-    return this.$module.update!.reset(...args)
-  }
-  /* --- update end --- */
-
-  /* --- dictionary start --- */
-  $rebuildDictionary (...args: Parameters<DictionaryList['rebuildData']>) {
-    this.$module.dictionary!.rebuildData(...args)
-    this.$syncData('rebuildDictionary')
-  }
-  $getDictionaryItem (...args: Parameters<DictionaryList['getItem']>) {
-    return this.$module.dictionary!.getItem(...args)
-  }
-  $setDictionaryPropData (...args: Parameters<DictionaryList['$setPropData']>) {
-    this.$module.dictionary!.$setPropData(...args)
-    this.$syncData('setDictionaryPropData')
-  }
-  $getDictionaryPropData (...args: Parameters<DictionaryList['$getPropData']>) {
-    return this.$module.dictionary!.$getPropData(...args)
-  }
-  $getDictionaryList (...args: Parameters<DictionaryList['$getList']>) {
-    return this.$module.dictionary!.$getList(...args)
-  }
-  $getDictionaryPageList (...args: Parameters<DictionaryList['$getPageList']>) {
-    return this.$module.dictionary!.$getPageList(...args)
-  }
-  $buildDictionaryPageList (...args: Parameters<DictionaryList['$buildPageList']>) {
-    return this.$module.dictionary!.$buildPageList(...args)
-  }
-  $buildDictionaryFormData (...args: Parameters<DictionaryList['$buildFormData']>) {
-    return this.$module.dictionary!.$buildFormData(...args)
-  }
-  $buildEditData (...args: Parameters<DictionaryList['$buildEditData']>) {
-    return this.$module.dictionary!.$buildEditData(...args)
-  }
-  $createData (...args: Parameters<DictionaryList['createData']>) {
-    return this.$module.dictionary!.createData(...args)
-  }
-  $updateData (...args: Parameters<DictionaryList['updateData']>) {
-    return this.$module.dictionary!.updateData(...args)
-  }
-  $formatData (...args: Parameters<DictionaryList['formatData']>) {
-    return this.$module.dictionary!.formatData(...args)
-  }
-  $formatListData (...args: Parameters<DictionaryList['formatListData']>) {
-    return this.$module.dictionary!.formatListData(...args)
-  }
-  /* --- dictionary end --- */
-
-  /* --- pagination start --- */
-  $setPageData(data: number, prop?: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
-    if (this.$module.pagination) {
-      if (prop == 'current') {
-        this.$module.pagination.setCurrent(data, unTriggerLife)
-      } else if (prop == 'size') {
-        this.$module.pagination.setSize(data, unTriggerLife) // { size, page }
-      } else if (prop == 'num') {
-        this.$module.pagination.setNum(data)
-      }
-    }
-  }
-  $getPageData(prop?: Parameters<PaginationData['getData']>[0]) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getData(prop)
-    }
-  }
-  $getPageObject(propList?: Parameters<PaginationData['getDataObject']>[0]) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getDataObject(propList)
-    }
-  }
-  $setPageCurrentAndSize(...args: Parameters<PaginationData['setCurrentAndSize']>) {
-    if (this.$module.pagination) {
-      this.$module.pagination.setCurrentAndSize(...args)
-    }
-  }
-  $resetPagination() {
-    if (this.$module.pagination) {
-      this.$module.pagination.reset()
-    }
-  }
-  /**
-   * 设置分页器数据
-   * @param {number} data 需要设置的属性值
-   * @param {'page' | 'size' | 'num'} [prop = 'page'] 需要设置的参数'page' | 'size' | 'num'
-   */
-  // $setPageData (data: number, prop?: 'page' | 'size', unTriggerLife?: boolean): void
-  // $setPageData (data: number, prop: 'num', unTriggerLife?: boolean): void
-  // $setPageData (data: { page: number, size: number }, prop: 'sizeAndPage', unTriggerLife?: boolean): void
-  // $setPageData (data: number | { page: number, size: number }, prop: 'page' | 'size' | 'num' | 'sizeAndPage' = 'page', unTriggerLife?: boolean) {
-  //   if (this.$module.pagination) {
-  //     if (prop == 'page') {
-  //       this.$module.pagination.setPage(data as number, unTriggerLife)
-  //     } else if (prop == 'size') {
-  //       this.$module.pagination.setSize(data as number, unTriggerLife) // { size, page }
-  //     } else if (prop == 'sizeAndPage') {
-  //       this.$module.pagination.setSizeAndPage(data, unTriggerLife) // { size, page }
-  //     } else if (prop == 'num') {
-  //       this.$module.pagination.setTotal(data as number)
-  //     }
-  //   }
-  // }
-  /* --- pagination end --- */
-
-  /* --- choice start --- */
-  /* --- choice end --- */
-
-  /* --- search start --- */
-  /* --- search end --- */
 
   /* --- load start --- */
   $initLoadDepend() {
