@@ -2,13 +2,14 @@ import { getType, getProp, setProp, isExist } from 'complex-utils'
 import DictionaryFormat from '../../DictionaryFormat'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
+import DefaultEdit from './DefaultEdit'
 import DictionaryList, { DictionaryListInitOption, formatDataOption } from './DictionaryList'
 import InterfaceData, { InterfaceDataInitOption } from './InterfaceData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 
-type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
+export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
 
-type baseFunction<RES> = (data: unknown, payload: payloadType) => RES
+export type baseFunction<RES> = (data: unknown, payload: payloadType) => RES
 
 interface customerFunction {
   format?: false | baseFunction<unknown> // 来源=>本地 格式化函数
@@ -26,7 +27,7 @@ export interface parentOptionType {
 export type funcKeys = keyof customerFunction
 
 export interface DictionaryModType {
-  $children?: true | string,
+  $children?: true | string, // 是否根据$dictionary字典构建下一级的属性，此下一级数据会挂载到PageItem的对应属性上
   [prop: PropertyKey]: any
 }
 
@@ -96,7 +97,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   post?: false | baseFunction<unknown>
   check?: false | baseFunction<boolean>
   $mod: {
-    [prop: string]: DictionaryModType
+    [prop: string]: DictionaryModType | undefined
   }
   constructor(initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
@@ -214,14 +215,73 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
       if (this.$dictionary) {
         targetValue = this.$formatDataByDictionary(targetData, originData, originFrom, option, depth)
       }
-      targetValue = this.$triggerFunc('format', targetValue, {
+      this.$setTargetData(this.prop, targetValue, 'format', {
         targetData: targetData,
         originData: originData,
         depth: depth,
         type: originFrom
       })
-      setProp(targetData, this.prop, targetValue, true)
     }
+  }
+  $setTargetData(prop: string, originValue: any, funcName: funcKeys, option: payloadType ) {
+    const targetValue = this.$triggerFunc(funcName, originValue, option)
+    setProp(option.targetData, prop, targetValue, true)
+  }
+  $getMod (modName: string) {
+    return this.$mod[modName]
+  }
+  $buildFormData (option: payloadType) {
+    return new Promise((resolve) => {
+      const mod = this.$getMod(option.type) as DefaultEdit
+      const next = (status: string, targetValue: any) => {
+        setProp(option.targetData, this.prop, targetValue, true)
+        resolve({ status: status })
+      }
+      if (mod) {
+        if (mod.readyData) {
+          mod.readyData().then(() => {
+            next('success', this.$getFormData(mod, option))
+          }).catch((err: any) => {
+            this.$exportMsg(`${option.type}模块readyData调用失败！`, 'error', {
+              data: err,
+              type: 'error'
+            })
+            next('fail', this.$getFormData(mod, option))
+          })
+        } else {
+          next('success', this.$getFormData(mod, option))
+        }
+      } else {
+        next('none', undefined)
+      }
+    })
+  }
+  $getFormData (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
+    let targetValue
+    // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
+    if (originData) {
+      targetValue = this.$triggerFunc('edit', originData[this.prop], {
+        type: type,
+        targetData,
+        originData
+      })
+    } else if (mod.getValueData) {
+      if (from == 'reset') {
+        targetValue = mod.getValueData('reset')
+      } else {
+        targetValue = mod.getValueData('init')
+      }
+    }
+    // 模块存在edit函数时将当前数据进行edit操作
+    if (mod.edit) {
+      targetValue = mod.edit(targetValue, {
+        type: type,
+        targetData,
+        originData,
+        from: from
+      })
+    }
+    return targetValue
   }
 }
 

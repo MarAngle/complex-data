@@ -1,10 +1,15 @@
-import DictionaryData, { DictionanyModInitType, DictionaryModType } from "./src/lib/DictionaryData";
+import DictionaryData, { DictionanyModInitType, DictionanyModItemInitType, DictionaryModType } from "./src/lib/DictionaryData";
 import { PageData } from "./src/lib/PageList";
 
-export interface formatOptionItemType {
-  format?: (ditem:DictionaryData, name: string, modItemData: Record<PropertyKey, any>) => Record<PropertyKey, any>,
-  unformat?: (ditem:DictionaryData, name: string, payload?: Record<PropertyKey, any>) => PageData
+export interface unformatOption {
+  mod?: string
 }
+
+export interface formatOptionItemType {
+  format?: (ditem:DictionaryData, name: string, modItemData: DictionanyModItemInitType) => DictionaryModType,
+  unformat?: (ditem:DictionaryData, name: string, option?: unformatOption) => PageData
+}
+
 
 const DictionaryMap: Map<string, formatOptionItemType> = new Map()
 
@@ -20,8 +25,8 @@ const DictionaryFormat = {
   getDictionary(name: string) {
     return DictionaryMap.get(name)
   },
-  getDictionaryByMod(name: string, payload: Record<PropertyKey, any> = {}) {
-    return this.getDictionary(payload.mod || name)
+  getDictionaryByMod(name: string, option: unformatOption = {}) {
+    return this.getDictionary(option.mod || name)
   },
   format(ditem: DictionaryData, modInitOption?: DictionanyModInitType) {
     const modData: DictionaryModType = {}
@@ -46,25 +51,25 @@ const DictionaryFormat = {
     }
     return modData
   },
-  formatItem(ditem: DictionaryData, modName: string, modItemData: Record<PropertyKey, any>) {
+  formatItem(ditem: DictionaryData, modName: string, modItemData: DictionanyModItemInitType) {
     if (!modItemData.$type) {
       modItemData.$type = modName
     }
     ditem.$setInterface('modType', modName, modItemData.$type)
     const formatDictionary = this.getDictionary(modItemData.$type)
     if (formatDictionary && formatDictionary.format) {
-      ditem.$mod[modName] = formatDictionary.format(ditem, modName, modItemData)
+      return formatDictionary.format(ditem, modName, modItemData)
     } else {
-      ditem.$mod[modName] = modItemData
+      return modItemData as DictionaryModType
     }
   },
   build() {
     alert('未定义BUILD')
   },
-  unformat(ditem:DictionaryData, modName: string, payload?: Record<PropertyKey, any>) {
-    const formatDictionary = this.getDictionaryByMod(modName, payload)
+  unformat(ditem:DictionaryData, modName: string, option?: unformatOption) {
+    const formatDictionary = this.getDictionaryByMod(modName, option)
     if (formatDictionary && formatDictionary.unformat) {
-      return formatDictionary.unformat(ditem, modName, payload)
+      return formatDictionary.unformat(ditem, modName, option)
     } else {
       return ditem.$mod[modName]
     }

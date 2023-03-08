@@ -1,11 +1,14 @@
-import { clearArray } from 'complex-utils'
+import { clearArray, trimData, LimitData, promiseAllFinished } from 'complex-utils'
+import { LimitDataInitOption } from 'complex-utils/src/build/LimitData'
+import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
-import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
-import { buildOptionData } from '../utils'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
-import PageList from './PageList'
+import PageList, { PageData } from './PageList'
+import { buildOptionData } from '../utils'
+import DictionaryFormat from '../../DictionaryFormat'
+import DefaultEdit from './DefaultEdit'
 
 export interface formatDataOption {
   clear?: boolean,
@@ -45,6 +48,14 @@ export interface DictionaryListInitOption extends DefaultDataInitOption {
   option?: DictionaryListOption
   propData?: propDataType<string | propDataItemType>
 }
+
+export interface formDataOption {
+  form?: Record<PropertyKey, any>,
+  from?: string,
+  limit?: LimitData | LimitDataInitOption,
+}
+
+
 
 function initPropData(defaultProp: propDataKeys, propData?: propDataType<string | propDataItemType>): propDataItemType {
   if (propData) {
@@ -195,7 +206,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   }
 
   /* --- Dictionany start --- */
-  formatListData (targetList?: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[] = [], originFrom = 'list', option: formatDataOption = {}, depth?: number) {
+  formatListData(targetList?: Record<PropertyKey, any>[], originList: Record<PropertyKey, any>[] = [], originFrom = 'list', option: formatDataOption = {}, depth?: number) {
     if (!option.format) {
       if (!targetList) {
         targetList = []
@@ -213,7 +224,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       return originList
     }
   }
-  createData(originData:Record<PropertyKey, any>, originFrom = 'list', option?: formatDataOption, depth?: number) {
+  createData(originData: Record<PropertyKey, any>, originFrom = 'list', option?: formatDataOption, depth?: number) {
     return this.formatData({}, originData, originFrom, option, depth)
   }
   updateData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom = 'info', option?: formatDataOption, depth?: number) {
@@ -229,6 +240,102 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     return targetData
   }
 
+  $getList(modName: string, dataMap?: Map<string, DictionaryData>) {
+    if (!dataMap) {
+      dataMap = this.$data
+    }
+    const list: DictionaryData[] = []
+    for (const ditem of dataMap.values()) {
+      const mod = ditem.$getMod(modName)
+      if (mod) {
+        list.push(ditem)
+      }
+    }
+    return list
+  }
+  $getPageList(modName: string, option?: Record<PropertyKey, any>) {
+    return this.$buildPageList(modName, this.$getList(modName), option)
+  }
+  $buildPageList(modName: string, list: DictionaryData[], option?: Record<PropertyKey, any>) {
+    const pageList = new PageList()
+    for (let n = 0; n < list.length; n++) {
+      const ditem = list[n]
+      const pitem = DictionaryFormat.unformat(ditem, modName, option) as PageData
+      if (ditem.$dictionary) {
+        const mod = ditem.$getMod(modName)
+        if (mod && mod.$children) {
+          let childrenProp = mod.$children
+          if (childrenProp === true) {
+            childrenProp = 'children'
+          }
+          pitem[childrenProp] = ditem.$dictionary.$getPageList(modName, option)
+        }
+      }
+      pageList.push(pitem)
+    }
+    return pageList
+  }
+  $buildFormData(dList: DictionaryData[], modName: string, originData?: Record<PropertyKey, any>, option: formDataOption = {}) {
+    return new Promise((resolve) => {
+      const formData = option.form || {}
+      const from = option.from
+      const limit = new LimitData(option.limit)
+      const size = dList.length
+      const promiseList = []
+      for (let n = 0; n < size; n++) {
+        const ditem = dList[n]
+        if (!limit.getLimit(ditem.prop)) {
+          promiseList.push(ditem.$buildFormData({
+            targetData: formData,
+            originData: originData,
+            type: modName,
+            from: from
+          }))
+        }
+      }
+      promiseAllFinished(promiseList).then(resList => {
+        resolve(resList)
+      })
+    })
+  }
+  $buildEditData(formData: Record<PropertyKey, any>, dList: DictionaryData[], modName: string) {
+    const editData = {}
+    dList.forEach(ditem => {
+      let add = true
+      const mod = ditem.$getMod(modName) as DefaultEdit
+      if (mod) {
+        if (mod.required.getData(modName)) {
+          /*
+            存在check则进行check判断
+            此时赋值存在2种情况
+            1.不存在check 返回data ,data为真则赋值
+            2.存在check,返回check函数返回值，为真则赋值
+          */
+          add = ditem.$triggerFunc('check', formData[ditem.prop], {
+            targetData: editData,
+            originData: formData,
+            type: modName
+          }) as boolean
+          // empty状态下传递数据 或者 checkFg为真时传递数据 也就是empty为false状态的非真数据不传递
+          if (!add) {
+            add = this.$option.empty
+          }
+        }
+        if (add) {
+          let originValue = formData[ditem.prop]
+          if (mod.trim) {
+            originValue = trimData(originValue)
+          }
+          ditem.$setTargetData(ditem.$getInterface('originProp', modName)!, originValue, 'post', {
+            targetData: editData,
+            originData: formData,
+            type: modName
+          })
+        }
+      }
+    })
+    return editData
+  }
   /* --- Dictionany end --- */
   getItem(data: string) {
     return this.$data.get(data)
@@ -240,7 +347,6 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     }
   }
-
 
   $install(target: BaseData) {
     // 监听事件

@@ -2,8 +2,7 @@ import { getType, hasProp } from 'complex-utils'
 import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from './../../src/lib/InterfaceData'
 import config, { DictType } from '../../config'
-import DictionaryData from './DictionaryData'
-
+import DictionaryData, { baseFunction } from './DictionaryData'
 
 interface valueType {
   default?: any,
@@ -15,6 +14,7 @@ interface valueType {
 export interface DefaultEditInitOption extends BaseDataInitOption {
   type?: string
   reload?: boolean
+  trim?: boolean
   multiple?: boolean
   required?: InterfaceDataInitOption<boolean>
   disabled?: InterfaceDataInitOption<boolean>
@@ -27,7 +27,9 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   value?: valueType
   on?: Record<PropertyKey, (...args: any[]) => any>
   customize?: unknown
-  rules?: InterfaceDataInitOption<any>,
+  rules?: InterfaceDataInitOption<any>
+  edit?: false | baseFunction<unknown> // 数据=>编辑 格式化
+  post?: false | baseFunction<unknown> // 编辑=>来源 格式化
   tips?: string | {
     data: string,
     location?: string,
@@ -45,6 +47,7 @@ class DefaultEdit extends BaseData {
   static $name = 'DefaultEdit'
   type: string
   reload: boolean
+  trim: boolean
   multiple!: boolean
   required: InterfaceData<boolean>
   disabled: InterfaceData<boolean>
@@ -61,6 +64,8 @@ class DefaultEdit extends BaseData {
   }
   $option: Record<PropertyKey, any>
   $localOption: Record<PropertyKey, any>
+  edit?: false | baseFunction<unknown>
+  post?: false | baseFunction<unknown>
   $on: Record<PropertyKey, (...args: any[]) => any>
   $tips!: {
     data: string,
@@ -90,6 +95,7 @@ class DefaultEdit extends BaseData {
     super(initOption)
     this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
     this.type = initOption.type || 'input'
+    this.trim = !!initOption.trim
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
