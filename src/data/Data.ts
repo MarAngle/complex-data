@@ -9,16 +9,16 @@ function createId(): string {
   return id.toString()
 }
 
-
 interface cascadeTypeObject<D> {
   [prop: PropertyKey]: D | cascadeTypeObject<D>
 }
 
 export type cascadeType<D> = D | cascadeTypeObject<D>
 
-class Data extends UtilsBaseData {
-  readonly $id!: string
+class Data<P extends Data = any> extends UtilsBaseData {
   static $name = 'Data'
+  readonly $id!: string
+  $parent?: P
   constructor() {
     super()
     Object.defineProperty(this, '$id', {
@@ -28,7 +28,26 @@ class Data extends UtilsBaseData {
       value: createId()
     })
   }
-  $syncData(...args: any[]) { }
+  /**
+   * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
+   * @param {object} parent 父数据
+   */
+  $setParent(parent?: P) {
+    Object.defineProperty(this, '$parent', {
+      enumerable: false,
+      configurable: true,
+      writable: true,
+      value: parent
+    })
+  }
+  /**
+   * 获取父数据
+   * @returns {object | undefined}
+   */
+  $getParent(): P | undefined {
+    return this.$parent
+  }
+  $syncData(from?: string, ...args: any[]) { }
   $getId(prop = ''): string {
     return this.$id + prop
   }

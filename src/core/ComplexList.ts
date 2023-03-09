@@ -1,14 +1,15 @@
+import Data from "../data/Data"
 import { formatDataOption } from "../lib/DictionaryList"
 import { formatInitOption } from "../utils"
 import ComplexData, { ComplexDataInitOption } from "./ComplexData"
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface ComplexListInitOption extends ComplexDataInitOption {}
+export interface ComplexListInitOption<P extends Data = Data> extends ComplexDataInitOption<P> {}
 
-class ComplexList extends ComplexData {
+class ComplexList<P extends Data = Data> extends ComplexData<P> {
   static $name = 'ComplexList'
   $list: Record<PropertyKey, any>[]
-  constructor(initOption: ComplexListInitOption) {
+  constructor(initOption: ComplexListInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$list = []

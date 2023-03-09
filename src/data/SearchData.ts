@@ -74,33 +74,6 @@ class SearchData extends BaseData {
     const targetData = this.$data[modName]
     this.$current[modName] = this.$module.dictionary!.$buildEditData(targetData.form, targetData.list, modName)
   }
-  // install (target: BaseData) {
-  //   target.$onLife('reseted', {
-  //     id: this.$getId('Reseted'),
-  //     data: (instantiater, resetOption) => {
-  //       if (target.$parseResetOption(resetOption, 'search') !== false) {
-  //         this.$reset()
-  //       }
-  //     }
-  //   })
-  // }
-  // /**
-  //  * 模块卸载
-  //  * @param {object} target 卸载到的目标
-  //  */
-  // uninstall(target: BaseData) {
-  //   target.$offLife('reseted', this.$getId('Reseted'))
-  // }
-  // $reset(option?: boolean) {
-  //   if (option !== false) {
-  //     this.reset(true)
-  //   }
-  // }
-  // $destroy(option?: boolean) {
-  //   if (option !== false) {
-  //     this.$reset(option)
-  //   }
-  // }
 }
 
 export default SearchData

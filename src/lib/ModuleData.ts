@@ -43,9 +43,9 @@ export interface ModuleDataType {
   $destroy: ((option?: boolean, ...args: any[]) => any) | ((option?: cascadeType<undefined | boolean>, ...args: any[]) => any)
 }
 
-class ModuleData extends Data {
+class ModuleData extends Data<BaseData> {
   static $name = 'ModuleData'
-  $parent!: BaseData
+  $parent?: BaseData
   status?: StatusData
   promise?: PromiseData
   depend?: DependData
@@ -56,7 +56,7 @@ class ModuleData extends Data {
   choice?: ChoiceData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
-    this.setParent(parent)
+    this.$setParent(parent)
     if (initOption && getType(initOption) == 'object') {
       let modName: moduleKeys
       for (modName in initOption) {
@@ -141,25 +141,6 @@ class ModuleData extends Data {
     }
   }
   /**
-   * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
-   * @param {object} parent 父数据
-   */
-  setParent(parent: BaseData) {
-    Object.defineProperty(this, '$parent', {
-      enumerable: false,
-      configurable: true,
-      writable: true,
-      value: parent
-    })
-  }
-  /**
-   * 获取父数据
-   * @returns {object | undefined}
-   */
-  $getParent() {
-    return this.$parent
-  }
-  /**
    * 触发指定模块的指定函数
    * @param {string} modName 模块名
    * @param {string} method 函数名
@@ -216,6 +197,6 @@ ModuleData.setDictionary('pagination', PaginationData)
 ModuleData.setDictionary('choice', ChoiceData)
 ModuleData.setDictionary('update', UpdateData)
 ModuleData.setDictionary('dictionary', DictionaryList)
-// ModuleData.setDictionary('search', SearchData)
+ModuleData.setDictionary('search', SearchData)
 
 export default ModuleData

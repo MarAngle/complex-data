@@ -3,15 +3,16 @@ import BaseData, { BaseDataInitOption, forceType, promiseFunction } from "../dat
 import DictionaryList from '../lib/DictionaryList'
 import PaginationData from '../lib/PaginationData'
 import UpdateData from '../lib/UpdateData'
+import Data from "../data/Data"
 
-export interface ComplexDataInitOption extends BaseDataInitOption {
+export interface ComplexDataInitOption<P extends Data = Data> extends BaseDataInitOption<P> {
   $updateData?: promiseFunction
 }
 
-class ComplexData extends BaseData {
+class ComplexData<P extends Data = Data> extends BaseData<P> {
   static $name = 'ComplexData'
   $updateData?: promiseFunction
-  constructor(initOption: ComplexDataInitOption) {
+  constructor(initOption: ComplexDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('ComplexData', 'beforeCreate', initOption)

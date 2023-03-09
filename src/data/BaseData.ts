@@ -5,7 +5,7 @@ import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../li
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
-import { cascadeType } from './Data'
+import Data, { cascadeType } from './Data'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -21,22 +21,22 @@ export interface ReloadOptionType {
 }
 export type ReloadOption = undefined | boolean | ReloadOptionType
 
-export interface BaseDataInitOption extends DefaultDataInitOption {
-  module?: ModuleDataInitOption,
-  $getData?: promiseFunction
-}
-
 export interface resetOptionType extends moduleResetOptionType {
   [prop: string]: cascadeType<undefined | cascadeType<undefined | boolean>>
 }
 
 // type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
 
-class BaseData extends DefaultData {
+export interface BaseDataInitOption<P extends Data = Data> extends DefaultDataInitOption<P> {
+  module?: ModuleDataInitOption,
+  $getData?: promiseFunction
+}
+
+class BaseData<P extends Data = Data> extends DefaultData<P> {
   static $name = 'BaseData'
   $module: ModuleData
   $getData?: promiseFunction
-  constructor(initOption: BaseDataInitOption) {
+  constructor(initOption: BaseDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)

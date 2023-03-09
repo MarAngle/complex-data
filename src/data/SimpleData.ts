@@ -2,20 +2,19 @@ import { getType } from 'complex-utils'
 import Data from './Data'
 import { formatInitOption } from '../utils'
 
-export interface SimpleDataInitOption {
+export interface SimpleDataInitOption<P extends Data = Data> {
   name?: string,
   prop?: string,
-  parent?: Data,
+  parent?: P,
   extra?: Record<PropertyKey, any>
 }
 
-class SimpleData extends Data {
+class SimpleData<P extends Data = Data> extends Data<P> {
   static $name = 'SimpleData'
-  $parent?: Data
   $name: string
   $prop: string
   $extra!: Record<PropertyKey, any>
-  constructor(initOption: SimpleDataInitOption) {
+  constructor(initOption: SimpleDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super()
     this.$name = initOption.name || ''
@@ -26,25 +25,6 @@ class SimpleData extends Data {
     } else if (initOption.extra !== undefined) {
       this.$exportMsg(`初始化extra出错，数据必须为对象！`)
     }
-  }
-  /**
-   * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
-   * @param {object} parent 父数据
-   */
-  $setParent(parent?: Data) {
-    Object.defineProperty(this, '$parent', {
-      enumerable: false,
-      configurable: true,
-      writable: true,
-      value: parent
-    })
-  }
-  /**
-   * 获取父数据
-   * @returns {object | undefined}
-   */
-  $getParent(): Data | undefined {
-    return this.$parent
   }
   /**
    * 设置额外数据
