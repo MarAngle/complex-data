@@ -7,7 +7,7 @@ import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 import PageList, { PageData } from './PageList'
 import { buildOptionData } from '../utils'
-import DictionaryFormat from '../../DictionaryFormat'
+import DictionaryFormat, { unformatOption } from '../../DictionaryFormat'
 import DefaultEdit from './DefaultEdit'
 import config from '../../config'
 
@@ -259,10 +259,10 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
     return list
   }
-  $getPageList(modName: string, option?: Record<PropertyKey, any>) {
+  $getPageList(modName: string, option?: unformatOption) {
     return this.$buildPageList(modName, this.$getList(modName), option)
   }
-  $buildPageList(modName: string, list: DictionaryData[], option?: Record<PropertyKey, any>) {
+  $buildPageList(modName: string, list: DictionaryData[], option?: unformatOption) {
     const pageList = new PageList()
     for (let n = 0; n < list.length; n++) {
       const ditem = list[n]
@@ -303,6 +303,13 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         resolve(resList)
       })
     })
+  }
+  $getFormData(modName: string, option: {
+    originData?: Record<PropertyKey, any>,
+    listOption?: unformatOption,
+    formOption?: formDataOption
+  } = {}) {
+    let pageList = this.$getPageList(modName, option.listOption)
   }
   $buildEditData(formData: Record<PropertyKey, any>, dList: DictionaryData[], modName: string) {
     const editData = {}

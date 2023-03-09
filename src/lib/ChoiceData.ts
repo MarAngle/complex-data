@@ -262,8 +262,8 @@ class ChoiceData extends Data {
         this.autoReset(resetOption.choice)
       }
     })
-    target.$onLife('reseted', {
-      id: this.$getId('Reseted'),
+    target.$onLife('beforeReset', {
+      id: this.$getId('beforeReset'),
       data: (instantiater, resetOption) => {
         if (target.$parseResetOption(resetOption, 'choice') !== false) {
           this.reset(true)
@@ -277,7 +277,7 @@ class ChoiceData extends Data {
    */
   $uninstall(target: BaseData) {
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
-    target.$offLife('reseted', this.$getId('Reseted'))
+    target.$offLife('beforeReset', this.$getId('beforeReset'))
   }
 }
 

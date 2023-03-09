@@ -1,5 +1,5 @@
 import { formatInitOption } from "../utils"
-import BaseData, { BaseDataInitOption, forceType, promiseFunction } from "./BaseData"
+import BaseData, { BaseDataInitOption, forceType, promiseFunction } from "../data/BaseData"
 import DictionaryList from '../lib/DictionaryList'
 import PaginationData from '../lib/PaginationData'
 import UpdateData from '../lib/UpdateData'
