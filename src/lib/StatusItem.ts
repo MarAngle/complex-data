@@ -1,4 +1,5 @@
 import Data from "../data/Data"
+import StatusData from "./StatusData"
 
 export type valueType = 'un' | 'ing' | 'success' | 'fail' | 'end'
 
@@ -51,11 +52,12 @@ class StatusItem extends Data {
   trigger: triggerType
   current: valueType
   default: valueType
-  constructor (initOption: StatusItemInitOption) {
+  constructor (initOption: StatusItemInitOption, parent?: StatusData) {
     if (!initOption.list || initOption.list.length == 0) {
       console.error(`StatusItem未设置初始化列表`)
     }
     super()
+    this.$setParent(parent)
     if (!initOption.option) {
       initOption.option = {}
     }
@@ -94,6 +96,7 @@ class StatusItem extends Data {
       }
       if (build && this.current != data.value) {
         this.current = data.value
+        this.$syncData(true, 'setData')
       }
     } else {
       this.$exportMsg(`当前加载判断值${value}不存在`)
@@ -125,6 +128,7 @@ class StatusItem extends Data {
   $resetTarget () {
     if (this.option.type == 'count') {
       this.option.num = 0
+      this.$syncData(true, '$resetTarget')
     }
   }
   /**

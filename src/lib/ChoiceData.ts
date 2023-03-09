@@ -256,6 +256,7 @@ class ChoiceData extends Data {
    * @param {object} target 加载到的目标
    */
   $install (target: BaseData) {
+    super.$install(target)
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {
@@ -276,6 +277,7 @@ class ChoiceData extends Data {
    * @param {object} target 卸载到的目标
    */
   $uninstall(target: BaseData) {
+    super.$uninstall(target)
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
     // target.$offLife('beforeReset', this.$getId('beforeReset'))
   }

@@ -23,7 +23,7 @@ class StatusData extends Data {
     this.data = {}
     const dataList = (config.StatusData.list as StatusDataInitOptionItem[]).concat(initOption!.list || [])
     dataList.forEach(item => {
-      this.data[item.prop] = new StatusItem(item.data)
+      this.data[item.prop] = new StatusItem(item.data, this)
     })
   }
   addData(target: string, data: StatusItemInitOption, replace?: boolean) {
@@ -31,6 +31,7 @@ class StatusData extends Data {
       // 当不存在对应数据或者需要置换时进行添加操作
       this.data[target] = new StatusItem(data)
     }
+    this.$syncData(true, 'addData')
   }
   deleteData(target: string, reset?: boolean) {
     if (this.data[target]) {
@@ -38,6 +39,7 @@ class StatusData extends Data {
         this.data[target].reset()
       }
       delete this.data[target]
+      this.$syncData(true, 'deleteData')
     }
   }
   getItem(target = 'operate') {
@@ -60,27 +62,6 @@ class StatusData extends Data {
       this.data[n].reset()
     }
   }
-  // /**
-  //  * 模块加载
-  //  * @param {object} target 加载到的目标
-  //  */
-  // $install(target: BaseData) {
-  //   target.$onLife('beforeReset', {
-  //     id: this.$getId('BeforeReset'),
-  //     data: (instantiater, resetOption) => {
-  //       if (target.$parseResetOption(resetOption, 'status') !== false) {
-  //         this.reset()
-  //       }
-  //     }
-  //   })
-  // }
-  // /**
-  //  * 模块卸载
-  //  * @param {object} target 卸载到的目标
-  //  */
-  // $uninstall(target: BaseData) {
-  //   target.$offLife('beforeReset', this.$getId('BeforeReset'))
-  // }
   $reset(option?: boolean) {
     if (option !== false) {
       this.reset()

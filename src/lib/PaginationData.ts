@@ -97,6 +97,7 @@ class PaginationData extends DefaultData {
   setNum(num: number, unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     this.num = num < 0 ? 0 : num
     this.$autoCountTotal(unCountCurrent, unTriggerCurrentLife)
+    this.$syncData(true, 'setNum')
   }
   /**
    * 获取总数
@@ -113,6 +114,7 @@ class PaginationData extends DefaultData {
     if (!unCountCurrent && this.getCurrent() > this.total) {
       this.setCurrent(this.total, unTriggerCurrentLife)
     }
+    this.$syncData(true, '$autoCountTotal')
   }
   /**
    * 获取总页码
@@ -134,6 +136,7 @@ class PaginationData extends DefaultData {
     }
     if (this.current != current) {
       this.current = current
+      this.$syncData(true, 'setCurrent')
       if (!unTriggerCurrentLife) {
         this.$triggerLife('change', this, 'current', current)
       }
@@ -159,6 +162,7 @@ class PaginationData extends DefaultData {
         page: this.getCurrent()
       })
     }
+    this.$syncData(true, 'setSize')
   }
   /**
    * 获取当前size
@@ -232,6 +236,7 @@ class PaginationData extends DefaultData {
    * @param {object} target 加载到的目标
    */
   $install(target: BaseData) {
+    super.$install(target)
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {
@@ -277,6 +282,7 @@ class PaginationData extends DefaultData {
    * @param {object} target 卸载到的目标
    */
   $uninstall(target: BaseData) {
+    super.$uninstall(target)
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
     // target.$offLife('reseted', this.$getId('Reseted'))
     this.$offLife('change', target.$getId('PaginationChange'))

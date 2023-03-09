@@ -17,6 +17,7 @@ export type cascadeType<D> = D | cascadeTypeObject<D>
 
 class Data<P extends Data = any> extends UtilsBaseData {
   static $name = 'Data'
+  static $observe = false
   readonly $id!: string
   $parent?: P
   constructor() {
@@ -47,15 +48,32 @@ class Data<P extends Data = any> extends UtilsBaseData {
   $getParent(): P | undefined {
     return this.$parent
   }
-  $syncData(from?: string, ...args: any[]) { }
+  $syncData(self: boolean, act: string, ...args: any[]) {
+    // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
+    // if (Data.$observe) {
+    //   // 此处处理自身逻辑
+    //   fromList.push(this.$selfName())
+    //   this.$syncDataUpParent(fromList, ...args)
+    // }
+  }
+  // $syncDataUpParent(fromList: string[] = [], ...args: any[]) {
+  //   const parent = this.$getParent()
+  //   if (parent && parent.$syncData) {
+  //     parent.$syncData()
+  //   }
+  // }
   $getId(prop = ''): string {
     return this.$id + prop
   }
   $selfName(): string {
     return `CLASS:${super.$selfName()}-ID:${this.$getId()}`
   }
-  $install(target: BaseData) { }
-  $uninstall(target: BaseData) { }
+  $install(target: BaseData) {
+    this.$setParent(target as unknown as P)
+  }
+  $uninstall(target: BaseData) {
+    this.$setParent(undefined)
+  }
 }
 
 

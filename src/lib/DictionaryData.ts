@@ -143,9 +143,11 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   }
   $setInterface(target: interfaceKeys, prop: string, data: string, useSetData?: boolean) {
     this.$interface[target].setData(prop, data, useSetData)
+    this.$syncData(true, '$setInterface')
   }
   $setLayout(data?: LayoutDataInitOption) {
     this.$layout = new LayoutData(data)
+    this.$syncData(true, '$setLayout')
   }
   $getLayout(prop?: string) {
     return this.$layout.getData(prop)
