@@ -3,6 +3,7 @@ import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
 import EmptyData from './EmptyData'
+import { ModuleDataType } from './ModuleData'
 
 type ResetOptionItem = {
   [prop: string]: boolean
@@ -25,7 +26,7 @@ export interface ChoiceDataInitOption {
 }
 
 
-class ChoiceData extends Data {
+class ChoiceData extends Data implements ModuleDataType {
   data: ChoiceDataData
   resetOption: ResetOption
   option: Record<PropertyKey, any>
@@ -262,14 +263,14 @@ class ChoiceData extends Data {
         this.autoReset(resetOption.choice)
       }
     })
-    target.$onLife('beforeReset', {
-      id: this.$getId('beforeReset'),
-      data: (instantiater, resetOption) => {
-        if (target.$parseResetOption(resetOption, 'choice') !== false) {
-          this.reset(true)
-        }
-      }
-    })
+    // target.$onLife('beforeReset', {
+    //   id: this.$getId('beforeReset'),
+    //   data: (instantiater, resetOption) => {
+    //     if (target.$parseResetOption(resetOption, 'choice') !== false) {
+    //       this.reset(true)
+    //     }
+    //   }
+    // })
   }
   /**
    * 模块卸载
@@ -277,7 +278,17 @@ class ChoiceData extends Data {
    */
   $uninstall(target: BaseData) {
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
-    target.$offLife('beforeReset', this.$getId('beforeReset'))
+    // target.$offLife('beforeReset', this.$getId('beforeReset'))
+  }
+  $reset(option?: boolean) {
+    if (option !== false) {
+      this.reset(true)
+    }
+  }
+  $destroy(option?: boolean) {
+    if (option !== false) {
+      this.$reset(option)
+    }
   }
 }
 

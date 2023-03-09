@@ -3,6 +3,7 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
+import { ModuleDataType } from './ModuleData'
 
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -26,7 +27,7 @@ export interface UpdateDataInitOption extends DefaultDataInitOption {
   check?: checkType
 }
 
-class UpdateData extends DefaultData {
+class UpdateData extends DefaultData implements ModuleDataType {
   static $name = 'UpdateData'
   load: {
     update: boolean
@@ -233,26 +234,36 @@ class UpdateData extends DefaultData {
     this.clear()
     this.resetNum()
   }
-  /**
-   * 模块加载
-   * @param {object} target 加载到的目标
-   */
-  $install(target: BaseData) {
-    target.$onLife('reseted', {
-      id: this.$getId('Reseted'),
-      data: (instantiater, resetOption) => {
-        if (target.$parseResetOption(resetOption, 'update') !== false) {
-          this.reset()
-        }
-      }
-    })
+  // /**
+  //  * 模块加载
+  //  * @param {object} target 加载到的目标
+  //  */
+  // $install(target: BaseData) {
+  //   target.$onLife('reseted', {
+  //     id: this.$getId('Reseted'),
+  //     data: (instantiater, resetOption) => {
+  //       if (target.$parseResetOption(resetOption, 'update') !== false) {
+  //         this.reset()
+  //       }
+  //     }
+  //   })
+  // }
+  // /**
+  //  * 模块卸载
+  //  * @param {object} target 卸载到的目标
+  //  */
+  // $uninstall(target: BaseData) {
+  //   target.$offLife('reseted', this.$getId('Reseted'))
+  // }
+  $reset(option?: boolean) {
+    if (option !== false) {
+      this.reset()
+    }
   }
-  /**
-   * 模块卸载
-   * @param {object} target 卸载到的目标
-   */
-  $uninstall(target: BaseData) {
-    target.$offLife('reseted', this.$getId('Reseted'))
+  $destroy(option?: boolean) {
+    if (option !== false) {
+      this.$reset(option)
+    }
   }
 }
 

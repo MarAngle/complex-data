@@ -2,6 +2,7 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
+import { ModuleDataType } from './ModuleData'
 import StatusItem, { StatusItemInitOption, valueType } from './StatusItem'
 
 type StatusDataInitOptionItem = {
@@ -13,7 +14,7 @@ export type StatusDataInitOption = {
   list?: StatusDataInitOptionItem[]
 }
 
-class StatusData extends Data {
+class StatusData extends Data implements ModuleDataType {
   static $name = 'StatusData'
   data: {
     [prop: string]: StatusItem
@@ -61,26 +62,36 @@ class StatusData extends Data {
       this.data[n].reset()
     }
   }
-  /**
-   * 模块加载
-   * @param {object} target 加载到的目标
-   */
-  $install(target: BaseData) {
-    target.$onLife('beforeReset', {
-      id: this.$getId('BeforeReset'),
-      data: (instantiater, resetOption) => {
-        if (target.$parseResetOption(resetOption, 'status') !== false) {
-          this.reset()
-        }
-      }
-    })
+  // /**
+  //  * 模块加载
+  //  * @param {object} target 加载到的目标
+  //  */
+  // $install(target: BaseData) {
+  //   target.$onLife('beforeReset', {
+  //     id: this.$getId('BeforeReset'),
+  //     data: (instantiater, resetOption) => {
+  //       if (target.$parseResetOption(resetOption, 'status') !== false) {
+  //         this.reset()
+  //       }
+  //     }
+  //   })
+  // }
+  // /**
+  //  * 模块卸载
+  //  * @param {object} target 卸载到的目标
+  //  */
+  // $uninstall(target: BaseData) {
+  //   target.$offLife('beforeReset', this.$getId('BeforeReset'))
+  // }
+  $reset(option?: boolean) {
+    if (option !== false) {
+      this.reset()
+    }
   }
-  /**
-   * 模块卸载
-   * @param {object} target 卸载到的目标
-   */
-  $uninstall(target: BaseData) {
-    target.$offLife('beforeReset', this.$getId('BeforeReset'))
+  $destroy(option?: boolean) {
+    if (option !== false) {
+      this.$reset(option)
+    }
   }
 }
 

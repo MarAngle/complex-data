@@ -10,6 +10,7 @@ import { buildOptionData } from '../utils'
 import DictionaryFormat, { unformatOption } from '../../DictionaryFormat'
 import DefaultEdit from './DefaultEdit'
 import config from '../../config'
+import { ModuleDataType } from './ModuleData'
 
 export interface formatDataOption {
   clear?: boolean,
@@ -79,7 +80,7 @@ function initPropData(defaultProp: propDataKeys, propData?: propDataType<string 
   }
 }
 
-class DictionaryList extends DefaultData implements HasLayoutData {
+class DictionaryList extends DefaultData implements HasLayoutData, ModuleDataType {
   static $name = 'DictionaryList'
   $data: Map<string, DictionaryData>
   $option: RequiredDictionaryListOption
@@ -374,6 +375,10 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     // 停止监听事件
     this.$offLife('updated', target.$getId('dictionaryUpdated'))
   }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  $reset() {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  $destroy() {}
 }
 
 export default DictionaryList

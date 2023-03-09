@@ -1,6 +1,7 @@
 import { promiseAllFinished } from "complex-utils"
 import BaseData, { promiseFunction } from "../data/BaseData"
 import Data from "../data/Data"
+import { ModuleDataType } from "./ModuleData"
 
 interface dependItemObject<D extends BaseData = BaseData> {
   data: D,
@@ -21,7 +22,7 @@ export interface DependDataInitOption {
   data: dependItem[]
 }
 
-class DependData extends Data {
+class DependData extends Data implements ModuleDataType {
   static $name = 'DependData'
   type: 'together' | 'order'
   $data: requiredDependItemObject[]
@@ -87,6 +88,10 @@ class DependData extends Data {
       return this.$loadOrderData()
     }
   }
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  $reset(option?: boolean, ...args: any[]) {}
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  $destroy(option?: boolean, ...args: any[]) {}
 }
 
 export default DependData

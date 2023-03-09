@@ -1,10 +1,11 @@
 import { getProp, isPromise } from 'complex-utils'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
-import ModuleData, { ModuleDataInitOption } from './../lib/ModuleData'
+import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../lib/ModuleData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
+import { cascadeType } from './Data'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -25,6 +26,10 @@ export interface BaseDataInitOption extends DefaultDataInitOption {
   $getData?: promiseFunction
 }
 
+export interface resetOptionType extends moduleResetOptionType {
+  [prop: string]: cascadeType<undefined | cascadeType<undefined | boolean>>
+}
+
 // type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
 
 class BaseData extends DefaultData {
@@ -41,15 +46,6 @@ class BaseData extends DefaultData {
       this.$initLoadDepend()
     }
     this.$triggerCreateLife('BaseData', 'created', initOption)
-  }
-  /**
-   * 将第一个传参的第一个参数无值时转换为空对象
-   * @param {*[]} args 参数列表
-   */
-  static formatResetOption(args: any[]) {
-    if (!args[0]) {
-      args[0] = {}
-    }
   }
   /* --- module start --- */
   $setModule(...args: Parameters<ModuleData['$setData']>) {
@@ -287,19 +283,19 @@ class BaseData extends DefaultData {
    * 重置回调操作=>不清除额外数据以及生命周期函数
    * @param  {...any} args 参数
    */
-  $reset(...args: any[]) {
-    BaseData.formatResetOption(args)
+  $reset(resetOption: resetOptionType = {}, ...args: any[]) {
     this.$triggerLife('beforeReset', this, ...args)
+    this.$module.$reset(resetOption, ...args)
     this.$triggerLife('reseted', this, ...args)
   }
   /**
    * 销毁回调操作
    * @param  {...any} args 参数
    */
-  $destroy(...args: any[]) {
-    BaseData.formatResetOption(args)
+  $destroy(destroyOption: resetOptionType = {}, ...args: any[]) {
     this.$triggerLife('beforeDestroy', this, ...args)
-    this.$reset(...args)
+    this.$module.$destroy(destroyOption, ...args)
+    this.$reset(destroyOption, ...args)
     this.$triggerLife('destroyed', this, ...args)
   }
   /* --- reset end --- */

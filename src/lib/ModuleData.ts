@@ -1,14 +1,14 @@
 import { exportMsg, getType } from 'complex-utils'
-import Data from '../data/Data'
+import Data, { cascadeType } from '../data/Data'
 import BaseData from '../data/BaseData'
+import DependData, { DependDataInitOption } from './DependData'
 import StatusData, { StatusDataInitOption } from './StatusData'
 import PromiseData, { PromiseDataInitData } from './PromiseData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 import DictionaryList, { DictionaryListInitOption } from './DictionaryList'
-import DependData, { DependDataInitOption } from './DependData'
-// import SearchData, { SearchDataInitOption } from './../data/SearchData'
+import SearchData, { SearchDataInitOption } from './../data/SearchData'
 
 const ModuleDictionaryMap: Map<string, any> = new Map()
 
@@ -20,22 +20,40 @@ export interface ModuleDataInitOption {
   pagination?: PaginationDataInitOption
   choice?: ChoiceDataInitOption
   dictionary?: DictionaryListInitOption
-  // search?: SearchDataInitOption
+  search?: SearchDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
 
+export const ModuleDataKeys: moduleKeys[] = ['status', 'promise', 'depend', 'update', 'dictionary', 'search', 'pagination', 'choice']
+
+export interface moduleResetOptionType {
+  status?: cascadeType<undefined | boolean>
+  promise?: cascadeType<undefined | boolean>
+  depend?: cascadeType<undefined | boolean>
+  update?: cascadeType<undefined | boolean>
+  dictionary?: cascadeType<undefined | boolean>
+  search?: cascadeType<undefined | boolean>
+  pagination?: cascadeType<undefined | boolean>
+  choice?: cascadeType<undefined | boolean>
+}
+
+export interface ModuleDataType {
+  $reset: (option?: cascadeType<undefined | boolean>, ...args: any[]) => any
+  $destroy: (option?: cascadeType<undefined | boolean>, ...args: any[]) => any
+}
+
 class ModuleData extends Data {
   static $name = 'ModuleData'
   $parent!: BaseData
-  depend?: DependData
   status?: StatusData
   promise?: PromiseData
+  depend?: DependData
   update?: UpdateData
+  dictionary?: DictionaryList
+  search?: SearchData
   pagination?: PaginationData
   choice?: ChoiceData
-  dictionary?: DictionaryList
-  // search?: SearchData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.setParent(parent)
@@ -167,6 +185,28 @@ class ModuleData extends Data {
       selfName = `[${this.$parent.$selfName()}=>${selfName}]`
     }
     return selfName
+  }
+  $reset(resetOption: moduleResetOptionType = {}, ...args: any[]) {
+    ModuleDataKeys.forEach(modName => {
+      const modData = this.$getData(modName)
+      if (resetOption[modName] !== false) {
+        if (modData) {
+          modData.$reset(resetOption[modName], ...args)
+        }
+      }
+    })
+
+  }
+  $destroy(destroyOption: moduleResetOptionType = {}, ...args: any[]) {
+    this.$reset(destroyOption)
+    ModuleDataKeys.forEach(modName => {
+      const modData = this.$getData(modName)
+      if (destroyOption[modName] !== false) {
+        if (modData) {
+          modData.$destroy(destroyOption[modName], ...args)
+        }
+      }
+    })
   }
 }
 

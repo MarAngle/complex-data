@@ -9,6 +9,13 @@ function createId(): string {
   return id.toString()
 }
 
+
+interface cascadeTypeObject<D> {
+  [prop: PropertyKey]: D | cascadeTypeObject<D>
+}
+
+export type cascadeType<D> = D | cascadeTypeObject<D>
+
 class Data extends UtilsBaseData {
   readonly $id!: string
   static $name = 'Data'

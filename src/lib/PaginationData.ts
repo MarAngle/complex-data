@@ -3,6 +3,7 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
+import { ModuleDataType } from './ModuleData'
 
 type sizeObjectType = {
   change?: boolean,
@@ -25,7 +26,7 @@ export type pageProp = 'current' | 'total' | 'num' | 'size'
 
 export type pageData = Partial<Record<pageProp, number>>
 
-class PaginationData extends DefaultData {
+class PaginationData extends DefaultData implements ModuleDataType {
   static $name = 'PaginationData'
   current: number
   total: number
@@ -257,14 +258,14 @@ class PaginationData extends DefaultData {
         }
       }
     })
-    target.$onLife('reseted', {
-      id: this.$getId('Reseted'),
-      data: (instantiater, resetOption) => {
-        if (target.$parseResetOption(resetOption, 'pagination') !== false) {
-          this.reset()
-        }
-      }
-    })
+    // target.$onLife('reseted', {
+    //   id: this.$getId('Reseted'),
+    //   data: (instantiater, resetOption) => {
+    //     if (target.$parseResetOption(resetOption, 'pagination') !== false) {
+    //       this.reset()
+    //     }
+    //   }
+    // })
     this.$onLife('change', {
       id: target.$getId('PaginationChange'),
       data: (instantiater, prop, current) => {
@@ -278,8 +279,18 @@ class PaginationData extends DefaultData {
    */
   $uninstall(target: BaseData) {
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
-    target.$offLife('reseted', this.$getId('Reseted'))
+    // target.$offLife('reseted', this.$getId('Reseted'))
     this.$offLife('change', target.$getId('PaginationChange'))
+  }
+  $reset(option?: boolean) {
+    if (option !== false) {
+      this.reset()
+    }
+  }
+  $destroy(option?: boolean) {
+    if (option !== false) {
+      this.$reset(option)
+    }
   }
 }
 
