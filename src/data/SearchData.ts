@@ -1,6 +1,5 @@
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import { formDataOption } from "../lib/DictionaryList"
-import { ModuleDataType } from "../lib/ModuleData"
 import { formatInitOption } from "../utils"
 
 export interface SearchDataInitOption extends BaseDataInitOption {
@@ -14,8 +13,7 @@ export interface resetFormOption {
   limit?: formDataOption['limit']
 }
 
-
-class SearchData extends BaseData implements ModuleDataType {
+class SearchData extends BaseData {
   static $name = 'SearchData'
   $mod: string
   $data: Record<PropertyKey, any>

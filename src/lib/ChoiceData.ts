@@ -3,7 +3,6 @@ import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
 import EmptyData from './EmptyData'
-import { ModuleDataType } from './ModuleData'
 
 type ResetOptionItem = {
   [prop: string]: boolean
@@ -26,7 +25,7 @@ export interface ChoiceDataInitOption {
 }
 
 
-class ChoiceData extends Data implements ModuleDataType {
+class ChoiceData extends Data {
   data: ChoiceDataData
   resetOption: ResetOption
   option: Record<PropertyKey, any>

@@ -3,7 +3,6 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
-import { ModuleDataType } from './ModuleData'
 
 type sizeObjectType = {
   change?: boolean,
@@ -26,7 +25,7 @@ export type pageProp = 'current' | 'total' | 'num' | 'size'
 
 export type pageData = Partial<Record<pageProp, number>>
 
-class PaginationData extends DefaultData implements ModuleDataType {
+class PaginationData extends DefaultData {
   static $name = 'PaginationData'
   current: number
   total: number

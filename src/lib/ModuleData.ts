@@ -39,8 +39,8 @@ export interface moduleResetOptionType {
 }
 
 export interface ModuleDataType {
-  $reset: (option?: cascadeType<undefined | boolean>, ...args: any[]) => any
-  $destroy: (option?: cascadeType<undefined | boolean>, ...args: any[]) => any
+  $reset: ((option?: boolean, ...args: any[]) => any) | ((option?: cascadeType<undefined | boolean>, ...args: any[]) => any)
+  $destroy: ((option?: boolean, ...args: any[]) => any) | ((option?: cascadeType<undefined | boolean>, ...args: any[]) => any)
 }
 
 class ModuleData extends Data {
@@ -188,9 +188,9 @@ class ModuleData extends Data {
   }
   $reset(resetOption: moduleResetOptionType = {}, ...args: any[]) {
     ModuleDataKeys.forEach(modName => {
-      const modData = this.$getData(modName)
+      const modData = this.$getData(modName) as any
       if (resetOption[modName] !== false) {
-        if (modData) {
+        if (modData && modData.$reset) {
           modData.$reset(resetOption[modName], ...args)
         }
       }
@@ -200,9 +200,9 @@ class ModuleData extends Data {
   $destroy(destroyOption: moduleResetOptionType = {}, ...args: any[]) {
     this.$reset(destroyOption)
     ModuleDataKeys.forEach(modName => {
-      const modData = this.$getData(modName)
+      const modData = this.$getData(modName) as any
       if (destroyOption[modName] !== false) {
-        if (modData) {
+        if (modData && modData.$destroy) {
           modData.$destroy(destroyOption[modName], ...args)
         }
       }

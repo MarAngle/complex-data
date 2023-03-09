@@ -1,8 +1,6 @@
 import config from '../../config'
-import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
-import { ModuleDataType } from './ModuleData'
 import StatusItem, { StatusItemInitOption, valueType } from './StatusItem'
 
 type StatusDataInitOptionItem = {
@@ -14,7 +12,7 @@ export type StatusDataInitOption = {
   list?: StatusDataInitOptionItem[]
 }
 
-class StatusData extends Data implements ModuleDataType {
+class StatusData extends Data {
   static $name = 'StatusData'
   data: {
     [prop: string]: StatusItem

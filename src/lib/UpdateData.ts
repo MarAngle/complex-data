@@ -1,9 +1,7 @@
 import { isPromise } from 'complex-utils'
 import config from '../../config'
-import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
-import { ModuleDataType } from './ModuleData'
 
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -27,7 +25,7 @@ export interface UpdateDataInitOption extends DefaultDataInitOption {
   check?: checkType
 }
 
-class UpdateData extends DefaultData implements ModuleDataType {
+class UpdateData extends DefaultData {
   static $name = 'UpdateData'
   load: {
     update: boolean
