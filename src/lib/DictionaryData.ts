@@ -39,7 +39,6 @@ export interface DictionanyModItemInitType {
 
 export type DictionanyModInitType = Record<string, DictionanyModItemInitType | true>
 
-
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
   prop: string, // 属性，本地唯一
   simple?: boolean, // 简单快速处理判断值
@@ -56,7 +55,6 @@ export interface DictionaryDataInitOption extends SimpleDataInitOption, customer
 
 type interfaceKeys = keyof DictionaryData['$interface']
 
-
 const defaultGetData = function (this: DictionaryData, data: unknown, { type }: payloadType) {
   const showProp = this.$getInterface('showProp', type)
   if (showProp) {
@@ -72,8 +70,6 @@ const defaultGetData = function (this: DictionaryData, data: unknown, { type }: 
 const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
-
-
 
 class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
