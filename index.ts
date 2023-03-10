@@ -26,6 +26,13 @@ import PaginationData from './src/lib/PaginationData'
 import ChoiceData from './src/lib/ChoiceData'
 import DefaultEdit from './src/lib/DefaultEdit'
 
+ModuleData.setDictionary('status', StatusData)
+ModuleData.setDictionary('promise', PromiseData)
+ModuleData.setDictionary('pagination', PaginationData)
+ModuleData.setDictionary('choice', ChoiceData)
+ModuleData.setDictionary('update', UpdateData)
+ModuleData.setDictionary('dictionary', DictionaryList)
+ModuleData.setDictionary('search', SearchData)
 
 export {
   Data,

@@ -93,6 +93,8 @@ class ModuleData extends Data<BaseData> {
       } else if (modData && !(modData instanceof ModuleClassData)) {
         return new ModuleClassData(modData)
       }
+    } else if (ModuleDictionaryMap.size == 0) {
+      this.$exportMsg(`Module模块为未赋值，请检查引用方式！`, 'error')
     }
     return modData
   }
@@ -195,13 +197,5 @@ class ModuleData extends Data<BaseData> {
     })
   }
 }
-
-ModuleData.setDictionary('status', StatusData)
-ModuleData.setDictionary('promise', PromiseData)
-ModuleData.setDictionary('pagination', PaginationData)
-ModuleData.setDictionary('choice', ChoiceData)
-ModuleData.setDictionary('update', UpdateData)
-ModuleData.setDictionary('dictionary', DictionaryList)
-ModuleData.setDictionary('search', SearchData)
 
 export default ModuleData

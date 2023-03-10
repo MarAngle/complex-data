@@ -247,7 +247,12 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
     if (option.depth !== false) {
       // 默认保存对象深度信息
-      targetData[config.DictionaryList.format.depth] = depth
+      Object.defineProperty(targetData, config.DictionaryList.format.depth, {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: depth
+      })
     }
     return targetData
   }
