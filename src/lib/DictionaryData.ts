@@ -1,5 +1,5 @@
 import { getType, getProp, setProp, isExist } from 'complex-utils'
-import DictionaryFormat from '../../DictionaryFormat'
+import DictionaryConfig from '../../DictionaryConfig'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
 import DefaultEdit from './DefaultEdit'
@@ -133,7 +133,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     }
     this.$setLayout(initOption.layout || parentOption.layout)
     this.$simple = initOption.simple === undefined ? false : initOption.simple
-    this.$mod = DictionaryFormat.format(this, initOption.mod)
+    this.$mod = DictionaryConfig.format(this, initOption.mod)
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]

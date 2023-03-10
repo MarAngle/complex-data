@@ -13,7 +13,7 @@ export interface formatOptionItemType {
 
 const DictionaryMap: Map<string, formatOptionItemType> = new Map()
 
-const DictionaryFormat = {
+const DictionaryConfig = {
   setDictionary(name: string, data: formatOptionItemType | string, redirect?: boolean) {
     if (!redirect) {
       DictionaryMap.set(name, data as formatOptionItemType)
@@ -76,4 +76,4 @@ const DictionaryFormat = {
   }
 }
 
-export default DictionaryFormat
+export default DictionaryConfig

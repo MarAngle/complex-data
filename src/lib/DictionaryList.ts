@@ -7,7 +7,7 @@ import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 import PageList, { PageData } from './PageList'
 import { buildOptionData } from '../utils'
-import DictionaryFormat, { unformatOption } from '../../DictionaryFormat'
+import DictionaryConfig, { unformatOption } from '../../DictionaryConfig'
 import DefaultEdit from './DefaultEdit'
 import config from '../../config'
 
@@ -272,7 +272,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     const pageList = new PageList()
     for (let n = 0; n < list.length; n++) {
       const ditem = list[n]
-      const pitem = DictionaryFormat.unformat(ditem, modName, option) as PageData
+      const pitem = DictionaryConfig.unformat(ditem, modName, option) as PageData
       if (ditem.$dictionary) {
         const mod = ditem.$getMod(modName)
         if (mod && mod.$children) {

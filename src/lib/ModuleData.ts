@@ -45,7 +45,6 @@ export interface ModuleDataType {
 
 class ModuleData extends Data<BaseData> {
   static $name = 'ModuleData'
-  $parent?: BaseData
   status?: StatusData
   promise?: PromiseData
   depend?: DependData
