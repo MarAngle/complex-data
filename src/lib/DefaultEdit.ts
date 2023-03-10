@@ -105,6 +105,27 @@ class DefaultEdit extends BaseData {
       location: '',
       localOption: {}
     }
+    if (!initOption.tips) {
+      this.$tips = {
+        data: '',
+        location: '',
+        localOption: {}
+      }
+    } else {
+      if (typeof initOption.tips != 'object') {
+        this.$tips = {
+          data: initOption.tips || '',
+          location: 'top',
+          localOption: {}
+        }
+      } else {
+        this.$tips = {
+          data: initOption.tips.data,
+          location: initOption.tips.location || 'top',
+          localOption: initOption.tips.localOption || {}
+        }
+      }
+    }
     // 组件事件监控
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
@@ -114,16 +135,6 @@ class DefaultEdit extends BaseData {
     if (!defaultOption) {
       this.$exportMsg(`对应的${this.type}不存在预定义，请检查代码或进行扩展！`)
     }
-    this.$initPlaceholder(initOption, defaultOption)
-    this.$initWidth(initOption, defaultOption)
-    this.$initValue(initOption.value, defaultOption)
-    this.setMultiple(initOption.multiple || false)
-    this.$initSlot(initOption)
-    this.$initOption(initOption, defaultOption)
-    this.$initRules(initOption, defaultOption)
-    this.$triggerCreateLife('DefaultEdit', 'created')
-  }
-  $initPlaceholder(initOption: DefaultEditInitOption, defaultOption?: DictType) {
     if (defaultOption) {
       // 格式化占位符和检验规则
       if (defaultOption.placeholder) {
@@ -134,27 +145,6 @@ class DefaultEdit extends BaseData {
         }
       }
     }
-  }
-  // 格式化编辑数据
-  $initTips(initOption: DefaultEditInitOption) {
-    // tips提示
-    if (!initOption.tips) {
-      this.$tips.data = ''
-      this.$tips.location = ''
-      this.$tips.localOption = {}
-    } else {
-      if (typeof initOption.tips != 'object') {
-        this.$tips.data = initOption.tips || ''
-        this.$tips.location = 'top'
-        this.$tips.localOption = {}
-      } else {
-        this.$tips.data = initOption.tips.data
-        this.$tips.location = initOption.tips.location || 'top'
-        this.$tips.localOption = initOption.tips.localOption || {}
-      }
-    }
-  }
-  $initWidth(initOption: DefaultEditInitOption, defaultOption?: DictType) {
     // 宽度设置
     if (initOption.mainWidth) {
       const type = getType(initOption.mainWidth)
@@ -174,9 +164,16 @@ class DefaultEdit extends BaseData {
     } else if (initOption.width === undefined && defaultOption && defaultOption.width) {
       this.$width = defaultOption.width
     }
-  }
-  // slot格式化编辑数据
-  $initSlot(initOption: DefaultEditInitOption) { // label / front / end
+    const initOptionValue = initOption.value || {}
+    const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : defaultOption ? defaultOption.default : undefined
+    const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
+    const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
+    this.$value = {
+      default: defaultValue,
+      init: initValue,
+      reset: resetValue
+    }
+    this.setMultiple(initOption.multiple || false, true)
     this.$slot = initOption.slot || {} as any
     if (!this.$slot.type) { // slot类型 auto/main/item/model
       this.$slot.type = 'auto'
@@ -187,45 +184,34 @@ class DefaultEdit extends BaseData {
     if (!this.$slot.label) { // label=>title
       this.$slot.label = this.$slot.name + '-label'
     }
+    this.$initOption(initOption, defaultOption, true)
+    this.$initRules(initOption, defaultOption)
+    this.$triggerCreateLife('DefaultEdit', 'created')
   }
-  $initValue(initOptionValue: valueType = {}, defaultOption?: DictType) {
-    this.$value = {} as any
-    if (hasProp(initOptionValue, 'default')) {
-      this.setValueData(initOptionValue.default, 'default')
-    } else if (defaultOption) {
-      this.setValueData(defaultOption.default, 'default')
-    } else {
-      this.setValueData(undefined, 'default')
-    }
-    if (hasProp(initOptionValue, 'init')) {
-      this.setValueData(initOptionValue.init, 'init')
-    } else {
-      this.setValueData(this.getValueData(), 'init')
-    }
-    if (hasProp(initOptionValue, 'reset')) {
-      this.setValueData(initOptionValue.reset, 'reset')
-    } else {
-      this.setValueData(this.getValueData(), 'reset')
-    }
-  }
-  setMultiple(data: boolean) {
+  setMultiple(data: boolean, unTriggerSync?: boolean) {
     if (this.multiple !== data) {
       this.multiple = data
       if (this.multiple) {
-        this.$initMultipleValue()
+        this.$initMultipleValue(true)
+      }
+      if (!unTriggerSync) {
+        this.$syncData(true, 'setMultiple')
       }
     }
   }
-  $initMultipleValue() {
+  $initMultipleValue(unTriggerSync?: boolean) {
     for (let n = 0; n < config.DefaultEdit.option.valuePropList.length; n++) {
       const prop = config.DefaultEdit.option.valuePropList[n]
       const type = getType(this.getValueData(prop))
       if (type != 'array') {
-        this.setValueData([], prop)
+        this.setValueData([], prop, true)
       }
     }
+    if (!unTriggerSync) {
+      this.$syncData(true, '$initMultipleValue')
+    }
   }
-  $initOption(initOption: DefaultEditInitOption, defaultOption?: DictType) {
+  $initOption(initOption: DefaultEditInitOption, defaultOption?: DictType, unTriggerSync?: boolean) {
     if (!initOption.option) {
       initOption.option = {}
     }
@@ -318,8 +304,11 @@ class DefaultEdit extends BaseData {
     } else if (this.type == 'slot') {
       // 插槽
     }
+    if (!unTriggerSync) {
+      this.$syncData(true, '$initOption')
+    }
   }
-  $initRules(initOption: DefaultEditInitOption, defaultOption?: DictType) {
+  $initRules(initOption: DefaultEditInitOption, defaultOption?: DictType, unTriggerSync?: boolean) {
     if (initOption.rules) {
       this.$rules = new InterfaceData(initOption.rules)
     } else {
@@ -348,9 +337,15 @@ class DefaultEdit extends BaseData {
         }
       }
     })
+    if (!unTriggerSync) {
+      this.$syncData(true, '$initRules')
+    }
   }
-  setValueData(data: any, prop = 'default') {
+  setValueData(data: any, prop = 'default', unTriggerSync?: boolean) {
     this.$value[prop] = data
+    if (!unTriggerSync) {
+      this.$syncData(true, '$setValueData')
+    }
   }
   getValueData(prop = 'default') {
     return this.$value[prop]

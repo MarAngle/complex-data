@@ -120,7 +120,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   rebuildData(initOption: DictionaryDataInitOption[], type = 'replace') {
     this.$initDictionaryList(initOption, type)
   }
-  $initDictionaryList(initOptionList: DictionaryDataInitOption[] = [], type = 'replace', fromInit?: boolean) {
+  $initDictionaryList(initOptionList: DictionaryDataInitOption[] = [], type = 'replace', unTriggerSync?: boolean) {
     // 触发update生命周期
     this.$triggerLife('beforeUpdate', this, initOptionList, type)
     if (type == 'init') {
@@ -161,7 +161,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         this.$initDictionaryDataChildren(ditem!, ditemOption)
       }
     }
-    if (!fromInit) {
+    if (!unTriggerSync) {
       this.$syncData(true, '$initDictionaryList')
     }
   }
@@ -200,10 +200,10 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       ditem.$dictionary = this
     }
   }
-  $setLayout(data?: LayoutDataInitOption, fromInit?: boolean) {
+  $setLayout(data?: LayoutDataInitOption, unTriggerSync?: boolean) {
     this.$layout = new LayoutData(data)
-    if (!fromInit) {
-      this.$syncData(true, '$initDictionaryList')
+    if (!unTriggerSync) {
+      this.$syncData(true, '$setLayout')
     }
   }
   $getLayout(prop?: string) {

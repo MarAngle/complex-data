@@ -103,12 +103,12 @@ class ModuleData extends Data<BaseData> {
    * @param {object} modData 模块实例
    * @param {boolean} [build] 自动构建判断值，默认为真
    */
-  $setData(modName: moduleKeys, modData?: any, build = true, fromInit?: boolean) {
-    this.$uninstallData(modName, fromInit)
+  $setData(modName: moduleKeys, modData?: any, build = true, unTriggerSync?: boolean) {
+    this.$uninstallData(modName, unTriggerSync)
     if (build) {
       modData = this.$buildModuleData(modName, modData)
     }
-    this.$installData(modName, modData, fromInit)
+    this.$installData(modName, modData, unTriggerSync)
   }
   $getData(modName: moduleKeys) {
     return this[modName]
@@ -118,7 +118,7 @@ class ModuleData extends Data<BaseData> {
    * @param {string} modName 模块名
    * @returns {object | undefined} 卸载的模块
    */
-  $uninstallData(modName: moduleKeys, fromInit?: boolean) {
+  $uninstallData(modName: moduleKeys, unTriggerSync?: boolean) {
     const modData = this[modName]
     if (modData) {
       // 存在旧数据时需要对旧数据进行卸载操作
@@ -127,7 +127,7 @@ class ModuleData extends Data<BaseData> {
       }
       this[modName] = undefined
     }
-    if (!fromInit) {
+    if (!unTriggerSync) {
       this.$syncData(true, '$uninstallData')
     }
     return modData
@@ -137,12 +137,12 @@ class ModuleData extends Data<BaseData> {
    * @param {string} modName 模块名
    * @param {object} modData 模块实例
    */
-  $installData(modName: moduleKeys, modData: any, fromInit?: boolean) {
+  $installData(modName: moduleKeys, modData: any, unTriggerSync?: boolean) {
     this[modName] = modData
     if (modData && modData.$install) {
       modData.$install(this.$getParent())
     }
-    if (!fromInit) {
+    if (!unTriggerSync) {
       this.$syncData(true, '$installData')
     }
   }

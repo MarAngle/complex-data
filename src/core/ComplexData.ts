@@ -136,14 +136,14 @@ class ComplexData<P extends Data = Data> extends BaseData<P> {
   /* --- dictionary start --- */
   $rebuildDictionary (...args: Parameters<DictionaryList['rebuildData']>) {
     this.$module.dictionary!.rebuildData(...args)
-    this.$syncData('rebuildDictionary')
+    this.$syncData(true, '$rebuildDictionary')
   }
   $getDictionaryItem (...args: Parameters<DictionaryList['getItem']>) {
     return this.$module.dictionary!.getItem(...args)
   }
   $setDictionaryPropData (...args: Parameters<DictionaryList['$setPropData']>) {
     this.$module.dictionary!.$setPropData(...args)
-    this.$syncData('setDictionaryPropData')
+    this.$syncData(true, '$setDictionaryPropData')
   }
   $getDictionaryPropData (...args: Parameters<DictionaryList['$getPropData']>) {
     return this.$module.dictionary!.$getPropData(...args)

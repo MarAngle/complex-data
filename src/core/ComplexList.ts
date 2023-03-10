@@ -19,6 +19,7 @@ class ComplexList<P extends Data = Data> extends ComplexData<P> {
   $formatList (datalist = [], totalNum?: number, originFrom?: string, option?: formatDataOption) {
     this.$formatListDataByDictionary(this.$list, datalist, originFrom, option)
     this.$setPageData(totalNum!, 'num')
+    this.$syncData(true, '$formatList')
   }
   $getItem (data: any, prop?: string) {
     if (!prop) {
