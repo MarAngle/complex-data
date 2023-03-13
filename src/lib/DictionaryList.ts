@@ -273,22 +273,31 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $getPageList(modName: string, option?: unformatOption) {
     return this.$buildPageList(modName, this.$getList(modName), option)
   }
+  $getPageItem(modName: string, ditem: DictionaryData, option?: unformatOption) {
+    const pitem = DictionaryConfig.unformat(ditem, modName, option) as PageData
+    if (ditem.$dictionary) {
+      const mod = ditem.$getMod(modName)
+      if (mod && mod.$children) {
+        let childrenProp = mod.$children
+        if (childrenProp === true) {
+          childrenProp = 'children'
+        }
+        pitem[childrenProp] = ditem.$dictionary.$getPageList(modName, option)
+      }
+    }
+    return pitem
+  }
   $buildPageList(modName: string, list: DictionaryData[], option?: unformatOption) {
+    const pageList = []
+    for (let n = 0; n < list.length; n++) {
+      pageList.push(this.$getPageItem(modName, list[n], option))
+    }
+    return pageList
+  }
+  $buildObserveList(modName: string, list: DictionaryData[], option?: unformatOption) {
     const pageList = new PageList()
     for (let n = 0; n < list.length; n++) {
-      const ditem = list[n]
-      const pitem = DictionaryConfig.unformat(ditem, modName, option) as PageData
-      if (ditem.$dictionary) {
-        const mod = ditem.$getMod(modName)
-        if (mod && mod.$children) {
-          let childrenProp = mod.$children
-          if (childrenProp === true) {
-            childrenProp = 'children'
-          }
-          pitem[childrenProp] = ditem.$dictionary.$getPageList(modName, option)
-        }
-      }
-      pageList.push(pitem)
+      pageList.push(this.$getPageItem(modName, list[n], option))
     }
     return pageList
   }
@@ -315,13 +324,13 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       })
     })
   }
-  $getFormData(modName: string, option: {
-    originData?: Record<PropertyKey, any>,
-    listOption?: unformatOption,
-    formOption?: formDataOption
-  } = {}) {
-    let pageList = this.$getPageList(modName, option.listOption)
-  }
+  // $getFormData(modName: string, option: {
+  //   originData?: Record<PropertyKey, any>,
+  //   listOption?: unformatOption,
+  //   formOption?: formDataOption
+  // } = {}) {
+  //   let pageList = this.$getPageList(modName, option.listOption)
+  // }
   $buildEditData(formData: Record<PropertyKey, any>, dList: DictionaryData[], modName: string) {
     const editData = {}
     dList.forEach(ditem => {

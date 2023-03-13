@@ -101,7 +101,7 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     this.prop = this.$prop
     // 加载基本自定义函数
     this.format = initOption.format
-    this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData : initOption.defaultGetData
+    this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData.bind(this) : initOption.defaultGetData
     this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post === undefined ? this.defaultGetData : initOption.post
