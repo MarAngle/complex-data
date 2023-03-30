@@ -31,13 +31,16 @@ export interface DictionaryModType {
   [prop: PropertyKey]: any
 }
 
-export interface DictionanyModItemInitType {
+export type DictionanyModType = DictionanyModInitType
+
+
+export interface DictionanyModInitType {
   $type?: string // 格式化类型，一般为list/edit...
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
   [prop: PropertyKey]: unknown
 }
 
-export type DictionanyModInitType = Record<string, DictionanyModItemInitType | true>
+export type DictionanyModDataInitType = Record<string, DictionanyModInitType | true>
 
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
   prop: string, // 属性，本地唯一
@@ -50,7 +53,7 @@ export interface DictionaryDataInitOption extends SimpleDataInitOption, customer
   originFrom?: string | string[] // 来源
   layout?: LayoutDataInitOption // 布局
   dictionary?: DictionaryListInitOption, // 子字典
-  mod?: DictionanyModInitType // 模块
+  mod?: DictionanyModDataInitType // 模块
 }
 
 type interfaceKeys = keyof DictionaryData['$interface']

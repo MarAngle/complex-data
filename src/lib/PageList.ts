@@ -2,7 +2,7 @@ import { clearArray, observe, Watcher } from 'complex-utils'
 import Data from './../data/Data'
 
 export interface PageData {
-  prop: string,
+  $prop: string,
   [prop: PropertyKey]: any
 }
 
@@ -35,17 +35,17 @@ class PageList extends Data {
   }
   push(target: PageData) {
     this.data.push(target)
-    this.$order.push(target.prop)
-    this.$map.data.set(target.prop, target)
+    this.$order.push(target.$prop)
+    this.$map.data.set(target.$prop, target)
   }
   unshift(target: PageData) {
     this.data.unshift(target)
-    this.$order.unshift(target.prop)
-    this.$map.data.set(target.prop, target)
+    this.$order.unshift(target.$prop)
+    this.$map.data.set(target.$prop, target)
   }
   pop() {
     const deleteItem = this.data.pop()!
-    const deleteItemProp = deleteItem.prop
+    const deleteItemProp = deleteItem.$prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
     this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
@@ -53,7 +53,7 @@ class PageList extends Data {
   }
   shift() {
     const deleteItem = this.data.shift()!
-    const deleteItemProp = deleteItem.prop
+    const deleteItemProp = deleteItem.$prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
     this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
@@ -105,7 +105,7 @@ class PageList extends Data {
     if (preProp) {
       const preIndex = this.$order.indexOf(preProp)
       this.$addItemByPreIndex(preIndex, target)
-      this.$order.splice(preIndex + 1, 0, target.prop)
+      this.$order.splice(preIndex + 1, 0, target.$prop)
     } else {
       this.data.unshift(target)
     }

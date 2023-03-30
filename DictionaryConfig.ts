@@ -1,5 +1,4 @@
-import DictionaryData, { DictionanyModInitType, DictionanyModItemInitType, DictionaryModType } from "./src/lib/DictionaryData";
-import { PageData } from "./src/lib/PageList";
+import DictionaryData, { DictionanyModDataInitType, DictionanyModItemInitType, DictionaryModType } from "./src/lib/DictionaryData";
 
 export interface unformatOption {
   mod?: string
@@ -7,7 +6,7 @@ export interface unformatOption {
 
 export interface formatOptionItemType {
   format?: (ditem:DictionaryData, name: string, modItemData: DictionanyModItemInitType) => DictionaryModType,
-  unformat?: (ditem:DictionaryData, name: string, option?: unformatOption) => PageData
+  unformat?: (ditem:DictionaryData, name: string, option?: unformatOption) => unknown
 }
 
 
@@ -28,7 +27,7 @@ const DictionaryConfig = {
   getDictionaryByMod(name: string, option: unformatOption = {}) {
     return this.getDictionary(option.mod || name)
   },
-  format(ditem: DictionaryData, modInitOption?: DictionanyModInitType) {
+  format(ditem: DictionaryData, modInitOption?: DictionanyModDataInitType) {
     const modData: DictionaryModType = {}
     if (modInitOption) {
       const redirect: DictionaryModType = {}
