@@ -24,7 +24,7 @@ import DictionaryList from './src/lib/DictionaryList'
 import PageList from './src/lib/PageList'
 import PaginationData from './src/lib/PaginationData'
 import ChoiceData from './src/lib/ChoiceData'
-import DefaultEdit from './src/lib/DefaultEdit'
+import DefaultEdit from './src/mod/DefaultEdit'
 
 ModuleData.setDictionary('status', StatusData)
 ModuleData.setDictionary('promise', PromiseData)

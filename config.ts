@@ -290,6 +290,13 @@ const config = {
         }
       }
     }
+  },
+  DefaultList: {
+    width: 100,
+    ellipsis: true,
+    auto: true
+  },
+  DefaultInfo: {
   }
 }
 

@@ -1,10 +1,8 @@
 import { getType, getProp, setProp, isExist } from 'complex-utils'
+import DictionaryConfig from '../../DictionaryConfig'
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { formatInitOption } from '../utils'
-import DefaultList, { DefaultListInitOption } from '../mod/DefaultList'
-import DefaultInfo, { DefaultInfoInitOption } from '../mod/DefaultInfo'
-import DefaultEdit, { DefaultEditInitOption } from '../mod/DefaultEdit'
-import DefaultCustom, { DefaultCustomInitOption } from '../mod/DefaultCustom'
+import DefaultEdit from '../mod/DefaultEdit'
 import DictionaryList, { DictionaryListInitOption, formatDataOption } from './DictionaryList'
 import InterfaceData, { InterfaceDataInitOption } from './InterfaceData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
@@ -28,41 +26,21 @@ export interface parentOptionType {
 
 export type funcKeys = keyof customerFunction
 
-export interface DefaultListInitOptionWithExtra extends DefaultListInitOption {
-  $type?: 'list'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
-}
-export interface DefaultInfoInitOptionWithExtra extends DefaultInfoInitOption {
-  $type?: 'info'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
-}
-export interface DefaultEditInitOptionWithExtra extends DefaultEditInitOption {
-  $type?: 'edit'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
-}
-export interface DefaultCustomInitOptionWithExtra extends DefaultCustomInitOption {
-  $type?: 'custom'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
+export interface DictionaryModType {
+  $children?: true | string, // 是否根据$dictionary字典构建下一级的属性，此下一级数据会挂载到PageItem的对应属性上
+  [prop: PropertyKey]: any
 }
 
-export type DictionanyModDataInitType = {
-  list?: DefaultListInitOption
-  info?: DefaultInfoInitOption
-  edit?: DefaultEditInitOption
-  build?: DefaultEditInitOption
-  change?: DefaultEditInitOption
-  custom?: DefaultCustomInitOption
-  [prop: string]: undefined | DefaultListInitOptionWithExtra | DefaultInfoInitOptionWithExtra | DefaultEditInitOptionWithExtra | DefaultCustomInitOptionWithExtra
+export type DictionanyModType = DictionanyModInitType
+
+
+export interface DictionanyModInitType {
+  $type?: string // 格式化类型，一般为list/edit...
+  $target?: string // 快捷格式化目标，内存指针指向对应的mod
+  [prop: PropertyKey]: unknown
 }
-export type DictionanyModDataType = {
-  list?: DefaultList
-  info?: DefaultInfo
-  edit?: DefaultEdit
-  build?: DefaultEdit
-  change?: DefaultEdit
-  custom?: DefaultCustom
-  [prop: string]: undefined | DefaultList | DefaultInfo | DefaultEdit | DefaultCustom
-}
+
+export type DictionanyModDataInitType = Record<string, DictionanyModInitType | true>
 
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
   prop: string, // 属性，本地唯一
@@ -117,7 +95,9 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   check?: false | baseFunction<boolean>
-  $mod: DictionanyModDataType
+  $mod: {
+    [prop: string]: DictionaryModType | undefined
+  }
   constructor(initOption: DictionaryDataInitOption, parentOption: parentOptionType = {}) {
     initOption = formatInitOption(initOption, null, 'DictionaryItem初始化参数不存在！')
     super(initOption)

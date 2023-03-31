@@ -1,8 +1,8 @@
 import { getType, hasProp } from 'complex-utils'
-import BaseData, { BaseDataInitOption } from './../../src/data/BaseData'
-import InterfaceData, { InterfaceDataInitOption } from './../../src/lib/InterfaceData'
+import BaseData, { BaseDataInitOption } from '../data/BaseData'
+import InterfaceData, { InterfaceDataInitOption } from '../lib/InterfaceData'
 import config, { DictType } from '../../config'
-import DictionaryData, { baseFunction, DictionanyModItemInitType } from './DictionaryData'
+import DictionaryData, { baseFunction, DictionanyModInitType } from '../lib/DictionaryData'
 
 interface valueType {
   default?: any,
@@ -11,7 +11,7 @@ interface valueType {
   [prop: PropertyKey]: any
 }
 
-export interface DefaultEditInitOption extends BaseDataInitOption, DictionanyModItemInitType {
+export interface DefaultEditInitOption extends BaseDataInitOption, DictionanyModInitType {
   type?: string
   reload?: boolean
   trim?: boolean

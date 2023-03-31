@@ -8,7 +8,7 @@ import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 import PageList, { PageData } from './PageList'
 import { buildOptionData } from '../utils'
 import DictionaryConfig, { unformatOption } from '../../DictionaryConfig'
-import DefaultEdit from './DefaultEdit'
+import DefaultEdit from '../mod/DefaultEdit'
 import config from '../../config'
 
 export interface formatDataOption {
