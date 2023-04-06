@@ -44,16 +44,20 @@ export interface DefaultCustomInitOptionWithExtra extends DefaultCustomInitOptio
   $type?: 'custom'
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
 }
+type DictionaryModItemType = DefaultList | DefaultInfo | DefaultEdit | DefaultCustom
+type DictionaryModItemInitOptionType = DefaultListInitOptionWithExtra | DefaultInfoInitOptionWithExtra | DefaultEditInitOptionWithExtra | DefaultCustomInitOptionWithExtra
+type DictionaryMapItemType = typeof DefaultList | typeof DefaultInfo | typeof DefaultEdit | typeof DefaultCustom
 
-export type DictionanyModDataInitType = {
-  list?: DefaultListInitOption
-  info?: DefaultInfoInitOption
-  edit?: DefaultEditInitOption
-  build?: DefaultEditInitOption
-  change?: DefaultEditInitOption
-  custom?: DefaultCustomInitOption
-  [prop: string]: undefined | DefaultListInitOptionWithExtra | DefaultInfoInitOptionWithExtra | DefaultEditInitOptionWithExtra | DefaultCustomInitOptionWithExtra
+export type DictionanyModDataInitOption = {
+  list?: boolean | DefaultListInitOption
+  info?: boolean | DefaultInfoInitOption
+  edit?: boolean | DefaultEditInitOption
+  build?: boolean | DefaultEditInitOption
+  change?: boolean | DefaultEditInitOption
+  custom?: boolean | DefaultCustomInitOption
+  [prop: string]: undefined | boolean | DictionaryModItemInitOptionType
 }
+
 export type DictionanyModDataType = {
   list?: DefaultList
   info?: DefaultInfo
@@ -61,7 +65,7 @@ export type DictionanyModDataType = {
   build?: DefaultEdit
   change?: DefaultEdit
   custom?: DefaultCustom
-  [prop: string]: undefined | DefaultList | DefaultInfo | DefaultEdit | DefaultCustom
+  [prop: string]: undefined | DictionaryModItemType
 }
 
 export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
@@ -75,7 +79,7 @@ export interface DictionaryDataInitOption extends SimpleDataInitOption, customer
   originFrom?: string | string[] // 来源
   layout?: LayoutDataInitOption // 布局
   dictionary?: DictionaryListInitOption, // 子字典
-  mod?: DictionanyModDataInitType // 模块
+  mod?: DictionanyModDataInitOption // 模块
 }
 
 type interfaceKeys = keyof DictionaryData['$interface']
@@ -95,6 +99,8 @@ const defaultGetData = function (this: DictionaryData, data: unknown, { type }: 
 const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
+
+const DictionaryMap: Map<string, DictionaryMapItemType> = new Map()
 
 class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
@@ -152,7 +158,49 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     }
     this.$setLayout(initOption.layout || parentOption.layout)
     this.$simple = initOption.simple === undefined ? false : initOption.simple
-    this.$mod = DictionaryConfig.format(this, initOption.mod)
+    this.$mod = this.$initMod(initOption.mod)
+  }
+  static setDictionary(name: string, data: DictionaryMapItemType | string, redirect?: boolean) {
+    if (!redirect) {
+      DictionaryMap.set(name, data as DictionaryMapItemType)
+    } else {
+      const target = DictionaryMap.get(data as string)!
+      DictionaryMap.set(name, target)
+    }
+  }
+  static getDictionary(name: string) {
+    return DictionaryMap.get(name)
+  }
+  $initMod(initOption?: DictionanyModDataInitOption) {
+    const modData: DictionanyModDataType = {}
+    if (initOption) {
+      const redirect: Record<string, string> = {}
+      for (const modName in initOption) {
+        let modItemInitData = initOption[modName]
+        if (modItemInitData) {
+          if (modItemInitData === true) {
+            modItemInitData = {}
+          }
+          if (modItemInitData.$target) {
+            redirect[modName] = modItemInitData.$target
+          } else {
+            modData[modName] = this.$initModItem(modName, modItemInitData)
+          }
+        }
+      }
+      for (const modName in redirect) {
+        modData[modName] = modData[redirect[modName]]
+      }
+    }
+    return modData
+  }
+  $initModItem(modName: string, modItemInitData: DictionaryModItemInitOptionType) {
+    if (!modItemInitData.$type) {
+      modItemInitData.$type = modName as DictionaryModItemInitOptionType['$type']
+    }
+    this.$setInterface('modType', modName, modItemInitData.$type!)
+    const modClass = DictionaryData.getDictionary(modItemInitData.$type!)!
+    return new modClass(modItemInitData, modName, this)
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]
