@@ -3,6 +3,7 @@ import BaseData, { BaseDataInitOption } from '../data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from '../lib/InterfaceData'
 import config, { DictType } from '../../config'
 import DictionaryData, { baseFunction } from '../lib/DictionaryData'
+import { ObserveItem } from './ObserveList'
 
 interface valueType {
   default?: any,
@@ -11,7 +12,7 @@ interface valueType {
   [prop: PropertyKey]: any
 }
 
-export interface DefaultEditInitOption extends BaseDataInitOption {
+export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData> {
   type?: string
   reload?: boolean
   trim?: boolean
@@ -30,6 +31,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   rules?: InterfaceDataInitOption<any>
   edit?: false | baseFunction<unknown> // 数据=>编辑 格式化
   post?: false | baseFunction<unknown> // 编辑=>来源 格式化
+  observe?: ObserveItem['$observe']
   tips?: string | {
     data: string,
     location?: string,
@@ -43,8 +45,10 @@ export interface DefaultEditInitOption extends BaseDataInitOption {
   }
 }
 
-class DefaultEdit extends BaseData {
+class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
   static $name = 'DefaultEdit'
+  declare parent: DictionaryData
+  prop: string
   type: string
   reload: boolean
   trim: boolean
@@ -67,6 +71,7 @@ class DefaultEdit extends BaseData {
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   $on: Record<PropertyKey, (...args: any[]) => any>
+  $observe?: ObserveItem['$observe']
   $tips!: {
     data: string,
     location: string,
@@ -79,7 +84,7 @@ class DefaultEdit extends BaseData {
     render?: (...args: any[]) => any
   }
   $customize?: unknown
-  constructor(initOption: DefaultEditInitOption) {
+  constructor(initOption: DefaultEditInitOption, modName: string, parent: DictionaryData) {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
     }
@@ -92,8 +97,10 @@ class DefaultEdit extends BaseData {
         jumper: false
       }
     }
+    initOption.parent = parent
     super(initOption)
     this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
+    this.prop = parent.$prop
     this.type = initOption.type || 'input'
     this.trim = !!initOption.trim
     this.reload = initOption.reload || false // 异步二次加载判断值
@@ -184,6 +191,7 @@ class DefaultEdit extends BaseData {
     if (!this.$slot.label) { // label=>title
       this.$slot.label = this.$slot.name + '-label'
     }
+    this.$observe = initOption.observe
     this.$initOption(initOption, defaultOption, true)
     this.$initRules(initOption, defaultOption)
     this.$triggerCreateLife('DefaultEdit', 'created')

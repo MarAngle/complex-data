@@ -1,22 +1,23 @@
 import { clearArray, observe, Watcher } from 'complex-utils'
-import Data from './../data/Data'
+import Data from '../data/Data'
+import { DictionaryModItemType } from '../lib/DictionaryData'
 
-export interface PageData {
-  $prop: string,
-  [prop: PropertyKey]: any
+export interface ObserveItem {
+  $observe?: (target: ObserveList, prop: PropertyKey, val: any, from?: string) => any
 }
 
-class PageList extends Data {
-  static $name = 'PageList'
+
+class ObserveList extends Data {
+  static $name = 'ObserveList'
   $map: {
-    data: Map<string, PageData>,
-    hidden: Map<string, PageData>
+    data: Map<string, DictionaryModItemType>,
+    hidden: Map<string, DictionaryModItemType>
   }
   $watch: Map<string, Watcher>
   $order: string[]
   $data: null | Record<PropertyKey, any>
-  data: PageData[]
-  constructor (list?: PageData[]) {
+  data: DictionaryModItemType[]
+  constructor (list?: DictionaryModItemType[]) {
     super()
     this.$map = {
       data: new Map(),
@@ -33,19 +34,19 @@ class PageList extends Data {
       }
     }
   }
-  push(target: PageData) {
+  push(target: DictionaryModItemType) {
     this.data.push(target)
-    this.$order.push(target.$prop)
-    this.$map.data.set(target.$prop, target)
+    this.$order.push(target.prop)
+    this.$map.data.set(target.prop, target)
   }
-  unshift(target: PageData) {
+  unshift(target: DictionaryModItemType) {
     this.data.unshift(target)
-    this.$order.unshift(target.$prop)
-    this.$map.data.set(target.$prop, target)
+    this.$order.unshift(target.prop)
+    this.$map.data.set(target.prop, target)
   }
   pop() {
     const deleteItem = this.data.pop()!
-    const deleteItemProp = deleteItem.$prop
+    const deleteItemProp = deleteItem.prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
     this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
@@ -53,13 +54,13 @@ class PageList extends Data {
   }
   shift() {
     const deleteItem = this.data.shift()!
-    const deleteItemProp = deleteItem.$prop
+    const deleteItemProp = deleteItem.prop
     // 删除顺序，为避免结尾隐藏情况，单独判断
     this.$order.splice(this.$order.indexOf(deleteItemProp), 1)
     this.$map.data.delete(deleteItemProp)
     this.$map.hidden.delete(deleteItemProp)
   }
-  $addItemByPreIndex(preIndex: number, target: PageData) {
+  $addItemByPreIndex(preIndex: number, target: DictionaryModItemType) {
     let preCurrentIndex = -1
     for (preIndex; preIndex >= 0; preIndex--) {
       // 获取总顺序
@@ -101,11 +102,11 @@ class PageList extends Data {
   getItem(prop: string) {
     return this.$map.data.get(prop)
   }
-  addItem(target: PageData, preProp?: string) {
+  addItem(target: DictionaryModItemType, preProp?: string) {
     if (preProp) {
       const preIndex = this.$order.indexOf(preProp)
       this.$addItemByPreIndex(preIndex, target)
-      this.$order.splice(preIndex + 1, 0, target.$prop)
+      this.$order.splice(preIndex + 1, 0, target.prop)
     } else {
       this.data.unshift(target)
     }
@@ -146,8 +147,8 @@ class PageList extends Data {
   }
   $triggerObserve (prop: string, val: any, from?: string) {
     this.$map.data.forEach((item) => {
-      if (item.edit.$observe) {
-        item.edit.$observe(this, prop, val, from)
+      if (item.$observe) {
+        item.$observe(this, prop, val, from)
       }
     })
   }
@@ -185,4 +186,4 @@ class PageList extends Data {
   }
 }
 
-export default PageList
+export default ObserveList

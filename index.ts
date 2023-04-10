@@ -21,10 +21,14 @@ import UpdateData from './src/lib/UpdateData'
 import LayoutData from './src/lib/LayoutData'
 import DictionaryData from './src/lib/DictionaryData'
 import DictionaryList from './src/lib/DictionaryList'
-import PageList from './src/lib/PageList'
 import PaginationData from './src/lib/PaginationData'
 import ChoiceData from './src/lib/ChoiceData'
+
+import ObserveList from './src/mod/ObserveList'
 import DefaultEdit from './src/mod/DefaultEdit'
+import DefaultInfo from './src/mod/DefaultInfo'
+import DefaultList from './src/mod/DefaultList'
+import DefaultCustom from './src/mod/DefaultCustom'
 
 ModuleData.setDictionary('status', StatusData)
 ModuleData.setDictionary('promise', PromiseData)
@@ -58,9 +62,12 @@ export {
   LayoutData,
   DictionaryData,
   DictionaryList,
-  PageList,
   PaginationData,
   ChoiceData,
-  DefaultEdit,
 
+  ObserveList,
+  DefaultEdit,
+  DefaultInfo,
+  DefaultList,
+  DefaultCustom
 }

@@ -9,6 +9,9 @@ import DictionaryList, { DictionaryListInitOption, formatDataOption } from './Di
 import InterfaceData, { InterfaceDataInitOption } from './InterfaceData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 
+export interface unformatOption {
+  mod?: string
+}
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
 
 export type baseFunction<RES> = (data: unknown, payload: payloadType) => RES
@@ -44,9 +47,9 @@ export interface DefaultCustomInitOptionWithExtra extends DefaultCustomInitOptio
   $type?: 'custom'
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
 }
-type DictionaryModItemType = DefaultList | DefaultInfo | DefaultEdit | DefaultCustom
-type DictionaryModItemInitOptionType = DefaultListInitOptionWithExtra | DefaultInfoInitOptionWithExtra | DefaultEditInitOptionWithExtra | DefaultCustomInitOptionWithExtra
-type DictionaryMapItemType = typeof DefaultList | typeof DefaultInfo | typeof DefaultEdit | typeof DefaultCustom
+export type DictionaryModItemType = DefaultList | DefaultInfo | DefaultEdit | DefaultCustom
+export type DictionaryModItemInitOptionType = DefaultListInitOptionWithExtra | DefaultInfoInitOptionWithExtra | DefaultEditInitOptionWithExtra | DefaultCustomInitOptionWithExtra
+export type DictionaryMapItemType = typeof DefaultList | typeof DefaultInfo | typeof DefaultEdit | typeof DefaultCustom
 
 export type DictionanyModDataInitOption = {
   list?: boolean | DefaultListInitOption
@@ -202,6 +205,12 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
     const modClass = DictionaryData.getDictionary(modItemInitData.$type!)!
     return new modClass(modItemInitData, modName, this)
   }
+  // $getModData(modName: string, option: unformatOption = {}) {
+  //   if (option.mod) {
+  //     modName = option.mod
+  //   }
+  //   return this.$getMod(modName)
+  // }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]
   }

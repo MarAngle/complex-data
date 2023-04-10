@@ -3,11 +3,11 @@ import { LimitDataInitOption } from 'complex-utils/src/build/LimitData'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import BaseData from '../data/BaseData'
 import Data from '../data/Data'
-import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
+import DictionaryData, { DictionaryDataInitOption, DictionaryModItemType, unformatOption } from './DictionaryData'
 import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
-import PageList, { PageData } from './PageList'
+import ObserveList from '../mod/ObserveList'
 import { buildOptionData } from '../utils'
-import DictionaryConfig, { unformatOption } from '../../DictionaryConfig'
+// import DictionaryConfig, { unformatOption } from '../../DictionaryConfig'
 import DefaultEdit from '../mod/DefaultEdit'
 import config from '../../config'
 
@@ -256,7 +256,6 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
     return targetData
   }
-
   $getList(modName: string, dataMap?: Map<string, DictionaryData>) {
     if (!dataMap) {
       dataMap = this.$data
@@ -274,32 +273,32 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     return this.$buildPageList(modName, this.$getList(modName), option)
   }
   $getPageItem(modName: string, ditem: DictionaryData, option?: unformatOption) {
-    const pitem = DictionaryConfig.unformat(ditem, modName, option) as PageData
-    if (ditem.$dictionary) {
-      const mod = ditem.$getMod(modName)
-      if (mod && mod.$children) {
-        let childrenProp = mod.$children
-        if (childrenProp === true) {
-          childrenProp = 'children'
-        }
-        pitem[childrenProp] = ditem.$dictionary.$getPageList(modName, option)
-      }
-    }
+    const pitem = ditem.$getMod(modName)!
+    // if (ditem.$dictionary) {
+    //   const mod = ditem.$getMod(modName)
+    //   if (mod && mod.$children) {
+    //     let childrenProp = mod.$children
+    //     if (childrenProp === true) {
+    //       childrenProp = 'children'
+    //     }
+    //     pitem[childrenProp] = ditem.$dictionary.$getPageList(modName, option)
+    //   }
+    // }
     return pitem
   }
   $buildPageList(modName: string, list: DictionaryData[], option?: unformatOption) {
-    const pageList = []
+    const pageList: DictionaryModItemType[] = []
     for (let n = 0; n < list.length; n++) {
       pageList.push(this.$getPageItem(modName, list[n], option))
     }
     return pageList
   }
   $buildObserveList(modName: string, list: DictionaryData[], option?: unformatOption) {
-    const pageList = new PageList()
+    const observeList = new ObserveList()
     for (let n = 0; n < list.length; n++) {
-      pageList.push(this.$getPageItem(modName, list[n], option))
+      observeList.push(this.$getPageItem(modName, list[n], option))
     }
-    return pageList
+    return observeList
   }
   $buildFormData(dList: DictionaryData[], modName: string, originData?: Record<PropertyKey, any>, option: formDataOption = {}) {
     return new Promise((resolve) => {
