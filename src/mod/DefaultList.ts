@@ -9,7 +9,7 @@ type renderType = (payload: {
   text: any,
   record: Record<PropertyKey, any>,
   index: number,
-  item: DefaultList,
+  target: any,
   list: DefaultList[]
 }) => any
 

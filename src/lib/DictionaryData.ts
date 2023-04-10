@@ -363,4 +363,11 @@ class DictionaryData extends SimpleData implements customerFunction, HasLayoutDa
   }
 }
 
+DictionaryData.setDictionary('list', DefaultList)
+DictionaryData.setDictionary('info', DefaultInfo)
+DictionaryData.setDictionary('edit', DefaultEdit)
+DictionaryData.setDictionary('change', 'edit')
+DictionaryData.setDictionary('build', 'edit')
+DictionaryData.setDictionary('custom', DefaultCustom)
+
 export default DictionaryData
