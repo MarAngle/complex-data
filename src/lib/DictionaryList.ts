@@ -296,7 +296,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $buildObserveList(modName: string, list: DictionaryData[], option?: unformatOption) {
     const observeList = new ObserveList()
     for (let n = 0; n < list.length; n++) {
-      observeList.push(this.$getPageItem(modName, list[n], option))
+      observeList.push(this.$getPageItem(modName, list[n], option) as DefaultEdit)
     }
     return observeList
   }

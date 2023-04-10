@@ -1,23 +1,22 @@
 import { clearArray, observe, Watcher } from 'complex-utils'
 import Data from '../data/Data'
-import { DictionaryModItemType } from '../lib/DictionaryData'
+import DefaultEdit from './DefaultEdit'
 
 export interface ObserveItem {
   $observe?: (target: ObserveList, prop: PropertyKey, val: any, from?: string) => any
 }
 
-
 class ObserveList extends Data {
   static $name = 'ObserveList'
   $map: {
-    data: Map<string, DictionaryModItemType>,
-    hidden: Map<string, DictionaryModItemType>
+    data: Map<string, DefaultEdit>,
+    hidden: Map<string, DefaultEdit>
   }
   $watch: Map<string, Watcher>
   $order: string[]
   $data: null | Record<PropertyKey, any>
-  data: DictionaryModItemType[]
-  constructor (list?: DictionaryModItemType[]) {
+  data: DefaultEdit[]
+  constructor (list?: DefaultEdit[]) {
     super()
     this.$map = {
       data: new Map(),
@@ -34,12 +33,12 @@ class ObserveList extends Data {
       }
     }
   }
-  push(target: DictionaryModItemType) {
+  push(target: DefaultEdit) {
     this.data.push(target)
     this.$order.push(target.prop)
     this.$map.data.set(target.prop, target)
   }
-  unshift(target: DictionaryModItemType) {
+  unshift(target: DefaultEdit) {
     this.data.unshift(target)
     this.$order.unshift(target.prop)
     this.$map.data.set(target.prop, target)
@@ -60,7 +59,7 @@ class ObserveList extends Data {
     this.$map.data.delete(deleteItemProp)
     this.$map.hidden.delete(deleteItemProp)
   }
-  $addItemByPreIndex(preIndex: number, target: DictionaryModItemType) {
+  $addItemByPreIndex(preIndex: number, target: DefaultEdit) {
     let preCurrentIndex = -1
     for (preIndex; preIndex >= 0; preIndex--) {
       // 获取总顺序
@@ -102,7 +101,7 @@ class ObserveList extends Data {
   getItem(prop: string) {
     return this.$map.data.get(prop)
   }
-  addItem(target: DictionaryModItemType, preProp?: string) {
+  addItem(target: DefaultEdit, preProp?: string) {
     if (preProp) {
       const preIndex = this.$order.indexOf(preProp)
       this.$addItemByPreIndex(preIndex, target)

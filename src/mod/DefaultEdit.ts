@@ -16,6 +16,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData
   type?: string
   reload?: boolean
   trim?: boolean
+  colon?: boolean
   multiple?: boolean
   required?: InterfaceDataInitOption<boolean>
   disabled?: InterfaceDataInitOption<boolean>
@@ -52,6 +53,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
   type: string
   reload: boolean
   trim: boolean
+  colon: boolean
   multiple!: boolean
   required: InterfaceData<boolean>
   disabled: InterfaceData<boolean>
@@ -103,6 +105,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     this.prop = parent.$prop
     this.type = initOption.type || 'input'
     this.trim = !!initOption.trim
+    this.colon = !!initOption.colon
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
