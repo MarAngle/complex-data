@@ -3,6 +3,15 @@ import Data from "../data/Data";
 import config from "../../config";
 import DictionaryData from "../lib/DictionaryData";
 import { ObserveItem } from "./ObserveList";
+import TipData, { TipDataInitOption } from "./TipsData";
+
+type renderType = (payload: {
+  text: any,
+  record: Record<PropertyKey, any>,
+  index: number,
+  item: DefaultList,
+  list: DefaultList[]
+}) => any
 
 export interface DefaultListInitOption {
   name?: string
@@ -11,6 +20,9 @@ export interface DefaultListInitOption {
   ellipsis?: boolean
   auto?: boolean
   local?: Record<PropertyKey, any>
+  tip?: TipDataInitOption
+  render?: renderType,
+  pureRender?: renderType,
   observe?: ObserveItem['$observe']
 }
 
@@ -24,7 +36,10 @@ class DefaultList extends Data<DictionaryData> implements ObserveItem{
   ellipsis: boolean
   auto: boolean
   show: DictionaryData['show']
+  tip: TipData
   local: Record<PropertyKey, any>
+  render?: renderType
+  pureRender?: renderType
   $observe?: ObserveItem['$observe']
   constructor(initOption: DefaultListInitOption | true, modName: string, parent: DictionaryData) {
     if (initOption === true) {
@@ -40,6 +55,9 @@ class DefaultList extends Data<DictionaryData> implements ObserveItem{
     this.auto = initOption.auto === undefined ? config.DefaultList.auto : initOption.auto
     this.show = parent.show
     this.local = initOption.local || {}
+    this.tip = new TipData(initOption.tip)
+    this.render = initOption.render
+    this.pureRender = initOption.pureRender
     this.$observe = initOption.observe
   }
 }

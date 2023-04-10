@@ -4,6 +4,7 @@ import InterfaceData, { InterfaceDataInitOption } from '../lib/InterfaceData'
 import config, { DictType } from '../../config'
 import DictionaryData, { baseFunction } from '../lib/DictionaryData'
 import { ObserveItem } from './ObserveList'
+import TipData, { TipDataInitOption } from './TipsData'
 
 interface valueType {
   default?: any,
@@ -33,11 +34,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData
   edit?: false | baseFunction<unknown> // 数据=>编辑 格式化
   post?: false | baseFunction<unknown> // 编辑=>来源 格式化
   observe?: ObserveItem['$observe']
-  tips?: string | {
-    data: string,
-    location?: string,
-    localOption?: Record<PropertyKey, any>
-  }
+  tip?: TipDataInitOption
   slot?: {
     type?: string,
     name?: string,
@@ -74,11 +71,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
   post?: false | baseFunction<unknown>
   $on: Record<PropertyKey, (...args: any[]) => any>
   $observe?: ObserveItem['$observe']
-  $tips!: {
-    data: string,
-    location: string,
-    localOption: Record<PropertyKey, any>
-  }
+  tip: TipData
   $slot!: {
     type: string,
     name: string,
@@ -110,32 +103,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
     this.$option = {}
-    this.$tips = {
-      data: '',
-      location: '',
-      localOption: {}
-    }
-    if (!initOption.tips) {
-      this.$tips = {
-        data: '',
-        location: '',
-        localOption: {}
-      }
-    } else {
-      if (typeof initOption.tips != 'object') {
-        this.$tips = {
-          data: initOption.tips || '',
-          location: 'top',
-          localOption: {}
-        }
-      } else {
-        this.$tips = {
-          data: initOption.tips.data,
-          location: initOption.tips.location || 'top',
-          localOption: initOption.tips.localOption || {}
-        }
-      }
-    }
+    this.tip = new TipData(initOption.tip)
     // 组件事件监控
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题

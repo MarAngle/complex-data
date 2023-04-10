@@ -12,7 +12,7 @@ import LayoutData, { HasLayoutData, LayoutDataInitOption } from './LayoutData'
 export interface unformatOption {
   mod?: string
 }
-export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number }
+export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, any> }
 
 export type baseFunction<RES> = (data: unknown, payload: payloadType) => RES
 
