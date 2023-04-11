@@ -10,10 +10,10 @@ export interface HasLayoutData {
 }
 
 export type LayoutDataDataTypeObject = {
-  span: number,
-  offset?: number,
-  pull?: number,
-  push?: number,
+  span: number
+  offset?: number
+  pull?: number
+  push?: number
   xs?: number
   sm?: number
   md?: number
@@ -26,16 +26,16 @@ export type LayoutDataDataType = number | LayoutDataDataTypeObject
 
 export interface LayoutDataInitOptionType {
   type?: string,
-  grid?: number,
+  grid?: LayoutDataDataType,
   label?: LayoutDataDataType,
   content?: LayoutDataDataType
 }
 
 export interface LayoutDataFormatData {
   type: string,
-  grid: number,
-  label: LayoutDataDataType,
-  content: LayoutDataDataType
+  grid: LayoutDataDataTypeObject,
+  label: LayoutDataDataTypeObject,
+  content: LayoutDataDataTypeObject
 }
 
 export interface LayoutDataInitOptionOption {
@@ -86,7 +86,13 @@ class LayoutData extends Data {
       data.type = 'grid'
     }
     if (data.grid === undefined) {
-      data.grid = config.LayoutData.grid
+      data.grid = {
+        span: config.LayoutData.grid
+      }
+    } else if (getType(data.grid) !== 'object') {
+      data.grid = {
+        span: data.grid as number
+      }
     }
     if (data.label === undefined) {
       data.label = {
@@ -94,7 +100,7 @@ class LayoutData extends Data {
       }
     } else if (getType(data.label) !== 'object') {
       data.label = {
-        span: (data.label as number)
+        span: data.label as number
       }
     }
     if (data.content === undefined) {
@@ -103,7 +109,7 @@ class LayoutData extends Data {
       }
     } else if (getType(data.content) !== 'object') {
       data.content = {
-        span: (data.content as number)
+        span: data.content as number
       }
     }
     return data as LayoutDataFormatData

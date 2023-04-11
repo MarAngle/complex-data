@@ -55,8 +55,8 @@ export type DictionanyModDataInitOption = {
   list?: boolean | DefaultListInitOption
   info?: boolean | DefaultInfoInitOption
   edit?: boolean | DefaultEditInitOption
-  build?: boolean | DefaultEditInitOption
-  change?: boolean | DefaultEditInitOption
+  build?: boolean | DefaultEditInitOptionWithExtra
+  change?: boolean | DefaultEditInitOptionWithExtra
   custom?: boolean | DefaultCustomInitOption
   [prop: string]: undefined | boolean | DictionaryModItemInitOptionType
 }

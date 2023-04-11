@@ -318,8 +318,8 @@ class DictionaryList extends DefaultData implements HasLayoutData {
           }))
         }
       }
-      promiseAllFinished(promiseList).then(resList => {
-        resolve(resList)
+      promiseAllFinished(promiseList).then(() => {
+        resolve({ status: 'success', data: formData })
       })
     })
   }

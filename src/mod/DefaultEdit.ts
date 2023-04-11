@@ -26,7 +26,7 @@ export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData
   mainWidth?: string | number
   width?: string | number
   option?: Record<PropertyKey, any>
-  localOption?: Record<PropertyKey, any>
+  local?: Record<PropertyKey, any>
   value?: valueType
   on?: Record<PropertyKey, (...args: any[]) => any>
   customize?: unknown
@@ -66,7 +66,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     [prop: PropertyKey]: any
   }
   $option: Record<PropertyKey, any>
-  $localOption: Record<PropertyKey, any>
+  $local: Record<PropertyKey, any>
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   $on: Record<PropertyKey, (...args: any[]) => any>
@@ -108,7 +108,11 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
     // main = { props: {} } item = { props: {} }
-    this.$localOption = initOption.localOption || {}
+    const local = initOption.local || {}
+    this.$local = {
+      main: local.main || {},
+      item: local.item || {}
+    }
     const defaultOption = config.DefaultEdit.option.getData(this.type)
     if (!defaultOption) {
       this.$exportMsg(`对应的${this.type}不存在预定义，请检查代码或进行扩展！`)
@@ -157,7 +161,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
       this.$slot.type = 'auto'
     }
     if (!this.$slot.name) { // name=>插槽默认名
-      this.$slot.name = this.$prop
+      this.$slot.name = this.prop
     }
     if (!this.$slot.label) { // label=>title
       this.$slot.label = this.$slot.name + '-label'
