@@ -7,6 +7,7 @@ import SearchData from './src/data/SearchData'
 import ComplexData from './src/core/ComplexData'
 import ComplexList from './src/core/ComplexList'
 
+import AttributesData from './src/lib/AttributesData'
 import EmptyData from './src/lib/EmptyData'
 import IdData from './src/lib/IdData'
 import InterfaceData from './src/lib/InterfaceData'
@@ -48,6 +49,7 @@ export {
   ComplexData,
   ComplexList,
 
+  AttributesData,
   EmptyData,
   IdData,
   InterfaceData,

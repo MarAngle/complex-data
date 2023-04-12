@@ -5,6 +5,7 @@ import config, { DictType } from '../../config'
 import DictionaryData, { baseFunction } from '../lib/DictionaryData'
 import { ObserveItem } from './ObserveList'
 import TipData, { TipDataInitOption } from './TipsData'
+import AttributesData, { AttributesDataInitOption } from '../lib/AttributesData'
 
 interface valueType {
   default?: any,
@@ -26,7 +27,10 @@ export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData
   mainWidth?: string | number
   width?: string | number
   option?: Record<PropertyKey, any>
-  local?: Record<PropertyKey, any>
+  local?: {
+    parent?: AttributesDataInitOption
+    target?: AttributesDataInitOption
+  }
   value?: valueType
   on?: Record<PropertyKey, (...args: any[]) => any>
   customize?: unknown
@@ -66,7 +70,10 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     [prop: PropertyKey]: any
   }
   $option: Record<PropertyKey, any>
-  $local: Record<PropertyKey, any>
+  $local: {
+    parent: AttributesData
+    target: AttributesData
+  }
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
   $on: Record<PropertyKey, (...args: any[]) => any>
@@ -110,8 +117,8 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     // main = { props: {} } item = { props: {} }
     const local = initOption.local || {}
     this.$local = {
-      main: local.main || {},
-      item: local.item || {}
+      parent: new AttributesData(local.parent),
+      target: new AttributesData(local.target)
     }
     const defaultOption = config.DefaultEdit.option.getData(this.type)
     if (!defaultOption) {

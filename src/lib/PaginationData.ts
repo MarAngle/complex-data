@@ -3,6 +3,7 @@ import config from '../../config'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
+import AttributesData, { AttributesDataInitOption } from './AttributesData'
 
 type sizeObjectType = {
   change?: boolean,
@@ -16,7 +17,7 @@ type jumperType = boolean
 export interface PaginationDataInitOptionObject extends DefaultDataInitOption {
   size?: sizeType
   jumper?: jumperType
-  localOption?: Record<PropertyKey, any>
+  local?: AttributesDataInitOption
 }
 
 export type PaginationDataInitOption = undefined | true | PaginationDataInitOptionObject
@@ -38,7 +39,7 @@ class PaginationData extends DefaultData {
   jumper: {
     change: boolean
   }
-  $localOption: Record<PropertyKey, any>
+  $local: AttributesData
   constructor(initOption?: PaginationDataInitOption) {
     initOption = formatInitOption(initOption) as PaginationDataInitOptionObject
     super(initOption)
@@ -80,7 +81,7 @@ class PaginationData extends DefaultData {
     this.jumper = {
       change: !!initOption.jumper
     }
-    this.$localOption = initOption.localOption || {}
+    this.$local = new AttributesData(initOption.local)
     this.$triggerCreateLife('PaginationData', 'created')
   }
   /**
@@ -88,7 +89,7 @@ class PaginationData extends DefaultData {
    * @returns {object}
    */
   getLocalOption() {
-    return this.$localOption
+    return this.$local
   }
   /**
    * 设置总数
