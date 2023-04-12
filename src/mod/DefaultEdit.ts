@@ -14,8 +14,67 @@ interface valueType {
   [prop: PropertyKey]: any
 }
 
+export type DefaultEditTypeDict = 'input' | 'inputNumber' | 'textArea' | 'switch' | 'select' | 'cascader' | 'date' | 'dateRange' | 'file' | 'button' | 'text' | 'customize' | 'slot'
+
+export interface DefaultEditInputType {
+  type: string
+  maxLength: number
+  hideClear: boolean
+}
+export interface DefaultEditInputNumberType {
+  max: number
+  min: number
+  precision: number
+  step: number
+}
+export interface DefaultEditTextAreaType {
+  maxLength: number
+  autoSize: boolean
+  allowClear: boolean
+}
+export interface DefaultEditSelectType {
+  list: Record<PropertyKey, any>[]
+  optionValue: string
+  optionLabel: string
+  optionDisabled: string
+  optionLocal: AttributesData
+  hideArrow: boolean
+  hideClear: boolean
+  autoWidth: boolean
+  noDataContent?: string
+}
+export interface DefaultEditCascaderType {
+  list: Record<PropertyKey, any>[]
+  hideArrow: boolean
+  hideClear: boolean
+}
+export interface DefaultEditFileType {
+  accept: string
+  multipleAppend: boolean
+  maxNum: number
+  minNum: number
+  maxSize: number
+  upload: boolean
+  fileUpload: boolean
+  layout: string
+}
+export interface DefaultEditButtonType {
+  loading: boolean
+  type: string
+  icon: string
+  name?: string
+}
+export interface DefaultEditTextType {
+  data: string
+  style: Record<PropertyKey, any>
+}
+
+export type DefaultEditOptionType = DefaultEditInputType | DefaultEditInputNumberType | DefaultEditTextAreaType | DefaultEditSelectType | DefaultEditCascaderType | DefaultEditFileType | DefaultEditButtonType | DefaultEditTextType
+
+export type PartialDefaultEditOptionType = Partial<DefaultEditInputType> | Partial<DefaultEditInputNumberType> | Partial<DefaultEditTextAreaType> | Partial<DefaultEditSelectType> | Partial<DefaultEditCascaderType> | Partial<DefaultEditFileType> | Partial<DefaultEditButtonType> | Partial<DefaultEditTextType>
+
 export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData> {
-  type?: string
+  type?: DefaultEditTypeDict
   reload?: boolean
   trim?: boolean
   colon?: boolean
@@ -26,10 +85,11 @@ export interface DefaultEditInitOption extends BaseDataInitOption<DictionaryData
   message?: InterfaceDataInitOption<string>
   mainWidth?: string | number
   width?: string | number
-  option?: Record<PropertyKey, any>
+  option?: PartialDefaultEditOptionType
   local?: {
     parent?: AttributesDataInitOption
     target?: AttributesDataInitOption
+    child?: AttributesDataInitOption
   }
   value?: valueType
   on?: Record<PropertyKey, (...args: any[]) => any>
@@ -51,7 +111,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
   static $name = 'DefaultEdit'
   declare parent: DictionaryData
   prop: string
-  type: string
+  type: DefaultEditTypeDict
   reload: boolean
   trim: boolean
   colon: boolean
@@ -69,10 +129,11 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     reset: any,
     [prop: PropertyKey]: any
   }
-  $option: Record<PropertyKey, any>
+  $option!: DefaultEditOptionType
   $local: {
     parent: AttributesData
     target: AttributesData
+    child: AttributesData
   }
   edit?: false | baseFunction<unknown>
   post?: false | baseFunction<unknown>
@@ -109,7 +170,7 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
-    this.$option = {}
+    this.$option = {} as any
     this.tip = new TipData(initOption.tip)
     // 组件事件监控
     this.$on = initOption.on || {}
@@ -118,7 +179,8 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     const local = initOption.local || {}
     this.$local = {
       parent: new AttributesData(local.parent),
-      target: new AttributesData(local.target)
+      target: new AttributesData(local.target),
+      child: new AttributesData(local.child)
     }
     const defaultOption = config.DefaultEdit.option.getData(this.type)
     if (!defaultOption) {
@@ -207,33 +269,33 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
     }
     if (this.type == 'input') {
       // 输入框
-      this.$option.type = initOption.option.type || 'text'
-      this.$option.maxLength = initOption.option.maxLength || defaultOption!.option!.maxLength
-      this.$option.hideClear = initOption.option.hideClear || defaultOption!.option!.hideClear
+      (this.$option as DefaultEditInputType).type = (initOption.option as Partial<DefaultEditInputType>).type || 'text';
+      (this.$option as DefaultEditInputType).maxLength = (initOption.option as Partial<DefaultEditInputType>).maxLength || defaultOption!.option!.maxLength;
+      (this.$option as DefaultEditInputType).hideClear = (initOption.option as Partial<DefaultEditInputType>).hideClear || defaultOption!.option!.hideClear;
     } else if (this.type == 'inputNumber') {
       // 数字输入框
-      this.$option.max = initOption.option.max === undefined ? Infinity : initOption.option.max
-      this.$option.min = initOption.option.min === undefined ? -Infinity : initOption.option.min
-      this.$option.precision = initOption.option.precision === undefined ? 0 : initOption.option.precision // 精确到几位小数，接受非负整数
-      this.$option.step = initOption.option.step === undefined ? 1 : initOption.option.step // 点击步进
+      (this.$option as DefaultEditInputNumberType).max = (initOption.option as Partial<DefaultEditInputNumberType>).max === undefined ? Infinity : (initOption.option as DefaultEditInputNumberType).max;
+      (this.$option as DefaultEditInputNumberType).min = (initOption.option as Partial<DefaultEditInputNumberType>).min === undefined ? -Infinity : (initOption.option as DefaultEditInputNumberType).min;
+      (this.$option as DefaultEditInputNumberType).precision = (initOption.option as Partial<DefaultEditInputNumberType>).precision === undefined ? 0 : (initOption.option as DefaultEditInputNumberType).precision; // 精确到几位小数，接受非负整数
+      (this.$option as DefaultEditInputNumberType).step = (initOption.option as Partial<DefaultEditInputNumberType>).step === undefined ? 1 : (initOption.option as DefaultEditInputNumberType).step; // 点击步进
     } else if (this.type == 'textArea') {
       // 文本域
-      this.$option.maxLength = initOption.option.maxLength || defaultOption!.option!.maxLength
-      this.$option.autoSize = initOption.option.autoSize || defaultOption!.option!.autoSize
-      this.$option.allowClear = initOption.option.allowClear || defaultOption!.option!.allowClear
+      (this.$option as DefaultEditTextAreaType).maxLength = (initOption.option as Partial<DefaultEditTextAreaType>).maxLength || defaultOption!.option!.maxLength;
+      (this.$option as DefaultEditTextAreaType).autoSize = (initOption.option as Partial<DefaultEditTextAreaType>).autoSize || defaultOption!.option!.autoSize;
+      (this.$option as DefaultEditTextAreaType).allowClear = (initOption.option as Partial<DefaultEditTextAreaType>).allowClear || defaultOption!.option!.allowClear;
     } else if (this.type == 'switch') {
       // 开关
     } else if (this.type == 'select') {
       // 选择器
       // =>避免后期修改时存在的问题，基本数据结构提前生成，非当前必要字段也应生成
-      this.$option.list = initOption.option.list || []
-      this.$option.optionValue = initOption.option.optionValue || 'value'
-      this.$option.optionLabel = initOption.option.optionLabel || 'label'
-      this.$option.optionDisabled = initOption.option.optionDisabled || 'disabled'
-      this.$option.hideArrow = initOption.option.hideArrow || false
-      this.$option.hideClear = initOption.option.hideClear || false
-      this.$option.autoWidth = initOption.option.autoWidth || false // 宽度自适应
-      this.$option.noDataContent = initOption.option.noDataContent // 无数据时文字显示 == 默认不传使用antd的默认模板
+      (this.$option as DefaultEditSelectType).list = (initOption.option as Partial<Partial<DefaultEditSelectType>>).list || [];
+      (this.$option as DefaultEditSelectType).optionValue = (initOption.option as Partial<Partial<DefaultEditSelectType>>).optionValue || 'value';
+      (this.$option as DefaultEditSelectType).optionLabel = (initOption.option as Partial<Partial<DefaultEditSelectType>>).optionLabel || 'label';
+      (this.$option as DefaultEditSelectType).optionDisabled = (initOption.option as Partial<Partial<DefaultEditSelectType>>).optionDisabled || 'disabled';
+      (this.$option as DefaultEditSelectType).hideArrow = (initOption.option as Partial<Partial<DefaultEditSelectType>>).hideArrow || false;
+      (this.$option as DefaultEditSelectType).hideClear = (initOption.option as Partial<Partial<DefaultEditSelectType>>).hideClear || false;
+      (this.$option as DefaultEditSelectType).autoWidth = (initOption.option as Partial<Partial<DefaultEditSelectType>>).autoWidth || false; // 宽度自适应
+      (this.$option as DefaultEditSelectType).noDataContent = (initOption.option as Partial<Partial<DefaultEditSelectType>>).noDataContent; // 无数据时文字显示 == 默认不传使用antd的默认模板
       // if (this.$module.pagination) {
       //   // 存在分页相关设置
       //   if (!this.$func.page) {
@@ -256,9 +318,9 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
       // }
     } else if (this.type == 'cascader') {
       // 级联选择
-      this.$option.list = initOption.option.list || []
-      this.$option.hideArrow = initOption.option.hideArrow || false
-      this.$option.hideClear = initOption.option.hideClear || false
+      (this.$option as DefaultEditCascaderType).list = (initOption.option as Partial<DefaultEditCascaderType>).list || [];
+      (this.$option as DefaultEditCascaderType).hideArrow = (initOption.option as Partial<DefaultEditCascaderType>).hideArrow || false;
+      (this.$option as DefaultEditCascaderType).hideClear = (initOption.option as Partial<DefaultEditCascaderType>).hideClear || false;
       this.setMultiple(true)
     } else if (this.type == 'date') {
       // 日期选择
@@ -266,31 +328,30 @@ class DefaultEdit extends BaseData<DictionaryData> implements ObserveItem{
       // 日期范围选择
     } else if (this.type == 'file') {
       // 文件
-      this.$option.accept = initOption.option.accept || ''
-      this.$option.multipleAppend = initOption.option.multipleAppend || false // 多选状态下多个文件中一个存在问题时的操作
-      this.$option.maxNum = initOption.option.maxNum || 0
-      this.$option.minNum = initOption.option.minNum || 0
-      this.$option.maxSize = initOption.option.maxSize || 0
-      this.$option.upload = initOption.option.upload || false
-      this.$option.fileUpload = initOption.option.fileUpload || false
-      this.$option.layout = initOption.option.layout === undefined ? 'auto' : initOption.option.layout
-      if (this.$option.upload && !this.$option.fileUpload) {
+      (this.$option as DefaultEditFileType).accept = (initOption.option as Partial<DefaultEditFileType>).accept || '';
+      (this.$option as DefaultEditFileType).multipleAppend = (initOption.option as Partial<DefaultEditFileType>).multipleAppend || false; // 多选状态下多个文件中一个存在问题时的操作
+      (this.$option as DefaultEditFileType).maxNum = (initOption.option as Partial<DefaultEditFileType>).maxNum || 0;
+      (this.$option as DefaultEditFileType).minNum = (initOption.option as Partial<DefaultEditFileType>).minNum || 0;
+      (this.$option as DefaultEditFileType).maxSize = (initOption.option as Partial<DefaultEditFileType>).maxSize || 0;
+      (this.$option as DefaultEditFileType).upload = (initOption.option as Partial<DefaultEditFileType>).upload || false;
+      (this.$option as DefaultEditFileType).fileUpload = (initOption.option as Partial<DefaultEditFileType>).fileUpload || false;
+      (this.$option as DefaultEditFileType).layout = (initOption.option as Partial<DefaultEditFileType>).layout === undefined ? 'auto' : (initOption.option as DefaultEditFileType).layout;
+      if ((this.$option as DefaultEditFileType).upload && !(this.$option as DefaultEditFileType).fileUpload) {
         this.$exportMsg('上传插件需要定义上传方法:fileUpload=>option')
       }
     } else if (this.type == 'button') {
       // 按钮
-      this.$option.loading = initOption.option.loading || false
-      this.$option.type = initOption.option.type || 'default'
-      this.$option.icon = initOption.option.icon || ''
-      this.$option.name = initOption.option.name ? new InterfaceData(initOption.option.name) : this.placeholder
+      (this.$option as DefaultEditButtonType).loading = (initOption.option as Partial<DefaultEditButtonType>).loading || false;
+      (this.$option as DefaultEditButtonType).type = (initOption.option as Partial<DefaultEditButtonType>).type || 'default';
+      (this.$option as DefaultEditButtonType).icon = (initOption.option as Partial<DefaultEditButtonType>).icon || '';
+      (this.$option as DefaultEditButtonType).name = (initOption.option as Partial<DefaultEditButtonType>).name;
     } else if (this.type == 'text') {
       // 文字
-      this.$option.data = initOption.option.data
-      this.$option.style = initOption.option.style || {}
+      (this.$option as DefaultEditTextType).data = (initOption.option as Partial<DefaultEditTextType>).data || '';
+      (this.$option as DefaultEditTextType).style = (initOption.option as Partial<DefaultEditTextType>).style || {};
     } else if (this.type == 'customize') {
       // 自定义
       this.$customize = initOption.customize
-      this.$option = initOption.option
     } else if (this.type == 'slot') {
       // 插槽
     }
