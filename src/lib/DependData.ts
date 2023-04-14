@@ -6,14 +6,14 @@ interface dependItemObject<D extends BaseData = BaseData> {
   data: D,
   name?: keyof D,
   args?: any[],
-  next?: (status: 'success' | 'fail',target: D) => any
+  next?: (status: 'success' | 'fail', target: D, res: Record<PropertyKey, any>) => any
 }
 
 interface requiredDependItemObject<D extends BaseData = BaseData> {
   data: D,
   name: keyof D,
   args: any[],
-  next?: (status: 'success' | 'fail',target: D) => any
+  next?: (status: 'success' | 'fail', target: D, res: Record<PropertyKey, any>) => any
 }
 
 type dependItem<D extends BaseData = BaseData> = D | dependItemObject<D>
@@ -53,12 +53,12 @@ class DependData extends Data {
     return new Promise((resolve, reject) => {
       (item.data[item.name] as promiseFunction)(...item.args).then(res => {
         if (item.next) {
-          item.next('success', item.data)
+          item.next('success', item.data, res)
         }
         resolve(res)
       }).catch(err => {
         if (item.next) {
-          item.next('fail', item.data)
+          item.next('fail', item.data, err)
         }
         reject(err)
       })
