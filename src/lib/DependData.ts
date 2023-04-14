@@ -5,13 +5,15 @@ import Data from "../data/Data"
 interface dependItemObject<D extends BaseData = BaseData> {
   data: D,
   name?: keyof D,
-  args?: any[]
+  args?: any[],
+  next?: (status: 'success' | 'fail',target: D) => any
 }
 
 interface requiredDependItemObject<D extends BaseData = BaseData> {
   data: D,
   name: keyof D,
-  args: any[]
+  args: any[],
+  next?: (status: 'success' | 'fail',target: D) => any
 }
 
 type dependItem<D extends BaseData = BaseData> = D | dependItemObject<D>
@@ -47,10 +49,25 @@ class DependData extends Data {
       return item as requiredDependItemObject
     }
   }
+  $loadItem(item: requiredDependItemObject) {
+    return new Promise((resolve, reject) => {
+      (item.data[item.name] as promiseFunction)(...item.args).then(res => {
+        if (item.next) {
+          item.next('success', item.data)
+        }
+        resolve(res)
+      }).catch(err => {
+        if (item.next) {
+          item.next('fail', item.data)
+        }
+        reject(err)
+      })
+    })
+  }
   $loadTogetherData() {
     const list: Promise<any>[] = []
     this.$data.forEach(item => {
-      list.push((item.data[item.name] as promiseFunction)(...item.args))
+      list.push(this.$loadItem(item))
     })
     return promiseAllFinished(list)
   }
@@ -61,18 +78,13 @@ class DependData extends Data {
       const next = () => {
         index++
         if (index < this.$data.length) {
-          const item = this.$data[index]
-          if (item) {
-            (item.data[item.name] as promiseFunction)(...item.args).then(res => {
-              resList.push(res)
-              next()
-            }).catch(err => {
-              resList.push(err)
-              next()
-            })
-          } else {
+          this.$loadItem(this.$data[index]).then(res => {
+            resList.push(res)
             next()
-          }
+          }).catch(err => {
+            resList.push(err)
+            next()
+          })
         } else {
           resolve(resList)
         }
