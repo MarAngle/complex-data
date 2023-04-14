@@ -2,7 +2,7 @@
 export type TipDataInitOption = string | ((...args: any[]) => string) | {
   data: string,
   getData?: (...args: any[]) => string,
-  location?: 'top' | 'bottom' | 'left' | 'right' | 'middle',
+  location?: 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom',
   localOption?: Record<PropertyKey, any>
 }
 
@@ -10,7 +10,7 @@ class TipData {
   static $name = 'TipData'
   data?: string
   getData?: (...args: any[]) => string
-  location: 'top' | 'bottom' | 'left' | 'right' | 'middle'
+  location: 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom'
   localOption: Record<PropertyKey, any>
   constructor(initOption?: TipDataInitOption) {
     if (!initOption) {

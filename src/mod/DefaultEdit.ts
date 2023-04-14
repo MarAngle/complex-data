@@ -167,7 +167,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     this.prop = parent.$prop
     this.type = initOption.type || 'input' as T
     this.trim = !!initOption.trim
-    this.colon = !!initOption.colon
+    this.colon = initOption.colon === undefined ? true : initOption.colon
     this.reload = initOption.reload || false // 异步二次加载判断值
     this.required = new InterfaceData(initOption.required || false)
     this.disabled = new InterfaceData(initOption.disabled || false)
