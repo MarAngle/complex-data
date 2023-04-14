@@ -16,23 +16,23 @@ interface valueType {
 
 export type DefaultEditTypeDict = 'input' | 'inputNumber' | 'textArea' | 'switch' | 'select' | 'cascader' | 'date' | 'dateRange' | 'file' | 'button' | 'text' | 'customize' | 'slot'
 
-export interface DefaultEditInputType {
+interface DefaultEditInputType {
   type: string
   maxLength: number
   hideClear: boolean
 }
-export interface DefaultEditInputNumberType {
+interface DefaultEditInputNumberType {
   max: number
   min: number
   precision: number
   step: number
 }
-export interface DefaultEditTextAreaType {
+interface DefaultEditTextAreaType {
   maxLength: number
   autoSize: boolean
-  allowClear: boolean
+  hideClear: boolean
 }
-export interface DefaultEditSelectType {
+interface DefaultEditSelectType {
   list: Record<PropertyKey, any>[]
   optionValue: string
   optionLabel: string
@@ -42,35 +42,37 @@ export interface DefaultEditSelectType {
   autoWidth: boolean
   noDataContent?: string
 }
-export interface DefaultEditCascaderType {
+interface DefaultEditCascaderType {
   list: Record<PropertyKey, any>[]
   hideArrow: boolean
   hideClear: boolean
 }
-export interface DefaultEditFileType {
+interface DefaultEditFileType {
   accept: string
   multipleAppend: boolean
-  maxNum: number
-  minNum: number
-  maxSize: number
+  max: number
+  min: number
+  size: number
   upload: boolean
   fileUpload: boolean
   layout: string
 }
-export interface DefaultEditButtonType {
+interface DefaultEditButtonType {
   loading: boolean
   type: string
   icon: string
   name?: string
 }
-export interface DefaultEditTextType {
+interface DefaultEditTextType {
   data: string
   style: Record<PropertyKey, any>
 }
+type DefaultEditCustomizeType = Record<PropertyKey, unknown>
+type DefaultEditSlotType = Record<PropertyKey, unknown>
 
-export type DefaultEditOptionType<T extends DefaultEditTypeDict> = T extends 'input' ? DefaultEditInputType : T extends 'inputNumber' ? DefaultEditInputNumberType : T extends 'textArea' ?  DefaultEditTextAreaType : T extends 'select' ? DefaultEditSelectType : T extends 'cascader' ? DefaultEditCascaderType : T extends 'file' ? DefaultEditFileType : T extends 'button' ? DefaultEditButtonType : DefaultEditTextType
+export type DefaultEditOptionType<T extends DefaultEditTypeDict> = T extends 'input' ? DefaultEditInputType : T extends 'inputNumber' ? DefaultEditInputNumberType : T extends 'textArea' ?  DefaultEditTextAreaType : T extends 'select' ? DefaultEditSelectType : T extends 'cascader' ? DefaultEditCascaderType : T extends 'file' ? DefaultEditFileType : T extends 'button' ? DefaultEditButtonType : T extends 'text' ? DefaultEditTextType : T extends 'customize' ? DefaultEditCustomizeType : DefaultEditSlotType
 
-export type PartialDefaultEditOptionType<T extends DefaultEditTypeDict> =  T extends 'input' ? Partial<DefaultEditInputType> : T extends 'inputNumber' ? Partial<DefaultEditInputNumberType> : T extends 'textArea' ?  Partial<DefaultEditTextAreaType> : T extends 'select' ? Partial<DefaultEditSelectType> : T extends 'cascader' ? Partial<DefaultEditCascaderType> : T extends 'file' ? Partial<DefaultEditFileType> : T extends 'button' ? Partial<DefaultEditButtonType> : Partial<DefaultEditTextType>
+export type PartialDefaultEditOptionType<T extends DefaultEditTypeDict> =  T extends 'input' ? Partial<DefaultEditInputType> : T extends 'inputNumber' ? Partial<DefaultEditInputNumberType> : T extends 'textArea' ?  Partial<DefaultEditTextAreaType> : T extends 'select' ? Partial<DefaultEditSelectType> : T extends 'cascader' ? Partial<DefaultEditCascaderType> : T extends 'file' ? Partial<DefaultEditFileType> : T extends 'button' ? Partial<DefaultEditButtonType> : T extends 'text' ? Partial<DefaultEditTextType> : T extends 'customize' ? Partial<DefaultEditCustomizeType> : Partial<DefaultEditSlotType>
 
 export interface DefaultEditInitOption<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends BaseDataInitOption<DictionaryData> {
   type?: T
@@ -281,7 +283,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       // 文本域
       (this.$option as DefaultEditOptionType<'textArea'>).maxLength = (initOption.option as PartialDefaultEditOptionType<'textArea'>).maxLength || defaultOption!.option!.maxLength;
       (this.$option as DefaultEditOptionType<'textArea'>).autoSize = (initOption.option as PartialDefaultEditOptionType<'textArea'>).autoSize || defaultOption!.option!.autoSize;
-      (this.$option as DefaultEditOptionType<'textArea'>).allowClear = (initOption.option as PartialDefaultEditOptionType<'textArea'>).allowClear || defaultOption!.option!.allowClear;
+      (this.$option as DefaultEditOptionType<'textArea'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'textArea'>).hideClear || defaultOption!.option!.hideClear;
     } else if (this.type == 'switch') {
       // 开关
     } else if (this.type == 'select') {
@@ -329,9 +331,9 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       // 文件
       (this.$option as DefaultEditOptionType<'file'>).accept = (initOption.option as PartialDefaultEditOptionType<'file'>).accept || '';
       (this.$option as DefaultEditOptionType<'file'>).multipleAppend = (initOption.option as PartialDefaultEditOptionType<'file'>).multipleAppend || false; // 多选状态下多个文件中一个存在问题时的操作
-      (this.$option as DefaultEditOptionType<'file'>).maxNum = (initOption.option as PartialDefaultEditOptionType<'file'>).maxNum || 0;
-      (this.$option as DefaultEditOptionType<'file'>).minNum = (initOption.option as PartialDefaultEditOptionType<'file'>).minNum || 0;
-      (this.$option as DefaultEditOptionType<'file'>).maxSize = (initOption.option as PartialDefaultEditOptionType<'file'>).maxSize || 0;
+      (this.$option as DefaultEditOptionType<'file'>).max = (initOption.option as PartialDefaultEditOptionType<'file'>).max || 0;
+      (this.$option as DefaultEditOptionType<'file'>).min = (initOption.option as PartialDefaultEditOptionType<'file'>).min || 0;
+      (this.$option as DefaultEditOptionType<'file'>).size = (initOption.option as PartialDefaultEditOptionType<'file'>).size || 0;
       (this.$option as DefaultEditOptionType<'file'>).upload = (initOption.option as PartialDefaultEditOptionType<'file'>).upload || false;
       (this.$option as DefaultEditOptionType<'file'>).fileUpload = (initOption.option as PartialDefaultEditOptionType<'file'>).fileUpload || false;
       (this.$option as DefaultEditOptionType<'file'>).layout = (initOption.option as PartialDefaultEditOptionType<'file'>).layout === undefined ? 'auto' : (initOption.option as DefaultEditOptionType<'file'>).layout;
@@ -350,9 +352,11 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       (this.$option as DefaultEditOptionType<'text'>).style = (initOption.option as PartialDefaultEditOptionType<'text'>).style || {};
     } else if (this.type == 'customize') {
       // 自定义
-      this.$customize = initOption.customize
+      this.$customize = initOption.customize;
+      (this.$option as DefaultEditOptionType<'customize'>) = (initOption.option as PartialDefaultEditOptionType<'customize'>);
     } else if (this.type == 'slot') {
       // 插槽
+      (this.$option as DefaultEditOptionType<'slot'>) = (initOption.option as PartialDefaultEditOptionType<'slot'>);
     }
     if (!unTriggerSync) {
       this.$syncData(true, '$initOption')

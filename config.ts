@@ -187,7 +187,7 @@ const config = {
           option: {
             maxLength: 500,
             autoSize: false,
-            allowClear: false
+            hideClear: false
           },
           placeholder: function (label: InterfaceData<string>) {
             const data: Record<PropertyKey, string> = {}

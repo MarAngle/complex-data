@@ -1,32 +1,28 @@
-import Data from "../data/Data";
-
 
 export interface AttributesDataInitOption {
   props?: Record<PropertyKey, any>
   on?: Record<PropertyKey, ((...args: any[]) => any)>
   style?: Record<PropertyKey, any>
-  class?: any
-  id?: any
+  class?: string[]
+  id?: string[]
 }
 
-class AttributesData extends Data {
+class AttributesData {
   props: Record<PropertyKey, any>
   on: Record<PropertyKey, ((...args: any[]) => any)>
   style: Record<PropertyKey, any>
-  class: any
-  id: any
+  class: string[]
+  id: string[]
   constructor(initOption?: AttributesDataInitOption) {
-    super()
     if (!initOption) {
       initOption = {}
     }
-    this.style = initOption.style || {}
     this.props = initOption.props || {}
     this.on = initOption.on || {}
-    this.class = initOption.class
-    this.id = initOption.id
+    this.style = initOption.style || {}
+    this.class = initOption.class || []
+    this.id = initOption.id || []
   }
 }
-
 
 export default AttributesData
