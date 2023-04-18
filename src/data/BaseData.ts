@@ -6,6 +6,7 @@ import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
 import Data, { cascadeType } from './Data'
+import config from '../../config'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -32,10 +33,16 @@ export type ReloadOption = undefined | boolean | ReloadOptionType
 export interface resetOptionType extends moduleResetOptionType {
   [prop: string]: cascadeType<undefined | cascadeType<undefined | boolean>>
 }
-
+export type BaseDataActive = 'actived' | 'inactived'
 // type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
 
+export interface BaseDataActiveType {
+  data: BaseDataActive,
+  auto: boolean
+}
+
 export interface BaseDataInitOption<P extends Data = Data> extends DefaultDataInitOption<P> {
+  active?: BaseDataActiveType
   module?: ModuleDataInitOption,
   $getData?: promiseFunction
 }
@@ -43,13 +50,23 @@ export interface BaseDataInitOption<P extends Data = Data> extends DefaultDataIn
 class BaseData<P extends Data = Data> extends DefaultData<P> {
   static $name = 'BaseData'
   $module: ModuleData
-  $active: 'actived' | 'inactived'
+  $active: BaseDataActiveType
   $getData?: promiseFunction
   constructor(initOption: BaseDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
-    this.$active = 'actived'
+    if (initOption.active) {
+      this.$active = {
+        data: initOption.active.data || config.BaseData.active.data,
+        auto: initOption.active.auto === undefined ? config.BaseData.active.auto : initOption.active.auto
+      }
+    } else {
+      this.$active = {
+        data: 'actived',
+        auto: true
+      }
+    }
     this.$module = new ModuleData(initOption.module, this)
     this.$getData = initOption.$getData
     if (this.$getData) {
@@ -59,7 +76,7 @@ class BaseData<P extends Data = Data> extends DefaultData<P> {
   }
   $bindLifeByActive(target: BaseData, bind: bindType, from: 'success' | 'fail', active?: boolean, bindNext?: () => void) {
     let next = true
-    if (active && this.$active == 'inactived') {
+    if (active && !this.$isActive()) {
       // 需要判断激活状态且当前状态为未激活时不直接触发
       next = false
     }
@@ -93,6 +110,10 @@ class BaseData<P extends Data = Data> extends DefaultData<P> {
     if (!life) {
       life = 'load'
     }
+    if (active === undefined && this.$active.auto) {
+      // 自动激活模式下，默认进行激活的判断
+      active = true
+    }
     const currentStatus = target.$getStatus(life)
     if (currentStatus == 'success') {
       this.$bindLifeByActive(target, bind, 'success', active)
@@ -120,22 +141,28 @@ class BaseData<P extends Data = Data> extends DefaultData<P> {
       }
     })
   }
-  $changeActive(current?: 'actived' | 'inactived') {
+  $getActive() {
+    return this.$active.data
+  }
+  $isActive() {
+    return this.$getActive() == 'actived'
+  }
+  $changeActive(current?: 'actived' | 'inactived', from?: string) {
     let realChange = true
     if (current) {
-      if (this.$active == current) {
+      if (this.$getActive() == current) {
         realChange = false
       } else {
-        this.$active = current
+        this.$active.data = current
       }
-    } else if (this.$active == 'actived') {
-      this.$active = 'inactived'
+    } else if (this.$getActive() == 'actived') {
+      this.$active.data = 'inactived'
     } else {
-      this.$active = 'actived'
+      this.$active.data = 'actived'
     }
     this.$syncData(true, '$changeActive')
     // 触发生命周期
-    this.$triggerLife(this.$active, this, realChange)
+    this.$triggerLife(this.$getActive(), this, realChange, from)
   }
   /* --- module start --- */
   $setModule(...args: Parameters<ModuleData['$setData']>) {
@@ -192,6 +219,10 @@ class BaseData<P extends Data = Data> extends DefaultData<P> {
     }
   }
   $triggerGetData(...args: any[]) {
+    if (this.$active.auto) {
+      // 自动激活模式下主动触发激活操作
+      this.$changeActive('actived', 'getData')
+    }
     const promise = this.$triggerMethodByStatusWidthOperate(['$getData', args, 'load', false, (target, res) => {
       if (target == 'start') {
         this.$triggerLife('beforeLoad', this, ...args)

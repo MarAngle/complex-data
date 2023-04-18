@@ -64,6 +64,10 @@ class ComplexData<P extends Data = Data> extends BaseData<P> {
     return this.$module.update!.reset(...args)
   }
   $triggerUpdateData (...args: any[]) {
+    if (this.$active.auto) {
+      // 自动激活模式下主动触发激活操作
+      this.$changeActive('actived', 'updateData')
+    }
     const promise = this.$triggerMethodByStatusWidthOperate(['$updateData', args, 'update', false, (target, res) => {
       if (target == 'start') {
         this.$triggerLife('beforeUpdate', this, ...args)

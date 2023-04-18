@@ -9,6 +9,12 @@ export interface DictType {
 }
 
 const config = {
+  BaseData: {
+    active: {
+      data: 'actived',
+      auto: true
+    }
+  },
   SearchData: {
     menu: [
       {
