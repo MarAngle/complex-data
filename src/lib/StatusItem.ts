@@ -108,11 +108,24 @@ class StatusItem extends Data {
     }
     return this.list.get(value)
   }
+  getDataLife(value?: valueType) {
+    if (!value) {
+      value = this.current
+    }
+    let life: keyof triggerType
+    for (life in this.trigger) {
+      const triggerDict = this.trigger[life]
+      if (triggerDict.to == value) {
+        return life
+      }
+    }
+  }
   triggerChange(target: keyof triggerType, strict?: boolean, triggerCallBack?: triggerCallBackType, args: any[] = []) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
     if (strict) {
-      if (triggerDict.from.indexOf(current) == 0) {
+      // 当前状态不在目标周期的来源时，严格校验失败打断
+      if (triggerDict.from.indexOf(current) == -1) {
         return false
       }
     }

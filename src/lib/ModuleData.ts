@@ -91,7 +91,7 @@ class ModuleData extends Data<BaseData> {
       if (modData === true) {
         return new ModuleClassData()
       } else if (modData && !(modData instanceof ModuleClassData)) {
-        return new ModuleClassData(modData)
+        return new ModuleClassData(modData, this.$getParent())
       }
     } else if (ModuleDictionaryMap.size == 0) {
       this.$exportMsg(`Module模块为未赋值，请检查引用方式！`, 'error')

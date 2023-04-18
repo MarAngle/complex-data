@@ -8,6 +8,8 @@ import LifeItem, { LifeItemDataType } from './LifeItem'
 基本周期函数
 created
 beforeLoad
+actived
+inactived
 loaded
 loadFail
 beforeUpdate

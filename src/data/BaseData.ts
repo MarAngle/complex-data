@@ -11,8 +11,16 @@ export interface forceObjectType {
   correct?: PromiseOptionType['correct']
   [prop: string]: undefined | boolean | string
 }
-
 export type forceType = boolean | forceObjectType
+
+export type bindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => any
+export interface bindOption {
+  life?: 'load' | 'update',
+  once?: boolean,
+  update?: boolean,
+  active?: boolean,
+  fail?: boolean
+}
 
 export type promiseFunction = (...args: any[]) => Promise<any>
 
@@ -35,17 +43,99 @@ export interface BaseDataInitOption<P extends Data = Data> extends DefaultDataIn
 class BaseData<P extends Data = Data> extends DefaultData<P> {
   static $name = 'BaseData'
   $module: ModuleData
+  $active: 'actived' | 'inactived'
   $getData?: promiseFunction
   constructor(initOption: BaseDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('BaseData', 'beforeCreate', initOption)
+    this.$active = 'actived'
     this.$module = new ModuleData(initOption.module, this)
     this.$getData = initOption.$getData
     if (this.$getData) {
       this.$initLoadDepend()
     }
     this.$triggerCreateLife('BaseData', 'created', initOption)
+  }
+  $bindLifeByActive(target: BaseData, bind: bindType, from: 'success' | 'fail', active?: boolean, bindNext?: () => void) {
+    let next = true
+    if (active && this.$active == 'inactived') {
+      // 需要判断激活状态且当前状态为未激活时不直接触发
+      next = false
+    }
+    if (next) {
+      bind(target, this, from)
+      if (bindNext) {
+        bindNext()
+      }
+    } else {
+      // 设置主数据被激活时触发bind函数
+      // 设置相同id,使用replace模式，需要注意的是当函数变化后开始的函数可能还未被触发
+      this.$onLife('actived', {
+        id: target.$getId('BindLife' + from),
+        once: true,
+        replace: true,
+        data: () => {
+          bind(target, this, from)
+          if (bindNext) {
+            bindNext()
+          }
+        }
+      })
+    }
+  }
+  $bindLife(target: BaseData, bind: bindType, {
+    life, // 生命周期名称
+    once, // 成功后解除绑定
+    active, // 是否只在激活状态下触发
+    fail // 失败是否触发bind
+  }: bindOption = {}) {
+    if (!life) {
+      life = 'load'
+    }
+    const currentStatus = target.$getStatus(life)
+    if (currentStatus == 'success') {
+      this.$bindLifeByActive(target, bind, 'success', active)
+      if (once) {
+        return
+      }
+    } else if (fail && currentStatus == 'fail') {
+      this.$bindLifeByActive(target, bind, 'fail', active)
+    }
+    const failLifeName = life == 'load' ? 'loadFail' : 'updateFail'
+    const failLifeId = fail ? target.$onLife(failLifeName, {
+      once: once,
+      data: () => {
+        this.$bindLifeByActive(target, bind, 'fail', active)
+      }
+    }) as string : undefined
+    const successLifeName = life == 'load' ? 'loaded' : 'updated'
+    target.$onLife(successLifeName, {
+      once: once,
+      data: () => {
+        this.$bindLifeByActive(target, bind, 'success', active, (once && failLifeId) ? () => {
+          // once成功后且存在失败周期时解除失败回调
+          target.$offLife(failLifeName, failLifeId)
+        } : undefined)
+      }
+    })
+  }
+  $changeActive(current?: 'actived' | 'inactived') {
+    let realChange = true
+    if (current) {
+      if (this.$active == current) {
+        realChange = false
+      } else {
+        this.$active = current
+      }
+    } else if (this.$active == 'actived') {
+      this.$active = 'inactived'
+    } else {
+      this.$active = 'actived'
+    }
+    this.$syncData(true, '$changeActive')
+    // 触发生命周期
+    this.$triggerLife(this.$active, this, realChange)
   }
   /* --- module start --- */
   $setModule(...args: Parameters<ModuleData['$setData']>) {

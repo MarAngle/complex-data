@@ -86,7 +86,7 @@ class ComplexData<P extends Data = Data> extends BaseData<P> {
       force = {}
     }
     const updateStatus = this.$getStatus('update')
-    if (updateStatus == 'un') {
+    if (updateStatus == 'un' || updateStatus == 'fail') {
       this.$triggerUpdateData(...args)
     } else { // ing
       // 直接then'

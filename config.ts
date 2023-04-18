@@ -97,7 +97,7 @@ const config = {
             },
             success: {
               from: ['ing'],
-              to: 'un'
+              to: 'success'
             },
             fail: {
               from: ['ing'],
@@ -112,6 +112,10 @@ const config = {
             {
               value: 'ing',
               label: '更新中'
+            },
+            {
+              value: 'success',
+              label: '更新成功'
             },
             {
               value: 'fail',

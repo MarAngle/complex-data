@@ -8,7 +8,7 @@
     "url": "https://github.com/MarAngle/complex-data.git"
   },
   "dependencies": {
-    "complex-utils": "^1.0.5"
+    "complex-utils": "^1.0.6"
   },
   "devDependencies": {
     "typescript": "~4.5.5"
