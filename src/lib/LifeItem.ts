@@ -14,10 +14,12 @@ const lifeId = new IdData({
   ]
 })
 
+export type idType = string | number | symbol
+
 type LifeItemDataFunction = (...args: any[]) => any
 
 export interface LifeItemDataObject {
-  id?: string,
+  id?: idType,
   data: LifeItemDataFunction,
   index?: number,
   replace?: boolean,
@@ -35,7 +37,7 @@ export interface LifeItemInitOption {
 class LifeItem extends Data {
   static $name = 'LifeItem'
   name: string;
-  data: Map<string, LifeItemDataObject>
+  data: Map<idType, LifeItemDataObject>
   constructor(initOption: LifeItemInitOption) {
     initOption = formatInitOption(initOption)
     super()
@@ -97,7 +99,7 @@ class LifeItem extends Data {
    * @param {object| function} data 回调参数
    * @returns {boolean}next
    */
-  $formatData(data: LifeItemDataType): string | undefined {
+  $formatData(data: LifeItemDataType): idType | undefined {
     const dataType = getType(data)
     let next = true
     if (dataType === 'function') {
@@ -113,7 +115,7 @@ class LifeItem extends Data {
           (<LifeItemDataObject>data).id = lifeId.getData()
         }
         if (this.data.has((<LifeItemDataObject>data).id!) && !(<LifeItemDataObject>data).replace) {
-          this.$exportMsg(`存在当前值:${(<LifeItemDataObject>data).id}`)
+          this.$exportMsg(`存在当前值:${String((<LifeItemDataObject>data).id)}`)
         } else {
           this.$pushData(<LifeItemDataObject>data)
           if ((<LifeItemDataObject>data).immediate) {
@@ -122,7 +124,7 @@ class LifeItem extends Data {
           return (<LifeItemDataObject>data).id
         }
       } else {
-        this.$exportMsg(`设置(${(<LifeItemDataObject>data).id || '-'})未定义func`)
+        this.$exportMsg(`设置(${String((<LifeItemDataObject>data).id) || '-'})未定义func`)
       }
     } else {
       this.$exportMsg(`设置data参数需要object或者function`)
@@ -143,7 +145,7 @@ class LifeItem extends Data {
    * @param {string} id id
    * @param  {...any} args 参数
    */
-  emit(id: string, ...args: any[]) {
+  emit(id: idType, ...args: any[]) {
     const data = this.data.get(id)
     if (data && data.data) {
       data.data(...args)
@@ -151,7 +153,7 @@ class LifeItem extends Data {
         this.off(id)
       }
     } else {
-      this.$exportMsg(`不存在当前值(${id})`)
+      this.$exportMsg(`不存在当前值(${String(id)})`)
     }
   }
   /**
@@ -159,7 +161,7 @@ class LifeItem extends Data {
    * @param {string} id id
    * @returns {boolean}
    */
-  off(id: string) {
+  off(id: idType) {
     return this.data.delete(id)
   }
   /**
