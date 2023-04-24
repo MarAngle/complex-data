@@ -1,15 +1,16 @@
 import { getType } from 'complex-utils'
 import Data from './Data'
+import DefaultData from './DefaultData'
 import { formatInitOption } from '../utils'
 
-export interface SimpleDataInitOption<P extends Data = Data> {
+export interface SimpleDataInitOption<P extends undefined | DefaultData<any> = undefined> {
   name?: string,
   prop?: string,
   parent?: P,
   extra?: Record<PropertyKey, any>
 }
 
-class SimpleData<P extends Data = Data> extends Data<P> {
+class SimpleData<P extends undefined | DefaultData<any> = undefined> extends Data<P> {
   static $name = 'SimpleData'
   $name: string
   $prop: string

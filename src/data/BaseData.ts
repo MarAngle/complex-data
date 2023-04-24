@@ -5,7 +5,7 @@ import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../li
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
-import Data, { cascadeType } from './Data'
+import { cascadeType } from './Data'
 import config from '../../config'
 
 export interface forceObjectType {
@@ -14,7 +14,7 @@ export interface forceObjectType {
 }
 export type forceType = boolean | forceObjectType
 
-export type bindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => any
+export type bindType = (target: BaseData<any>, origin: BaseData<any>, life: 'success' | 'fail') => any
 export interface bindOption {
   life?: 'load' | 'update',
   once?: boolean,
@@ -23,7 +23,7 @@ export interface bindOption {
   fail?: boolean
 }
 
-export type promiseFunction = (...args: any[]) => Promise<any>
+export type promiseFunction<T extends BaseData = BaseData> = (this: T, ...args: any[]) => Promise<any>
 
 export interface ReloadOptionType {
   [prop: string]: undefined | boolean
@@ -41,13 +41,13 @@ export interface BaseDataActiveType {
   auto: boolean
 }
 
-export interface BaseDataInitOption<P extends Data = Data> extends DefaultDataInitOption<P> {
+export interface BaseDataInitOption<P extends undefined | DefaultData<any> = undefined> extends DefaultDataInitOption<P> {
   active?: BaseDataActiveType
   module?: ModuleDataInitOption,
   $getData?: promiseFunction
 }
 
-class BaseData<P extends Data = Data> extends DefaultData<P> {
+class BaseData<P extends undefined | DefaultData<any> = undefined> extends DefaultData<P> {
   static $name = 'BaseData'
   $module: ModuleData
   $active: BaseDataActiveType

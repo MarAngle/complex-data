@@ -3,13 +3,13 @@ import BaseData, { BaseDataInitOption, forceType, promiseFunction } from "../dat
 import DictionaryList from '../lib/DictionaryList'
 import PaginationData from '../lib/PaginationData'
 import UpdateData from '../lib/UpdateData'
-import Data from "../data/Data"
+import DefaultData from "../data/DefaultData"
 
-export interface ComplexDataInitOption<P extends Data = Data> extends BaseDataInitOption<P> {
+export interface ComplexDataInitOption<P extends undefined | DefaultData = undefined> extends BaseDataInitOption<P> {
   $updateData?: promiseFunction
 }
 
-class ComplexData<P extends Data = Data> extends BaseData<P> {
+class ComplexData<P extends undefined | DefaultData = undefined> extends BaseData<P> {
   static $name = 'ComplexData'
   $updateData?: promiseFunction
   constructor(initOption: ComplexDataInitOption<P>) {

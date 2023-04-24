@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Data as UtilsBaseData } from "complex-utils"
 import BaseData from './BaseData'
-let id = 0
 
+let id = 0
 function createId(): string {
   id++
   return id.toString()
@@ -15,7 +15,7 @@ interface cascadeTypeObject<D> {
 
 export type cascadeType<D> = D | cascadeTypeObject<D>
 
-class Data<P extends Data = any> extends UtilsBaseData {
+class Data<P extends undefined | Data<any> = undefined> extends UtilsBaseData {
   static $name = 'Data'
   static $observe = false
   readonly $id!: string

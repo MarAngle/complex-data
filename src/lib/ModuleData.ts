@@ -43,7 +43,7 @@ export interface ModuleDataType {
   $destroy: ((option?: boolean, ...args: any[]) => any) | ((option?: cascadeType<undefined | boolean>, ...args: any[]) => any)
 }
 
-class ModuleData extends Data<BaseData> {
+class ModuleData extends Data<BaseData<any>> {
   static $name = 'ModuleData'
   status?: StatusData
   promise?: PromiseData
@@ -53,7 +53,7 @@ class ModuleData extends Data<BaseData> {
   search?: SearchData
   pagination?: PaginationData
   choice?: ChoiceData
-  constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
+  constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData<any>) {
     super()
     this.$setParent(parent)
     if (initOption && getType(initOption) == 'object') {

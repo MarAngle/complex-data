@@ -1,5 +1,5 @@
 import { getType, getProp, setProp, isExist } from 'complex-utils'
-import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
+import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import { formatInitOption } from '../utils'
 import DefaultList, { DefaultListInitOption } from '../mod/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../mod/DefaultInfo'
@@ -71,7 +71,7 @@ export type DictionanyModDataType = {
   [prop: string]: undefined | DictionaryModItemType
 }
 
-export interface DictionaryDataInitOption extends SimpleDataInitOption, customerFunction {
+export interface DictionaryDataInitOption extends DefaultDataInitOption<any>, customerFunction {
   prop: string, // 属性，本地唯一
   simple?: boolean, // 简单快速处理判断值
   originProp?: InterfaceDataInitOption<string> // 来源属性
@@ -105,7 +105,7 @@ const defaultCheck = function (data: unknown) {
 
 const DictionaryMap: Map<string, DictionaryMapItemType> = new Map()
 
-class DictionaryData extends SimpleData implements customerFunction, HasLayoutData {
+class DictionaryData extends DefaultData implements customerFunction, HasLayoutData {
   static $name = 'DictionaryData'
   prop: string
   $originFrom: string[]

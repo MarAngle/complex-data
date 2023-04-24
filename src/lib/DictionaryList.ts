@@ -44,7 +44,7 @@ interface RequiredDictionaryListOption {
   tree: boolean
 }
 
-export interface DictionaryListInitOption extends DefaultDataInitOption {
+export interface DictionaryListInitOption extends DefaultDataInitOption<any> {
   list?: DictionaryDataInitOption[]
   layout?: LayoutDataInitOption
   option?: DictionaryListOption
@@ -56,8 +56,6 @@ export interface formDataOption {
   from?: string,
   limit?: LimitData | LimitDataInitOption,
 }
-
-
 
 function initPropData(defaultProp: propDataKeys, propData?: propDataType<string | propDataItemType>): propDataItemType {
   if (propData) {

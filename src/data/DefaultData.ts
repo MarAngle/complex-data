@@ -1,13 +1,12 @@
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import LifeData, { LifeDataInitOption } from './../lib/LifeData'
 import { formatInitOption } from '../utils'
-import Data from './Data'
 
-export interface DefaultDataInitOption<P extends Data = Data> extends SimpleDataInitOption<P> {
+export interface DefaultDataInitOption<P extends undefined | DefaultData<any> = undefined> extends SimpleDataInitOption<P> {
   life?: LifeDataInitOption
 }
 
-class DefaultData<P extends Data = Data> extends SimpleData<P> {
+class DefaultData<P extends undefined | DefaultData<any> = undefined> extends SimpleData<P> {
   static $name = 'DefaultData'
   $life: LifeData;
   constructor(initOption: DefaultDataInitOption<P>) {

@@ -45,14 +45,14 @@ export type StatusItemInitOption = {
   option?: StatusItemInitOptionOption
 }
 
-class StatusItem extends Data {
+class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> {
   static $name = 'StatusItem'
   option: defaultOption | countOption
   list: Map<valueType, itemType>
   trigger: triggerType
   current: valueType
   default: valueType
-  constructor (initOption: StatusItemInitOption, parent?: StatusData) {
+  constructor (initOption: StatusItemInitOption, parent?: P) {
     if (!initOption.list || initOption.list.length == 0) {
       console.error(`StatusItem未设置初始化列表`)
     }
