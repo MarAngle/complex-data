@@ -1,14 +1,14 @@
 {
   "name": "complex-data-next",
-  "version": "3.1.5",
+  "version": "3.1.8",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarAngle/complex-data.git"
+    "url": "https://github.com/MarAngle/complex-data-next.git"
   },
   "dependencies": {
-    "complex-utils": "^1.0.7"
+    "complex-utils": "^1.0.8"
   },
   "devDependencies": {
     "typescript": "~4.5.5"
