@@ -23,7 +23,7 @@ export interface bindOption {
   fail?: boolean
 }
 
-export type promiseFunction<T extends BaseData = BaseData> = (this: T, ...args: any[]) => Promise<any>
+export type promiseFunction = (...args: any[]) => Promise<any>
 
 export interface ReloadOptionType {
   [prop: string]: undefined | boolean
@@ -252,7 +252,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       if (force && force.ing) {
         this.$triggerGetData(...args)
       }
-    } else if (loadStatus == 'end') {
+    } else if (loadStatus == 'success') {
       if (force) {
         this.$triggerGetData(...args)
       }
