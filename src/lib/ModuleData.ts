@@ -183,7 +183,6 @@ class ModuleData extends Data<BaseData<any>> {
         }
       }
     })
-
   }
   $destroy(destroyOption: moduleResetOptionType = {}, ...args: any[]) {
     this.$reset(destroyOption)

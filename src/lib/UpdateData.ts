@@ -2,6 +2,7 @@ import { isPromise } from 'complex-utils'
 import config from '../../config'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
+import ComplexData from '../core/ComplexData'
 
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -14,18 +15,18 @@ export type offsetObjectType = {
 
 export type offsetType = number | offsetObjectType
 
-type triggerType = (func: UpdateData["$next"], index: number) => void
+type triggerType<P extends undefined | DefaultData<any> = ComplexData> = (next: UpdateData<P>["$next"], index: number) => void
 type getOffsetType = (offset: number, currentNumber: number) => number
 type checkType = (currentNumber: number) => boolean | Promise<any>
 
-export interface UpdateDataInitOption extends DefaultDataInitOption {
+export interface UpdateDataInitOption<P extends undefined | DefaultData<any> = ComplexData> extends DefaultDataInitOption<P> {
   offset?: offsetType,
-  trigger: triggerType,
+  trigger?: triggerType<P>,
   getOffset?: getOffsetType,
   check?: checkType
 }
 
-class UpdateData extends DefaultData {
+class UpdateData<P extends undefined | DefaultData<any> = ComplexData> extends DefaultData<P> {
   static $name = 'UpdateData'
   load: {
     update: boolean
@@ -38,8 +39,8 @@ class UpdateData extends DefaultData {
     data: number
   }
   timer: undefined | number
-  trigger!: triggerType
-  constructor(initOption: UpdateDataInitOption) {
+  trigger?: triggerType<P>
+  constructor(initOption: UpdateDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('UpdateData', 'beforeCreate', initOption)
@@ -70,6 +71,7 @@ class UpdateData extends DefaultData {
         data: initOption.offset.start === undefined ? offsetData : initOption.offset.start
       }
     }
+    this.$next = this.$next.bind(this as UpdateData<any>)
     this.$triggerCreateLife('UpdateData', 'created')
   }
   /**
@@ -143,6 +145,22 @@ class UpdateData extends DefaultData {
       this.clear()
     }
   }
+  $trigger(next: UpdateData<P>["$next"], index: number) {
+    if (this.trigger) {
+      this.trigger(next, index)
+    } else {
+      const parent = this.$getParent()
+      if (parent && parent instanceof ComplexData) {
+        parent.$loadUpdateData().then(() => {
+          this.$next()
+        }).catch(() => {
+          this.$next()
+        })
+      } else {
+        this.$exportMsg('出发更新函数为定义!', 'error')
+      }
+    }
+  }
   /**
    * 设定触发
    * @param {number} offset 指定间隔，不存在读取默认
@@ -157,14 +175,14 @@ class UpdateData extends DefaultData {
       // 准备开始trigger操作
       this.load.operate = true
       this.$triggerLife('beforeTrigger', this, offset)
-      this.trigger(this.$next.bind(this), this.getNum())
+      this.$trigger(this.$next, this.getNum())
     }, this.countOffset(offset)) as unknown as number
   }
   /**
    * 继续进行下一次回调
    * @param {number} offset 指定间隔，不存在读取默认
    */
-  $next(this: UpdateData, offset?: false | number) {
+  $next(this: UpdateData<P>, offset?: false | number) {
     // trigger结束
     this.load.operate = false
     this.$triggerLife('triggered', this, offset)
