@@ -378,7 +378,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
   }
 
-  $install(target: BaseData) {
+  $install(target: BaseData<any>) {
     super.$install(target)
     // 监听事件
     this.$onLife('updated', {
@@ -388,7 +388,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       }
     })
   }
-  $uninstall(target: BaseData) {
+  $uninstall(target: BaseData<any>) {
     super.$uninstall(target)
     // 停止监听事件
     this.$offLife('updated', target.$getId('dictionaryUpdated'))

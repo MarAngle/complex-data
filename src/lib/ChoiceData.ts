@@ -255,7 +255,7 @@ class ChoiceData extends Data {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install (target: BaseData) {
+  $install (target: BaseData<any>) {
     super.$install(target)
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
@@ -276,7 +276,7 @@ class ChoiceData extends Data {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  $uninstall(target: BaseData) {
+  $uninstall(target: BaseData<any>) {
     super.$uninstall(target)
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
     // target.$offLife('beforeReset', this.$getId('beforeReset'))

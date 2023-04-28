@@ -1,9 +1,9 @@
-import config from '../../config'
-import { formatInitOption } from '../utils'
 import Data from './../data/Data'
 import StatusItem, { StatusItemInitOption, valueType } from './StatusItem'
+import config from '../../config'
+import { formatInitOption } from '../utils'
 
-type StatusDataInitOptionItem = {
+export type StatusDataInitOptionItem = {
   prop: string,
   data: StatusItemInitOption
 }
@@ -33,13 +33,13 @@ class StatusData extends Data {
     }
     this.$syncData(true, 'addData')
   }
-  deleteData(target: string, reset?: boolean) {
+  removeData(target: string, reset?: boolean) {
     if (this.data[target]) {
       if (reset !== false) {
         this.data[target].reset()
       }
       delete this.data[target]
-      this.$syncData(true, 'deleteData')
+      this.$syncData(true, 'removeData')
     }
   }
   getItem(target = 'operate') {

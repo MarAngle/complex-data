@@ -1,6 +1,6 @@
 {
   "name": "complex-data-next",
-  "version": "3.1.10",
+  "version": "3.1.11",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {

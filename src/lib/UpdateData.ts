@@ -1,8 +1,9 @@
 import { isPromise } from 'complex-utils'
-import config from '../../config'
-import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 import BaseData from '../data/BaseData'
+import { StatusItemInitOption } from './StatusItem'
+import config from '../../config'
+import { formatInitOption } from '../utils'
 
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -258,6 +259,19 @@ class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends Defa
   $destroy(option?: boolean) {
     if (option !== false) {
       this.$reset(option)
+    }
+  }
+  $install(target: BaseData<any>) {
+    super.$install(target)
+    target.$initLoadDepend()
+    if (!target.$module.status?.getItem('update')) {
+      target.$module.status?.addData('update', config.StatusData.data.update as StatusItemInitOption)
+    }
+  }
+  $uninstall(target: BaseData<any>) {
+    super.$uninstall(target)
+    if (target.$module.status?.getItem('update')) {
+      target.$module.status?.removeData('update')
     }
   }
 }
