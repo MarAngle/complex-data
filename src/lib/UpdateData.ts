@@ -2,7 +2,7 @@ import { isPromise } from 'complex-utils'
 import config from '../../config'
 import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
-import ComplexData from '../core/ComplexData'
+import BaseData from '../data/BaseData'
 
 /**
  * 需要设置methods: trigger,其中的next必须需要调用
@@ -15,18 +15,18 @@ export type offsetObjectType = {
 
 export type offsetType = number | offsetObjectType
 
-type triggerType<P extends undefined | DefaultData<any> = ComplexData> = (next: UpdateData<P>["$next"], index: number) => void
+type triggerType<P extends undefined | DefaultData<any> = BaseData> = (next: UpdateData<P>["$next"], index: number) => void
 type getOffsetType = (offset: number, currentNumber: number) => number
 type checkType = (currentNumber: number) => boolean | Promise<any>
 
-export interface UpdateDataInitOption<P extends undefined | DefaultData<any> = ComplexData> extends DefaultDataInitOption<P> {
+export interface UpdateDataInitOption<P extends undefined | DefaultData<any> = BaseData> extends DefaultDataInitOption<P> {
   offset?: offsetType,
   trigger?: triggerType<P>,
   getOffset?: getOffsetType,
   check?: checkType
 }
 
-class UpdateData<P extends undefined | DefaultData<any> = ComplexData> extends DefaultData<P> {
+class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends DefaultData<P> {
   static $name = 'UpdateData'
   load: {
     update: boolean
@@ -150,14 +150,14 @@ class UpdateData<P extends undefined | DefaultData<any> = ComplexData> extends D
       this.trigger(next, index)
     } else {
       const parent = this.$getParent()
-      if (parent && parent instanceof ComplexData) {
+      if (parent && parent instanceof BaseData) {
         parent.$loadUpdateData().then(() => {
           this.$next()
         }).catch(() => {
           this.$next()
         })
       } else {
-        this.$exportMsg('出发更新函数为定义!', 'error')
+        this.$exportMsg('触发更新函数未定义!', 'error')
       }
     }
   }

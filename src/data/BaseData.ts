@@ -1,12 +1,13 @@
 import { getProp, isPromise } from 'complex-utils'
-import { formatInitOption } from '../utils'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
 import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../lib/ModuleData'
+import UpdateData from '../lib/UpdateData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
 import { triggerCallBackType } from '../lib/StatusItem'
 import { cascadeType } from './Data'
 import config from '../../config'
+import { formatInitOption } from '../utils'
 
 export interface forceObjectType {
   correct?: PromiseOptionType['correct']
@@ -43,8 +44,9 @@ export interface BaseDataActiveType {
 
 export interface BaseDataInitOption<P extends undefined | DefaultData<any> = undefined> extends DefaultDataInitOption<P> {
   active?: BaseDataActiveType
-  module?: ModuleDataInitOption,
+  module?: ModuleDataInitOption
   $getData?: promiseFunction
+  $updateData?: promiseFunction
 }
 
 class BaseData<P extends undefined | DefaultData<any> = undefined> extends DefaultData<P> {
@@ -52,6 +54,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
   $module: ModuleData
   $active: BaseDataActiveType
   $getData?: promiseFunction
+  $updateData?: promiseFunction
   constructor(initOption: BaseDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
@@ -68,10 +71,11 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       }
     }
     this.$module = new ModuleData(initOption.module, this)
-    this.$getData = initOption.$getData
     if (this.$getData) {
+      this.$getData = initOption.$getData
       this.$initLoadDepend()
     }
+    this.$updateData = initOption.$updateData
     this.$triggerCreateLife('BaseData', 'created', initOption)
   }
   $bindLifeByActive(target: BaseData, bind: bindType, from: 'success' | 'fail', active?: boolean, bindNext?: () => void) {
@@ -216,6 +220,32 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
     }
     if (!this.$module.promise) {
       this.$setModule('promise', true)
+    }
+  }
+  $loadDataWithDepend(...args: Parameters<BaseData['$loadData']>) {
+    return new Promise((resolve, reject) => {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      this.$module.depend!.$loadData().then(resList => {
+        this.$loadData(...args).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    })
+  }
+  $autoLoadData(...args: any[]) {
+    let next: string
+    const loadStatus = this.$getStatus('load')
+    if (loadStatus != 'success') {
+      next = 'load'
+    } else {
+      next = 'update'
+    }
+    if (next == 'load') {
+      return this.$loadData(true, ...args)
+    } else {
+      return this.$loadUpdateData(true, ...args)
     }
   }
   $triggerGetData(...args: any[]) {
@@ -390,6 +420,63 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
     return this.$triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
   }
   /* --- load end --- */
+  /* --- update start --- */
+  $startUpdate(...args: Parameters<UpdateData['start']>) {
+    return this.$module.update!.start(...args)
+  }
+  $updateImmerdiate(...args: Parameters<UpdateData['updateImmerdiate']>) {
+    return this.$module.update!.updateImmerdiate(...args)
+  }
+  $resetUpdateNum(...args: Parameters<UpdateData['resetNum']>) {
+    return this.$module.update!.resetNum(...args)
+  }
+  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
+    return this.$module.update!.clear(...args)
+  }
+  $resetUpdate(...args: Parameters<UpdateData['reset']>) {
+    return this.$module.update!.reset(...args)
+  }
+  $triggerUpdateData (...args: any[]) {
+    if (this.$active.auto) {
+      // 自动激活模式下主动触发激活操作
+      this.$changeActive('actived', 'updateData')
+    }
+    const promise = this.$triggerMethodByStatusWidthOperate(['$updateData', args, 'update', false, (target, res) => {
+      if (target == 'start') {
+        this.$triggerLife('beforeUpdate', this, ...args)
+      } else if (target == 'success') {
+        this.$triggerLife('updated', this, {
+          res: res,
+          args: args
+        })
+      } else {
+        this.$triggerLife('updateFail', this, {
+          res: res,
+          args: args
+        })
+      }
+    }])
+    return this.$setPromise('update', promise)
+  }
+  $loadUpdateData (force?: forceType, ...args: any[]) {
+    if (force === true) {
+      force = {}
+    }
+    const updateStatus = this.$getStatus('update')
+    if (updateStatus == 'un' || updateStatus == 'fail') {
+      this.$triggerUpdateData(...args)
+    } else { // ing
+      // 直接then'
+      if (force) {
+        this.$triggerUpdateData(...args)
+      }
+    }
+    return this.$triggerPromise('update', {
+      errmsg: this.$createMsg(`promise模块无update数据(update状态:${updateStatus})`),
+      correct: force ? force.correct : undefined
+    })
+  }
+  /* --- update end --- */
   /* --- reset start --- */
   /**
    * 获取reset操作对应prop时机时的重置操作判断
