@@ -1,3 +1,4 @@
+import { upperCaseFirstChar } from 'complex-utils'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import LifeData, { LifeDataInitOption } from './../lib/LifeData'
 import { formatInitOption } from '../utils'
@@ -23,7 +24,16 @@ class DefaultData<P extends undefined | DefaultData<any> = undefined> extends Si
    * @param  {*[]} args 参数
    */
   $triggerCreateLife(env: string, lifeName: string, ...args: any[]) {
-    return this.$life.$triggerCreate(env, this.$getConstructorName(), lifeName, this, ...args)
+    if (!env) {
+      this.$exportMsg('$triggerCreate函数需要传递env参数')
+    }
+    const name = this.$getConstructorName()
+    if (env === name) {
+      // 当前环境是对应触发的类的环境时，触发独立的创建生命周期
+      this.$triggerLife(lifeName, this, ...args)
+    }
+    // 触发带类名称的创建生命周期
+    this.$triggerLife(env + upperCaseFirstChar(lifeName), this, ...args)
   }
   /**
    * 设置生命周期回调函数

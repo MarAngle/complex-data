@@ -43,6 +43,11 @@ export interface ModuleDataType {
   $destroy: ((option?: boolean, ...args: any[]) => any) | ((option?: cascadeType<undefined | boolean>, ...args: any[]) => any)
 }
 
+export interface setDataOption {
+  from?: string,
+  build?: boolean
+}
+
 class ModuleData extends Data<BaseData<any>> {
   static $name = 'ModuleData'
   status?: StatusData
@@ -59,7 +64,9 @@ class ModuleData extends Data<BaseData<any>> {
     if (initOption && getType(initOption) == 'object') {
       let modName: moduleKeys
       for (modName in initOption) {
-        this.$setData(modName, initOption[modName])
+        this.$setData(modName, initOption[modName], {
+          from: 'init'
+        })
       }
     }
   }
@@ -104,12 +111,14 @@ class ModuleData extends Data<BaseData<any>> {
    * @param {object} modData 模块实例
    * @param {boolean} [build] 自动构建判断值，默认为真
    */
-  $setData(modName: moduleKeys, modData?: any, build = true, unTriggerSync?: boolean) {
-    this.$uninstallData(modName, unTriggerSync)
+  $setData(modName: moduleKeys, modData?: any, { from = '', build = true }: setDataOption = {}, unTriggerSync?: boolean) {
+    if (from != 'init') {
+      this.$uninstallData(modName, 'set:' + from, unTriggerSync)
+    }
     if (build) {
       modData = this.$buildModuleData(modName, modData)
     }
-    this.$installData(modName, modData, unTriggerSync)
+    this.$installData(modName, modData, from, unTriggerSync)
   }
   $getData(modName: moduleKeys) {
     return this[modName]
@@ -119,12 +128,12 @@ class ModuleData extends Data<BaseData<any>> {
    * @param {string} modName 模块名
    * @returns {object | undefined} 卸载的模块
    */
-  $uninstallData(modName: moduleKeys, unTriggerSync?: boolean) {
+  $uninstallData(modName: moduleKeys, from?: string, unTriggerSync?: boolean) {
     const modData = this[modName]
     if (modData) {
       // 存在旧数据时需要对旧数据进行卸载操作
       if (modData.$uninstall) {
-        modData.$uninstall(this.$getParent()!)
+        modData.$uninstall(this.$getParent()!, from)
       }
       this[modName] = undefined
     }
@@ -138,10 +147,10 @@ class ModuleData extends Data<BaseData<any>> {
    * @param {string} modName 模块名
    * @param {object} modData 模块实例
    */
-  $installData(modName: moduleKeys, modData: any, unTriggerSync?: boolean) {
+  $installData(modName: moduleKeys, modData: any, from?: string, unTriggerSync?: boolean) {
     this[modName] = modData
     if (modData && modData.$install) {
-      modData.$install(this.$getParent())
+      modData.$install(this.$getParent(), from)
     }
     if (!unTriggerSync) {
       this.$syncData(true, '$installData')

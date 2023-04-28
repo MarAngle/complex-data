@@ -68,10 +68,10 @@ class Data<P extends undefined | Data<any> = undefined> extends UtilsBaseData {
   $selfName(): string {
     return `CLASS:${super.$selfName()}-ID:${this.$getId()}`
   }
-  $install(target: BaseData<any>) {
+  $install(target: P extends BaseData ? P : BaseData, from?: string) {
     this.$setParent(target as unknown as P)
   }
-  $uninstall(target: BaseData<any>) {
+  $uninstall(target: P extends BaseData ? P : BaseData, from?: string) {
     this.$setParent(undefined)
   }
 }

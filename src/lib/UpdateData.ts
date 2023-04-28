@@ -16,18 +16,18 @@ export type offsetObjectType = {
 
 export type offsetType = number | offsetObjectType
 
-type triggerType<P extends undefined | DefaultData<any> = BaseData> = (next: UpdateData<P>["$next"], index: number) => void
+type triggerType<P extends undefined | BaseData<any> = BaseData> = (next: UpdateData<P>["$next"], index: number) => void
 type getOffsetType = (offset: number, currentNumber: number) => number
 type checkType = (currentNumber: number) => boolean | Promise<any>
 
-export interface UpdateDataInitOption<P extends undefined | DefaultData<any> = BaseData> extends DefaultDataInitOption<P> {
+export interface UpdateDataInitOption<P extends undefined | BaseData<any> = BaseData> extends DefaultDataInitOption<P> {
   offset?: offsetType,
   trigger?: triggerType<P>,
   getOffset?: getOffsetType,
   check?: checkType
 }
 
-class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends DefaultData<P> {
+class UpdateData<P extends undefined | BaseData<any> = BaseData> extends DefaultData<P> {
   static $name = 'UpdateData'
   load: {
     update: boolean
@@ -106,7 +106,7 @@ class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends Defa
    * 清除定时器
    * @param {boolean} next 不存在下一步时设置更新状态为停止更新
    */
-  clear(next?: boolean) {
+  clear(next?: boolean, unTriggerSync?: boolean) {
     if (!next) {
       // 不存在下一步时设置更新状态为停止更新
       this.load.update = false
@@ -114,6 +114,9 @@ class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends Defa
     if (this.timer !== undefined) {
       clearTimeout(this.timer)
       this.timer = undefined
+    }
+    if (!unTriggerSync) {
+      this.$syncData(true, 'clear')
     }
   }
   /**
@@ -261,17 +264,31 @@ class UpdateData<P extends undefined | DefaultData<any> = BaseData> extends Defa
       this.$reset(option)
     }
   }
-  $install(target: BaseData<any>) {
-    super.$install(target)
-    target.$initLoadDepend()
-    if (!target.$module.status?.getItem('update')) {
-      target.$module.status?.addData('update', config.StatusData.data.update as StatusItemInitOption)
+  $installUpdate(target: P extends BaseData ? P : BaseData) {
+    target!.$initLoadDepend()
+    if (!target!.$module.status?.getItem('update')) {
+      target!.$module.status?.addData('update', config.StatusData.data.update as StatusItemInitOption)
     }
   }
-  $uninstall(target: BaseData<any>) {
-    super.$uninstall(target)
-    if (target.$module.status?.getItem('update')) {
-      target.$module.status?.removeData('update')
+  $install(target: P extends BaseData ? P : BaseData, from?: string) {
+    super.$install(target!)
+    if (from === 'init') {
+      // 加载中的数据在加载完成后再进行调用，避免module还未实例化的问题
+      // 鉴于当前target为BaseData实例，因此自动触发为BaseData实例加载完成时触发，避免后续需要数据时的BUG
+      target!.$onLife('BaseDataCreated', {
+        once: true,
+        data: () => {
+          this.$installUpdate(target)
+        }
+      })
+    } else {
+      this.$installUpdate(target)
+    }
+  }
+  $uninstall(target: P extends BaseData ? P : BaseData, from?: string) {
+    super.$uninstall(target!)
+    if (target!.$module.status?.getItem('update')) {
+      target!.$module.status?.removeData('update')
     }
   }
 }

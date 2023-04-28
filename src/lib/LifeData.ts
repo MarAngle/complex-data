@@ -35,15 +35,6 @@ class LifeData extends Data {
       this.$initData(initOption)
     }
   }
-  $triggerCreate(env: string, name: string, lifeName: string, ...args: any[]) {
-    if (!env) {
-      this.$exportMsg('$triggerCreate函数需要传递env参数')
-    }
-    if (env != name) {
-      lifeName = env + lifeName.charAt(0).toUpperCase() + lifeName.slice(1)
-    }
-    this.trigger(lifeName, this, ...args)
-  }
   /**
    * 加载生命周期状态列表
    * @param {object} [initOption] 生命周期参数
