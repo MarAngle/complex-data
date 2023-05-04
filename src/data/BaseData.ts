@@ -71,7 +71,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       }
     }
     this.$module = new ModuleData(initOption.module, this)
-    if (this.$getData) {
+    if (initOption.$getData) {
       this.$getData = initOption.$getData
       this.$initLoadDepend()
     }

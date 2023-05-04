@@ -14,6 +14,7 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this.$initLoadDepend()
     this.$triggerCreateLife('ComplexData', 'created', initOption)
   }
   /* --- pagination start --- */
