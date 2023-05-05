@@ -1,5 +1,5 @@
 import Data from './../data/Data'
-import StatusItem, { StatusItemInitOption, valueType } from './StatusItem'
+import StatusItem, { StatusItemInitOption, loadValueType, operateValueType, valueType } from './StatusItem'
 import config from '../../config'
 import { formatInitOption } from '../utils'
 
@@ -45,6 +45,9 @@ class StatusData extends Data {
   getItem(target = 'operate') {
     return this.data[target]
   }
+  getCurrent(target: 'load' | 'update'): loadValueType
+  getCurrent(target: 'operate'): operateValueType
+  getCurrent(target?: string): valueType
   getCurrent(target = 'operate') {
     return this.data[target].getCurrent()
   }

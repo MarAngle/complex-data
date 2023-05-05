@@ -4,7 +4,7 @@ import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../li
 import UpdateData from '../lib/UpdateData'
 import PromiseData, { PromiseOptionType } from '../lib/PromiseData'
 import StatusData from '../lib/StatusData'
-import { triggerCallBackType } from '../lib/StatusItem'
+import { loadValueType, operateValueType, triggerCallBackType, valueType } from '../lib/StatusItem'
 import { cascadeType } from './Data'
 import config from '../../config'
 import { formatInitOption } from '../utils'
@@ -190,6 +190,9 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
   $setStatus(...args: Parameters<StatusData['setData']>) {
     this.$module.status!.setData(...args)
   }
+  $getStatus(target: 'load' | 'update'): loadValueType
+  $getStatus(target: 'operate'): operateValueType
+  $getStatus(target: string): valueType
   $getStatus(...args: Parameters<StatusData['getCurrent']>) {
     return this.$module.status!.getCurrent(...args)
   }

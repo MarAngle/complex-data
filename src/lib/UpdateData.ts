@@ -1,7 +1,7 @@
 import { isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 import BaseData from '../data/BaseData'
-import { StatusItemInitOption } from './StatusItem'
+// import { StatusItemInitOption } from './StatusItem'
 import config from '../../config'
 import { formatInitOption } from '../utils'
 
@@ -264,33 +264,33 @@ class UpdateData<P extends undefined | BaseData<any> = BaseData> extends Default
       this.$reset(option)
     }
   }
-  $installUpdate(target: P extends BaseData ? P : BaseData) {
-    target!.$initLoadDepend()
-    if (!target!.$module.status?.getItem('update')) {
-      target!.$module.status?.addData('update', config.StatusData.data.update as StatusItemInitOption)
-    }
-  }
-  $install(target: P extends BaseData ? P : BaseData, from?: string) {
-    super.$install(target!)
-    if (from === 'init') {
-      // 加载中的数据在加载完成后再进行调用，避免module还未实例化的问题
-      // 鉴于当前target为BaseData实例，因此自动触发为BaseData实例加载完成时触发，避免后续需要数据时的BUG
-      target!.$onLife('BaseDataCreated', {
-        once: true,
-        data: () => {
-          this.$installUpdate(target)
-        }
-      })
-    } else {
-      this.$installUpdate(target)
-    }
-  }
-  $uninstall(target: P extends BaseData ? P : BaseData, from?: string) {
-    super.$uninstall(target!)
-    if (target!.$module.status?.getItem('update')) {
-      target!.$module.status?.removeData('update')
-    }
-  }
+  // $installUpdate(target: P extends BaseData ? P : BaseData) {
+  //   target!.$initLoadDepend()
+  //   if (!target!.$module.status?.getItem('update')) {
+  //     target!.$module.status?.addData('update', config.StatusData.data.update as StatusItemInitOption)
+  //   }
+  // }
+  // $install(target: P extends BaseData ? P : BaseData, from?: string) {
+  //   super.$install(target!)
+  //   if (from === 'init') {
+  //     // 加载中的数据在加载完成后再进行调用，避免module还未实例化的问题
+  //     // 鉴于当前target为BaseData实例，因此自动触发为BaseData实例加载完成时触发，避免后续需要数据时的BUG
+  //     target!.$onLife('BaseDataCreated', {
+  //       once: true,
+  //       data: () => {
+  //         this.$installUpdate(target)
+  //       }
+  //     })
+  //   } else {
+  //     this.$installUpdate(target)
+  //   }
+  // }
+  // $uninstall(target: P extends BaseData ? P : BaseData, from?: string) {
+  //   super.$uninstall(target!)
+  //   if (target!.$module.status?.getItem('update')) {
+  //     target!.$module.status?.removeData('update')
+  //   }
+  // }
 }
 
 export default UpdateData

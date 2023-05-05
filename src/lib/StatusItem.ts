@@ -2,6 +2,8 @@ import Data from "../data/Data"
 import StatusData from "./StatusData"
 
 export type valueType = 'un' | 'ing' | 'success' | 'fail' | 'end'
+export type operateValueType = 'un' | 'ing'
+export type loadValueType = 'un' | 'ing' | 'success' | 'fail'
 
 export interface itemType {
   value: valueType,

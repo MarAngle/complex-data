@@ -124,44 +124,45 @@ const config = {
             type: 'count'
           }
         }
+      },
+      {
+        prop: 'update',
+        data: {
+          trigger: {
+            start: {
+              from: ['un'],
+              to: 'ing'
+            },
+            success: {
+              from: ['ing'],
+              to: 'success'
+            },
+            fail: {
+              from: ['ing'],
+              to: 'fail'
+            }
+          },
+          list: [
+            {
+              value: 'un',
+              label: '未更新'
+            },
+            {
+              value: 'ing',
+              label: '更新中'
+            },
+            {
+              value: 'success',
+              label: '更新成功'
+            },
+            {
+              value: 'fail',
+              label: '更新失败'
+            }
+          ]
+        }
       }
     ],
-    data: {
-      update: {
-        trigger: {
-          start: {
-            from: ['un'],
-            to: 'ing'
-          },
-          success: {
-            from: ['ing'],
-            to: 'success'
-          },
-          fail: {
-            from: ['ing'],
-            to: 'fail'
-          }
-        },
-        list: [
-          {
-            value: 'un',
-            label: '未更新'
-          },
-          {
-            value: 'ing',
-            label: '更新中'
-          },
-          {
-            value: 'success',
-            label: '更新成功'
-          },
-          {
-            value: 'fail',
-            label: '更新失败'
-          }
-        ]
-      },
-    }
   },
   DefaultEdit: {
     option: {
