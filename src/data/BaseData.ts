@@ -466,7 +466,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       force = {}
     }
     const updateStatus = this.$getStatus('update')
-    if (updateStatus == 'un' || updateStatus == 'fail') {
+    if (updateStatus == 'un' || updateStatus == 'success' || updateStatus == 'fail') {
       this.$triggerUpdateData(...args)
     } else { // ing
       // 直接then'

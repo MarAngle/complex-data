@@ -155,7 +155,7 @@ class UpdateData<P extends undefined | BaseData<any> = BaseData> extends Default
     } else {
       const parent = this.$getParent()
       if (parent && parent instanceof BaseData) {
-        parent.$loadUpdateData().then(() => {
+        parent.$loadUpdateData(true).then(() => {
           this.$next()
         }).catch(() => {
           this.$next()
