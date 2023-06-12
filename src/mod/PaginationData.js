@@ -88,10 +88,9 @@ class PaginationData extends DefaultDataWithLife {
     if (!option.props) {
       option.props = {}
     }
-    option.props = {
-      showQuickJumper: props.jumper === undefined ? config.PaginationData.jumperChange : props.jumper,
-      showSizeChanger: props.size === undefined ? config.PaginationData.sizeChange : props.size
-    }
+    option.props.showQuickJumper = props.jumper === undefined ? config.PaginationData.jumperChange : props.jumper
+    option.props.showSizeChanger = props.size === undefined ? config.PaginationData.sizeChange : props.size
+    option.props.simple = props.simple === undefined ? false : props.simple
     this.option = {
       ...option
     }

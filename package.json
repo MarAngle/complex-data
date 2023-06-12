@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "2.3.25",
+  "version": "2.3.26",
   "description": "a complex data",
   "main": "index.js",
   "repository": {
@@ -8,7 +8,7 @@
     "url": "https://github.com/MarAngle/complex-data.git"
   },
   "dependencies": {
-    "complex-func": "^2.3.13",
+    "complex-func": "2.3.13 - 2.3.99",
     "moment": ">=2.24.0"
   },
   "devDependencies": {
