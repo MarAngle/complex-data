@@ -15,13 +15,13 @@ class StatusData extends Data {
     initOption = formatInitOption(initOption)
     super()
     this.data = {
-      load: new StatusItem('load', this),
-      operate: new StatusItem('operate', this),
-      update: new StatusItem('load', this),
+      load: new StatusItem('load'),
+      operate: new StatusItem('operate'),
+      update: new StatusItem('load'),
     }
     if (initOption!.data) {
       for (const prop in initOption!.data) {
-        this.data[prop] = new StatusItem(initOption!.data[prop], this)
+        this.data[prop] = new StatusItem(initOption!.data[prop])
       }
     }
   }

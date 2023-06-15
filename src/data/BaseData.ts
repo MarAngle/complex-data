@@ -346,6 +346,15 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       })
     }
   }
+  /**
+   * 触发指定Promise函数，指定状态跟随Promise状态变化
+   * @param method 需要触发的Promise函数
+   * @param args 函数参数
+   * @param statusProp 需要跟随变化的状态
+   * @param strict 是否启用严格模式，开启后当前状态不在目标周期的来源时，严格校验失败打断（un=>ing=>end）
+   * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
+   * @returns 
+   */
   $triggerMethodByStatus(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: triggerCallBackType) {
     const statusItem = this.$getStatusItem(statusProp)
     if (statusItem) {

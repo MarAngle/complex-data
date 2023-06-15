@@ -1,5 +1,4 @@
 import Data from "../data/Data"
-import StatusData from "./StatusData"
 import config from '../../config'
 
 export type valueType = 'un' | 'ing' | 'success' | 'fail' | 'end'
@@ -30,16 +29,15 @@ export type StatusItemInitOptionObject = {
 
 export type StatusItemInitOption = 'load' | 'operate' | 'end' | StatusItemInitOptionObject
 
-class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> {
+class StatusItem extends Data {
   static $name = 'StatusItem'
   count?: number
   list: valueType[]
   trigger: triggerType
   current: valueType
   default: valueType
-  constructor (initOption: StatusItemInitOption, parent?: P) {
+  constructor (initOption: StatusItemInitOption) {
     super()
-    this.$setParent(parent)
     if (initOption === 'load') {
       initOption = config.StatusItem.data.load as StatusItemInitOptionObject
     } else if (initOption === 'operate') {
