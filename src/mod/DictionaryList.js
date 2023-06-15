@@ -531,7 +531,7 @@ class DictionaryList extends DefaultDataWithLife {
       let ditem = modlist[n]
       if (!limit.getLimit(ditem.prop)) {
         let tData = ditem.getFormData(modType, {
-          targetItem: formData,
+          targetitem: formData,
           originitem: originitem,
           from: from
         })
