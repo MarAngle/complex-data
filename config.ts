@@ -54,115 +54,63 @@ const config = {
       depth: Symbol('depth')
     }
   },
-  StatusData: {
-    list: [
-      {
-        prop: 'load',
-        data: {
-          trigger: {
-            start: {
-              from: ['un', 'fail'],
-              to: 'ing'
-            },
-            success: {
-              from: ['ing'],
-              to: 'success'
-            },
-            fail: {
-              from: ['ing'],
-              to: 'fail'
-            }
+  StatusItem: {
+    data: {
+      load: {
+        trigger: {
+          start: {
+            from: ['un', 'fail'],
+            to: 'ing'
           },
-          list: [
-            {
-              value: 'un',
-              label: '未加载'
-            },
-            {
-              value: 'ing',
-              label: '加载中'
-            },
-            {
-              value: 'success',
-              label: '已加载'
-            },
-            {
-              value: 'fail',
-              label: '加载失败'
-            }
-          ]
-        }
-      },
-      {
-        prop: 'operate',
-        data: {
-          trigger: {
-            start: {
-              from: ['un'],
-              to: 'ing'
-            },
-            success: {
-              from: ['ing'],
-              to: 'un'
-            },
-            fail: {
-              from: ['ing'],
-              to: 'un'
-            }
+          success: {
+            from: ['ing'],
+            to: 'success'
           },
-          list: [
-            {
-              value: 'un',
-              label: '未操作'
-            },
-            {
-              value: 'ing',
-              label: '操作中'
-            }
-          ],
-          option: {
-            type: 'count'
+          fail: {
+            from: ['ing'],
+            to: 'fail'
           }
+        },
+        list: ['un', 'ing', 'success', 'fail']
+      },
+      operate: {
+        trigger: {
+          start: {
+            from: ['un'],
+            to: 'ing'
+          },
+          success: {
+            from: ['ing'],
+            to: 'un'
+          },
+          fail: {
+            from: ['ing'],
+            to: 'un'
+          }
+        },
+        list: ['un', 'ing'],
+        option: {
+          type: 'count'
         }
       },
-      {
-        prop: 'update',
-        data: {
-          trigger: {
-            start: {
-              from: ['un'],
-              to: 'ing'
-            },
-            success: {
-              from: ['ing'],
-              to: 'success'
-            },
-            fail: {
-              from: ['ing'],
-              to: 'fail'
-            }
+      end: {
+        trigger: {
+          start: {
+            from: ['un', 'end'],
+            to: 'ing'
           },
-          list: [
-            {
-              value: 'un',
-              label: '未更新'
-            },
-            {
-              value: 'ing',
-              label: '更新中'
-            },
-            {
-              value: 'success',
-              label: '更新成功'
-            },
-            {
-              value: 'fail',
-              label: '更新失败'
-            }
-          ]
-        }
+          success: {
+            from: ['ing'],
+            to: 'end'
+          },
+          fail: {
+            from: ['ing'],
+            to: 'un'
+          }
+        },
+        list: ['un', 'ing', 'end']
       }
-    ],
+    }
   },
   DefaultEdit: {
     option: {

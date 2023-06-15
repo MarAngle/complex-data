@@ -1,15 +1,9 @@
 import Data from './../data/Data'
-import StatusItem, { StatusItemInitOption, loadValueType, operateValueType, valueType } from './StatusItem'
-import config from '../../config'
+import StatusItem, { StatusItemInitOption, endValueType, loadValueType, operateValueType, valueType } from './StatusItem'
 import { formatInitOption } from '../utils'
 
-export type StatusDataInitOptionItem = {
-  prop: string,
-  data: StatusItemInitOption
-}
-
 export type StatusDataInitOption = {
-  list?: StatusDataInitOptionItem[]
+  data?: Record<string, StatusItemInitOption>
 }
 
 class StatusData extends Data {
@@ -20,11 +14,16 @@ class StatusData extends Data {
   constructor(initOption?: StatusDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
-    this.data = {}
-    const dataList = (config.StatusData.list as StatusDataInitOptionItem[]).concat(initOption!.list || [])
-    dataList.forEach(item => {
-      this.data[item.prop] = new StatusItem(item.data, this)
-    })
+    this.data = {
+      load: new StatusItem('load', this),
+      operate: new StatusItem('operate', this),
+      update: new StatusItem('load', this),
+    }
+    if (initOption!.data) {
+      for (const prop in initOption!.data) {
+        this.data[prop] = new StatusItem(initOption!.data[prop], this)
+      }
+    }
   }
   addData(target: string, data: StatusItemInitOption, replace?: boolean) {
     if (!this.data[target] || replace) {
@@ -47,15 +46,13 @@ class StatusData extends Data {
   }
   getCurrent(target: 'load' | 'update'): loadValueType
   getCurrent(target: 'operate'): operateValueType
+  getCurrent(target: 'end'): endValueType
   getCurrent(target?: string): valueType
   getCurrent(target = 'operate') {
     return this.data[target].getCurrent()
   }
   setData(data: valueType, target = 'operate', act?: 'reset') {
     this.data[target].setData(data, act)
-  }
-  getData(target = 'operate', ...args: Parameters<StatusItem['getData']>) {
-    return this.data[target].getData(...args)
   }
   /**
    * 重置

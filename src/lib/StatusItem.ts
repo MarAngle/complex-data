@@ -1,28 +1,11 @@
 import Data from "../data/Data"
 import StatusData from "./StatusData"
+import config from '../../config'
 
 export type valueType = 'un' | 'ing' | 'success' | 'fail' | 'end'
-export type operateValueType = 'un' | 'ing'
 export type loadValueType = 'un' | 'ing' | 'success' | 'fail'
-
-export interface itemType {
-  value: valueType,
-  label: string,
-  [prop: string]: unknown
-}
-
-type defaultOption = {
-  type: 'default'
-}
-
-type countOption = {
-  type: 'count',
-  num: number
-}
-
-type countOptionOption = {
-  type: 'count'
-}
+export type operateValueType = 'un' | 'ing'
+export type endValueType = 'un' | 'ing' | 'end'
 
 interface triggerTypeData {
   from: valueType[],
@@ -37,48 +20,42 @@ export interface triggerType {
 
 export type triggerCallBackType = (target: keyof triggerType, ...args: any[]) => void
 
-type StatusItemInitOptionOption = Partial<defaultOption> | countOptionOption
-
-export type StatusItemInitOption = {
-  list: itemType[],
+export type StatusItemInitOptionObject = {
+  list: valueType[],
   trigger: triggerType
   current?: valueType,
   default?: valueType,
-  option?: StatusItemInitOptionOption
+  type?: 'count'
 }
+
+export type StatusItemInitOption = 'load' | 'operate' | 'end' | StatusItemInitOptionObject
 
 class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> {
   static $name = 'StatusItem'
-  option: defaultOption | countOption
-  list: Map<valueType, itemType>
+  count?: number
+  list: valueType[]
   trigger: triggerType
   current: valueType
   default: valueType
   constructor (initOption: StatusItemInitOption, parent?: P) {
+    super()
+    this.$setParent(parent)
+    if (initOption === 'load') {
+      initOption = config.StatusItem.data.load as StatusItemInitOptionObject
+    } else if (initOption === 'operate') {
+      initOption = config.StatusItem.data.operate as StatusItemInitOptionObject
+    } else if (initOption === 'end') {
+      initOption = config.StatusItem.data.end as StatusItemInitOptionObject
+    }
     if (!initOption.list || initOption.list.length == 0) {
       console.error(`StatusItem未设置初始化列表`)
     }
-    super()
-    this.$setParent(parent)
-    if (!initOption.option) {
-      initOption.option = {}
-    }
-    if (initOption.option.type == 'count') {
-      this.option = {
-        type: initOption.option.type,
-        num: 0
-      }
-    } else {
-      this.option = {
-        type: 'default'
-      }
+    if (initOption.type === 'count') {
+      this.count = 0
     }
     this.trigger = initOption.trigger
-    this.list = new Map()
-    for (const n in initOption.list) {
-      this.list.set(initOption.list[n].value, initOption.list[n])
-    }
-    const current = initOption.current || initOption.list[0].value
+    this.list = initOption.list
+    const current = initOption.current || initOption.list[0]
     this.current = current
     this.default = initOption.default || current // value值
   }
@@ -88,27 +65,20 @@ class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> 
    * @param {'reset'} [act] 操作判断值
    */
   setData (value: valueType, act?: 'reset') {
-    const data = this.list.get(value)
-    if (data) {
+    if (this.list.indexOf(value) > -1) {
       let build = true
       if (!act) {
         build = this.$triggerTarget(value)
-      } else if (act == 'reset') {
+      } else if (act === 'reset') {
         this.$resetTarget()
       }
-      if (build && this.current != data.value) {
-        this.current = data.value
+      if (build && this.current !== value) {
+        this.current = value
         this.$syncData(true, 'setData')
       }
     } else {
       this.$exportMsg(`当前加载判断值${value}不存在`)
     }
-  }
-  getData(value?: valueType) {
-    if (!value) {
-      value = this.current
-    }
-    return this.list.get(value)
   }
   getDataLife(value?: valueType) {
     if (!value) {
@@ -117,7 +87,7 @@ class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> 
     let life: keyof triggerType
     for (life in this.trigger) {
       const triggerDict = this.trigger[life]
-      if (triggerDict.to == value) {
+      if (triggerDict.to === value) {
         return life
       }
     }
@@ -127,7 +97,7 @@ class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> 
     const triggerDict = this.trigger[target]
     if (strict) {
       // 当前状态不在目标周期的来源时，严格校验失败打断
-      if (triggerDict.from.indexOf(current) == -1) {
+      if (triggerDict.from.indexOf(current) === -1) {
         return false
       }
     }
@@ -141,8 +111,8 @@ class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> 
    * 重置计算值
    */
   $resetTarget () {
-    if (this.option.type == 'count') {
-      this.option.num = 0
+    if (this.count !== undefined) {
+      this.count = 0
       this.$syncData(true, '$resetTarget')
     }
   }
@@ -153,12 +123,12 @@ class StatusItem<P extends undefined | StatusData = StatusData> extends Data<P> 
    */
   $triggerTarget (value: valueType) {
     let fg = true
-    if (this.option.type == 'count') {
-      if (value == 'ing') {
-        this.option.num++
+    if (this.count !== undefined) {
+      if (value === 'ing') {
+        this.count++
       } else {
-        this.option.num--
-        if (this.option.num != 0) {
+        this.count--
+        if (this.count !== 0) {
           fg = false
         }
       }

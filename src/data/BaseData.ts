@@ -196,9 +196,6 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
   $getStatus(...args: Parameters<StatusData['getCurrent']>) {
     return this.$module.status!.getCurrent(...args)
   }
-  $getStatusData(...args: Parameters<StatusData['getData']>) {
-    return this.$module.status!.getData(...args)
-  }
   $resetStatus() {
     this.$module.status!.reset()
   }
