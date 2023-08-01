@@ -3,6 +3,7 @@ import SimpleData from './src/data/SimpleData'
 import DefaultData from './src/data/DefaultData'
 import BaseData from './src/data/BaseData'
 import SearchData from './src/data/SearchData'
+import SelectList from './src/data/SelectList'
 
 import ComplexData from './src/core/ComplexData'
 import ComplexList from './src/core/ComplexList'
@@ -45,6 +46,7 @@ export {
   DefaultData,
   BaseData,
   SearchData,
+  SelectList,
 
   ComplexData,
   ComplexList,
