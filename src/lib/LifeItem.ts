@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType, isArray } from 'complex-utils'
 import IdData from './IdData'
 import Data from '../data/Data'
@@ -64,7 +65,7 @@ class LifeItem extends Data {
         this.data.clear()
         for (let n = 0; n < size; n++) {
           const mapItem = mapList[n]
-          if (data.index == n) {
+          if (data.index === n) {
             this.data.set(data.id!, data)
           }
           this.data.set(mapItem.id!, mapItem)

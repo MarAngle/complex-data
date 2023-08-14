@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType, getProp, setProp, isExist } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import { formatInitOption } from '../utils'
@@ -250,7 +251,7 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
   $formatDataBySimple(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: formatDataOption) {
     const originProp = this.$getInterface('originProp', originFrom)!
     // 快捷模式快速判断
-    if (!option.format || this.prop != originProp) {
+    if (!option.format || this.prop !== originProp) {
       setProp(targetData, this.prop, getProp(originData, originProp), true)
     }
     // 非新建模式下，prop不更名则不进行任何操作
@@ -261,8 +262,8 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
     const type = this.$getInterface('type', originFrom)!
     const originValue = getProp(originData, originProp)
     let targetValue
-    if (type != 'array') {
-      if (getType(originValue) == 'object') {
+    if (type !== 'array') {
+      if (getType(originValue) === 'object') {
         if (!option.format) {
           // 新增模式
           targetValue = this.$dictionary!.createData(originValue, originFrom, option, depth)
@@ -273,7 +274,7 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
         targetValue = {}
       }
     } else {
-      if (getType(originValue) == 'array') {
+      if (getType(originValue) === 'array') {
         targetValue = this.$dictionary!.formatListData(targetData[this.prop], originValue, originFrom, option, depth)
       } else {
         targetValue = []
@@ -344,7 +345,7 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
         originData
       })
     } else if (mod.getValueData) {
-      if (from == 'reset') {
+      if (from === 'reset') {
         targetValue = mod.getValueData('reset')
       } else {
         targetValue = mod.getValueData('init')

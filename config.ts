@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import InterfaceData from "./src/lib/InterfaceData"
 
 export interface DictType {
@@ -243,6 +244,7 @@ const config = {
         if ((this.data as any)[prop]) {
           return (this.data as any)[prop]
         } else {
+          // eslint-disable-next-line no-console
           console.error(`未找到对应的编辑逻辑:${name}`)
           return undefined
         }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Data from './../data/Data'
 
 type dataType = {
@@ -69,7 +70,7 @@ class PromiseData extends Data {
           const currentData = this.getData(prop)
           if (data === currentData || !option.correct) {
             resolve(res)
-          } else if (option.correct == 'reload') {
+          } else if (option.correct === 'reload') {
             this.triggerData(prop, option).then(res => {
               resolve(res)
             }).catch(err => {
@@ -84,6 +85,7 @@ class PromiseData extends Data {
         })
       } else {
         if (option.errmsg) {
+          // eslint-disable-next-line no-console
           console.error(option.errmsg)
         }
         reject({ status: 'fail', code: 'no promise' })

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 export type TipDataInitOption = string | ((...args: any[]) => string) | {
   data: string,

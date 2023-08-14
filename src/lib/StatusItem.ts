@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Data from "../data/Data"
 import config from '../../config'
 
@@ -45,7 +46,8 @@ class StatusItem extends Data {
     } else if (initOption === 'end') {
       initOption = config.StatusItem.data.end as StatusItemInitOptionObject
     }
-    if (!initOption.list || initOption.list.length == 0) {
+    if (!initOption.list || initOption.list.length === 0) {
+      // eslint-disable-next-line no-console
       console.error(`StatusItem未设置初始化列表`)
     }
     if (initOption.type === 'count') {

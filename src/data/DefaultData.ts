@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { upperCaseFirstChar } from 'complex-utils'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import LifeData, { LifeDataInitOption } from './../lib/LifeData'

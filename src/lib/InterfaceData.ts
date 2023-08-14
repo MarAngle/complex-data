@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType, setProp } from 'complex-utils'
 import Data from './../data/Data'
 
@@ -83,9 +84,9 @@ class InterfaceData<D> extends Data {
   toString(): string {
     const value = this.getData('default')
     const type = typeof value
-    if (type == 'object' || type == 'function') {
+    if (type === 'object' || type === 'function') {
       return (value as any).toString()
-    } else if (type != 'string') {
+    } else if (type !== 'string') {
       return String(value)
     } else {
       return (value as unknown as string)

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './../data/DefaultData'
 import BaseData from '../data/BaseData'
@@ -59,7 +60,7 @@ class UpdateData<P extends undefined | BaseData<any> = BaseData> extends Default
     }
     this.num = 0
     this.timer = undefined
-    if (typeof initOption.offset != 'object') {
+    if (typeof initOption.offset !== 'object') {
       const offsetData = initOption.offset === undefined ? config.UpdateData.offset : initOption.offset
       this.offset = {
         start: offsetData,

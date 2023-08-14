@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clearArray } from 'complex-utils'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
@@ -60,8 +61,8 @@ class ChoiceData extends Data {
   $initChoiceData(initOption: ChoiceDataInitOption = {}) {
     if (initOption.reset) {
       for (const n in initOption.reset) {
-        if (typeof initOption.reset[n] == 'object') {
-          if (typeof this.resetOption[n] != 'object') {
+        if (typeof initOption.reset[n] === 'object') {
+          if (typeof this.resetOption[n] !== 'object') {
             this.resetOption[n] = {}
           }
           for (const i in (initOption.reset[n] as ResetOptionItem)) {
@@ -110,6 +111,7 @@ class ChoiceData extends Data {
   formatItemFromList(id: idType, totalList: Record<PropertyKey, any>[], idProp = 'id') {
     for (let n = 0; n < totalList.length; n++) {
       const item = totalList[n]
+      // eslint-disable-next-line eqeqeq
       if (item && item[idProp] == id) {
         totalList.splice(n, 1)
         return item
@@ -126,7 +128,7 @@ class ChoiceData extends Data {
    */
   changeData(idList: idType[], currentList: Record<PropertyKey, any>[] = [], check: 'auto' | 'force' = 'auto', idProp: string) {
     // check 'auto'/'force'
-    if (check == 'force' || idList.length != currentList.length) {
+    if (check === 'force' || idList.length !== currentList.length) {
       const totalList = currentList
       for (let n = 0; n < this.data.list.length; n++) {
         const item = this.data.list[n]
@@ -151,7 +153,7 @@ class ChoiceData extends Data {
    * @param {string} idProp id属性
    */
   addData(idList: idType[], list: Record<PropertyKey, any>[] = [], idProp: string, act: 'auto' | 'force' = 'auto') {
-    if (act == 'auto') {
+    if (act === 'auto') {
       for (let i = 0; i < idList.length; i++) {
         const id = idList[i]
         if (this.data.id.indexOf(id) < 0) {
@@ -205,7 +207,7 @@ class ChoiceData extends Data {
     if (!option) {
       option = defaultOption
     }
-    if (typeof option != 'object') {
+    if (typeof option !== 'object') {
       option = {
         from: option
       }
@@ -225,7 +227,7 @@ class ChoiceData extends Data {
     if (from === true) {
       reset = true
     } else if (this.resetOption[from] !== undefined) {
-      if (this.resetOption[from] && typeof this.resetOption[from] == 'object') {
+      if (this.resetOption[from] && typeof this.resetOption[from] === 'object') {
         const act = option.act
         if (!act) {
           this.$exportMsg(`$checkReset函数中对应的from:${from}未定义act,可定义:${Object.keys(this.resetOption[from])}`)

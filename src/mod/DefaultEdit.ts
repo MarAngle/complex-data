@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType, hasProp } from 'complex-utils'
 import BaseData, { BaseDataInitOption } from '../data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from '../lib/InterfaceData'
@@ -198,7 +199,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     // 宽度设置
     if (initOption.mainWidth) {
       const type = getType(initOption.mainWidth)
-      if (type == 'number') {
+      if (type === 'number') {
         this.$mainWidth = initOption.mainWidth + 'px'
       } else {
         this.$mainWidth = initOption.mainWidth as string
@@ -206,7 +207,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     }
     if (initOption.width) {
       const type = getType(initOption.width)
-      if (type == 'number') {
+      if (type === 'number') {
         this.$width = initOption.width + 'px'
       } else {
         this.$width = initOption.width as string
@@ -254,7 +255,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     for (let n = 0; n < config.DefaultEdit.option.valuePropList.length; n++) {
       const prop = config.DefaultEdit.option.valuePropList[n]
       const type = getType(this.getValueData(prop))
-      if (type != 'array') {
+      if (type !== 'array') {
         this.setValueData([], prop, true)
       }
     }
@@ -266,25 +267,25 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     if (!initOption.option) {
       initOption.option = {} as PartialDefaultEditOptionType<'input'> as PartialDefaultEditOptionType<T>
     }
-    if (this.type == 'input') {
+    if (this.type === 'input') {
       // 输入框
       (this.$option as DefaultEditOptionType<'input'>).type = (initOption.option as PartialDefaultEditOptionType<'input'>).type || 'text';
       (this.$option as DefaultEditOptionType<'input'>).maxLength = (initOption.option as PartialDefaultEditOptionType<'input'>).maxLength || defaultOption!.option!.maxLength;
       (this.$option as DefaultEditOptionType<'input'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'input'>).hideClear || defaultOption!.option!.hideClear;
-    } else if (this.type == 'inputNumber') {
+    } else if (this.type === 'inputNumber') {
       // 数字输入框
       (this.$option as DefaultEditOptionType<'inputNumber'>).max = (initOption.option as PartialDefaultEditOptionType<'inputNumber'>).max === undefined ? Infinity : (initOption.option as DefaultEditOptionType<'inputNumber'>).max;
       (this.$option as DefaultEditOptionType<'inputNumber'>).min = (initOption.option as PartialDefaultEditOptionType<'inputNumber'>).min === undefined ? -Infinity : (initOption.option as DefaultEditOptionType<'inputNumber'>).min;
       (this.$option as DefaultEditOptionType<'inputNumber'>).precision = (initOption.option as PartialDefaultEditOptionType<'inputNumber'>).precision === undefined ? 0 : (initOption.option as DefaultEditOptionType<'inputNumber'>).precision; // 精确到几位小数，接受非负整数
       (this.$option as DefaultEditOptionType<'inputNumber'>).step = (initOption.option as PartialDefaultEditOptionType<'inputNumber'>).step === undefined ? 1 : (initOption.option as DefaultEditOptionType<'inputNumber'>).step; // 点击步进
-    } else if (this.type == 'textArea') {
+    } else if (this.type === 'textArea') {
       // 文本域
       (this.$option as DefaultEditOptionType<'textArea'>).maxLength = (initOption.option as PartialDefaultEditOptionType<'textArea'>).maxLength || defaultOption!.option!.maxLength;
       (this.$option as DefaultEditOptionType<'textArea'>).autoSize = (initOption.option as PartialDefaultEditOptionType<'textArea'>).autoSize || defaultOption!.option!.autoSize;
       (this.$option as DefaultEditOptionType<'textArea'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'textArea'>).hideClear || defaultOption!.option!.hideClear;
-    } else if (this.type == 'switch') {
+    } else if (this.type === 'switch') {
       // 开关
-    } else if (this.type == 'select') {
+    } else if (this.type === 'select') {
       // 选择器
       // =>避免后期修改时存在的问题，基本数据结构提前生成，非当前必要字段也应生成
       (this.$option as DefaultEditOptionType<'select'>).list = (initOption.option as PartialDefaultEditOptionType<'select'>).list || [];
@@ -315,17 +316,17 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       //     this.$resetPagination()
       //   }
       // }
-    } else if (this.type == 'cascader') {
+    } else if (this.type === 'cascader') {
       // 级联选择
       (this.$option as DefaultEditOptionType<'cascader'>).list = (initOption.option as PartialDefaultEditOptionType<'cascader'>).list || [];
       (this.$option as DefaultEditOptionType<'cascader'>).hideArrow = (initOption.option as PartialDefaultEditOptionType<'cascader'>).hideArrow || false;
       (this.$option as DefaultEditOptionType<'cascader'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'cascader'>).hideClear || false;
       this.setMultiple(true)
-    } else if (this.type == 'date') {
+    } else if (this.type === 'date') {
       // 日期选择
-    } else if (this.type == 'dateRange') {
+    } else if (this.type === 'dateRange') {
       // 日期范围选择
-    } else if (this.type == 'file') {
+    } else if (this.type === 'file') {
       // 文件
       (this.$option as DefaultEditOptionType<'file'>).accept = (initOption.option as PartialDefaultEditOptionType<'file'>).accept || '';
       (this.$option as DefaultEditOptionType<'file'>).multipleAppend = (initOption.option as PartialDefaultEditOptionType<'file'>).multipleAppend || false; // 多选状态下多个文件中一个存在问题时的操作
@@ -338,21 +339,21 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       if ((this.$option as DefaultEditOptionType<'file'>).upload && !(this.$option as DefaultEditOptionType<'file'>).fileUpload) {
         this.$exportMsg('上传插件需要定义上传方法:fileUpload=>option')
       }
-    } else if (this.type == 'button') {
+    } else if (this.type === 'button') {
       // 按钮
       (this.$option as DefaultEditOptionType<'button'>).loading = (initOption.option as PartialDefaultEditOptionType<'button'>).loading || false;
       (this.$option as DefaultEditOptionType<'button'>).type = (initOption.option as PartialDefaultEditOptionType<'button'>).type || 'default';
       (this.$option as DefaultEditOptionType<'button'>).icon = (initOption.option as PartialDefaultEditOptionType<'button'>).icon || '';
       (this.$option as DefaultEditOptionType<'button'>).name = (initOption.option as PartialDefaultEditOptionType<'button'>).name;
-    } else if (this.type == 'text') {
+    } else if (this.type === 'text') {
       // 文字
       (this.$option as DefaultEditOptionType<'text'>).data = (initOption.option as PartialDefaultEditOptionType<'text'>).data || '';
       (this.$option as DefaultEditOptionType<'text'>).style = (initOption.option as PartialDefaultEditOptionType<'text'>).style || {};
-    } else if (this.type == 'customize') {
+    } else if (this.type === 'customize') {
       // 自定义
       this.$customize = initOption.customize;
       (this.$option as DefaultEditOptionType<'customize'>) = (initOption.option as PartialDefaultEditOptionType<'customize'>);
-    } else if (this.type == 'slot') {
+    } else if (this.type === 'slot') {
       // 插槽
       (this.$option as DefaultEditOptionType<'slot'>) = (initOption.option as PartialDefaultEditOptionType<'slot'>);
     }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getCanUse, exportMsg } from 'complex-utils'
 
 const ProxyCanUse = getCanUse('Proxy')

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import { formDataOption } from "../lib/DictionaryList"
 import { formatInitOption } from "../utils"

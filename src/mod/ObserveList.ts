@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clearArray, observe, Watcher } from 'complex-utils'
 import Data from '../data/Data'
 import DefaultEdit from './DefaultEdit'
@@ -73,6 +74,7 @@ class ObserveList extends Data {
     this.data.splice(preCurrentIndex + 1, 0, target)
   }
   showOrder() {
+    // eslint-disable-next-line no-console
     return console.log(JSON.stringify(this.$order))
   }
   setOrder(order: string[]) {

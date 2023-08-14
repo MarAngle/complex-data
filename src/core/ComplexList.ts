@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import ComplexData, { ComplexDataInitOption } from "./ComplexData"
 import DefaultData from "../data/DefaultData"
 import { formatDataOption } from "../lib/DictionaryList"
@@ -27,6 +28,7 @@ class ComplexList<P extends undefined | DefaultData = undefined> extends Complex
     }
     for (let i = 0; i < this.$list.length; i++) {
       const item = this.$list[i]
+      // eslint-disable-next-line eqeqeq
       if (item[prop!] == data) {
         return item
       }

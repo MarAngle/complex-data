@@ -18,13 +18,13 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
     this.$triggerCreateLife('ComplexData', 'created', initOption)
   }
   /* --- pagination start --- */
-  $setPageData(data: number, prop?: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
+  $setPageData(data: number, prop: 'current' | 'size' | 'num', unTriggerLife?: boolean) {
     if (this.$module.pagination) {
-      if (prop == 'current') {
+      if (prop === 'current') {
         this.$module.pagination.setCurrent(data, unTriggerLife)
-      } else if (prop == 'size') {
+      } else if (prop === 'size') {
         this.$module.pagination.setSize(data, unTriggerLife) // { size, page }
-      } else if (prop == 'num') {
+      } else if (prop === 'num') {
         this.$module.pagination.setNum(data)
       }
     }

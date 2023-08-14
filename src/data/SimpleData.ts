@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType } from 'complex-utils'
 import Data from './Data'
 import DefaultData from './DefaultData'
@@ -21,7 +22,7 @@ class SimpleData<P extends undefined | DefaultData<any> = undefined> extends Dat
     this.$name = initOption.name || ''
     this.$prop = initOption.prop || ''
     this.$setParent(initOption.parent)
-    if (getType(initOption.extra) == 'object') {
+    if (getType(initOption.extra) === 'object') {
       this.$extra = initOption.extra!
     } else if (initOption.extra !== undefined) {
       this.$exportMsg(`初始化extra出错，数据必须为对象！`)

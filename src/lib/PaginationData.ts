@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { deepClone, getNum } from 'complex-utils'
 import config from '../../config'
 import BaseData from '../data/BaseData'
@@ -135,7 +136,7 @@ class PaginationData extends DefaultData {
     } else if (current > total) {
       current = total
     }
-    if (this.current != current) {
+    if (this.current !== current) {
       this.current = current
       this.$syncData(true, 'setCurrent')
       if (!unTriggerCurrentLife) {
@@ -186,13 +187,13 @@ class PaginationData extends DefaultData {
   }
   getData(prop: pageProp = 'current') {
     let data
-    if (prop == 'current') {
+    if (prop === 'current') {
       data = this.getCurrent()
-    } else if (prop == 'size') {
+    } else if (prop === 'size') {
       data = this.getSize()
-    } else if (prop == 'num') {
+    } else if (prop === 'num') {
       data = this.getNum()
-    } else if (prop == 'total') {
+    } else if (prop === 'total') {
       data = this.getTotal()
     }
     return data
@@ -253,11 +254,11 @@ class PaginationData extends DefaultData {
           if (pageResetOption.untriggerLife === undefined) {
             pageResetOption.untriggerLife = true
           }
-          if (pageResetOption.prop == 'page') {
+          if (pageResetOption.prop === 'page') {
             this.setCurrent(pageResetOption.data, pageResetOption.untriggerLife)
-          } else if (pageResetOption.prop == 'size') {
+          } else if (pageResetOption.prop === 'size') {
             this.setSize(pageResetOption.data, pageResetOption.untriggerLife)
-          } else if (pageResetOption.prop == 'currentAndSize') {
+          } else if (pageResetOption.prop === 'currentAndSize') {
             this.setCurrentAndSize(pageResetOption.data, pageResetOption.untriggerLife)
           }
         }

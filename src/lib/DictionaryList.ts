@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { clearArray, trimData, LimitData, promiseAllFinished } from 'complex-utils'
 import { LimitDataInitOption } from 'complex-utils/src/build/LimitData'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
@@ -61,7 +62,7 @@ function initPropData(defaultProp: propDataKeys, propData?: propDataType<string 
   if (propData) {
     const data = propData[defaultProp]
     if (data) {
-      if (typeof data == 'string') {
+      if (typeof data === 'string') {
         return {
           prop: data,
           data: undefined
@@ -121,7 +122,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $initDictionaryList(initOptionList: DictionaryDataInitOption[] = [], type = 'replace', unTriggerSync?: boolean) {
     // 触发update生命周期
     this.$triggerLife('beforeUpdate', this, initOptionList, type)
-    if (type == 'init') {
+    if (type === 'init') {
       this.$data.clear()
     }
     const parentData = this.$getParent()
@@ -133,15 +134,15 @@ class DictionaryList extends DefaultData implements HasLayoutData {
       let ditem = this.getItem(ditemOption.prop)
       let build = true, children = true
       if (ditem) {
-        if (type == 'init') {
+        if (type === 'init') {
           // 加载模式下不能出现相同字段=加载模式出发前会先清空
           build = false
           children = false
           this.$exportMsg(`字典列表加载:${ditemOption.prop}重复!`)
-        } else if (type == 'push') {
+        } else if (type === 'push') {
           // 添加模式，不对相同ditem做处理，仅对子数据做处理
           build = false
-        } else if (type == 'replace') {
+        } else if (type === 'replace') {
           // 重构模式，相同字段替换
         }
       }
@@ -166,10 +167,10 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   $parseChildrenBuildType(ditem: DictionaryData, originOption: DictionaryDataInitOption) {
     let initOption: DictionaryListInitOption | string | undefined = originOption.dictionary
     let type: undefined | 'self' | 'build'
-    if (this.$option.tree && (this.$getPropData('prop', 'children') == ditem.prop) && initOption === undefined) {
+    if (this.$option.tree && (this.$getPropData('prop', 'children') === ditem.prop) && initOption === undefined) {
       initOption = 'self'
     }
-    if (initOption == 'self') {
+    if (initOption === 'self') {
       type = 'self'
       if (originOption.type === undefined) {
         ditem.$setInterface('type', 'default', 'array')
@@ -181,7 +182,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   }
   $initDictionaryDataChildren(ditem: DictionaryData, originOption: DictionaryDataInitOption, isChildren = true) {
     const type = this.$parseChildrenBuildType(ditem, originOption)
-    if (type == 'build') {
+    if (type === 'build') {
       const childInitOption = originOption.dictionary as DictionaryListInitOption
       if (!childInitOption.option) {
         childInitOption.option = {}
@@ -194,7 +195,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         childInitOption.layout = this.$getLayoutData()
       }
       ditem.$dictionary = new DictionaryList(childInitOption)
-    } else if (type == 'self') {
+    } else if (type === 'self') {
       ditem.$dictionary = this
     }
   }
@@ -372,6 +373,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   }
   getItemByProp(prop: string, data: any) {
     for (const ditem of this.$data.values()) {
+      // eslint-disable-next-line eqeqeq
       if ((ditem as any)[prop] == data) {
         return ditem
       }

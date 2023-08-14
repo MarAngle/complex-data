@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { promiseAllFinished } from "complex-utils"
 import BaseData, { bindOption, bindType, promiseFunction } from "../data/BaseData"
 import Data from "../data/Data"
@@ -81,7 +82,7 @@ class DependData extends Data {
       (item.data[item.name] as promiseFunction)(...item.args).then(res => {
         if (item.next) {
           item.next.data('success', item.data, res)
-          if (item.next.once === true || item.next.once == 'success') {
+          if (item.next.once === true || item.next.once === 'success') {
             delete item.next
           }
         }
@@ -89,7 +90,7 @@ class DependData extends Data {
       }).catch(err => {
         if (item.next) {
           item.next.data('fail', item.data, err)
-          if (item.next.once === true || item.next.once == 'fail') {
+          if (item.next.once === true || item.next.once === 'fail') {
             delete item.next
           }
         }
@@ -126,7 +127,7 @@ class DependData extends Data {
     })
   }
   $loadData() {
-    if (this.type == 'together') {
+    if (this.type === 'together') {
       return this.$loadTogetherData()
     } else {
       return this.$loadOrderData()

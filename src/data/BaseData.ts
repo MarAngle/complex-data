@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from "./DefaultData"
 import ModuleData, { ModuleDataInitOption, moduleResetOptionType } from './../lib/ModuleData'
@@ -119,22 +120,22 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       active = true
     }
     const currentStatus = target.$getStatus(life)
-    if (currentStatus == 'success') {
+    if (currentStatus === 'success') {
       this.$bindLifeByActive(target, bind, 'success', active)
       if (once) {
         return
       }
-    } else if (fail && currentStatus == 'fail') {
+    } else if (fail && currentStatus === 'fail') {
       this.$bindLifeByActive(target, bind, 'fail', active)
     }
-    const failLifeName = life == 'load' ? 'loadFail' : 'updateFail'
+    const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
     const failLifeId = fail ? target.$onLife(failLifeName, {
       once: once,
       data: () => {
         this.$bindLifeByActive(target, bind, 'fail', active)
       }
     }) as string : undefined
-    const successLifeName = life == 'load' ? 'loaded' : 'updated'
+    const successLifeName = life === 'load' ? 'loaded' : 'updated'
     target.$onLife(successLifeName, {
       once: once,
       data: () => {
@@ -149,17 +150,17 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
     return this.$active.data
   }
   $isActive() {
-    return this.$getActive() == 'actived'
+    return this.$getActive() === 'actived'
   }
   $changeActive(current?: 'actived' | 'inactived', from?: string) {
     let realChange = true
     if (current) {
-      if (this.$getActive() == current) {
+      if (this.$getActive() === current) {
         realChange = false
       } else {
         this.$active.data = current
       }
-    } else if (this.$getActive() == 'actived') {
+    } else if (this.$getActive() === 'actived') {
       this.$active.data = 'inactived'
     } else {
       this.$active.data = 'actived'
@@ -237,12 +238,12 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
   $autoLoadData(...args: any[]) {
     let next: string
     const loadStatus = this.$getStatus('load')
-    if (loadStatus != 'success') {
+    if (loadStatus !== 'success') {
       next = 'load'
     } else {
       next = 'update'
     }
-    if (next == 'load') {
+    if (next === 'load') {
       return this.$loadData(true, ...args)
     } else {
       return this.$loadUpdateData(true, ...args)
@@ -254,9 +255,9 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       this.$changeActive('actived', 'getData')
     }
     const promise = this.$triggerMethodByStatusWidthOperate(['$getData', args, 'load', false, (target, res) => {
-      if (target == 'start') {
+      if (target === 'start') {
         this.$triggerLife('beforeLoad', this, ...args)
-      } else if (target == 'success') {
+      } else if (target === 'success') {
         this.$triggerLife('loaded', this, {
           res: res,
           args: args
@@ -275,14 +276,14 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       force = {}
     }
     const loadStatus = this.$getStatus('load')
-    if (loadStatus == 'un' || loadStatus == 'fail') {
+    if (loadStatus === 'un' || loadStatus === 'fail') {
       this.$triggerGetData(...args)
-    } else if (loadStatus == 'ing') {
+    } else if (loadStatus === 'ing') {
       // 直接then
       if (force && force.ing) {
         this.$triggerGetData(...args)
       }
-    } else if (loadStatus == 'success') {
+    } else if (loadStatus === 'success') {
       if (force) {
         this.$triggerGetData(...args)
       }
@@ -318,6 +319,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
           args: args
         })
       }).catch(err => {
+        // eslint-disable-next-line no-console
         console.error(err)
         // 触发生命周期重载失败事件
         this.$triggerLife('reloadFail', this, {
@@ -335,6 +337,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
           })
           resolve(res)
         }).catch(err => {
+          // eslint-disable-next-line no-console
           console.error(err)
           // 触发生命周期重载失败事件
           this.$triggerLife('reloadFail', this, {
@@ -451,9 +454,9 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       this.$changeActive('actived', 'updateData')
     }
     const promise = this.$triggerMethodByStatusWidthOperate(['$updateData', args, 'update', false, (target, res) => {
-      if (target == 'start') {
+      if (target === 'start') {
         this.$triggerLife('beforeUpdate', this, ...args)
-      } else if (target == 'success') {
+      } else if (target === 'success') {
         this.$triggerLife('updated', this, {
           res: res,
           args: args
@@ -472,7 +475,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
       force = {}
     }
     const updateStatus = this.$getStatus('update')
-    if (updateStatus == 'un' || updateStatus == 'success' || updateStatus == 'fail') {
+    if (updateStatus === 'un' || updateStatus === 'success' || updateStatus === 'fail') {
       this.$triggerUpdateData(...args)
     } else { // ing
       // 直接then'

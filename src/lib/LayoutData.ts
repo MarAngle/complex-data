@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { getType } from 'complex-utils'
 import config from '../../config'
 import Data from './../data/Data'

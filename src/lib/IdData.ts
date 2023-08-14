@@ -71,11 +71,11 @@ class IdData {
   $initRuleData(option: ruleOptionType) {
     if (option) {
       const type = getType(option)
-      if (type == 'function') {
+      if (type === 'function') {
         this.list.push(option as finalFunction)
-      } else if (type == 'string') {
+      } else if (type === 'string') {
         this.list.push(function () { return option as string })
-      } else if (type == 'object') {
+      } else if (type === 'object') {
         const funcitem = this.$buildFunc(option as ruleOptionTypeObject)
         this.list.push(funcitem)
       }
@@ -87,11 +87,11 @@ class IdData {
    * @returns {function}
    */
   $buildFunc(option: ruleOptionTypeObject): finalFunction {
-    if (option.type == 'random') {
+    if (option.type === 'random') {
       return function () {
         return getRandomData(option.size, option.letter)
       }
-    } else if (option.type == 'time') {
+    } else if (option.type === 'time') {
       return function () {
         return Date.now().toString()
       }
@@ -121,9 +121,9 @@ class IdData {
         if (current.length < (option as formatRuleOptionTypeObject).minSize) {
           current = fillString(current, (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
         } else if ((option as formatRuleOptionTypeObject).maxSize && current.length > (option as formatRuleOptionTypeObject).maxSize!) {
-          if ((option as formatRuleOptionTypeObject).maxAction == 'cut') {
+          if ((option as formatRuleOptionTypeObject).maxAction === 'cut') {
             current = current.slice(0, (option as formatRuleOptionTypeObject).maxSize)
-          } else if ((option as formatRuleOptionTypeObject).maxAction == 'restart') {
+          } else if ((option as formatRuleOptionTypeObject).maxAction === 'restart') {
             (option as formatRuleOptionTypeObject).start = 1
             current = fillString('1', (option as formatRuleOptionTypeObject).minSize, (option as formatRuleOptionTypeObject).interval, (option as formatRuleOptionTypeObject).intervalTo)
           } else {

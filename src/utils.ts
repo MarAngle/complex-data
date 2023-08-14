@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { setDataByDefault } from 'complex-utils'
 
 export const formatInitOption = function(initOption?: any, defaultInitOption?: any, emptyErrorMsg?: any) {

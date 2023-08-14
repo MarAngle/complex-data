@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { exportMsg, getType } from 'complex-utils'
 import Data, { cascadeType } from '../data/Data'
 import BaseData from '../data/BaseData'
@@ -61,7 +62,7 @@ class ModuleData extends Data<BaseData<any>> {
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData<any>) {
     super()
     this.$setParent(parent)
-    if (initOption && getType(initOption) == 'object') {
+    if (initOption && getType(initOption) === 'object') {
       let modName: moduleKeys
       for (modName in initOption) {
         this.$setData(modName, initOption[modName], {
@@ -100,7 +101,7 @@ class ModuleData extends Data<BaseData<any>> {
       } else if (modData && !(modData instanceof ModuleClassData)) {
         return new ModuleClassData(modData, this.$getParent())
       }
-    } else if (ModuleDictionaryMap.size == 0) {
+    } else if (ModuleDictionaryMap.size === 0) {
       this.$exportMsg(`Module模块为未赋值，请检查引用方式！`, 'error')
     }
     return modData
@@ -112,7 +113,7 @@ class ModuleData extends Data<BaseData<any>> {
    * @param {boolean} [build] 自动构建判断值，默认为真
    */
   $setData(modName: moduleKeys, modData?: any, { from = '', build = true }: setDataOption = {}, unTriggerSync?: boolean) {
-    if (from != 'init') {
+    if (from !== 'init') {
       this.$uninstallData(modName, 'set:' + from, unTriggerSync)
     }
     if (build) {
