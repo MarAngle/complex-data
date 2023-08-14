@@ -90,7 +90,7 @@ type interfaceKeys = keyof DictionaryData['$interface']
 const defaultGetData = function (this: DictionaryData, data: unknown, { type }: payloadType) {
   const showProp = this.$getInterface('showProp', type)
   if (showProp) {
-    if (data && typeof data == 'object') {
+    if (data !== undefined && typeof data === 'object' && data !== null) {
       return getProp(data, showProp)
     } else {
       return undefined
@@ -136,7 +136,7 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
     this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData.bind(this) : initOption.defaultGetData
     this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
-    this.post = initOption.post === undefined ? this.defaultGetData : initOption.post
+    this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
     // 加载来源
     switch (typeof initOption.originFrom) {
