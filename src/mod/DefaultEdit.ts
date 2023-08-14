@@ -189,12 +189,10 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     }
     if (defaultOption) {
       // 格式化占位符和检验规则
-      if (defaultOption.placeholder) {
-        if (!initOption.placeholder) {
-          this.placeholder = new InterfaceData(defaultOption.placeholder((this.$getParent() as DictionaryData).$getInterfaceData('label')))
-        } else {
-          this.placeholder = new InterfaceData(initOption.placeholder)
-        }
+      if (defaultOption.placeholder && !initOption.placeholder) {
+        this.placeholder = new InterfaceData(defaultOption.placeholder((this.$getParent() as DictionaryData).$getInterfaceData('label')))
+      } else {
+        this.placeholder = new InterfaceData(initOption.placeholder)
       }
     }
     // 宽度设置
