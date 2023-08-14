@@ -28,7 +28,8 @@ export interface bindOption {
 export type promiseFunction = (...args: any[]) => Promise<any>
 
 export interface ReloadOptionType {
-  [prop: string]: undefined | boolean
+  force?: forceType
+  [prop: string]: undefined | boolean | Record<string, unknown>
 }
 export type ReloadOption = undefined | boolean | ReloadOptionType
 

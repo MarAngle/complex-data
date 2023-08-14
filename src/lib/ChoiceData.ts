@@ -13,11 +13,11 @@ type ResetOption = {
   [prop: string]: boolean | ResetOptionItem
 }
 
-type idType = string | number | symbol
+export type idType = string | number
 
-type ChoiceDataData = {
+export type ChoiceDataData = {
   id: idType[],
-  list: Record<PropertyKey, any>[]
+  list: Record<PropertyKey, unknown>[]
 }
 
 export interface ChoiceDataInitOption {
@@ -88,18 +88,15 @@ class ChoiceData extends Data {
   }
   /**
    * 获取数据
-   * @param {'id' | 'list'} [prop] 存在prop获取data[prop]，否则获取{id, list}
-   * @returns {string[] | object[] | {id, list}}
    */
-  getData(): ChoiceDataData
-  getData(prop: 'id'): idType[]
-  getData(prop: 'list'): Record<PropertyKey, any>[]
-  getData(prop?: 'id' | 'list') {
-    if (prop) {
-      return this.data[prop]
-    } else {
-      return this.data
-    }
+  getData() {
+    return this.data
+  }
+  getId() {
+    return this.data.id
+  }
+  getList() {
+    return this.data.list
   }
   /**
    * 根据id/idProp从totalList获取对应的数据并从totalList删除对应数据
@@ -108,7 +105,7 @@ class ChoiceData extends Data {
    * @param {string} idProp id属性
    * @returns {object}
    */
-  formatItemFromList(id: idType, totalList: Record<PropertyKey, any>[], idProp = 'id') {
+  formatItemFromList(id: idType, totalList: Record<PropertyKey, unknown>[], idProp = 'id') {
     for (let n = 0; n < totalList.length; n++) {
       const item = totalList[n]
       // eslint-disable-next-line eqeqeq
@@ -126,7 +123,7 @@ class ChoiceData extends Data {
    * @param {'auto' | 'force'} [check = 'auto'] 检查判断值,auto在长度相等时直接认为格式符合，否则进行格式化判断
    * @param {string} idProp id的属性
    */
-  changeData(idList: idType[], currentList: Record<PropertyKey, any>[] = [], check: 'auto' | 'force' = 'auto', idProp: string) {
+  changeData(idList: idType[], currentList: Record<PropertyKey, unknown>[] = [], check: 'auto' | 'force' = 'auto', idProp: string) {
     // check 'auto'/'force'
     if (check === 'force' || idList.length !== currentList.length) {
       const totalList = currentList
@@ -152,7 +149,7 @@ class ChoiceData extends Data {
    * @param {object[]} list 要添加的ITEM列表
    * @param {string} idProp id属性
    */
-  addData(idList: idType[], list: Record<PropertyKey, any>[] = [], idProp: string, act: 'auto' | 'force' = 'auto') {
+  addData(idList: idType[], list: Record<PropertyKey, unknown>[] = [], idProp: string, act: 'auto' | 'force' = 'auto') {
     if (act === 'auto') {
       for (let i = 0; i < idList.length; i++) {
         const id = idList[i]
@@ -177,7 +174,7 @@ class ChoiceData extends Data {
    * @param {string[]} idList ID列表
    * @param {object[]} list ITEM列表
    */
-  setData(idList: idType[], list: Record<PropertyKey, any>[]) {
+  setData(idList: idType[], list: Record<PropertyKey, unknown>[]) {
     clearArray(this.data.id)
     clearArray(this.data.list)
     for (let n = 0; n < idList.length; n++) {
