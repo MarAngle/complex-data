@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { clearArray } from 'complex-utils'
 import BaseData from '../data/BaseData'
 import { formatInitOption } from '../utils'
 import Data from './../data/Data'
-import EmptyData from './EmptyData'
 
 type ResetOptionItem = {
   [prop: string]: boolean
@@ -25,8 +23,8 @@ export interface ChoiceDataInitOption {
   option?: Record<PropertyKey, any>
 }
 
-
 class ChoiceData extends Data {
+  idProp: string
   data: ChoiceDataData
   resetOption: ResetOption
   option: Record<PropertyKey, any>
@@ -34,6 +32,7 @@ class ChoiceData extends Data {
   constructor (initOption?: ChoiceDataInitOption) {
     initOption = formatInitOption(initOption)
     super()
+    this.idProp = 'id'
     this.data = {
       id: [],
       list: []
@@ -98,75 +97,13 @@ class ChoiceData extends Data {
   getList() {
     return this.data.list
   }
-  /**
-   * 根据id/idProp从totalList获取对应的数据并从totalList删除对应数据
-   * @param {string} id id属性值
-   * @param {object[]} totalList 全数据列表
-   * @param {string} idProp id属性
-   * @returns {object}
-   */
-  formatItemFromList(id: idType, totalList: Record<PropertyKey, unknown>[], idProp = 'id') {
-    for (let n = 0; n < totalList.length; n++) {
-      const item = totalList[n]
-      // eslint-disable-next-line eqeqeq
-      if (item && item[idProp] == id) {
-        totalList.splice(n, 1)
-        return item
+  pushData(idList: idType[], list: Record<PropertyKey, unknown>[]) {
+    for (let i = 0; i < idList.length; i++) {
+      const id = idList[i]
+      if (this.data.id.indexOf(id) === -1) {
+        this.data.id.push(id)
+        this.data.list.push(list[i])
       }
-    }
-    return new EmptyData('ChoiceData空选项数据')
-  }
-  /**
-   * 数据变更=>id作为唯一基准
-   * @param {string[]} idList ID列表
-   * @param {object[]} currentList ITEM列表
-   * @param {'auto' | 'force'} [check = 'auto'] 检查判断值,auto在长度相等时直接认为格式符合，否则进行格式化判断
-   * @param {string} idProp id的属性
-   */
-  changeData(idList: idType[], currentList: Record<PropertyKey, unknown>[] = [], check: 'auto' | 'force' = 'auto', idProp: string) {
-    // check 'auto'/'force'
-    if (check === 'force' || idList.length !== currentList.length) {
-      const totalList = currentList
-      for (let n = 0; n < this.data.list.length; n++) {
-        const item = this.data.list[n]
-        if (totalList.indexOf(item) < 0) {
-          totalList.push(item)
-        }
-      }
-      const list = []
-      for (let i = 0; i < idList.length; i++) {
-        const id = idList[i]
-        list[i] = this.formatItemFromList(id, totalList, idProp)
-      }
-      this.setData(idList, list)
-    } else {
-      this.setData(idList, currentList)
-    }
-  }
-  /**
-   * 添加选择
-   * @param {string[]} idList 要添加的ID列表
-   * @param {object[]} list 要添加的ITEM列表
-   * @param {string} idProp id属性
-   */
-  addData(idList: idType[], list: Record<PropertyKey, unknown>[] = [], idProp: string, act: 'auto' | 'force' = 'auto') {
-    if (act === 'auto') {
-      for (let i = 0; i < idList.length; i++) {
-        const id = idList[i]
-        if (this.data.id.indexOf(id) < 0) {
-          this.data.id.push(id)
-          this.data.list.push(list[i])
-        }
-      }
-    } else {
-      const currentIdList = this.data.id
-      for (let i = 0; i < idList.length; i++) {
-        const id = idList[i]
-        if (currentIdList.indexOf(id) < 0) {
-          currentIdList.push(id)
-        }
-      }
-      this.changeData(currentIdList, list, 'force', idProp)
     }
   }
   /**
@@ -175,14 +112,8 @@ class ChoiceData extends Data {
    * @param {object[]} list ITEM列表
    */
   setData(idList: idType[], list: Record<PropertyKey, unknown>[]) {
-    clearArray(this.data.id)
-    clearArray(this.data.list)
-    for (let n = 0; n < idList.length; n++) {
-      this.data.id.push(idList[n])
-    }
-    for (let i = 0; i < list.length; i++) {
-      this.data.list.push(list[i])
-    }
+    this.data.id = idList
+    this.data.list = list
   }
   /**
    * 根据option, defaultOption自动判断重置与否
@@ -259,17 +190,12 @@ class ChoiceData extends Data {
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, resetOption) => {
+        if (target.$module.dictionary) {
+          this.idProp = target.$module.dictionary.$getPropData('prop', 'id')
+        }
         this.autoReset(resetOption.choice)
       }
     })
-    // target.$onLife('beforeReset', {
-    //   id: this.$getId('beforeReset'),
-    //   data: (instantiater, resetOption) => {
-    //     if (target.$parseResetOption(resetOption, 'choice') !== false) {
-    //       this.reset(true)
-    //     }
-    //   }
-    // })
   }
   /**
    * 模块卸载
@@ -278,7 +204,6 @@ class ChoiceData extends Data {
   $uninstall(target: BaseData<any>) {
     super.$uninstall(target)
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
-    // target.$offLife('beforeReset', this.$getId('beforeReset'))
   }
   $reset(option?: boolean) {
     if (option !== false) {
