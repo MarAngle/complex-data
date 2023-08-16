@@ -14,6 +14,8 @@ export interface resetFormOption {
   limit?: formDataOption['limit']
 }
 
+// 需要实现数据的校验操作
+
 class SearchData extends BaseData {
   static $name = 'SearchData'
   $mod: string

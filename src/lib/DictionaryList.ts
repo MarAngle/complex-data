@@ -49,7 +49,7 @@ export interface DictionaryListInitOption extends DefaultDataInitOption<any> {
   list?: DictionaryDataInitOption[]
   layout?: LayoutDataInitOption
   option?: DictionaryListOption
-  propData?: propDataType<string | propDataItemType>
+  propData?: Partial<propDataType<string | propDataItemType>>
 }
 
 export interface formDataOption {
@@ -58,7 +58,7 @@ export interface formDataOption {
   limit?: LimitData | LimitDataInitOption,
 }
 
-function initPropData(defaultProp: propDataKeys, propData?: propDataType<string | propDataItemType>): propDataItemType {
+function initPropData(defaultProp: propDataKeys, propData?: Partial<propDataType<string | propDataItemType>>): propDataItemType {
   if (propData) {
     const data = propData[defaultProp]
     if (data) {
