@@ -93,8 +93,6 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
     return this.$module.dictionary!.formatListData(...args)
   }
   /* --- dictionary end --- */
-  /* --- choice start --- */
-  /* --- choice end --- */
 
   /* --- search start --- */
   /* --- search end --- */

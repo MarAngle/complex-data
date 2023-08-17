@@ -7,6 +7,7 @@ import SelectList from './src/data/SelectList'
 
 import ComplexData from './src/core/ComplexData'
 import ComplexList from './src/core/ComplexList'
+import ComplexInfo from './src/core/ComplexInfo'
 
 import AttributesData from './src/lib/AttributesData'
 import EmptyData from './src/lib/EmptyData'
@@ -50,6 +51,7 @@ export {
 
   ComplexData,
   ComplexList,
+  ComplexInfo,
 
   AttributesData,
   EmptyData,
