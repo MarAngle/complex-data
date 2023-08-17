@@ -13,8 +13,16 @@ class ComplexList<P extends undefined | DefaultData = undefined> extends Complex
   constructor(initOption: ComplexListInitOption<P>) {
     initOption = formatInitOption(initOption)
     super(initOption)
-    this.$list = []
     this.$triggerCreateLife('ComplexList', 'beforeCreate', initOption)
+    this.$list = []
+    this.$onLife('reseted', {
+      id: 'AutoComplexListReseted',
+      data: (resetOption) => {
+        if (resetOption.list !== false) {
+          this.$list = []
+        }
+      }
+    })
     this.$triggerCreateLife('ComplexList', 'created', initOption)
   }
   $formatList (datalist: Record<PropertyKey, any>[] = [], totalNum?: number, originFrom?: string, option?: formatDataOption) {
