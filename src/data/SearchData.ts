@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import { formDataOption } from "../lib/DictionaryList"
+import ObserveList from "../mod/ObserveList"
 import { formatInitOption } from "../utils"
 
 export interface SearchDataInitOption extends BaseDataInitOption {
@@ -14,20 +15,24 @@ export interface resetFormOption {
   limit?: formDataOption['limit']
 }
 
+export type SearchDataType = {
+  list: ObserveList
+  form: Record<PropertyKey, any>
+  data: Record<PropertyKey, any>
+}
+
 // 需要实现数据的校验操作
 
 class SearchData extends BaseData {
   static $name = 'SearchData'
   $mod: string
-  $data: Record<PropertyKey, any>
-  $current: Record<PropertyKey, any>
+  $data: Record<PropertyKey, SearchDataType>
   constructor(initOption: SearchDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.$mod = initOption.mod || 'search'
     this.$data = {}
-    this.$current = {}
     this.$initSearchData(this.$mod, initOption.formOption)
     this.$onLife('reseted', {
       id: 'AutoSearchDataReseted',
@@ -40,10 +45,11 @@ class SearchData extends BaseData {
     this.$triggerCreateLife('SearchData', 'created')
   }
   $initSearchData(modName: string, option?: resetFormOption) {
-    const list = this.$module.dictionary!.$getPageList(modName)
+    const list = this.$module.dictionary!.$buildObserveList(modName, this.$module.dictionary!.$getList(modName))
     this.$data[modName] = {
       list: list,
-      form: {}
+      form: {},
+      data: {}
     }
     this.$resetFormData('init', modName, option)
   }
@@ -57,7 +63,9 @@ class SearchData extends BaseData {
       modName = this.$mod
     }
     const targetData = this.$data[modName]
-    const list = targetData.list
+    const list = targetData.list.data.map(item => {
+      return item.$parent!
+    })
     this.$module.dictionary!.$buildFormData(list, modName, undefined, {
       form: targetData.form,
       from: from,
@@ -75,7 +83,10 @@ class SearchData extends BaseData {
       modName = this.$mod
     }
     const targetData = this.$data[modName]
-    this.$current[modName] = this.$module.dictionary!.$buildEditData(targetData.form, targetData.list, modName)
+    const list = targetData.list.data.map(item => {
+      return item.$parent!
+    })
+    this.$data[modName].data = this.$module.dictionary!.$buildEditData(targetData.form, list, modName)
   }
 }
 

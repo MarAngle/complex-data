@@ -299,6 +299,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     }
     return observeList
   }
+  // 考虑分割pageList
   $buildFormData(dList: DictionaryData[], modName: string, originData?: Record<PropertyKey, any>, option: formDataOption = {}) {
     return new Promise((resolve) => {
       const formData = option.form || {}
