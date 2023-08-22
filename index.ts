@@ -24,6 +24,7 @@ import UpdateData from './src/lib/UpdateData'
 import LayoutData from './src/lib/LayoutData'
 import DictionaryData from './src/lib/DictionaryData'
 import DictionaryList from './src/lib/DictionaryList'
+import BaseForm from './src/lib/BaseForm'
 import PaginationData from './src/lib/PaginationData'
 import ChoiceData from './src/lib/ChoiceData'
 
@@ -68,6 +69,7 @@ export {
   LayoutData,
   DictionaryData,
   DictionaryList,
+  BaseForm,
   PaginationData,
   ChoiceData,
 

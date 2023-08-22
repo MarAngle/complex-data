@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import { formDataOption } from "../lib/DictionaryList"
+import BaseForm from "../lib/BaseForm"
 import ObserveList from "../mod/ObserveList"
 import { formatInitOption } from "../utils"
 
@@ -17,7 +18,7 @@ export interface resetFormOption {
 
 export type SearchDataType = {
   list: ObserveList
-  form: Record<PropertyKey, any>
+  form: BaseForm
   data: Record<PropertyKey, any>
 }
 
@@ -25,6 +26,7 @@ export type SearchDataType = {
 
 class SearchData extends BaseData {
   static $name = 'SearchData'
+  static $form: null | (new() => BaseForm) = null
   $mod: string
   $data: Record<PropertyKey, SearchDataType>
   constructor(initOption: SearchDataInitOption) {
@@ -44,14 +46,20 @@ class SearchData extends BaseData {
     })
     this.$triggerCreateLife('SearchData', 'created')
   }
+  static setForm(form: new() => BaseForm) {
+    this.$form = form
+  }
   $initSearchData(modName: string, option?: resetFormOption) {
     const list = this.$module.dictionary!.$buildObserveList(modName, this.$module.dictionary!.$getList(modName))
-    this.$data[modName] = {
-      list: list,
-      form: {},
-      data: {}
+    const form = SearchData.$form
+    if (form) {
+      this.$data[modName] = {
+        list: list,
+        form: new form(),
+        data: {}
+      }
+      this.$resetFormData('init', modName, option)
     }
-    this.$resetFormData('init', modName, option)
   }
   $resetData() {
     for (const modName in this.$data) {
@@ -67,10 +75,11 @@ class SearchData extends BaseData {
       return item.$parent!
     })
     this.$module.dictionary!.$buildFormData(list, modName, undefined, {
-      form: targetData.form,
+      form: targetData.form.data,
       from: from,
       limit: option.limit
     })
+    targetData.form.clearValidate()
     if (option.observe) {
       targetData.list.setData(targetData.form)
     }
@@ -83,10 +92,12 @@ class SearchData extends BaseData {
       modName = this.$mod
     }
     const targetData = this.$data[modName]
-    const list = targetData.list.data.map(item => {
-      return item.$parent!
+    targetData.form.validate().then(() => {
+      const list = targetData.list.data.map(item => {
+        return item.$parent!
+      })
+      this.$data[modName!].data = this.$module.dictionary!.$buildEditData(targetData.form, list, modName!)
     })
-    this.$data[modName].data = this.$module.dictionary!.$buildEditData(targetData.form, list, modName)
   }
 }
 
