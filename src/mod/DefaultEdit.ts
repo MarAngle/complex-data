@@ -401,7 +401,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     }
   }
   getValueData(prop = 'default') {
-    return this.$value[prop]
+    return typeof this.$value[prop] !== 'function' ? this.$value[prop] : this.$value[prop]()
   }
   $checkReadyData() {
     return this.$getData
