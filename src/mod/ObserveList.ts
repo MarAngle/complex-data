@@ -16,6 +16,7 @@ class ObserveList extends Data {
   $watch: Map<string, Watcher>
   $order: string[]
   $data: null | Record<PropertyKey, any>
+  $type: string
   data: DefaultEdit[]
   constructor (list?: DefaultEdit[]) {
     super()
@@ -26,6 +27,7 @@ class ObserveList extends Data {
     this.$watch = new Map()
     this.$order = []
     this.$data = null
+    this.$type = ''
     this.data = []
     if (list) {
       for (let i = 0; i < list.length; i++) {
@@ -141,9 +143,10 @@ class ObserveList extends Data {
       this.$addItemByPreIndex(totalIndex - 1, target)
     }
   }
-  setData(data: Record<PropertyKey, any>) {
+  setData(data: Record<PropertyKey, any>, type = '') {
     observe(data)
     this.$data = data
+    this.$type = type
     this.$observe()
   }
   $triggerObserve (prop: string, val: any, from?: string) {
