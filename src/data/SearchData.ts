@@ -66,7 +66,7 @@ class SearchData extends BaseData {
       this.$resetFormData('reset', modName)
     }
   }
-  $resetFormData(from = 'init' , modName?: string, option: resetFormOption = {}) {
+  $resetFormData(from = '' , modName?: string, option: resetFormOption = {}) {
     if (!modName) {
       modName = this.$mod
     }
@@ -84,19 +84,34 @@ class SearchData extends BaseData {
       targetData.list.setData(targetData.form)
     }
     if (option.copy !== false) {
-      this.$syncFormData(modName)
+      targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, modName!)
     }
   }
-  $syncFormData(modName?: string) {
-    if (!modName) {
-      modName = this.$mod
-    }
-    const targetData = this.$data[modName]
-    targetData.form.validate().then(() => {
-      const list = targetData.list.data.map(item => {
-        return item.$parent!
+  $validate(modName?: string): Promise<{ status: string, data: SearchDataType, modName: string }> {
+    return new Promise((resolve, reject) => {
+      if (!modName) {
+        modName = this.$mod
+      }
+      const targetData = this.$data[modName]
+      targetData.form.validate().then(() => {
+        resolve({ status: 'success', data: targetData, modName: modName! })
+      }).catch(err => {
+        reject(err)
       })
-      this.$data[modName!].data = this.$module.dictionary!.$buildEditData(targetData.form, list, modName!)
+    })
+  }
+  $syncFormData(modName?: string) {
+    return new Promise((resolve, reject) => {
+      this.$validate(modName).then((res) => {
+        const targetData = res.data
+        const list = targetData.list.data.map(item => {
+          return item.$parent!
+        })
+        targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, res.modName)
+        resolve({ status: 'success' })
+      }).catch(err => {
+        reject(err)
+      })
     })
   }
 }

@@ -3,6 +3,7 @@ import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import DictionaryList from '../lib/DictionaryList'
 import PaginationData from '../lib/PaginationData'
 import DefaultData from "../data/DefaultData"
+import SearchData from "../data/SearchData"
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ComplexDataInitOption<P extends undefined | DefaultData = undefined> extends BaseDataInitOption<P> {
@@ -95,6 +96,42 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
   /* --- dictionary end --- */
 
   /* --- search start --- */
+  $initSearchData(...args: Parameters<SearchData['$initSearchData']>) {
+    this.$module.search!.$initSearchData(...args)
+  }
+  $setSearch(modName?: string, from = 'set') {
+    return new Promise((resolve, reject) => {
+      this.$triggerLife('beforeSearch', this, modName, from)
+      this.$module.search!.$syncFormData(modName).then(() => {
+        this.$reloadData({
+          page: true,
+          choice: {
+            from: 'search',
+            act: from
+          }
+        })!.then((res => {
+          this.$triggerLife('searched', this, modName, from)
+          resolve(res)
+        })).catch(err => {
+          this.$triggerLife('searchFail', this, modName, from, err)
+          reject(err)
+        })
+      }).catch(err => {
+        this.$triggerLife('searchFail', this, modName, from, err)
+        reject(err)
+      })
+    })
+  }
+  $resetSearch(modName?: string) {
+    return new Promise((resolve, reject) => {
+      this.$module.search!.$resetFormData('reset', modName)
+      this.$setSearch(modName, 'reset').then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
   /* --- search end --- */
 }
 
