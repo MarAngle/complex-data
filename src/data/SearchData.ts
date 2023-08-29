@@ -3,9 +3,9 @@ import BaseData, { BaseDataInitOption } from "../data/BaseData"
 import { formDataOption } from "../lib/DictionaryList"
 import BaseForm from "../lib/BaseForm"
 import ObserveList from "../mod/ObserveList"
-import { formatInitOption } from "../utils"
-import MenuData, { MenuDataInitOption } from "../lib/MenuData"
 import LayoutData, { LayoutDataInitOption } from "../lib/LayoutData"
+import MenuData, { MenuDataInitOption } from "../mod/MenuData"
+import { formatInitOption } from "../utils"
 
 export interface SearchDataInitOption extends BaseDataInitOption {
   mod?: string,

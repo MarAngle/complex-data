@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Data from "../data/Data"
-import { ObserveItem } from "../mod/ObserveList"
-import AttributesData, { AttributesDataInitOption } from "./AttributesData"
-import LayoutData, { LayoutDataInitOption } from "./LayoutData"
+import { ObserveItem } from "./ObserveList"
+import AttributesData, { AttributesDataInitOption } from "./../lib/AttributesData"
+import LayoutData, { LayoutDataInitOption } from "./../lib/LayoutData"
 
 type renderType = (payload: {
   text: any,

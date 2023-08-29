@@ -29,6 +29,7 @@ import PaginationData from './src/lib/PaginationData'
 import ChoiceData from './src/lib/ChoiceData'
 
 import ObserveList from './src/mod/ObserveList'
+import MenuData from './src/mod/MenuData'
 import DefaultEdit from './src/mod/DefaultEdit'
 import DefaultInfo from './src/mod/DefaultInfo'
 import DefaultList from './src/mod/DefaultList'
@@ -74,6 +75,7 @@ export {
   ChoiceData,
 
   ObserveList,
+  MenuData,
   DefaultEdit,
   DefaultInfo,
   DefaultList,
