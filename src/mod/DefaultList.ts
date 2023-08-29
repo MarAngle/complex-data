@@ -15,6 +15,7 @@ type renderType = (payload: {
 }) => any
 
 export interface DefaultListInitOption {
+  prop?: string
   name?: string
   align?: 'center' | 'left' | 'right'
   width?: number | string
@@ -22,8 +23,9 @@ export interface DefaultListInitOption {
   auto?: boolean
   local?: Record<PropertyKey, any>
   tip?: TipDataInitOption
-  render?: renderType,
-  pureRender?: renderType,
+  show?: DictionaryData['show']
+  render?: renderType
+  pureRender?: renderType
   observe?: ObserveItem['$observe']
 }
 
@@ -42,19 +44,19 @@ class DefaultList extends Data<DictionaryData> implements ObserveItem{
   render?: renderType
   pureRender?: renderType
   $observe?: ObserveItem['$observe']
-  constructor(initOption: DefaultListInitOption | true, modName: string, parent: DictionaryData) {
+  constructor(initOption: DefaultListInitOption | true, modName?: string, parent?: DictionaryData) {
     if (initOption === true) {
       initOption = {}
     }
     super()
     this.$setParent(parent)
-    this.prop = parent.$prop
-    this.name = initOption.name || parent.$getInterface('label', modName) as string
+    this.prop = initOption.prop || (parent ? parent.$prop : '')
+    this.name = initOption.name || (parent ? parent.$getInterface('label', modName) as string : '')
+    this.show = initOption.show || (parent ? parent.show : undefined)
     this.align = initOption.align || 'center'
     this.width = initOption.width === undefined ? config.DefaultList.width : initOption.width
     this.ellipsis = initOption.ellipsis === undefined ? config.DefaultList.ellipsis : initOption.ellipsis
     this.auto = initOption.auto === undefined ? config.DefaultList.auto : initOption.auto
-    this.show = parent.show
     this.local = initOption.local || {}
     this.tip = new TipData(initOption.tip)
     this.render = initOption.render

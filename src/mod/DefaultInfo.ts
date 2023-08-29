@@ -7,7 +7,10 @@ import { LayoutDataFormatData } from "../lib/LayoutData";
 import { ObserveItem } from "./ObserveList";
 
 export interface DefaultInfoInitOption {
+  prop?: string
   name?: string
+  show?: DictionaryData['show']
+  showType?: string
   local?: Record<PropertyKey, any>
   observe?: ObserveItem['$observe']
 }
@@ -18,21 +21,21 @@ class DefaultInfo extends Data<DictionaryData> implements ObserveItem{
   prop: string
   name: string
   showType?: string
-  layout: LayoutDataFormatData
+  layout?: LayoutDataFormatData
   show: DictionaryData['show']
   local: Record<PropertyKey, any>
   $observe?: ObserveItem['$observe']
-  constructor(initOption: DefaultInfoInitOption | true, modName: string, parent: DictionaryData) {
+  constructor(initOption: DefaultInfoInitOption | true, modName?: string, parent?: DictionaryData) {
     if (initOption === true) {
       initOption = {}
     }
     super()
     this.$setParent(parent)
-    this.prop = parent.$prop
-    this.name = initOption.name || parent.$getInterface('label', modName) as string
-    this.showType = parent.$getInterface('showType', modName)
-    this.layout = parent.$getLayout(modName)
-    this.show = parent.show
+    this.prop = initOption.prop || (parent ? parent.$prop : '')
+    this.name = initOption.name || (parent ? parent.$getInterface('label', modName) as string : '')
+    this.show = initOption.show || (parent ? parent.show : undefined)
+    this.showType = initOption.showType || (parent ? parent.$getInterface('showType', modName) : '')
+    this.layout = parent ? parent.$getLayout(modName) : undefined
     this.local = initOption.local || {}
     this.$observe = initOption.observe
   }

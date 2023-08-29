@@ -149,7 +149,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     render?: (...args: any[]) => any
   }
   $customize?: unknown
-  constructor(initOption: DefaultEditInitOption<T>, modName: string, parent: DictionaryData) {
+  constructor(initOption: DefaultEditInitOption<T>, modName?: string, parent?: DictionaryData) {
     if (!initOption) {
       throw new Error('编辑数据模块初始化参数为空！')
     }
@@ -162,10 +162,12 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
         jumper: false
       }
     }
-    initOption.parent = parent
+    if (parent) {
+      initOption.parent = parent
+    }
     super(initOption)
     this.$triggerCreateLife('DefaultEdit', 'beforeCreate', initOption)
-    this.prop = parent.$prop
+    this.prop = parent ? parent.$prop : this.$prop
     this.type = initOption.type || 'input' as T
     this.trim = !!initOption.trim
     this.colon = initOption.colon === undefined ? true : initOption.colon

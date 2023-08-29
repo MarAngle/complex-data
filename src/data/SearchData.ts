@@ -4,10 +4,16 @@ import { formDataOption } from "../lib/DictionaryList"
 import BaseForm from "../lib/BaseForm"
 import ObserveList from "../mod/ObserveList"
 import { formatInitOption } from "../utils"
+import MenuData, { MenuDataInitOption } from "../lib/MenuData"
+import LayoutData, { LayoutDataInitOption } from "../lib/LayoutData"
 
 export interface SearchDataInitOption extends BaseDataInitOption {
   mod?: string,
   formOption?: resetFormOption
+  menu?: {
+    layout?: LayoutDataInitOption
+    list: MenuDataInitOption[]
+  }
 }
 
 export interface resetFormOption {
@@ -29,12 +35,29 @@ class SearchData extends BaseData {
   static $form: null | (new() => BaseForm) = null
   $mod: string
   $data: Record<PropertyKey, SearchDataType>
+  menu: {
+    layout: LayoutData
+    list: MenuData[]
+  }
   constructor(initOption: SearchDataInitOption) {
     initOption = formatInitOption(initOption)
     super(initOption)
     this.$triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.$mod = initOption.mod || 'search'
     this.$data = {}
+    const menu = initOption.menu
+    if (menu) {
+      const layout = new LayoutData(menu.layout || (this.$module.dictionary ? this.$module.dictionary.$layout : undefined))
+      this.menu = {
+        layout: layout,
+        list: menu.list.map(menuItem => new MenuData(menuItem, layout))
+      }
+    } else {
+      this.menu = {
+        layout: new LayoutData(),
+        list: []
+      }
+    }
     this.$initSearchData(this.$mod, initOption.formOption)
     this.$onLife('reseted', {
       id: 'AutoSearchDataReseted',
