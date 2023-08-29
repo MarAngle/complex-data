@@ -99,7 +99,7 @@ class ObserveList extends Data {
   syncOrder() {
     clearArray(this.data)
     for (let n = 0; n < this.$order.length; n++) {
-      this.push(this.getItem(this.$order[n])!)
+      this.data.push(this.getItem(this.$order[n])!)
     }
   }
   getItem(prop: string) {
