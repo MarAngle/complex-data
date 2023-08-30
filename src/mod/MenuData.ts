@@ -18,6 +18,7 @@ export interface MenuDataInitOption {
   prop: string
   name: string
   label?: string
+  colon?: boolean
   type?: string
   icon?: any
   loading?: boolean | booleanFunction
@@ -38,6 +39,7 @@ class MenuData extends Data implements ObserveItem{
   prop: string
   name: string
   label: string
+  colon: boolean
   type?: string
   icon?: any
   loading?: boolean | booleanFunction
@@ -55,6 +57,7 @@ class MenuData extends Data implements ObserveItem{
     this.prop = initOption.prop
     this.name = initOption.name
     this.label = initOption.label || ''
+    this.colon = initOption.colon === undefined ? true : initOption.colon
     this.type = initOption.type
     this.icon = initOption.icon
     this.loading = initOption.loading
