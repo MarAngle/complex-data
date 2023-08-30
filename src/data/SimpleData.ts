@@ -15,7 +15,7 @@ class SimpleData<P extends undefined | DefaultData<any> = undefined> extends Dat
   static $name = 'SimpleData'
   $name: string
   $prop: string
-  $extra!: Record<PropertyKey, any>
+  $extra: Record<PropertyKey, any>
   constructor(initOption: SimpleDataInitOption<P>) {
     initOption = formatInitOption(initOption)
     super()
@@ -24,8 +24,11 @@ class SimpleData<P extends undefined | DefaultData<any> = undefined> extends Dat
     this.$setParent(initOption.parent)
     if (getType(initOption.extra) === 'object') {
       this.$extra = initOption.extra!
-    } else if (initOption.extra !== undefined) {
-      this.$exportMsg(`初始化extra出错，数据必须为对象！`)
+    } else {
+      this.$extra = {}
+      if (initOption.extra !== undefined) {
+        this.$exportMsg(`初始化extra出错，数据必须为对象！`)
+      }
     }
   }
   /**
