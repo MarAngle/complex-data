@@ -17,6 +17,7 @@ export type booleanFunction = (...args: any[]) => boolean
 export interface MenuDataInitOption {
   prop: string
   name: string
+  label?: string
   type?: string
   icon?: any
   loading?: boolean | booleanFunction
@@ -36,6 +37,7 @@ class MenuData extends Data implements ObserveItem{
   static $name = 'MenuData'
   prop: string
   name: string
+  label: string
   type?: string
   icon?: any
   loading?: boolean | booleanFunction
@@ -52,6 +54,7 @@ class MenuData extends Data implements ObserveItem{
     super()
     this.prop = initOption.prop
     this.name = initOption.name
+    this.label = initOption.label || ''
     this.type = initOption.type
     this.icon = initOption.icon
     this.loading = initOption.loading
