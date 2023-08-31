@@ -331,7 +331,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
   //   let pageList = this.$getPageList(modName, option.listOption)
   // }
   $buildEditData(formData: Record<PropertyKey, any>, dList: DictionaryData[], modName: string) {
-    const editData = {}
+    const editData: Record<string, any> = {}
     dList.forEach(ditem => {
       let add = true
       const mod = ditem.$getMod(modName) as DefaultEdit
