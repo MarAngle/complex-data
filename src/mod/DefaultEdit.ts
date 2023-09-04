@@ -7,6 +7,12 @@ import DictionaryData, { baseFunction } from '../lib/DictionaryData'
 import { ObserveItem } from './ObserveList'
 import TipData, { TipDataInitOption } from './TipsData'
 import AttributesData, { AttributesDataInitOption } from '../lib/AttributesData'
+import { dateConfig } from '../utils'
+import dayjs, { Dayjs } from 'dayjs'
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const customParseFormat = require('dayjs/plugin/customParseFormat')
+dayjs.extend(customParseFormat)
 
 interface valueType {
   default?: any,
@@ -16,6 +22,15 @@ interface valueType {
 }
 
 export type DefaultEditTypeDict = 'input' | 'inputNumber' | 'textArea' | 'switch' | 'select' | 'cascader' | 'date' | 'dateRange' | 'file' | 'button' | 'text' | 'customize' | 'slot'
+
+export type dateTimeOption = {
+  show: string
+  defaultValue: string
+}
+export type dateDisabledDateOption = {
+  start?: Date | 'current'
+  end?: Date | 'current'
+}
 
 interface DefaultEditInputType {
   type: string
@@ -48,6 +63,17 @@ interface DefaultEditCascaderType {
   hideArrow: boolean
   hideClear: boolean
 }
+interface DefaultEditDateType {
+  time?: Partial<dateTimeOption>
+  show: string // 展示的格式
+  format: string // 回传的格式
+  hideClear: boolean
+  disabledDate?: (value: unknown) => boolean | dateDisabledDateOption
+}
+interface DefaultEditDateRangeType {
+  time?: Partial<dateTimeOption>
+  hideClear: boolean
+}
 interface DefaultEditFileType {
   accept: string
   multipleAppend: boolean
@@ -71,9 +97,9 @@ interface DefaultEditTextType {
 type DefaultEditCustomizeType = Record<PropertyKey, unknown>
 type DefaultEditSlotType = Record<PropertyKey, unknown>
 
-export type DefaultEditOptionType<T extends DefaultEditTypeDict> = T extends 'input' ? DefaultEditInputType : T extends 'inputNumber' ? DefaultEditInputNumberType : T extends 'textArea' ?  DefaultEditTextAreaType : T extends 'select' ? DefaultEditSelectType : T extends 'cascader' ? DefaultEditCascaderType : T extends 'file' ? DefaultEditFileType : T extends 'button' ? DefaultEditButtonType : T extends 'text' ? DefaultEditTextType : T extends 'customize' ? DefaultEditCustomizeType : DefaultEditSlotType
+export type DefaultEditOptionType<T extends DefaultEditTypeDict> = T extends 'input' ? DefaultEditInputType : T extends 'inputNumber' ? DefaultEditInputNumberType : T extends 'textArea' ?  DefaultEditTextAreaType : T extends 'select' ? DefaultEditSelectType : T extends 'cascader' ? DefaultEditCascaderType : T extends 'date' ? DefaultEditDateType : T extends 'dateRange' ? DefaultEditDateRangeType : T extends 'file' ? DefaultEditFileType : T extends 'button' ? DefaultEditButtonType : T extends 'text' ? DefaultEditTextType : T extends 'customize' ? DefaultEditCustomizeType : DefaultEditSlotType
 
-export type PartialDefaultEditOptionType<T extends DefaultEditTypeDict> =  T extends 'input' ? Partial<DefaultEditInputType> : T extends 'inputNumber' ? Partial<DefaultEditInputNumberType> : T extends 'textArea' ?  Partial<DefaultEditTextAreaType> : T extends 'select' ? Partial<DefaultEditSelectType> : T extends 'cascader' ? Partial<DefaultEditCascaderType> : T extends 'file' ? Partial<DefaultEditFileType> : T extends 'button' ? Partial<DefaultEditButtonType> : T extends 'text' ? Partial<DefaultEditTextType> : T extends 'customize' ? Partial<DefaultEditCustomizeType> : Partial<DefaultEditSlotType>
+export type PartialDefaultEditOptionType<T extends DefaultEditTypeDict> =  T extends 'input' ? Partial<DefaultEditInputType> : T extends 'inputNumber' ? Partial<DefaultEditInputNumberType> : T extends 'textArea' ?  Partial<DefaultEditTextAreaType> : T extends 'select' ? Partial<DefaultEditSelectType> : T extends 'cascader' ? Partial<DefaultEditCascaderType> : T extends 'date' ? Partial<DefaultEditDateType> : T extends 'dateRange' ? Partial<DefaultEditDateRangeType> : T extends 'file' ? Partial<DefaultEditFileType> : T extends 'button' ? Partial<DefaultEditButtonType> : T extends 'text' ? Partial<DefaultEditTextType> : T extends 'customize' ? Partial<DefaultEditCustomizeType> : Partial<DefaultEditSlotType>
 
 export interface DefaultEditInitOption<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends BaseDataInitOption<DictionaryData> {
   type?: T
@@ -177,6 +203,8 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     this.$option = {} as any
     this.tip = new TipData(initOption.tip)
     // 组件事件监控
+    this.edit = initOption.edit
+    this.post = initOption.post
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
     // main = { props: {} } item = { props: {} }
@@ -326,8 +354,31 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       this.setMultiple(true)
     } else if (this.type === 'date') {
       // 日期选择
+      (this.$option as DefaultEditOptionType<'date'>).time = dateConfig.parseTime((initOption.option as PartialDefaultEditOptionType<'date'>).time);
+      (this.$option as DefaultEditOptionType<'date'>).show = (initOption.option as PartialDefaultEditOptionType<'date'>).show || (this.$option as DefaultEditOptionType<'date'>).time ? 'YYYY-MM-DD ' + (this.$option as DefaultEditOptionType<'date'>).time!.show! : 'YYYY-MM-DD';
+      (this.$option as DefaultEditOptionType<'date'>).format = (initOption.option as PartialDefaultEditOptionType<'date'>).format || (this.$option as DefaultEditOptionType<'date'>).show;
+      (this.$option as DefaultEditOptionType<'date'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'date'>).hideClear || false;
+      if (this.edit === undefined) {
+        this.edit = (value) => {
+          return value ? dayjs(value as string, (this.$option as DefaultEditOptionType<'date'>).format) : value
+        }
+      }
+      if (this.post === undefined) {
+        this.post = (value) => {
+          return value ? (value as Dayjs).format((this.$option as DefaultEditOptionType<'date'>).format) : value
+        }
+      }
+      // const disabledDate = (initOption.option as PartialDefaultEditOptionType<'date'>).disabledDate;
+      // if (disabledDate && typeof disabledDate === 'object') {
+      //   (this.$option as DefaultEditOptionType<'date'>).disabledDate = (value: Date) => {
+      //     return dateConfig.disabledDate(value, disabledDate)
+      //   }
+      // } else {
+      //   (this.$option as DefaultEditOptionType<'date'>).disabledDate = disabledDate;
+      // }
     } else if (this.type === 'dateRange') {
       // 日期范围选择
+      (this.$option as DefaultEditOptionType<'dateRange'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).hideClear || false;
     } else if (this.type === 'file') {
       // 文件
       (this.$option as DefaultEditOptionType<'file'>).accept = (initOption.option as PartialDefaultEditOptionType<'file'>).accept || '';

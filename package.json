@@ -1,6 +1,6 @@
 {
   "name": "complex-data-next",
-  "version": "3.2.22",
+  "version": "3.2.23",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {
@@ -8,7 +8,8 @@
     "url": "https://github.com/MarAngle/complex-data-next.git"
   },
   "dependencies": {
-    "complex-utils": "1.0.19 - 1.0.99"
+    "complex-utils": "1.0.19 - 1.0.99",
+    "dayjs": "^1.11.9"
   },
   "devDependencies": {
     "typescript": "~5.0.4"
