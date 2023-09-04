@@ -358,6 +358,13 @@ class DictionaryList extends DefaultData implements HasLayoutData {
           if (mod.trim) {
             originValue = trimData(originValue)
           }
+          if (mod.post) {
+            originValue = mod.post(originValue, {
+              targetData: editData,
+              originData: formData,
+              type: modName
+            })
+          }
           ditem.$setTargetData(ditem.$getInterface('originProp', modName)!, originValue, 'post', {
             targetData: editData,
             originData: formData,
