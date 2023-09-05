@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { getType, hasProp } from 'complex-utils'
+import { getType, hasProp, isArray } from 'complex-utils'
 import BaseData, { BaseDataInitOption } from '../data/BaseData'
 import InterfaceData, { InterfaceDataInitOption } from '../lib/InterfaceData'
 import config, { DictType } from '../../config'
@@ -27,9 +27,15 @@ export type dateTimeOption = {
   show: string
   defaultValue: string
 }
+
+export type dateDisabledDateOptionValue = {
+  data: Dayjs | 'current' | 'today:start' | 'today:end' | 'nextday:start' | 'nextday:end'
+  eq?: boolean
+}
+
 export type dateDisabledDateOption = {
-  start?: Date | 'current'
-  end?: Date | 'current'
+  start?: dateDisabledDateOptionValue
+  end?: dateDisabledDateOptionValue
 }
 
 interface DefaultEditInputType {
@@ -68,11 +74,17 @@ interface DefaultEditDateType {
   show: string // 展示的格式
   format: string // 回传的格式
   hideClear: boolean
-  disabledDate?: (value: unknown) => boolean | dateDisabledDateOption
+  disabledDate?: (value: Dayjs) => boolean | dateDisabledDateOption
+  disabledTime?: (value: any) => boolean
 }
 interface DefaultEditDateRangeType {
   time?: Partial<dateTimeOption>
+  show: string // 展示的格式
+  format: string // 回传的格式
   hideClear: boolean
+  separator: string
+  disabledDate?: (value: Dayjs) => boolean | dateDisabledDateOption
+  disabledTime?: (value: any) => boolean
 }
 interface DefaultEditFileType {
   accept: string
@@ -368,17 +380,49 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
           return value ? (value as Dayjs).format((this.$option as DefaultEditOptionType<'date'>).format) : value
         }
       }
-      // const disabledDate = (initOption.option as PartialDefaultEditOptionType<'date'>).disabledDate;
-      // if (disabledDate && typeof disabledDate === 'object') {
-      //   (this.$option as DefaultEditOptionType<'date'>).disabledDate = (value: Date) => {
-      //     return dateConfig.disabledDate(value, disabledDate)
-      //   }
-      // } else {
-      //   (this.$option as DefaultEditOptionType<'date'>).disabledDate = disabledDate;
-      // }
+      (this.$option as DefaultEditOptionType<'date'>).disabledTime = (initOption.option as PartialDefaultEditOptionType<'date'>).disabledTime;
+      const disabledDate = (initOption.option as PartialDefaultEditOptionType<'date'>).disabledDate;
+      if (disabledDate && typeof disabledDate === 'object') {
+        (this.$option as DefaultEditOptionType<'date'>).disabledDate = (value: Dayjs) => {
+          return dateConfig.disabledDate(value, disabledDate)
+        }
+      } else {
+        (this.$option as DefaultEditOptionType<'date'>).disabledDate = disabledDate;
+      }
     } else if (this.type === 'dateRange') {
       // 日期范围选择
+      (this.$option as DefaultEditOptionType<'dateRange'>).time = dateConfig.parseTime((initOption.option as PartialDefaultEditOptionType<'dateRange'>).time);
+      (this.$option as DefaultEditOptionType<'dateRange'>).show = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).show || (this.$option as DefaultEditOptionType<'dateRange'>).time ? 'YYYY-MM-DD ' + (this.$option as DefaultEditOptionType<'dateRange'>).time!.show! : 'YYYY-MM-DD';
+      (this.$option as DefaultEditOptionType<'dateRange'>).format = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).format || (this.$option as DefaultEditOptionType<'dateRange'>).show;
       (this.$option as DefaultEditOptionType<'dateRange'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).hideClear || false;
+      (this.$option as DefaultEditOptionType<'dateRange'>).separator = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).separator || '-';
+      if (this.edit === undefined) {
+        this.edit = (value) => {
+          if (value && isArray(value)) {
+            return value.map(item => dayjs(item, (this.$option as DefaultEditOptionType<'dateRange'>).format))
+          } else {
+            return []
+          }
+        }
+      }
+      if (this.post === undefined) {
+        this.post = (value) => {
+          if (value && isArray(value)) {
+            return value.map(item => item.format((this.$option as DefaultEditOptionType<'dateRange'>).format))
+          } else {
+            return []
+          }
+        }
+      }
+      (this.$option as DefaultEditOptionType<'dateRange'>).disabledTime = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).disabledTime;
+      const disabledDate = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).disabledDate;
+      if (disabledDate && typeof disabledDate === 'object') {
+        (this.$option as DefaultEditOptionType<'dateRange'>).disabledDate = (value: Dayjs) => {
+          return dateConfig.disabledDate(value, disabledDate)
+        }
+      } else {
+        (this.$option as DefaultEditOptionType<'dateRange'>).disabledDate = disabledDate;
+      }
     } else if (this.type === 'file') {
       // 文件
       (this.$option as DefaultEditOptionType<'file'>).accept = (initOption.option as PartialDefaultEditOptionType<'file'>).accept || '';
