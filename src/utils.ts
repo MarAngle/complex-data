@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { setDataByDefault } from 'complex-utils'
-import { dateDisabledDateOption, dateDisabledDateOptionValue, dateTimeOption } from './mod/DefaultEdit'
+import { dateDisabledDateOption, dateDisabledDateOptionValue, dateRangeTimeOption, dateTimeOption } from './mod/DefaultEdit'
 import dayjs, { Dayjs } from 'dayjs'
 import { date } from 'complex-plugin'
 
@@ -47,6 +47,19 @@ export const dateConfig = {
         time.defaultValue = '00:00:00'
       }
       return time as dateTimeOption
+    } else {
+      return undefined
+    }
+  },
+  parseRangeTime(time?: Partial<dateRangeTimeOption>): undefined | dateRangeTimeOption {
+    if (time) {
+      if (!time.show) {
+        time.show = 'HH:mm:ss'
+      }
+      if (!time.defaultValue) {
+        time.defaultValue = ['00:00:00', '23:59:59']
+      }
+      return time as dateRangeTimeOption
     } else {
       return undefined
     }

@@ -28,6 +28,11 @@ export type dateTimeOption = {
   defaultValue: string
 }
 
+export type dateRangeTimeOption = {
+  show: string
+  defaultValue: string[]
+}
+
 export type dateDisabledDateOptionValue = {
   data: Dayjs | 'current' | 'today:start' | 'today:end' | 'nextday:start' | 'nextday:end'
   eq?: boolean
@@ -78,7 +83,7 @@ interface DefaultEditDateType {
   disabledTime?: (value: any) => boolean
 }
 interface DefaultEditDateRangeType {
-  time?: Partial<dateTimeOption>
+  time?: Partial<dateRangeTimeOption>
   show: string // 展示的格式
   format: string // 回传的格式
   hideClear: boolean
@@ -391,7 +396,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       }
     } else if (this.type === 'dateRange') {
       // 日期范围选择
-      (this.$option as DefaultEditOptionType<'dateRange'>).time = dateConfig.parseTime((initOption.option as PartialDefaultEditOptionType<'dateRange'>).time);
+      (this.$option as DefaultEditOptionType<'dateRange'>).time = dateConfig.parseRangeTime((initOption.option as PartialDefaultEditOptionType<'dateRange'>).time);
       (this.$option as DefaultEditOptionType<'dateRange'>).show = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).show || (this.$option as DefaultEditOptionType<'dateRange'>).time ? 'YYYY-MM-DD ' + (this.$option as DefaultEditOptionType<'dateRange'>).time!.show! : 'YYYY-MM-DD';
       (this.$option as DefaultEditOptionType<'dateRange'>).format = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).format || (this.$option as DefaultEditOptionType<'dateRange'>).show;
       (this.$option as DefaultEditOptionType<'dateRange'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).hideClear || false;
@@ -423,6 +428,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       } else {
         (this.$option as DefaultEditOptionType<'dateRange'>).disabledDate = disabledDate;
       }
+      this.setMultiple(true)
     } else if (this.type === 'file') {
       // 文件
       (this.$option as DefaultEditOptionType<'file'>).accept = (initOption.option as PartialDefaultEditOptionType<'file'>).accept || '';
