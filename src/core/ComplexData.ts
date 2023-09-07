@@ -96,6 +96,13 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
   /* --- dictionary end --- */
 
   /* --- search start --- */
+  $getSearch(...args: Parameters<SearchData['getData']>) {
+    if (this.$module.search) {
+      return this.$module.search.getData(...args)
+    } else {
+      return {}
+    }
+  }
   $initSearchData(...args: Parameters<SearchData['$initSearchData']>) {
     this.$module.search!.$initSearchData(...args)
   }

@@ -137,6 +137,17 @@ class SearchData extends BaseData {
       })
     })
   }
+  getData(modName?: string) {
+    if (!modName) {
+      modName = this.$mod
+    }
+    const targetData = this.$data[modName]
+    if (targetData) {
+      return targetData.data
+    } else {
+      return {}
+    }
+  }
 }
 
 export default SearchData
