@@ -25,12 +25,12 @@ export type DefaultEditTypeDict = 'input' | 'inputNumber' | 'textArea' | 'switch
 
 export type dateTimeOption = {
   show: string
-  defaultValue: string
+  defaultValue: string | Dayjs
 }
 
 export type dateRangeTimeOption = {
   show: string
-  defaultValue: string[]
+  defaultValue: (string | Dayjs)[]
 }
 
 export type dateDisabledDateOptionValue = {

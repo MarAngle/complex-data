@@ -44,7 +44,9 @@ export const dateConfig = {
         time.show = 'HH:mm:ss'
       }
       if (!time.defaultValue) {
-        time.defaultValue = '00:00:00'
+        time.defaultValue = dayjs('00:00:00', 'HH:mm:ss')
+      } else if (typeof time.defaultValue === 'string') {
+        time.defaultValue = dayjs(time.defaultValue)
       }
       return time as dateTimeOption
     } else {
@@ -57,7 +59,14 @@ export const dateConfig = {
         time.show = 'HH:mm:ss'
       }
       if (!time.defaultValue) {
-        time.defaultValue = ['00:00:00', '23:59:59']
+        time.defaultValue = [dayjs('00:00:00', 'HH:mm:ss'),  dayjs('23:59:59', 'HH:mm:ss')]
+      } else {
+        for (let i = 0; i < time.defaultValue.length; i++) {
+          const value = time.defaultValue[i];
+          if (typeof value === 'string') {
+            time.defaultValue[i] = dayjs(value)
+          }
+        }
       }
       return time as dateRangeTimeOption
     } else {
