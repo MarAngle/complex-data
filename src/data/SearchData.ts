@@ -6,6 +6,7 @@ import ObserveList from "../mod/ObserveList"
 import LayoutData, { LayoutDataInitOption } from "../lib/LayoutData"
 import MenuData, { MenuDataInitOption } from "../mod/MenuData"
 import { formatInitOption } from "../utils"
+import DictionaryData from "../lib/DictionaryData"
 
 export interface SearchDataInitOption extends BaseDataInitOption {
   mod?: string,
@@ -107,8 +108,9 @@ class SearchData extends BaseData {
       targetData.list.setData(targetData.form)
     }
     if (option.copy !== false) {
-      targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, modName!)
+      this.syncFormData(modName, targetData, list)
     }
+    this.$syncData(true, '$resetFormData', from, modName)
   }
   $validate(modName?: string): Promise<{ status: string, data: SearchDataType, modName: string }> {
     return new Promise((resolve, reject) => {
@@ -126,16 +128,27 @@ class SearchData extends BaseData {
   $syncFormData(modName?: string) {
     return new Promise((resolve, reject) => {
       this.$validate(modName).then((res) => {
-        const targetData = res.data
-        const list = targetData.list.data.map(item => {
-          return item.$parent!
-        })
-        targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, res.modName)
+        this.syncFormData(res.modName, res.data)
         resolve({ status: 'success' })
       }).catch(err => {
         reject(err)
       })
     })
+  }
+  syncFormData(modName?: string, targetData?: SearchDataType, list?: DictionaryData[]) {
+    if (!modName) {
+      modName = this.$mod
+    }
+    if (!targetData) {
+      targetData = this.$data[modName]
+    }
+    if (!list) {
+      list = targetData.list.data.map(item => {
+        return item.$parent!
+      })
+    }
+    targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, modName)
+    this.$syncData(true, 'syncFormData', modName)
   }
   getData(modName?: string) {
     if (!modName) {
