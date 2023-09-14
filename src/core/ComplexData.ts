@@ -96,6 +96,16 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
   /* --- dictionary end --- */
 
   /* --- search start --- */
+  $setSearchForm(data: Record<PropertyKey, any>, { modName, sync, force }: { modName?: string, sync?: boolean, force?: boolean } = {}) {
+    this.$module.search!.setForm(data, modName)
+    if (sync) {
+      if (force) {
+        this.$module.search!.syncFormData(modName)
+      } else {
+        return this.$module.search!.$syncFormData(modName)
+      }
+    }
+  }
   $getSearch(...args: Parameters<SearchData['getData']>) {
     if (this.$module.search) {
       return this.$module.search.getData(...args)

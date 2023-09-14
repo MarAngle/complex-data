@@ -161,6 +161,15 @@ class SearchData extends BaseData {
       return {}
     }
   }
+  setForm(data: Record<PropertyKey, any>, modName?: string) {
+    if (!modName) {
+      modName = this.$mod
+    }
+    const targetData = this.$data[modName]
+    for (const prop in data) {
+      targetData.form.data[prop] = data[prop]
+    }
+  }
 }
 
 export default SearchData
