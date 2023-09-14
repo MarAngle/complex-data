@@ -161,13 +161,20 @@ class SearchData extends BaseData {
       return {}
     }
   }
-  setForm(data: Record<PropertyKey, any>, modName?: string) {
+  setForm(data: Record<PropertyKey, any>, { modName, sync, force }: { modName?: string, sync?: boolean, force?: boolean } = {}) {
     if (!modName) {
       modName = this.$mod
     }
     const targetData = this.$data[modName]
     for (const prop in data) {
       targetData.form.data[prop] = data[prop]
+    }
+    if (sync) {
+      if (force) {
+        this.syncFormData(modName)
+      } else {
+        return this.$syncFormData(modName)
+      }
     }
   }
 }
