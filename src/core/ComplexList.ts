@@ -26,7 +26,7 @@ class ComplexList<P extends undefined | DefaultData = undefined> extends Complex
     this.$triggerCreateLife('ComplexList', 'created', initOption)
   }
   $formatList (datalist: Record<PropertyKey, any>[] = [], totalNum?: number, originFrom?: string, option?: formatDataOption) {
-    this.$formatListDataByDictionary(this.$list, datalist, originFrom, option)
+    this.$list = this.$formatListDataByDictionary([], datalist, originFrom, option)
     this.$setPageData(totalNum!, 'num')
     this.$syncData(true, '$formatList')
   }

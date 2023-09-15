@@ -169,7 +169,7 @@ class SearchData extends BaseData {
     for (const prop in data) {
       targetData.form.data[prop] = data[prop]
     }
-    if (sync) {
+    if (sync === undefined || sync) {
       if (force) {
         this.syncFormData(modName)
       } else {

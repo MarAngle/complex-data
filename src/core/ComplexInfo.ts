@@ -26,7 +26,9 @@ class ComplexInfo<P extends undefined | DefaultData = undefined> extends Complex
     this.$triggerCreateLife('ComplexInfo', 'created', initOption)
   }
   $formatInfo (originData: Record<PropertyKey, any> = {}, originFrom = 'list', option?: formatDataOption) {
-    this.$updateDataByDictionary(this.$info, originData, originFrom, option)
+    this.$info = {
+      ...this.$updateDataByDictionary(this.$info, originData, originFrom, option)
+    }
     this.$syncData(true, '$formatInfo')
   }
 }

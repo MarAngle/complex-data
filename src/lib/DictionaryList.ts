@@ -13,7 +13,6 @@ import DefaultEdit from '../mod/DefaultEdit'
 import config from '../../config'
 
 export interface formatDataOption {
-  clear?: boolean,
   format?: boolean,
   depth?: boolean
 }
@@ -217,8 +216,6 @@ class DictionaryList extends DefaultData implements HasLayoutData {
     if (!option.format) {
       if (!targetList) {
         targetList = []
-      } else if (option.clear === undefined || option.clear) {
-        clearArray(targetList)
       }
       for (let i = 0; i < originList.length; i++) {
         targetList!.push(this.createData(originList[i], originFrom, option, depth))

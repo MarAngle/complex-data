@@ -97,7 +97,7 @@ class ComplexData<P extends undefined | DefaultData = undefined> extends BaseDat
 
   /* --- search start --- */
   $setSearchForm(...args: Parameters<SearchData['setForm']>) {
-    this.$module.search!.setForm(...args)
+    return this.$module.search!.setForm(...args)
   }
   $getSearch(...args: Parameters<SearchData['getData']>) {
     if (this.$module.search) {
