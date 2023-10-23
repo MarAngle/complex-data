@@ -62,7 +62,7 @@ class MenuData extends Data implements ObserveItem{
     this.icon = initOption.icon
     this.loading = initOption.loading
     this.disabled = initOption.disabled
-    this.hidden = initOption.disabled
+    this.hidden = initOption.hidden
     const local = initOption.local || {}
     this.$local = {
       parent: new AttributesData(local.parent),
