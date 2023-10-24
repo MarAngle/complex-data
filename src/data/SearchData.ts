@@ -99,13 +99,13 @@ class SearchData extends BaseData {
       return item.$parent!
     })
     this.$module.dictionary!.$buildFormData(list, modName, undefined, {
-      form: targetData.form.data,
+      form: targetData.form.getData(),
       from: from,
       limit: option.limit
     })
     targetData.form.clearValidate()
     if (option.observe) {
-      targetData.list.setData(targetData.form)
+      targetData.list.setData(targetData.form.getData(), modName)
     }
     if (option.copy !== false) {
       this.syncFormData(modName, targetData, list)
@@ -147,7 +147,7 @@ class SearchData extends BaseData {
         return item.$parent!
       })
     }
-    targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.data, list, modName)
+    targetData.data = this.$module.dictionary!.$buildEditData(targetData.form.getData(), list, modName)
     this.$syncData(true, 'syncFormData', modName)
   }
   getData(modName?: string) {
@@ -167,7 +167,7 @@ class SearchData extends BaseData {
     }
     const targetData = this.$data[modName]
     for (const prop in data) {
-      targetData.form.data[prop] = data[prop]
+      targetData.form.getData()[prop] = data[prop]
     }
     if (sync === undefined || sync) {
       if (force) {
