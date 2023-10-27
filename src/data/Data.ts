@@ -1,0 +1,53 @@
+import { Data as UtilsBaseData } from 'complex-utils-next'
+
+let id = 0
+function createId(): string {
+  id++
+  return id.toString()
+}
+
+// 属性的类型不能在数据属性和访问器属性之间更改，不可被删除，且其他属性也不能被更改（但是，如果它是一个可写的数据描述符，则 value 可以被更改，writable 可以更改为 false）
+
+class Data extends UtilsBaseData {
+  static $name = 'Data'
+  static $observe = false
+  readonly $id!: string
+  $buffer!: Record<PropertyKey, unknown>
+  constructor() {
+    super()
+    // $id不可枚举，不可更改，不可配置
+    Object.defineProperty(this, '$id', {
+      enumerable: false,
+      configurable: false,
+      writable: false,
+      value: createId()
+    })
+    // $buffer不可枚举，不可配置
+    Object.defineProperty(this, '$buffer', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: {}
+    })
+  }
+  $syncData(self: boolean, act: string, ...args: any[]) {
+    // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
+  }
+  $getId(prop = ''): string {
+    return this.$id + prop
+  }
+  $getName(): string {
+    return `CLASS:${super.$getName()}-ID:${this.$getId()}`
+  }
+  $install() {
+    //
+  }
+  $uninstall() {
+    //
+  }
+}
+
+
+export default Data
+
+

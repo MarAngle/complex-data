@@ -1,0 +1,31 @@
+{
+  "name": "complex-data-structure",
+  "version": "0.1.0",
+  "description": "a complex data structure",
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarAngle/complex-data-structure.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "complex-utils-next": "2.0.2 - 2.0.99",
+    "dayjs": "^1.11.9"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "keywords": [
+    "complex",
+    "data",
+    "structure"
+  ],
+  "author": "MarAngle",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MarAngle/complex-data-structure/issues"
+  },
+  "homepage": "https://github.com/MarAngle/complex-data-structure#readme"
+}
