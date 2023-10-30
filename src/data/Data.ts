@@ -1,4 +1,4 @@
-import { Data as UtilsBaseData } from 'complex-utils-next'
+import { Data as UtilsData } from 'complex-utils-next'
 
 let id = 0
 function createId(): string {
@@ -8,7 +8,7 @@ function createId(): string {
 
 // 属性的类型不能在数据属性和访问器属性之间更改，不可被删除，且其他属性也不能被更改（但是，如果它是一个可写的数据描述符，则 value 可以被更改，writable 可以更改为 false）
 
-class Data extends UtilsBaseData {
+class Data extends UtilsData {
   static $name = 'Data'
   static $observe = false
   readonly $id!: string
@@ -47,7 +47,4 @@ class Data extends UtilsBaseData {
   }
 }
 
-
 export default Data
-
-
