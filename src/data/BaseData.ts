@@ -1,4 +1,4 @@
-import { isPromise, upperCaseFirstChar } from 'complex-utils-next'
+import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../lib/StatusData'
 import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../lib/PromiseData'
@@ -28,6 +28,14 @@ export interface BaseDataInitOption extends DefaultDataInitOption {
   promise?: PromiseDataInitData
   active?: BaseDataActiveType
   getData?: loadFunctionType
+}
+
+export interface resetOptionType {
+  [prop: string]: undefined | boolean | Record<string, unknown>
+}
+
+export const parseResetOption = function(resetOption: resetOptionType, prop: string) {
+  return getProp(resetOption, prop)
 }
 
 export interface ForceInitOption {
@@ -91,7 +99,6 @@ class BaseData extends DefaultData {
     }
     this._triggerCreateLife('BaseData', 'created', initOption)
   }
-
 
   /* --- bind&active start --- */
   $bindLifeByActive(target: BaseData, bind: BaseDataBindType, from: 'success' | 'fail', active?: boolean, next?: () => void) {
@@ -382,6 +389,52 @@ class BaseData extends DefaultData {
   }
   /* --- load end --- */
 
+  /* --- reset start --- */
+  /**
+   * 重置回调操作=>不清除额外数据以及生命周期函数
+   * @param  {...unknown} args 参数
+   */
+  $reset(resetOption: resetOptionType = {}, ...args: unknown[]) {
+    this.$triggerLife('beforeReset', this, resetOption, ...args)
+    // this.$module.$reset(resetOption, ...args)
+    if (parseResetOption(resetOption, 'status') !== false) {
+      this.$status.$reset()
+    }
+    if (parseResetOption(resetOption, 'promise') === true) {
+      this.$promise.$reset()
+    }
+    if (parseResetOption(resetOption, 'life') === true) {
+      this.$resetLife()
+    }
+    if (parseResetOption(resetOption, 'extra') === true) {
+      this.$clearExtra()
+    }
+    this.$triggerLife('reseted', this, resetOption, ...args)
+  }
+  /**
+   * 销毁回调操作
+   * @param  {...unknown} args 参数
+   */
+  $destroy(destroyOption: resetOptionType = {}, ...args: unknown[]) {
+    this.$triggerLife('beforeDestroy', this, destroyOption, ...args)
+    // this.$module.$destroy(destroyOption, ...args)
+    this.$reset(destroyOption, ...args)
+    if (parseResetOption(destroyOption, 'status') !== false) {
+      this.$status.$destroy()
+    }
+    if (parseResetOption(destroyOption, 'promise') === true) {
+      this.$promise.$destroy()
+    }
+    if (parseResetOption(destroyOption, 'life') === true) {
+      this.$destroyLife()
+    }
+    // 额外数据不存在destroy，因此不做销毁
+    // if (parseResetOption(destroyOption, 'extra') === true) {
+    //   this.$clearExtra()
+    // }
+    this.$triggerLife('destroyed', this, destroyOption, ...args)
+  }
+  /* --- reset end --- */
 }
 
 export default BaseData

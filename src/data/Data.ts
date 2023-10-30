@@ -12,7 +12,10 @@ class Data extends UtilsData {
   static $name = 'Data'
   static $observe = false
   readonly $id!: string
-  $buffer!: Record<PropertyKey, unknown>
+  $buffer!: {
+    parent?: Data
+    [prop: string]: unknown
+  }
   constructor() {
     super()
     // $id不可枚举，不可更改，不可配置
@@ -29,6 +32,20 @@ class Data extends UtilsData {
       writable: true,
       value: {}
     })
+  }
+  /**
+   * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
+   * @param {object} parent 父数据
+   */
+  $setParent(parent?: Data) {
+    this.$buffer.parent = parent
+  }
+  /**
+   * 获取父数据
+   * @returns {object | undefined}
+   */
+  $getParent(): Data | undefined {
+    return this.$buffer.parent
   }
   $syncData(self: boolean, act: string, ...args: any[]) {
     // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断

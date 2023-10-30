@@ -2,20 +2,14 @@ import { getType } from 'complex-utils-next'
 import Data from './Data'
 
 export interface SimpleDataInitOption {
-  name?: string
-  prop?: string
   extra?: Record<PropertyKey, unknown>
 }
 
 class SimpleData extends Data {
   static $name = 'SimpleData'
-  $name: string
-  $prop: string
   $extra: Record<PropertyKey, unknown>
   constructor(initOption: SimpleDataInitOption) {
     super()
-    this.$name = initOption.name || ''
-    this.$prop = initOption.prop || ''
     if (getType(initOption.extra) === 'object') {
       this.$extra = initOption.extra!
     } else {
@@ -59,9 +53,7 @@ class SimpleData extends Data {
   $resetExtra() {
     this.$clearExtra()
   }
-  $getName(): string {
-    return `[${super.$getName()}-(${this.$name}/${this.$prop})]`
-  }
+  // 如添加销毁函数需要添加到BaseData的destroy中
 }
 
 export default SimpleData

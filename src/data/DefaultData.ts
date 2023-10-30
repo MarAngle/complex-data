@@ -4,14 +4,17 @@ import { LifeInitOption } from 'complex-utils-next/src/class/Life'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
+  prop?: string
   life?: LifeInitOption
 }
 
 class DefaultData extends SimpleData {
   static $name = 'DefaultData'
+  $prop: string
   $life: Life
   constructor(initOption: DefaultDataInitOption) {
     super(initOption)
+    this.$prop = initOption.prop || ''
     this.$life = new Life(initOption.life)
     this._triggerCreateLife('DefaultData', 'beforeCreate', initOption)
     this._triggerCreateLife('DefaultData', 'created', initOption)
@@ -87,6 +90,9 @@ class DefaultData extends SimpleData {
    */
   $destroyLife() {
     this.$life.destroy()
+  }
+  $getName(): string {
+    return `[${super.$getName()}-(${this.$prop})]`
   }
 }
 
