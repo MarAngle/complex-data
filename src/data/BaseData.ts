@@ -4,6 +4,7 @@ import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOp
 import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../lib/PromiseData'
 import config from '../../config'
 import ModuleData, { ModuleDataInitOption } from '../lib/ModuleData'
+import UpdateData from '../lib/UpdateData'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
@@ -326,7 +327,7 @@ class BaseData extends DefaultData {
   $loadData(forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
     const force = new Force(forceInitOption)
     const loadStatus = this.$getStatus('load')
-    if (loadStatus === 'un' || loadStatus === 'fail') {
+    if (['un', 'fail'].indexOf(loadStatus) > -1) {
       this.$triggerLoadData(...args)
     } else if (loadStatus === 'ing') {
       // 直接then
@@ -392,6 +393,67 @@ class BaseData extends DefaultData {
     }
   }
   /* --- load end --- */
+
+  /* --- update start --- */
+  $startUpdate(...args: Parameters<UpdateData['start']>) {
+    return this.$module.update!.start(...args)
+  }
+  $updateImmerdiate(...args: Parameters<UpdateData['immerdiate']>) {
+    return this.$module.update!.immerdiate(...args)
+  }
+  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
+    return this.$module.update!.clear(...args)
+  }
+  $resetUpdate(...args: Parameters<UpdateData['$reset']>) {
+    return this.$module.update!.$reset(...args)
+  }
+  $destroyUpdate(...args: Parameters<UpdateData['$destroy']>) {
+    return this.$module.update!.$destroy(...args)
+  }
+  protected $triggerUpdateData (...args: unknown[]) {
+    if (this.$active.auto) {
+      // 自动激活模式下主动触发激活操作
+      this.$changeActive('actived', 'updateData')
+    }
+    const promise = this.$triggerMethodByOperate(['$updateData', args, 'update', false, (target, res) => {
+      if (target === 'start') {
+        this.$triggerLife('beforeUpdate', this, ...args)
+      } else if (target === 'success') {
+        this.$triggerLife('updated', this, {
+          res: res,
+          args: args
+        })
+      } else {
+        this.$triggerLife('updateFail', this, {
+          res: res,
+          args: args
+        })
+      }
+    }])
+    return this.$setPromise('update', promise)
+  }
+  $loadUpdateData (forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
+    const force = new Force(forceInitOption)
+    const updateStatus = this.$getStatus('update')
+    if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
+      this.$triggerUpdateData(...args)
+    } else { // ing
+      // 直接then'
+      if (force.data && force.ing) {
+        this.$triggerUpdateData(...args)
+      }
+    }
+    const emptyMsg = this.$createMsg(`promise模块无update数据(update状态:${updateStatus})`)
+    if (!force.promise) {
+      force.promise = {
+        emptyMsg: emptyMsg
+      }
+    } else if (force.promise.emptyMsg === undefined) {
+      force.promise.emptyMsg = emptyMsg
+    }
+    return this.$triggerPromise('update', force.promise)
+  }
+  /* --- update end --- */
 
   /* --- reset start --- */
   /**

@@ -4,6 +4,9 @@ const config = {
     data: 'actived',
     auto: true
   },
+  update : {
+    offset: 60000
+  },
   status: {
     data: {
       load: {

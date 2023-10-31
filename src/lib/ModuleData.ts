@@ -2,22 +2,26 @@ import { getType } from 'complex-utils-next'
 import Data from '../data/Data'
 import BaseData, { resetOptionType } from '../data/BaseData'
 import DependData, { DependDataInitOption } from './DependData'
+import UpdateData, { UpdateDataInitOption } from './UpdateData'
 
 export interface ModuleDataInitOption {
-  depend?: DependDataInitOption
+  depend?: boolean | DependDataInitOption
+  update?: boolean | UpdateDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
 
-export const ModuleDataKeys: moduleKeys[] = ['depend']
+export const ModuleDataKeys: moduleKeys[] = ['depend', 'update']
 
 const ModuleMap = {
-  depend: DependData
+  depend: DependData,
+  update: UpdateData
 }
 
 class ModuleData extends Data {
   static $name = 'ModuleData'
   depend?: DependData
+  update?: UpdateData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.$setParent(parent)
@@ -29,9 +33,9 @@ class ModuleData extends Data {
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected _buildModuleData(modName: moduleKeys, modData?: true | Record<PropertyKey, any>) {
+  protected _buildModuleData(modName: moduleKeys, modData?: boolean | Record<PropertyKey, any>) {
     const ModuleClass = ModuleMap[modName]
-    if (ModuleClass && !(modData instanceof ModuleClass)) {
+    if (ModuleClass && modData !== false && !(modData instanceof ModuleClass)) {
       if (modData === undefined || modData === true) {
         modData = {}
       }
