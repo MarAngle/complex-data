@@ -1,4 +1,5 @@
 import { Data as UtilsData } from 'complex-utils-next'
+import BaseData from './BaseData'
 
 let id = 0
 function createId(): string {
@@ -44,10 +45,11 @@ class Data extends UtilsData {
    * 获取父数据
    * @returns {object | undefined}
    */
-  $getParent(): Data | undefined {
+  $getParent() {
     return this.$buffer.parent
   }
-  $syncData(self: boolean, act: string, ...args: any[]) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $syncData(self: boolean, act: string, ...args: unknown[]) {
     // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
   }
   $getId(prop = ''): string {
@@ -56,11 +58,13 @@ class Data extends UtilsData {
   $getName(): string {
     return `CLASS:${super.$getName()}-ID:${this.$getId()}`
   }
-  $install() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $install(target: BaseData, from?: string) {
     //
   }
-  $uninstall() {
-    //
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  $uninstall(target: BaseData, from?: string) {
+    this.$setParent()
   }
 }
 

@@ -3,6 +3,7 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../lib/StatusData'
 import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../lib/PromiseData'
 import config from '../../config'
+import ModuleData, { ModuleDataInitOption } from '../lib/ModuleData'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
@@ -26,6 +27,7 @@ export type loadFunctionType = (...args: unknown[]) => Promise<unknown>
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
+  module?: ModuleDataInitOption
   active?: BaseDataActiveType
   getData?: loadFunctionType
 }
@@ -76,6 +78,7 @@ class BaseData extends DefaultData {
   static $name = 'BaseData'
   $status: StatusData
   $promise: PromiseData
+  $module: ModuleData
   $active: BaseDataActiveType
   $getData?: loadFunctionType
   constructor(initOption: BaseDataInitOption) {
@@ -83,6 +86,7 @@ class BaseData extends DefaultData {
     this._triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
+    this.$module = new ModuleData(initOption.module, this)
     if (initOption.getData) {
       this.$getData = initOption.getData
     }
@@ -396,7 +400,6 @@ class BaseData extends DefaultData {
    */
   $reset(resetOption: resetOptionType = {}, ...args: unknown[]) {
     this.$triggerLife('beforeReset', this, resetOption, ...args)
-    // this.$module.$reset(resetOption, ...args)
     if (parseResetOption(resetOption, 'status') !== false) {
       this.$status.$reset()
     }
@@ -409,6 +412,7 @@ class BaseData extends DefaultData {
     if (parseResetOption(resetOption, 'extra') === true) {
       this.$clearExtra()
     }
+    this.$module.$reset(resetOption, ...args)
     this.$triggerLife('reseted', this, resetOption, ...args)
   }
   /**
@@ -417,7 +421,6 @@ class BaseData extends DefaultData {
    */
   $destroy(destroyOption: resetOptionType = {}, ...args: unknown[]) {
     this.$triggerLife('beforeDestroy', this, destroyOption, ...args)
-    // this.$module.$destroy(destroyOption, ...args)
     this.$reset(destroyOption, ...args)
     if (parseResetOption(destroyOption, 'status') !== false) {
       this.$status.$destroy()
@@ -432,6 +435,7 @@ class BaseData extends DefaultData {
     // if (parseResetOption(destroyOption, 'extra') === true) {
     //   this.$clearExtra()
     // }
+    this.$module.$destroy(destroyOption, ...args)
     this.$triggerLife('destroyed', this, destroyOption, ...args)
   }
   /* --- reset end --- */

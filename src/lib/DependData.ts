@@ -3,6 +3,7 @@ import BaseData, { BaseDataBindOption, BaseDataBindType, loadFunctionType } from
 import Data from "../data/Data"
 
 export type nextTypeFunction<D> = (status: 'success' | 'fail', target: D, res: unknown) => unknown
+
 export type nextType<D> = nextTypeFunction<D> | {
   data: nextTypeFunction<D>
   once?: boolean | 'success' | 'fail'
@@ -12,18 +13,20 @@ export interface dependBindOption extends BaseDataBindOption {
   data: BaseDataBindType
 }
 
-export interface dependItemObject<D extends BaseData = BaseData> {
-  data: D,
-  name?: keyof D,
-  args?: unknown[],
-  next?: nextType<D>,
+export interface dependValueInitTypeObject<D extends BaseData = BaseData> {
+  data: D
+  name?: keyof D
+  args?: unknown[]
+  next?: nextType<D>
   bind?: BaseDataBindType | dependBindOption
 }
-export type dependItem<D extends BaseData = BaseData> = D | dependItemObject<D>
-export interface requiredDependItemObject<D extends BaseData = BaseData> {
-  data: D,
-  name: keyof D,
-  args: unknown[],
+
+export type dependValueInitType<D extends BaseData = BaseData> = D | dependValueInitTypeObject<D>
+
+export interface dependValueType<D extends BaseData = BaseData> {
+  data: D
+  name: keyof D
+  args: unknown[]
   next?: {
     data: nextTypeFunction<D>
     once?: boolean | 'success' | 'fail'
@@ -31,20 +34,20 @@ export interface requiredDependItemObject<D extends BaseData = BaseData> {
 }
 
 export interface DependDataInitOption {
-  type?: 'together' | 'order',
-  data: dependItem[]
+  type?: 'sync' | 'order',
+  data?: dependValueInitType[]
 }
 
 class DependData extends Data {
   static $name = 'DependData'
-  type: 'together' | 'order'
-  $data: requiredDependItemObject[]
+  type: 'sync' | 'order'
+  $data: dependValueType[]
   constructor(initOption: DependDataInitOption, parent: BaseData) {
     super()
-    this.type = initOption.type || 'together'
-    this.$data = initOption.data.map(item => this.$build(item, parent))
+    this.type = initOption.type || 'sync'
+    this.$data = initOption.data ? initOption.data.map(item => this.$build(item, parent)) : []
   }
-  $build(item: dependItem, parent: BaseData): requiredDependItemObject {
+  $build(item: dependValueInitType, parent: BaseData): dependValueType {
     if (item instanceof BaseData) {
       return {
         data: item,
@@ -73,10 +76,10 @@ class DependData extends Data {
           parent.$bindLife(item.data, item.bind.data, item.bind)
         }
       }
-      return item as requiredDependItemObject
+      return item as dependValueType
     }
   }
-  $loadItem(item: requiredDependItemObject) {
+  $loadItem(item: dependValueType) {
     return new Promise((resolve, reject) => {
       (item.data[item.name] as loadFunctionType)(...item.args).then(res => {
         if (item.next) {
@@ -97,7 +100,7 @@ class DependData extends Data {
       })
     })
   }
-  $loadTogetherData() {
+  $loadSyncData() {
     const list: Promise<unknown>[] = []
     this.$data.forEach(item => {
       list.push(this.$loadItem(item))
@@ -126,10 +129,15 @@ class DependData extends Data {
     })
   }
   $loadData() {
-    if (this.type === 'together') {
-      return this.$loadTogetherData()
+    if (this.type === 'sync') {
+      return this.$loadSyncData()
     } else {
       return this.$loadOrderData()
+    }
+  }
+  $destroy(option?: boolean) {
+    if (option === true) {
+      // 此处后续考虑数据的解绑操作
     }
   }
 }
