@@ -3,10 +3,12 @@ import Data from '../data/Data'
 import BaseData, { resetOptionType } from '../data/BaseData'
 import DependData, { DependDataInitOption } from './DependData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
+import PaginationData, { PaginationDataInitOption } from './PaginationData'
 
 export interface ModuleDataInitOption {
   depend?: boolean | DependDataInitOption
   update?: boolean | UpdateDataInitOption
+  pagination?: boolean | PaginationDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
@@ -15,13 +17,15 @@ export const ModuleDataKeys: moduleKeys[] = ['depend', 'update']
 
 const ModuleMap = {
   depend: DependData,
-  update: UpdateData
+  update: UpdateData,
+  pagination: PaginationData
 }
 
 class ModuleData extends Data {
   static $name = 'ModuleData'
   depend?: DependData
   update?: UpdateData
+  pagination?: PaginationData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.$setParent(parent)

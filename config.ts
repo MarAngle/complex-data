@@ -7,6 +7,16 @@ const config = {
   update : {
     offset: 60000
   },
+  pagination: {
+    size: {
+      show: true,
+      data: 10,
+      list: [10, 20, 50, 100]
+    },
+    jumper: {
+      change: true
+    }
+  },
   status: {
     data: {
       load: {
