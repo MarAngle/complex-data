@@ -64,8 +64,8 @@ class UpdateData extends DefaultData {
    * @param {number} offset 间隔
    * @returns {number}
    */
-  protected countOffset(offset: number) {
-    return this.getOffset(offset, this.countIndex())
+  protected _countOffset(offset: number) {
+    return this.getOffset(offset, this._getIndexByCount())
   }
   /**
    * 检查下一步是否继续，next判断
@@ -110,13 +110,13 @@ class UpdateData extends DefaultData {
     }
     // 设置更新状态为更新中
     this.load.update = true
-    this.$triggerStart(offset)
+    this._triggerStart(offset)
   }
   /**
    * 通过判断update判读是否设定触发
    * @param {number} offset 指定间隔，不存在读取默认
    */
-  protected $triggerStart(offset?: number) {
+  protected _triggerStart(offset?: number) {
     if (this.load.update) {
       this.$start(offset)
     } else {
@@ -124,7 +124,7 @@ class UpdateData extends DefaultData {
       this.clear()
     }
   }
-  protected $trigger(next: UpdateData["next"], index: number) {
+  protected _trigger(next: UpdateData["next"], index: number) {
     if (this.trigger) {
       this.trigger(next, index)
     } else {
@@ -154,8 +154,8 @@ class UpdateData extends DefaultData {
       // 准备开始trigger操作
       this.load.operate = true
       this.$triggerLife('beforeTrigger', this, offset)
-      this.$trigger(this.next, this.getIndex())
-    }, this.countOffset(offset)) as unknown as number
+      this._trigger(this.next, this.getIndex())
+    }, this._countOffset(offset)) as unknown as number
   }
   /**
    * 继续进行下一次回调
@@ -173,14 +173,14 @@ class UpdateData extends DefaultData {
         }
         if (isPromise(checkRes)) {
           checkRes.then(() => {
-            this.$triggerStart(offset as number)
+            this._triggerStart(offset as number)
           }).catch(err => {
             this.$exportMsg('stop update!', 'log')
             console.error(err)
             this.clear()
           })
         } else if (checkRes) {
-          this.$triggerStart(offset)
+          this._triggerStart(offset)
         } else {
           this.clear()
         }
@@ -213,7 +213,7 @@ class UpdateData extends DefaultData {
   /**
    * 当前次数+1
    */
-  private countIndex() {
+  private _getIndexByCount() {
     this.index++
     return this.index
   }

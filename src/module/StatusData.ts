@@ -63,9 +63,9 @@ export class StatusItem extends Data {
     if (this.list.indexOf(value) > -1) {
       let build = true
       if (!act) {
-        build = this.$triggerTarget(value)
+        build = this._triggerTarget(value)
       } else if (act === 'reset') {
-        this.$resetTarget()
+        this._resetTarget()
       }
       if (build && this.current !== value) {
         this.current = value
@@ -75,7 +75,7 @@ export class StatusItem extends Data {
       this.$exportMsg(`当前加载判断值${value}不存在`)
     }
   }
-  getDataLife(value?: StatusDataValueType) {
+  getValueLife(value?: StatusDataValueType) {
     if (!value) {
       value = this.current
     }
@@ -105,10 +105,10 @@ export class StatusItem extends Data {
   /**
    * 重置计算值
    */
-  $resetTarget () {
+  protected _resetTarget () {
     if (this.count !== undefined) {
       this.count = 0
-      this.$syncData(true, '$resetTarget')
+      this.$syncData(true, '_resetTarget')
     }
   }
   /**
@@ -116,7 +116,7 @@ export class StatusItem extends Data {
    * @param {string} prop 属性值
    * @returns {boolean}
    */
-  $triggerTarget (value: StatusDataValueType) {
+  protected _triggerTarget (value: StatusDataValueType) {
     let fg = true
     if (this.count !== undefined) {
       if (value === 'ing') {

@@ -1,4 +1,3 @@
-
 import BaseData, { BaseDataBindOption, BaseDataBindType, loadFunctionType } from "../data/BaseData"
 import Data from "../data/Data"
 
@@ -45,9 +44,9 @@ class DependData extends Data {
   constructor(initOption: DependDataInitOption, parent: BaseData) {
     super()
     this.type = initOption.type || 'sync'
-    this.$data = initOption.data ? initOption.data.map(item => this.$build(item, parent)) : []
+    this.$data = initOption.data ? initOption.data.map(item => this._build(item, parent)) : []
   }
-  $build(item: dependValueInitType, parent: BaseData): dependValueType {
+  protected _build(item: dependValueInitType, parent: BaseData): dependValueType {
     if (item instanceof BaseData) {
       return {
         data: item,
@@ -79,7 +78,7 @@ class DependData extends Data {
       return item as dependValueType
     }
   }
-  $loadItem(item: dependValueType) {
+  protected _loadItem(item: dependValueType) {
     return new Promise((resolve, reject) => {
       (item.data[item.name] as loadFunctionType)(...item.args).then(res => {
         if (item.next) {
@@ -100,21 +99,21 @@ class DependData extends Data {
       })
     })
   }
-  $loadSyncData() {
+  protected _loadSyncData() {
     const list: Promise<unknown>[] = []
     this.$data.forEach(item => {
-      list.push(this.$loadItem(item))
+      list.push(this._loadItem(item))
     })
     return Promise.allSettled(list)
   }
-  $loadOrderData() {
+  protected _loadOrderData() {
     return new Promise((resolve) => {
       let index = -1
       const resList: unknown[] = []
       const next = () => {
         index++
         if (index < this.$data.length) {
-          this.$loadItem(this.$data[index]).then(res => {
+          this._loadItem(this.$data[index]).then(res => {
             resList.push(res)
             next()
           }).catch(err => {
@@ -130,9 +129,9 @@ class DependData extends Data {
   }
   $loadData() {
     if (this.type === 'sync') {
-      return this.$loadSyncData()
+      return this._loadSyncData()
     } else {
-      return this.$loadOrderData()
+      return this._loadOrderData()
     }
   }
   $destroy(option?: boolean) {

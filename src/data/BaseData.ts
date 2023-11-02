@@ -2,9 +2,9 @@ import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../module/PromiseData'
-import config from '../../config'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import UpdateData from '../module/UpdateData'
+import config from '../../config'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
@@ -217,13 +217,13 @@ class BaseData extends DefaultData {
   /* --- status end --- */
   
   /* --- promise start --- */
-  protected $setPromise(...args: Parameters<PromiseData['setData']>) {
+  protected _setPromise(...args: Parameters<PromiseData['setData']>) {
     return this.$promise.setData(...args)
   }
-  protected $getPromise(...args: Parameters<PromiseData['getData']>) {
+  protected _getPromise(...args: Parameters<PromiseData['getData']>) {
     return this.$promise.getData(...args)
   }
-  protected $triggerPromise(...args: Parameters<PromiseData['triggerData']>) {
+  protected _triggerPromise(...args: Parameters<PromiseData['triggerData']>) {
     return this.$promise.triggerData(...args)
   }
   /* --- promise end --- */
@@ -242,7 +242,7 @@ class BaseData extends DefaultData {
     const statusItem = this.$getStatusItem(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict, triggerCallBack)) {
-        const next = this.$triggerMethodByStatusNext(method, args)
+        const next = this._triggerMethodByStatusNext(method, args)
         if (next.promise) {
           return new Promise((resolve, reject) => {
             next.promise!.then((res: unknown) => {
@@ -266,7 +266,7 @@ class BaseData extends DefaultData {
       return Promise.reject({ status: 'fail', code: 'status empty' })
     }
   }
-  protected $triggerMethodByStatusNext(method: string, args: unknown[]) {
+  protected _triggerMethodByStatusNext(method: string, args: unknown[]) {
     const next: {
       promise: null | Promise<unknown>,
       msg: string,
@@ -282,16 +282,16 @@ class BaseData extends DefaultData {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         next.promise = (this as unknown as any)[method](...args)
       } else {
-        next.msg = `${method}不是函数，$triggerMethodByStatusNext函数触发失败！`
+        next.msg = `${method}不是函数，$triggerMethodByStatus函数触发失败！`
         next.code = 'type error'
       }
     } else {
-      next.msg = `method参数接受string，当前值为${method}，$triggerMethodByStatusNext函数触发失败！`
+      next.msg = `method参数接受string，当前值为${method}，$triggerMethodByStatus函数触发失败！`
       next.code = 'method error'
     }
     if (next.promise && !isPromise(next.promise)) {
       next.promise = null
-      next.msg = `${method}未返回Promise，$triggerMethodByStatusNext函数触发失败！`
+      next.msg = `${method}未返回Promise，$triggerMethodByStatus函数触发失败！`
       next.code = 'return error'
     }
     return next
@@ -302,7 +302,7 @@ class BaseData extends DefaultData {
   $triggerMethodByOperate(args: Parameters<BaseData['$triggerMethodByStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
     return this.$triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
   }
-  protected $triggerLoadData(...args: unknown[]) {
+  protected _triggerLoadData(...args: unknown[]) {
     if (this.$active.auto) {
       // 自动激活模式下主动触发激活操作
       this.$changeActive('actived', 'loadData')
@@ -322,21 +322,21 @@ class BaseData extends DefaultData {
         })
       }
     }])
-    return this.$setPromise('load', promise)
+    return this._setPromise('load', promise)
   }
   $loadData(forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
     const force = new Force(forceInitOption)
     const loadStatus = this.$getStatus('load')
     if (['un', 'fail'].indexOf(loadStatus) > -1) {
-      this.$triggerLoadData(...args)
+      this._triggerLoadData(...args)
     } else if (loadStatus === 'ing') {
       // 直接then
       if (force.data && force.ing) {
-        this.$triggerLoadData(...args)
+        this._triggerLoadData(...args)
       }
     } else if (loadStatus === 'success') {
       if (force.data) {
-        this.$triggerLoadData(...args)
+        this._triggerLoadData(...args)
       }
     }
     const emptyMsg = this.$createMsg(`promise模块无load数据(load状态:${loadStatus})`)
@@ -347,7 +347,7 @@ class BaseData extends DefaultData {
     } else if (force.promise.emptyMsg === undefined) {
       force.promise.emptyMsg = emptyMsg
     }
-    return this.$triggerPromise('load', force.promise)
+    return this._triggerPromise('load', force.promise)
   }
   $reloadData(forceInitOption: boolean | ForceInitOption | Force = true, ...args: unknown[]) {
     const force = new Force(forceInitOption)
@@ -410,7 +410,7 @@ class BaseData extends DefaultData {
   $destroyUpdate(...args: Parameters<UpdateData['$destroy']>) {
     return this.$module.update!.$destroy(...args)
   }
-  protected $triggerUpdateData (...args: unknown[]) {
+  protected _triggerUpdateData (...args: unknown[]) {
     if (this.$active.auto) {
       // 自动激活模式下主动触发激活操作
       this.$changeActive('actived', 'updateData')
@@ -430,17 +430,17 @@ class BaseData extends DefaultData {
         })
       }
     }])
-    return this.$setPromise('update', promise)
+    return this._setPromise('update', promise)
   }
   $loadUpdateData (forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
     const force = new Force(forceInitOption)
     const updateStatus = this.$getStatus('update')
     if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
-      this.$triggerUpdateData(...args)
+      this._triggerUpdateData(...args)
     } else { // ing
       // 直接then'
       if (force.data && force.ing) {
-        this.$triggerUpdateData(...args)
+        this._triggerUpdateData(...args)
       }
     }
     const emptyMsg = this.$createMsg(`promise模块无update数据(update状态:${updateStatus})`)
@@ -451,7 +451,7 @@ class BaseData extends DefaultData {
     } else if (force.promise.emptyMsg === undefined) {
       force.promise.emptyMsg = emptyMsg
     }
-    return this.$triggerPromise('update', force.promise)
+    return this._triggerPromise('update', force.promise)
   }
   /* --- update end --- */
 

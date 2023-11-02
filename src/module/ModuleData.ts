@@ -59,7 +59,13 @@ class ModuleData extends Data {
       this.uninstallData(modName, 'install:' + from, unTriggerSync)
     }
     modData = this._buildModuleData(modName, modData)
-    this.$installData(modName, modData, from, unTriggerSync)
+    this[modName] = modData
+    if (modData && modData.$install) {
+      modData.$install(this.$getParent(), from)
+    }
+    if (!unTriggerSync) {
+      this.$syncData(true, 'installData')
+    }
   }
   getData(modName: moduleKeys) {
     return this[modName]
@@ -82,21 +88,6 @@ class ModuleData extends Data {
       this.$syncData(true, 'uninstallData')
     }
     return modData
-  }
-  /**
-   * 加载模块
-   * @param {string} modName 模块名
-   * @param {object} modData 模块实例
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  $installData(modName: moduleKeys, modData: any, from?: string, unTriggerSync?: boolean) {
-    this[modName] = modData
-    if (modData && modData.$install) {
-      modData.$install(this.$getParent(), from)
-    }
-    if (!unTriggerSync) {
-      this.$syncData(true, '$installData')
-    }
   }
   $getName() {
     let name = super.$getName()

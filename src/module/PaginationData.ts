@@ -78,7 +78,7 @@ class PaginationData extends DefaultData {
    */
   setCount(num: number, unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     this.count = num < 0 ? 0 : num
-    this.$autoCountTotal(unCountCurrent, unTriggerCurrentLife)
+    this._autoCountTotal(unCountCurrent, unTriggerCurrentLife)
     this.$syncData(true, 'setCount')
   }
   /**
@@ -90,13 +90,13 @@ class PaginationData extends DefaultData {
   /**
    * 计算页码相关数据
    */
-  $autoCountTotal(unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
+  protected _autoCountTotal(unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     const total = getNum(this.getCount() / this.getSize(), 'ceil', 0)
     this.page.total = total < 1 ? 1 : total
     if (!unCountCurrent && this.getPage() > this.page.total) {
       this.setPage(this.page.total, unTriggerCurrentLife)
     }
-    this.$syncData(true, '$autoCountTotal')
+    this.$syncData(true, '_autoCountTotal')
   }
   /**
    * 获取总页码
@@ -137,7 +137,7 @@ class PaginationData extends DefaultData {
    */
   setSize(size: number, unCountCurrent?: boolean, unTriggerSizeLife?: boolean) {
     this.size.data = size
-    this.$autoCountTotal(unCountCurrent, true)
+    this._autoCountTotal(unCountCurrent, true)
     if (!unTriggerSizeLife) {
       this.$triggerLife('change', this, 'size', {
         size: size,

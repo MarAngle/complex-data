@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Life, upperCaseFirstChar } from 'complex-utils-next'
 import { LifeInitOption } from 'complex-utils-next/src/class/Life'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
@@ -25,7 +24,7 @@ class DefaultData extends SimpleData {
    * @param {string} lifeName 生命周期
    * @param  {*[]} args 参数
    */
-  protected _triggerCreateLife(env: string, lifeName: string, ...args: any[]) {
+  protected _triggerCreateLife(env: string, lifeName: string, ...args: unknown[]) {
     if (!env) {
       this.$exportMsg('$triggerCreate函数需要传递env参数')
     }
