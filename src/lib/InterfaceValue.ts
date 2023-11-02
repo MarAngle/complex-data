@@ -1,12 +1,14 @@
-import { setProp } from 'complex-utils-next'
+import { getType, setProp } from 'complex-utils-next'
 import Data from '../data/Data'
 
-export type InterfaceValueInitOption<D> = Record<PropertyKey, D | undefined>
+export type InterfaceValueType<D> = undefined | D
+
+export type InterfaceValueInitOption<D> = D | Record<PropertyKey, InterfaceValueType<D>>
 
 class InterfaceValue<D> extends Data {
   static $name = 'InterfaceValue'
   init: boolean
-  value: Record<PropertyKey, D | undefined>
+  value: Record<PropertyKey, InterfaceValueType<D>>
   constructor(initOption?: InterfaceValueInitOption<D>) {
     super()
     this.init = false
@@ -15,10 +17,14 @@ class InterfaceValue<D> extends Data {
     }
     this.setData(initOption)
   }
-  setData(initOption?: InterfaceValueInitOption<D | undefined>) {
+  setData(initOption?: InterfaceValueInitOption<D>) {
     if (initOption !== undefined) {
-      for (const n in initOption) {
-        this.setValue(n, initOption[n])
+      if (getType(initOption) !== 'object') {
+        this.setValue('default', initOption as D)
+      } else {
+        for (const n in (initOption as Record<PropertyKey, InterfaceValueType<D>>)) {
+          this.setValue(n, (initOption as Record<PropertyKey, InterfaceValueType<D>>)[n])
+        }
       }
       this.init = true
     }
@@ -34,9 +40,8 @@ class InterfaceValue<D> extends Data {
    * @param {string} prop 属性
    * @param {*} value 值
    */
-  setValue(prop: string, value: D | undefined, useSetData?: boolean) {
+  setValue(prop: string, value: InterfaceValueType<D>, useSetData?: boolean) {
     if (useSetData === true) {
-      // ---
       setProp(this.value, prop, value, useSetData)
     } else {
       this.value[prop] = value
@@ -48,7 +53,7 @@ class InterfaceValue<D> extends Data {
     }
     return this.value.default
   }
-  format(format: (value: Record<PropertyKey, D | undefined>) => void) {
+  format(format: (value: Record<PropertyKey, InterfaceValueType<D>>) => void) {
     format(this.value)
   }
   toString() {

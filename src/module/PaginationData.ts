@@ -27,7 +27,7 @@ class PaginationData extends DefaultData {
     list: number[]
   }
   jumper: boolean
-  $local: AttributeValue
+  $local?: AttributeValue
   constructor(initOption: PaginationDataInitOption = {}) {
     super(initOption)
     this._triggerCreateLife('PaginationData', 'beforeCreate', initOption)
@@ -62,7 +62,7 @@ class PaginationData extends DefaultData {
       }
     }
     this.jumper = !!initOption.jumper
-    this.$local = new AttributeValue(initOption.local)
+    this.$local = initOption.local ? new AttributeValue(initOption.local) : undefined
     this._triggerCreateLife('PaginationData', 'created')
   }
   /**

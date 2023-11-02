@@ -62,6 +62,15 @@ const config = {
         }
       }
     }
+  },
+  dictionary: {
+    module: {
+      list: {
+        width: 100,
+        ellipsis: true,
+        auto: true
+      }
+    }
   }
 }
 
