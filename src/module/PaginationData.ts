@@ -2,7 +2,7 @@ import { getNum } from 'complex-utils-next'
 import config from '../../config'
 import BaseData from '../data/BaseData'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
-import AttributeData, { AttributeDataInitOption } from './AttributeData'
+import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
   size?: boolean | number | {
@@ -11,7 +11,7 @@ export interface PaginationDataInitOption extends DefaultDataInitOption {
     list?: number[]
   }
   jumper?: boolean
-  local?: AttributeDataInitOption
+  local?: AttributeValueInitOption
 }
 
 class PaginationData extends DefaultData {
@@ -27,7 +27,7 @@ class PaginationData extends DefaultData {
     list: number[]
   }
   jumper: boolean
-  $local: AttributeData
+  $local: AttributeValue
   constructor(initOption: PaginationDataInitOption = {}) {
     super(initOption)
     this._triggerCreateLife('PaginationData', 'beforeCreate', initOption)
@@ -62,7 +62,7 @@ class PaginationData extends DefaultData {
       }
     }
     this.jumper = !!initOption.jumper
-    this.$local = new AttributeData(initOption.local)
+    this.$local = new AttributeValue(initOption.local)
     this._triggerCreateLife('PaginationData', 'created')
   }
   /**

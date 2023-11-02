@@ -1,5 +1,5 @@
 
-export interface AttributeDataInitOption {
+export interface AttributeValueInitOption {
   id?: string[]
   class?: string[]
   style?: Record<PropertyKey, unknown>
@@ -7,13 +7,13 @@ export interface AttributeDataInitOption {
   on?: Record<PropertyKey, ((...args: unknown[]) => unknown)>
 }
 
-class AttributeData {
+class AttributeValue {
   id: string[]
   class: string[]
   style: Record<PropertyKey, unknown>
   props: Record<PropertyKey, unknown>
   on: Record<PropertyKey, ((...args: unknown[]) => unknown)>
-  constructor(initOption?: AttributeDataInitOption) {
+  constructor(initOption?: AttributeValueInitOption) {
     if (!initOption) {
       initOption = {}
     }
@@ -53,4 +53,4 @@ class AttributeData {
 
 }
 
-export default AttributeData
+export default AttributeValue

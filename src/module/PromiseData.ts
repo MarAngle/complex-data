@@ -1,4 +1,4 @@
-import Data from './../data/Data'
+import Data from '../data/Data'
 
 type  PromiseDataValueType = {
   [prop: PropertyKey]: Promise<unknown>

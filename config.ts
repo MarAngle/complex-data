@@ -17,6 +17,11 @@ const config = {
       change: true
     }
   },
+  layout: {
+    grid: 24,
+    label: 8,
+    content: 16
+  },
   status: {
     data: {
       load: {

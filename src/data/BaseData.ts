@@ -1,10 +1,10 @@
 import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
-import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../lib/StatusData'
-import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../lib/PromiseData'
+import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
+import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../module/PromiseData'
 import config from '../../config'
-import ModuleData, { ModuleDataInitOption } from '../lib/ModuleData'
-import UpdateData from '../lib/UpdateData'
+import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
+import UpdateData from '../module/UpdateData'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
