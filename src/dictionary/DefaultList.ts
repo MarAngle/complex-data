@@ -1,7 +1,6 @@
 import Data from "../data/Data"
 import config from "../../config"
 import DictionaryValue from "./DictionaryValue"
-import { ObserveItem } from "./ObserveList"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 
@@ -26,10 +25,9 @@ export interface DefaultListInitOption {
   show?: DictionaryValue['show']
   render?: renderType
   pureRender?: renderType
-  observe?: ObserveItem['$observe']
 }
 
-class DefaultList extends Data implements ObserveItem{
+class DefaultList extends Data {
   static $name = 'DefaultList'
   declare parent: DictionaryValue
   prop: string
@@ -43,7 +41,6 @@ class DefaultList extends Data implements ObserveItem{
   $local?: AttributeValue
   render?: renderType
   pureRender?: renderType
-  $observe?: ObserveItem['$observe']
   constructor(initOption: DefaultListInitOption | true, modName?: string, parent?: DictionaryValue) {
     if (initOption === true) {
       initOption = {}
@@ -61,7 +58,6 @@ class DefaultList extends Data implements ObserveItem{
     this.tip = new TipValue(initOption.tip)
     this.render = initOption.render
     this.pureRender = initOption.pureRender
-    this.$observe = initOption.observe
   }
 }
 
