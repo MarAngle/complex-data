@@ -1,6 +1,18 @@
-import { getType, getProp, setProp, isExist } from 'complex-utils-next'
+import { getProp, setProp, isExist } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import InterfaceValue, { InterfaceValueInitOption } from '../lib/InterfaceValue'
+import DefaultList, { DefaultListInitOption } from './DefaultList'
+import DefaultInfo, { DefaultInfoInitOption } from './DefaultInfo'
+import DefaultEditInput, { DefaultEditInputInitOption } from './DefaultEditInput'
+import DefaultEditInputNumber, { DefaultEditInputNumberInitOption } from './DefaultEditInputNumber'
+import DefaultEditTextArea, { DefaultEditTextAreaInitOption } from './DefaultEditTextArea'
+import DefaultEditSelect, { DefaultEditSelectInitOption } from './DefaultEditSelect'
+import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwitch'
+import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
+import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
+import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
+import DefaultEditText, { DefaultEditTextInitOption } from './DefaultEditText'
+import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -38,6 +50,32 @@ export interface formatDataOption {
   depth?: boolean
 }
 
+export type DictionanyEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditTextInitOption | DefaultEditCustomInitOption
+
+export type DictionanyEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditText | DefaultEditCustom
+
+export type DictionanyModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionanyEditModInitOption
+
+export type DictionanyMod = DefaultList | DefaultInfo | DictionanyEditMod
+
+export type DictionanyModDataInitOption = {
+  list?: false | DefaultListInitOption
+  info?: false | DefaultInfoInitOption
+  edit?: false | DictionanyEditModInitOption
+  build?: false | DictionanyEditModInitOption
+  change?: false | DictionanyEditModInitOption
+  [prop: string]: undefined | false | DictionanyModInitOption
+}
+
+export type DictionanyModDataType = {
+  list?: DefaultList
+  info?: DefaultInfo
+  edit?: DictionanyEditMod
+  build?: DictionanyEditMod
+  change?: DictionanyEditMod
+  [prop: string]: undefined | DictionanyMod
+}
+
 export interface DictionaryValueInitOption extends DefaultDataInitOption, functions {
   prop: string
   name: InterfaceValueInitOption<string>
@@ -48,6 +86,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
+  mod?: Record<string, DictionanyModInitOption>
 }
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
@@ -70,6 +109,7 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
+  mod: Record<string, undefined | DictionanyMod>
   constructor(initOption: DictionaryValueInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
@@ -90,8 +130,46 @@ class DictionaryValue extends DefaultData implements functions {
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
-
+    this.mod = {}
+    const mod = initOption.mod || {}
+    for (const modName in mod) {
+      const modInitOption = mod[modName]
+      if (modInitOption) {
+        this.mod[modName] = this._buildMod(modName, modInitOption)
+      }
+    }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)
+  }
+  protected _buildMod(modName: string, modInitOption: DictionanyModInitOption) {
+    const $format = modInitOption.$format || modName
+    if ($format === 'list') {
+      return new DefaultList(modInitOption as DefaultListInitOption)
+    } else if ($format === 'info') {
+      return new DefaultInfo(modInitOption as DefaultInfoInitOption)
+    } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
+      const editModInitOption = modInitOption as DictionanyEditModInitOption
+      if (!editModInitOption.type || editModInitOption.type === 'input') {
+        return new DefaultEditInput(editModInitOption)
+      } else if (editModInitOption.type === 'inputNumber') {
+        return new DefaultEditInputNumber(editModInitOption)
+      } else if (editModInitOption.type === 'textArea') {
+        return new DefaultEditTextArea(editModInitOption)
+      } else if (editModInitOption.type === 'select') {
+        return new DefaultEditSelect(editModInitOption)
+      } else if (editModInitOption.type === 'switch') {
+        return new DefaultEditSwitch(editModInitOption)
+      } else if (editModInitOption.type === 'cascader') {
+        return new DefaultEditCascader(editModInitOption)
+      } else if (editModInitOption.type === 'file') {
+        return new DefaultEditFile(editModInitOption)
+      } else if (editModInitOption.type === 'button') {
+        return new DefaultEditButton(editModInitOption)
+      } else if (editModInitOption.type === 'text') {
+        return new DefaultEditText(editModInitOption)
+      } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
+        return new DefaultEditCustom(editModInitOption)
+      }
+    }
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]

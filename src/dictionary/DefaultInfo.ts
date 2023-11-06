@@ -3,6 +3,8 @@ import DictionaryValue from "./DictionaryValue"
 import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 
 export interface DefaultInfoInitOption {
+  $format?: 'info'
+  $target?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
   show?: DictionaryValue['show']

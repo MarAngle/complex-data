@@ -14,6 +14,8 @@ type renderType = (payload: {
 }) => any
 
 export interface DefaultListInitOption {
+  $format?: 'list'
+  $target?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
   align?: 'center' | 'left' | 'right'

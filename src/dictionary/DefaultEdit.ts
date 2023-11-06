@@ -7,6 +7,8 @@ import DictionaryValue, { functionType } from "./DictionaryValue"
 import { ObserveValueItem } from "./ObserveList"
 
 export interface DefaultEditInitOption {
+  $format?: 'edit'
+  $target?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   trim?: string // 字段意义不明？
   colon?: boolean
