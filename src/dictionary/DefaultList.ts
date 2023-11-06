@@ -29,8 +29,7 @@ export interface DefaultListInitOption {
 
 class DefaultList extends Data {
   static $name = 'DefaultList'
-  declare parent: DictionaryValue
-  prop: string
+  $prop: string
   name: string
   align: 'center' | 'left' | 'right'
   width?: number | string
@@ -47,7 +46,7 @@ class DefaultList extends Data {
     }
     super()
     this.$setParent(parent)
-    this.prop = initOption.prop || (parent ? parent.$prop : '')
+    this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.name = initOption.name || (parent ? parent.$getInterfaceValue('name', modName) as string : '')
     this.show = initOption.show || (parent ? parent.show : undefined)
     this.align = initOption.align || 'center'

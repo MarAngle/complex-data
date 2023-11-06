@@ -56,6 +56,11 @@ class InterfaceValue<D> extends Data {
   format(format: (value: Record<PropertyKey, InterfaceValueType<D>>) => void) {
     format(this.value)
   }
+  map(fn: (data: Record<PropertyKey, InterfaceValueType<D>>, prop: string) => void) {
+    for (const prop in this.value) {
+      fn(this.value, prop)
+    }
+  }
   toString() {
     const value = this.getValue('default')
     const type = typeof value
