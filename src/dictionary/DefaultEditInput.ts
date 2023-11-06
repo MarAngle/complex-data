@@ -3,11 +3,11 @@ import DictionaryValue from "./DictionaryValue";
 
 export interface DefaultEditInputOption {
   type: string
-  maxLength: number
+  size: number
   hideClear: boolean
 }
 
-export interface DefaultEditInputInitOption extends DefaultEditInitOption{
+export interface DefaultEditInputInitOption extends DefaultEditInitOption {
   type?: 'input'
   option?: Partial<DefaultEditInputOption>
 }
@@ -16,7 +16,7 @@ class DefaultEditInput extends DefaultEdit{
   static $name = 'DefaultEditInput'
   static $defaultOption = {
     type: 'text',
-    maxLength: 128,
+    size: 128,
     hideClear: false
   }
   type: 'input'
@@ -28,8 +28,8 @@ class DefaultEditInput extends DefaultEdit{
     const $defaultOption = (this.constructor as typeof DefaultEditInput).$defaultOption
     this.$option = {
       type: option.type || $defaultOption.type,
-      maxLength: option.maxLength || $defaultOption.maxLength,
-      hideClear: option.hideClear || $defaultOption.hideClear
+      size: option.size || $defaultOption.size,
+      hideClear: option.hideClear === undefined ? $defaultOption.hideClear : option.hideClear
     }
   }
 }
