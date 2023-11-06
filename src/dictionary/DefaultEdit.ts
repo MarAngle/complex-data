@@ -10,6 +10,7 @@ export interface DefaultEditInitOption {
   prop?: string
   trim?: string // 字段意义不明？
   colon?: boolean
+  multiple?: boolean
   required?: InterfaceValueInitOption<boolean>
   disabled?: InterfaceValueInitOption<boolean>
   placeholder?: InterfaceValueInitOption<string>
@@ -30,7 +31,8 @@ export interface DefaultEditInitOption {
   }
   on?: Record<PropertyKey, (...args: unknown[]) => unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  rules?: InterfaceValueInitOption<any>
+  rules?: Record<PropertyKey, Record<PropertyKey, unknown>[]>
+  message?: InterfaceValueInitOption<string>
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
   post?: false | functionType<unknown> // 编辑=>来源 格式化
   observe?: ObserveValueItem['$observe']
@@ -45,19 +47,20 @@ export interface DefaultEditInitOption {
 
 class DefaultEdit extends Data {
   static $name = 'DefaultEdit'
-  static $config = {
-    defaultValue: undefined,
-    placeholder: function (name: InterfaceValue<string>) {
-      const data: Record<PropertyKey, string> = {}
-      name.map((value, prop) => {
-        data[prop] = `请输入${value[prop]}`
-      })
-      return data
-    }
+  static $defaultValue = function(multiple: boolean) {
+    return !multiple ? undefined : []
+  }
+  static $defaultPlaceholder = function (name: InterfaceValue<string>) {
+    const data: Record<PropertyKey, string> = {}
+    name.map((value, prop) => {
+      data[prop] = `请输入${value[prop]}`
+    })
+    return data
   }
   $prop: string
   trim: boolean
   colon: boolean
+  multiple: boolean
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
   placeholder?: InterfaceValue<string>
@@ -66,7 +69,8 @@ class DefaultEdit extends Data {
     main?: string
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  $rules!: InterfaceValue<any>
+  $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
+  message: InterfaceValue<string>
   $value!: {
     default: unknown
     init: unknown
@@ -95,6 +99,7 @@ class DefaultEdit extends Data {
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.trim = !!initOption.trim
     this.colon = initOption.colon === undefined ? true : initOption.colon
+    this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)
     this.disabled = new InterfaceValue(initOption.disabled || false)
     this.tip = new TipValue(initOption.tip)
@@ -103,16 +108,15 @@ class DefaultEdit extends Data {
     this.post = initOption.post
     this.$on = initOption.on || {}
     // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-    // main = { props: {} } item = { props: {} }
     const local = initOption.local || {}
     this.$local = {
       parent: new AttributeValue(local.parent),
       target: new AttributeValue(local.target),
       child: new AttributeValue(local.child)
     }
-    const $config = (this.constructor as typeof DefaultEdit).$config
+    const $constructor = (this.constructor as typeof DefaultEdit)
     if (initOption.placeholder === undefined && parent) {
-      this.placeholder = new InterfaceValue($config.placeholder(parent.$getInterfaceData('name')))
+      this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
     }
     // 宽度设置
     const width = initOption.width
@@ -139,7 +143,8 @@ class DefaultEdit extends Data {
       this.$width = {}
     }
     const initOptionValue = initOption.value || {}
-    const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $config.defaultValue
+
+    const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
     const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
     const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
     this.$value = {
@@ -160,6 +165,44 @@ class DefaultEdit extends Data {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.$slot = slot as any
     this.$observe = initOption.observe
+    // rule
+    if (initOption.rules) {
+      this.$rules = new InterfaceValue(initOption.rules)
+    } else {
+      this.$rules = new InterfaceValue({
+        default: [{}]
+      })
+    }
+    let message = new InterfaceValue(initOption.message)
+    if (!message.isInit() && this.placeholder) {
+      message = this.placeholder
+    }
+    this.message = message
+    this.$rules.map((rules, prop) => {
+      const ruleList = rules[prop]
+      if (ruleList) {
+        for (let n = 0; n < ruleList.length; n++) {
+          const rule = ruleList[n];
+          if (rule.required === undefined) {
+            rule.required = this.required.getValue(prop)
+          }
+          if (rule.message === undefined && this.message.isInit()) {
+            rule.message = this.message.getValue(prop)
+          }
+        }
+      }
+    })
+  }
+  setValue(value: unknown, prop = 'default') {
+    this.$value[prop] = value
+  }
+  getValue(prop = 'default') {
+    const value = this.$value[prop]
+    if (typeof value !== 'function') {
+      return value
+    } else {
+      return value()
+    }
   }
 }
 
