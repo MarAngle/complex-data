@@ -16,7 +16,6 @@ export interface BaseDataBindOption {
 }
 
 export type BaseDataActive = 'actived' | 'inactived'
-// type MethodExtract<T, U, M extends keyof T> = M extends (T[M] extends U ? M : never ) ? M : never
 
 export interface BaseDataActiveType {
   data: BaseDataActive

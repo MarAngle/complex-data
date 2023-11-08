@@ -7,7 +7,7 @@ import { observeType } from "./ObserveList"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 
 export interface DefaultModInitOption {
-  $format?: 'list'
+  $format?: string
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string

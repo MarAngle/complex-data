@@ -13,6 +13,7 @@ import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
 import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
 import DefaultEditText, { DefaultEditTextInitOption } from './DefaultEditText'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
+import DefaultMod, { DefaultModInitOption } from './DefaultMod'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -54,9 +55,9 @@ export type DictionanyEditModInitOption = DefaultEditInputInitOption | DefaultEd
 
 export type DictionanyEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditText | DefaultEditCustom
 
-export type DictionanyModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionanyEditModInitOption
+export type DictionanyModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionanyEditModInitOption | DefaultModInitOption
 
-export type DictionanyMod = DefaultList | DefaultInfo | DictionanyEditMod
+export type DictionanyMod = DefaultList | DefaultInfo | DictionanyEditMod | DefaultMod
 
 export type DictionanyModDataInitOption = {
   list?: false | DefaultListInitOption
@@ -64,7 +65,8 @@ export type DictionanyModDataInitOption = {
   edit?: false | DictionanyEditModInitOption
   build?: false | DictionanyEditModInitOption
   change?: false | DictionanyEditModInitOption
-  [prop: string]: undefined | false | DictionanyModInitOption
+  search?: false | DictionanyEditModInitOption
+  [prop: string]: undefined | false | DictionanyModInitOption | DefaultMod
 }
 
 export type DictionanyModDataType = {
@@ -73,6 +75,7 @@ export type DictionanyModDataType = {
   edit?: DictionanyEditMod
   build?: DictionanyEditMod
   change?: DictionanyEditMod
+  search?: DictionanyEditMod
   [prop: string]: undefined | DictionanyMod
 }
 
@@ -86,7 +89,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
-  mod?: Record<string, DictionanyModInitOption>
+  mod?: DictionanyModDataInitOption
 }
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
@@ -109,7 +112,7 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
-  mod: Record<string, undefined | DictionanyMod>
+  mod: DictionanyModDataType
   constructor(initOption: DictionaryValueInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
@@ -140,7 +143,10 @@ class DictionaryValue extends DefaultData implements functions {
     }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)
   }
-  protected _buildMod(modName: string, modInitOption: DictionanyModInitOption) {
+  protected _buildMod(modName: string, modInitOption: DictionanyModInitOption | DefaultMod) {
+    if (modInitOption instanceof DefaultMod) {
+      return modInitOption
+    }
     const $format = modInitOption.$format || modName
     if ($format === 'list') {
       return new DefaultList(modInitOption as DefaultListInitOption)
@@ -168,7 +174,11 @@ class DictionaryValue extends DefaultData implements functions {
         return new DefaultEditText(editModInitOption)
       } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
         return new DefaultEditCustom(editModInitOption)
+      } else {
+        this.$exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
       }
+    } else {
+      this.$exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
   }
   $getInterfaceData(target: interfaceKeys) {
