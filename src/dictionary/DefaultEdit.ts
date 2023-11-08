@@ -1,15 +1,10 @@
 import { hasProp } from "complex-utils-next"
-import Data from "../data/Data"
-import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
+import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
-import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import DictionaryValue, { functionType } from "./DictionaryValue"
 import { ObserveValueItem } from "./ObserveList"
 
-export interface DefaultEditInitOption {
-  $format?: 'edit'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
-  prop?: string
+export interface DefaultEditInitOption extends DefaultModInitOption {
   trim?: string // 字段意义不明？
   colon?: boolean
   multiple?: boolean
@@ -19,11 +14,6 @@ export interface DefaultEditInitOption {
   width?: string | number | {
     data: string | number
     main: string | number
-  }
-  local?: {
-    parent?: AttributeValueInitOption
-    target?: AttributeValueInitOption
-    child?: AttributeValueInitOption
   }
   value?: {
     default?: unknown
@@ -38,7 +28,6 @@ export interface DefaultEditInitOption {
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
   post?: false | functionType<unknown> // 编辑=>来源 格式化
   observe?: ObserveValueItem['$observe']
-  tip?: TipValueInitOption
   slot?: {
     type?: string
     name?: string
@@ -47,7 +36,7 @@ export interface DefaultEditInitOption {
   }
 }
 
-class DefaultEdit extends Data {
+class DefaultEdit extends DefaultMod {
   static $name = 'DefaultEdit'
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : []
@@ -59,7 +48,6 @@ class DefaultEdit extends Data {
     })
     return data
   }
-  $prop: string
   trim: boolean
   colon: boolean
   multiple: boolean
@@ -79,16 +67,10 @@ class DefaultEdit extends Data {
     reset: unknown
     [prop: PropertyKey]: unknown
   }
-  $local: {
-    parent: AttributeValue
-    target: AttributeValue
-    child: AttributeValue
-  }
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
   $observe?: ObserveValueItem['$observe']
-  tip: TipValue
   $slot!: {
     type: 'auto' | 'main' | 'item' | 'model'
     name: string
@@ -96,26 +78,17 @@ class DefaultEdit extends Data {
     render?: (...args: unknown[]) => unknown
   }
   constructor(initOption: DefaultEditInitOption, modName?: string, parent?: DictionaryValue) {
-    super()
+    super(initOption, modName, parent)
     this.$setParent(parent)
-    this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.trim = !!initOption.trim
     this.colon = initOption.colon === undefined ? true : initOption.colon
     this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)
     this.disabled = new InterfaceValue(initOption.disabled || false)
-    this.tip = new TipValue(initOption.tip)
     // 组件事件监控
     this.edit = initOption.edit
     this.post = initOption.post
     this.$on = initOption.on || {}
-    // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-    const local = initOption.local || {}
-    this.$local = {
-      parent: new AttributeValue(local.parent),
-      target: new AttributeValue(local.target),
-      child: new AttributeValue(local.child)
-    }
     const $constructor = (this.constructor as typeof DefaultEdit)
     if (initOption.placeholder === undefined && parent) {
       this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))

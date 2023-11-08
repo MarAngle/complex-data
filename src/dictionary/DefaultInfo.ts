@@ -1,35 +1,23 @@
-import Data from "../data/Data"
+import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue from "./DictionaryValue"
-import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 
-export interface DefaultInfoInitOption {
-  $format?: 'info'
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
-  prop?: string
-  name?: string
+export interface DefaultInfoInitOption extends DefaultModInitOption {
   show?: DictionaryValue['show']
   showType?: string
-  local?: AttributeValueInitOption
 }
 
-class DefaultInfo extends Data {
+class DefaultInfo extends DefaultMod {
   static $name = 'DefaultInfo'
-  $prop: string
-  name: string
   showType?: string
   show: DictionaryValue['show']
-  $local?: AttributeValue
   constructor(initOption: DefaultInfoInitOption | true, modName?: string, parent?: DictionaryValue) {
     if (initOption === true) {
       initOption = {}
     }
-    super()
+    super(initOption, modName, parent)
     this.$setParent(parent)
-    this.$prop = initOption.prop || (parent ? parent.$prop : '')
-    this.name = initOption.name || (parent ? parent.$getInterfaceValue('name', modName) as string : '')
     this.show = initOption.show || (parent ? parent.show : undefined)
     this.showType = initOption.showType || (parent ? parent.$getInterfaceValue('showType', modName) : '')
-    this.$local = initOption.local ? new AttributeValue(initOption.local) : undefined
   }
 }
 
