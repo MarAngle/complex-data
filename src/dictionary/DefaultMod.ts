@@ -3,6 +3,8 @@ import DictionaryValue from "./DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 import InterfaceValue from "../lib/InterfaceValue"
+import { observeType } from "./ObserveList"
+import { ArrayMapValueType } from "../lib/ArrayMap"
 
 export interface DefaultModInitOption {
   $format?: 'list'
@@ -16,9 +18,10 @@ export interface DefaultModInitOption {
     [prop: string]: undefined | AttributeValueInitOption
   }
   tip?: TipValueInitOption
+  observe?: observeType
 }
 
-class DefaultMod extends Data {
+class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'
   $prop: string
   $name: InterfaceValue<string>
@@ -29,6 +32,7 @@ class DefaultMod extends Data {
     child?: AttributeValue
     [prop: string]: undefined | AttributeValue
   }
+  $observe?: observeType
   constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
     if (initOption === true) {
       initOption = {}
@@ -47,6 +51,7 @@ class DefaultMod extends Data {
         this.$local[prop] = new AttributeValue(initOption.local[prop])
       }
     }
+    this.$observe = initOption.observe
   }
 }
 

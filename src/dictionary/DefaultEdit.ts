@@ -2,7 +2,6 @@ import { hasProp } from "complex-utils-next"
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 import DictionaryValue, { functionType } from "./DictionaryValue"
-import { ObserveValueItem } from "./ObserveList"
 
 // 考虑将width转换为layout的接口数据，通过判断值实现main/label/content
 
@@ -28,7 +27,6 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
   message?: InterfaceValueInitOption<string>
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
   post?: false | functionType<unknown> // 编辑=>来源 格式化
-  observe?: ObserveValueItem['$observe']
   slot?: {
     type?: string
     name?: string
@@ -70,7 +68,6 @@ class DefaultEdit extends DefaultMod {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
-  $observe?: ObserveValueItem['$observe']
   $slot!: {
     type: 'auto' | 'main' | 'item' | 'model'
     name: string
@@ -138,7 +135,6 @@ class DefaultEdit extends DefaultMod {
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.$slot = slot as any
-    this.$observe = initOption.observe
     // rule
     if (initOption.rules) {
       this.$rules = new InterfaceValue(initOption.rules)

@@ -1,12 +1,11 @@
 import { Watcher, observe } from "complex-utils-next"
 import DefaultEdit from "./DefaultEdit"
-import ArrayMap, { ArrayMapValueType } from "../lib/ArrayMap"
+import ArrayMap from "../lib/ArrayMap"
+import DefaultMod from "./DefaultMod"
 
-export interface ObserveValueItem extends ArrayMapValueType {
-  $observe?: (target: ObserveList, prop: PropertyKey, val: unknown, from?: string) => unknown
-}
+export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from?: string) => unknown
 
-class ObserveList extends ArrayMap<ObserveValueItem> {
+class ObserveList extends ArrayMap<DefaultMod> {
   static $name = 'ObserveList'
   $watch: Map<PropertyKey, Watcher>
   $form: null | Record<PropertyKey, unknown>
