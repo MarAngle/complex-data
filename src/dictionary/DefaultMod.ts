@@ -2,6 +2,7 @@ import Data from "../data/Data"
 import DictionaryValue from "./DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
+import InterfaceValue from "../lib/InterfaceValue"
 
 export interface DefaultModInitOption {
   $format?: 'list'
@@ -12,6 +13,7 @@ export interface DefaultModInitOption {
     parent?: AttributeValueInitOption
     target?: AttributeValueInitOption
     child?: AttributeValueInitOption
+    [prop: string]: undefined | AttributeValueInitOption
   }
   tip?: TipValueInitOption
 }
@@ -19,12 +21,13 @@ export interface DefaultModInitOption {
 class DefaultMod extends Data {
   static $name = 'DefaultMod'
   $prop: string
-  $name: string
+  $name: InterfaceValue<string>
   tip?: TipValue
   $local?: {
-    parent: AttributeValue
-    target: AttributeValue
-    child: AttributeValue
+    parent?: AttributeValue
+    target?: AttributeValue
+    child?: AttributeValue
+    [prop: string]: undefined | AttributeValue
   }
   constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
     if (initOption === true) {
@@ -33,17 +36,15 @@ class DefaultMod extends Data {
     super()
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
-    this.$name = initOption.name || (parent ? parent.$getInterfaceValue('name', modName) as string : '')
+    this.$name = (initOption.name !== undefined || !parent) ? new InterfaceValue(initOption.name) : parent.$getInterfaceData('name')
     if (initOption.tip !== undefined) {
       this.tip = new TipValue(initOption.tip)
     }
     if (initOption.local) {
       // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-      const local = initOption.local
-      this.$local = {
-        parent: new AttributeValue(local.parent),
-        target: new AttributeValue(local.target),
-        child: new AttributeValue(local.child)
+      this.$local = {}
+      for (const prop in initOption.local) {
+        this.$local[prop] = new AttributeValue(initOption.local[prop])
       }
     }
   }

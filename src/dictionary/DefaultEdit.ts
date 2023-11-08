@@ -4,8 +4,9 @@ import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 import DictionaryValue, { functionType } from "./DictionaryValue"
 import { ObserveValueItem } from "./ObserveList"
 
+// 考虑将width转换为layout的接口数据，通过判断值实现main/label/content
+
 export interface DefaultEditInitOption extends DefaultModInitOption {
-  trim?: string // 字段意义不明？
   colon?: boolean
   multiple?: boolean
   required?: InterfaceValueInitOption<boolean>
@@ -48,8 +49,7 @@ class DefaultEdit extends DefaultMod {
     })
     return data
   }
-  trim: boolean
-  colon: boolean
+  colon: InterfaceValue<boolean>
   multiple: boolean
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
@@ -80,8 +80,7 @@ class DefaultEdit extends DefaultMod {
   constructor(initOption: DefaultEditInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.$setParent(parent)
-    this.trim = !!initOption.trim
-    this.colon = initOption.colon === undefined ? true : initOption.colon
+    this.colon = new InterfaceValue(initOption.colon === undefined ? true : initOption.colon)
     this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)
     this.disabled = new InterfaceValue(initOption.disabled || false)
