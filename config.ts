@@ -64,6 +64,8 @@ const config = {
     }
   },
   dictionary: {
+    empty: true,
+    depth: Symbol('depth'),
     module: {
       list: {
         width: 100,

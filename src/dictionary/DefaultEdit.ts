@@ -7,6 +7,7 @@ import DictionaryValue, { functionType } from "./DictionaryValue"
 
 export interface DefaultEditInitOption extends DefaultModInitOption {
   colon?: boolean
+  trim?: boolean
   multiple?: boolean
   required?: InterfaceValueInitOption<boolean>
   disabled?: InterfaceValueInitOption<boolean>
@@ -40,6 +41,7 @@ class DefaultEdit extends DefaultMod {
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : []
   }
+  static $defaultTrim = false
   static $defaultPlaceholder = function (name: InterfaceValue<string>) {
     const data: Record<PropertyKey, string> = {}
     name.map((value, prop) => {
@@ -48,6 +50,7 @@ class DefaultEdit extends DefaultMod {
     return data
   }
   colon: InterfaceValue<boolean>
+  trim: boolean
   multiple: boolean
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
@@ -86,6 +89,7 @@ class DefaultEdit extends DefaultMod {
     this.post = initOption.post
     this.$on = initOption.on || {}
     const $constructor = (this.constructor as typeof DefaultEdit)
+    this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (initOption.placeholder === undefined && parent) {
       this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
     }

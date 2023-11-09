@@ -1,6 +1,10 @@
+import { Limit, trimData } from "complex-utils-next"
+import { LimitInitOption } from "complex-utils-next/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
-import DictionaryValue, { DictionaryValueInitOption } from "../dictionary/DictionaryValue"
+import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../dictionary/DictionaryValue"
+import ObserveList from "../dictionary/ObserveList"
+import config from "../../config"
 
 type propDataValueType = {
   prop: string
@@ -35,15 +39,36 @@ function initPropData(defaultProp: propDataKeys, propData?: Partial<propDataType
   }
 }
 
+export const createOption = function<D>(structData: D, initData?: Partial<D>) {
+  if (initData) {
+    for (const prop in initData) {
+      structData[prop] = initData[prop]!
+    }
+  }
+  return structData
+}
+
+export interface createFormOption {
+  form?: Record<PropertyKey, unknown>
+  from?: string
+  limit?: Limit | LimitInitOption
+}
+
+export interface DictionaryDataOption {
+  empty: boolean
+}
+
 export interface DictionaryDataInitOption extends DefaultDataInitOption {
   list?: DictionaryValueInitOption[]
   propData?: Partial<propDataType<string | propDataValueType>>
+  option?: Partial<DictionaryDataOption>
 }
 
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
   $data: Map<string, DictionaryValue>
   $propData: propDataType<propDataValueType>
+  $option: DictionaryDataOption
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryData', 'beforeCreate', initOption)
@@ -59,6 +84,7 @@ class DictionaryData extends DefaultData {
         this.$data.set(dictionaryValueInitOption.prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
     }
+    this.$option = createOption({ empty: config.dictionary.empty }, initOption.option)
     this._triggerCreateLife('DictionaryData', 'created', initOption)
   }
   $setProp(value: string, prop: propDataKeys = 'id') {
@@ -93,6 +119,95 @@ class DictionaryData extends DefaultData {
     }
     this.$triggerLife('updated', this, dictionaryInitOptionList, option)
   }
+  // 格式化函数
+  $updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
+    return this._formatData(targetData, originData, originFrom, useSetData)
+  }
+  $createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
+    return this._formatData({}, originData, originFrom, useSetData)
+  }
+  protected _formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
+    for (const dictionaryValue of this.$data.values()) {
+      dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
+    }
+    return targetData
+  }
+  $getPageItem(modName: string, ditem: DictionaryValue) {
+    return ditem.$getMod(modName)!
+  }
+  // 获取模块列表
+  $buildPageList(modName: string, list: DictionaryValue[]) {
+    const pageList: DictionaryMod[] = []
+    for (let n = 0; n < list.length; n++) {
+      pageList.push(this.$getPageItem(modName, list[n]))
+    }
+    return pageList
+  }
+  // 获取响应式模块列表
+  $buildObserveList(modName: string, list: DictionaryValue[]) {
+    const observeList = new ObserveList()
+    for (let n = 0; n < list.length; n++) {
+      observeList.push(this.$getPageItem(modName, list[n]))
+    }
+    return observeList
+  }
+  $createFormData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createFormOption = {}) {
+    return new Promise((resolve) => {
+      const formData = option.form || {}
+      const from = option.from
+      const limit = new Limit(option.limit)
+      const size = dictionaryValueList.length
+      const promiseList = []
+      for (let n = 0; n < size; n++) {
+        const dictionaryValue = dictionaryValueList[n]
+        if (!limit.getLimit(dictionaryValue.$prop)) {
+          promiseList.push(dictionaryValue.$createFormValue({
+            targetData: formData,
+            originData: originData,
+            type: modName,
+            from: from
+          }))
+        }
+      }
+      Promise.allSettled(promiseList).then(() => {
+        resolve({ status: 'success', data: formData })
+      })
+    })
+  }
+  $createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string) {
+    const postData: Record<string, unknown> = {}
+    dictionaryValueList.forEach(dictionaryValue => {
+      const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
+      if (mod) {
+        if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', formData[dictionaryValue.$prop], {
+          targetData: postData,
+          originData: formData,
+          type: modName
+        })) {
+          // 空值不上传且值不存在时
+          return
+        }
+        let originValue = formData[dictionaryValue.$prop]
+        if (mod.trim) {
+          originValue = trimData(originValue)
+        }
+        if (mod.post) {
+          originValue = mod.post(originValue, {
+            targetData: postData,
+            originData: formData,
+            type: modName
+          })
+        }
+        dictionaryValue.$setTargetData(dictionaryValue.$getInterfaceValue('originProp', modName)!, originValue, 'post', {
+          targetData: postData,
+          originData: formData,
+          type: modName
+        })
+      }
+    })
+    return postData
+  }
+
   $install(target: BaseData) {
     super.$install(target)
     // 监听事件

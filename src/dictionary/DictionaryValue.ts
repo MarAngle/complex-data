@@ -52,32 +52,32 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionanyEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditTextInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditTextInitOption | DefaultEditCustomInitOption
 
-export type DictionanyEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditText | DefaultEditCustom
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditText | DefaultEditCustom
 
-export type DictionanyModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionanyEditModInitOption | DefaultModInitOption
+export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
-export type DictionanyMod = DefaultList | DefaultInfo | DictionanyEditMod | DefaultMod
+export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod
 
-export type DictionanyModDataInitOption = {
+export type DictionaryModDataInitOption = {
   list?: false | DefaultListInitOption
   info?: false | DefaultInfoInitOption
-  edit?: false | DictionanyEditModInitOption
-  build?: false | DictionanyEditModInitOption
-  change?: false | DictionanyEditModInitOption
-  search?: false | DictionanyEditModInitOption
-  [prop: string]: undefined | false | DictionanyModInitOption | DefaultMod
+  edit?: false | DictionaryEditModInitOption
+  build?: false | DictionaryEditModInitOption
+  change?: false | DictionaryEditModInitOption
+  search?: false | DictionaryEditModInitOption
+  [prop: string]: undefined | false | DictionaryModInitOption | DefaultMod
 }
 
-export type DictionanyModDataType = {
+export type DictionaryModDataType = {
   list?: DefaultList
   info?: DefaultInfo
-  edit?: DictionanyEditMod
-  build?: DictionanyEditMod
-  change?: DictionanyEditMod
-  search?: DictionanyEditMod
-  [prop: string]: undefined | DictionanyMod
+  edit?: DictionaryEditMod
+  build?: DictionaryEditMod
+  change?: DictionaryEditMod
+  search?: DictionaryEditMod
+  [prop: string]: undefined | DictionaryMod
 }
 
 export interface DictionaryValueInitOption extends DefaultDataInitOption, functions {
@@ -90,7 +90,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
-  mod?: DictionanyModDataInitOption
+  mod?: DictionaryModDataInitOption
 }
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
@@ -113,7 +113,7 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
-  mod: DictionanyModDataType
+  $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
     this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
@@ -135,17 +135,17 @@ class DictionaryValue extends DefaultData implements functions {
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
-    this.mod = {}
+    this.$mod = {}
     const mod = initOption.mod || {}
     for (const modName in mod) {
       const modInitOption = mod[modName]
       if (modInitOption) {
-        this.mod[modName] = this._buildMod(modName, modInitOption)
+        this.$mod[modName] = this._buildMod(modName, modInitOption)
       }
     }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)
   }
-  protected _buildMod(modName: string, modInitOption: DictionanyModInitOption | DefaultMod) {
+  protected _buildMod(modName: string, modInitOption: DictionaryModInitOption | DefaultMod) {
     if (modInitOption instanceof DefaultMod) {
       return modInitOption
     }
@@ -155,7 +155,7 @@ class DictionaryValue extends DefaultData implements functions {
     } else if ($format === 'info') {
       return new DefaultInfo(modInitOption as DefaultInfoInitOption)
     } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
-      const editModInitOption = modInitOption as DictionanyEditModInitOption
+      const editModInitOption = modInitOption as DictionaryEditModInitOption
       if (!editModInitOption.type || editModInitOption.type === 'input') {
         return new DefaultEditInput(editModInitOption)
       } else if (editModInitOption.type === 'inputNumber') {
@@ -201,6 +201,9 @@ class DictionaryValue extends DefaultData implements functions {
   $isOriginFrom (originFrom: string) {
     return this.$originFrom.indexOf(originFrom) > -1
   }
+  $getMod (modName: string) {
+    return this.$mod[modName]
+  }
   $triggerFunc (funcName: funcKeys, originData: unknown, payload: payloadType) {
     const itemFunc = this[funcName]
     if (itemFunc) {
@@ -209,13 +212,74 @@ class DictionaryValue extends DefaultData implements functions {
       return originData
     }
   }
-  $formatDataBySimple(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, option: formatDataOption) {
+  $formatDataBySimple(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
     const originProp = this.$getInterfaceValue('originProp', originFrom)!
     // 快捷模式快速判断
-    if (!option.format || this.$prop !== originProp) {
-      setProp(targetData, this.$prop, getProp(originData, originProp), true)
+    if (!this.format || this.$prop !== originProp) {
+      setProp(targetData, this.$prop, getProp(originData, originProp), useSetData)
     }
     // 非新建模式下，prop不更名则不进行任何操作
+  }
+  $setTargetData(prop: string, originValue: unknown, funcName: funcKeys, option: payloadType ) {
+    const targetValue = this.$triggerFunc(funcName, originValue, option)
+    setProp(option.targetData, prop, targetValue, true)
+  }
+  $formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
+    if (this.$isOriginFrom(originFrom)) {
+      if (!this.format) {
+        // 快捷模式快速判断
+        this.$formatDataBySimple(targetData, originData, originFrom, useSetData)
+        return
+      }
+      const originProp = this.$getInterfaceValue('originProp', originFrom)!
+      const targetValue = getProp(originData, originProp)
+      this.$setTargetData(this.$prop, targetValue, 'format', {
+        targetData: targetData,
+        originData: originData,
+        type: originFrom
+      })
+    }
+  }
+  $getFormValue (mod: DictionaryEditMod, { targetData, originData, type, from = 'init' }: payloadType) {
+    let targetValue
+    // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
+    if (originData) {
+      targetValue = this.$triggerFunc('edit', originData[this.$prop], {
+        type: type,
+        targetData,
+        originData
+      })
+    } else if (mod.getValue) {
+      if (from === 'reset') {
+        targetValue = mod.getValue('reset')
+      } else {
+        targetValue = mod.getValue('init')
+      }
+    }
+    // 模块存在edit函数时将当前数据进行edit操作
+    if (mod.edit) {
+      targetValue = mod.edit(targetValue, {
+        type: type,
+        targetData,
+        originData,
+        from: from
+      })
+    }
+    return targetValue
+  }
+  $createFormValue (option: payloadType) {
+    return new Promise((resolve) => {
+      const mod = this.$getMod(option.type) as DictionaryEditMod
+      const next = (status: string, targetValue: unknown) => {
+        setProp(option.targetData, this.$prop, targetValue, true)
+        resolve({ status: status })
+      }
+      if (mod) {
+        next('success', this.$getFormValue(mod, option))
+      } else {
+        next('none', undefined)
+      }
+    })
   }
 }
 
