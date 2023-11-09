@@ -14,6 +14,7 @@ import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditBut
 import DefaultEditText, { DefaultEditTextInitOption } from './DefaultEditText'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 import DefaultMod, { DefaultModInitOption } from './DefaultMod'
+import DictionaryData from '../module/DictionaryData'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -113,9 +114,10 @@ class DictionaryValue extends DefaultData implements functions {
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
   mod: DictionanyModDataType
-  constructor(initOption: DictionaryValueInitOption) {
+  constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
     this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
+    this.$setParent(parent)
     this.$originFrom = typeof initOption.originFrom === 'string' ? [initOption.originFrom] : ['list']
     this.$simple = initOption.simple === undefined ? false : initOption.simple
     this.$interface = {
