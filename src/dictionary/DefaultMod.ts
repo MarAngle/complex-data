@@ -6,6 +6,8 @@ import InterfaceValue from "../lib/InterfaceValue"
 import { observeType } from "./ObserveList"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 
+export type reactiveFunction = (...args: unknown[]) => boolean
+
 export interface DefaultModInitOption {
   $format?: string
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
@@ -18,6 +20,9 @@ export interface DefaultModInitOption {
     [prop: string]: undefined | AttributeValueInitOption
   }
   tip?: TipValueInitOption
+  reactive?: {
+    [prop: string]: undefined | reactiveFunction
+  }
   observe?: observeType
 }
 
@@ -31,6 +36,9 @@ class DefaultMod extends Data implements ArrayMapValueType {
     target?: AttributeValue
     child?: AttributeValue
     [prop: string]: undefined | AttributeValue
+  }
+  $reactive?: {
+    [prop: string]: undefined | reactiveFunction
   }
   $observe?: observeType
   constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
@@ -51,6 +59,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
         this.$local[prop] = new AttributeValue(initOption.local[prop])
       }
     }
+    this.$reactive = initOption.reactive
     this.$observe = initOption.observe
   }
 }

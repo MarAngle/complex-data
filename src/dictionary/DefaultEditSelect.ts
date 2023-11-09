@@ -1,5 +1,5 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit";
-import DictionaryValue from "./DictionaryValue";
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import DictionaryValue from "./DictionaryValue"
 
 export interface DefaultEditSelectOption {
   list: Record<PropertyKey, unknown>[]

@@ -84,7 +84,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   prop: string
   name: InterfaceValueInitOption<string>
   originFrom?: string | string[]
-  simple?: boolean // 简单快速处理判断值
+  simple?: boolean | string // 简单快速处理判断值
   originProp?: InterfaceValueInitOption<string> // 来源属性
   label?: InterfaceValueInitOption<string> // 名称
   showProp?: InterfaceValueInitOption<string> // 展示的属性
@@ -98,7 +98,7 @@ export type interfaceKeys = keyof DictionaryValue['$interface']
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
   $originFrom: string[]
-  $simple: boolean
+  $simple: boolean | string
   $interface: {
     name: InterfaceValue<string>
     originProp: InterfaceValue<string>
