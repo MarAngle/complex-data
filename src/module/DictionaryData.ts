@@ -101,7 +101,7 @@ class DictionaryData extends DefaultData {
   $getPropValue(prop: propDataKeys = 'id') {
     return this.$propData[prop].value
   }
-  $getItem(prop: string) {
+  $getValue(prop: string) {
     return this.$data.get(prop)
   }
   // 重新构建字典数据
@@ -113,18 +113,25 @@ class DictionaryData extends DefaultData {
     for (let n = 0; n < dictionaryInitOptionList.length; n++) {
       const dictionaryValueInitOption = dictionaryInitOptionList[n]
       const prop = dictionaryValueInitOption.prop
-      if (!this.$getItem(prop) || option.replace) {
+      if (!this.$getValue(prop) || option.replace) {
         this.$data.set(prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
     }
     this.$triggerLife('updated', this, dictionaryInitOptionList, option)
   }
-  // 格式化函数
-  $updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
-    return this._formatData(targetData, originData, originFrom, useSetData)
+  $createList(originList: Record<PropertyKey, unknown>[] = [], originFrom = 'list', useSetData?: boolean) {
+    const targetList = []
+    for (let i = 0; i < originList.length; i++) {
+      targetList.push(this.$createData(originList[i], originFrom, useSetData))
+    }
+    return targetList
   }
+  // 格式化函数
   $createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
     return this._formatData({}, originData, originFrom, useSetData)
+  }
+  $updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
+    return this._formatData(targetData, originData, originFrom, useSetData)
   }
   protected _formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of this.$data.values()) {

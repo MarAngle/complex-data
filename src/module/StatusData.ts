@@ -185,7 +185,7 @@ class StatusData extends Data {
       this.$syncData(true, 'removeData')
     }
   }
-  getItem(target = 'operate') {
+  getValue(target = 'operate') {
     return this.data[target]
   }
   getCurrent(target: 'load' | 'update'): StatusDataLoadValueType

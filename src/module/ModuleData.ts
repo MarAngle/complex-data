@@ -4,11 +4,13 @@ import BaseData, { resetOptionType } from '../data/BaseData'
 import DependData, { DependDataInitOption } from './DependData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
+import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 
 export interface ModuleDataInitOption {
   depend?: boolean | DependDataInitOption
   update?: boolean | UpdateDataInitOption
   pagination?: boolean | PaginationDataInitOption
+  dictionary?: boolean | DictionaryDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
@@ -18,7 +20,8 @@ export const ModuleDataKeys: moduleKeys[] = ['depend', 'update']
 const ModuleMap = {
   depend: DependData,
   update: UpdateData,
-  pagination: PaginationData
+  pagination: PaginationData,
+  dictionary: DictionaryData
 }
 
 class ModuleData extends Data {
@@ -26,6 +29,7 @@ class ModuleData extends Data {
   depend?: DependData
   update?: UpdateData
   pagination?: PaginationData
+  dictionary?: DictionaryData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.$setParent(parent)

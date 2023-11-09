@@ -198,8 +198,8 @@ class BaseData extends DefaultData {
   /* --- bind&active end --- */
 
   /* --- status start --- */
-  $getStatusItem(...args: Parameters<StatusData['getItem']>) {
-    return this.$status.getItem(...args)
+  $getStatusValue(...args: Parameters<StatusData['getValue']>) {
+    return this.$status.getValue(...args)
   }
   $setStatus(...args: Parameters<StatusData['setData']>) {
     this.$status.setData(...args)
@@ -238,7 +238,7 @@ class BaseData extends DefaultData {
    * @returns 
    */
   $triggerMethodByStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    const statusItem = this.$getStatusItem(statusProp)
+    const statusItem = this.$getStatusValue(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict, triggerCallBack)) {
         const next = this._triggerMethodByStatusNext(method, args)
