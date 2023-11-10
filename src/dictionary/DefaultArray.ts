@@ -1,16 +1,16 @@
 import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue, { DictionaryModInitOption, initMod } from "./DictionaryValue"
 
-export interface DefaultEditArrayInitOption extends DefaultModInitOption {
+export interface DefaultArrayInitOption extends DefaultModInitOption {
   type: 'array'
   children?: (DictionaryModInitOption | DefaultMod)[]
 }
 
-class DefaultEditArray extends DefaultMod {
-  static $name = 'DefaultEditArray'
+class DefaultArray extends DefaultMod {
+  static $name = 'DefaultArray'
   type: 'array'
   children: DefaultMod[]
-  constructor(initOption: DefaultEditArrayInitOption, modName: string, parent?: DictionaryValue) {
+  constructor(initOption: DefaultArrayInitOption, modName: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.type = initOption.type
     this.children = []
@@ -25,4 +25,4 @@ class DefaultEditArray extends DefaultMod {
   }
 }
 
-export default DefaultEditArray
+export default DefaultArray

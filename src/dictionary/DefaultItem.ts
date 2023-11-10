@@ -1,20 +1,20 @@
 import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue from "./DictionaryValue"
 
-export interface DefaultEditItemInitOption extends DefaultModInitOption {
+export interface DefaultItemInitOption extends DefaultModInitOption {
   type: 'item'
   render: unknown
 }
 
-class DefaultEditItem extends DefaultMod {
-  static $name = 'DefaultEditItem'
+class DefaultItem extends DefaultMod {
+  static $name = 'DefaultItem'
   type: 'item'
   render: unknown
-  constructor(initOption: DefaultEditItemInitOption, modName?: string, parent?: DictionaryValue) {
+  constructor(initOption: DefaultItemInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.type = initOption.type
     this.render = initOption.render
   }
 }
 
-export default DefaultEditItem
+export default DefaultItem

@@ -15,8 +15,8 @@ import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditC
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 import DefaultMod, { DefaultModInitOption } from './DefaultMod'
 import DictionaryData from '../module/DictionaryData'
-import DefaultEditArray, { DefaultEditArrayInitOption } from './DefaultEditArray'
-import DefaultEditItem, { DefaultEditItemInitOption } from './DefaultEditItem'
+import DefaultArray, { DefaultArrayInitOption } from './DefaultArray'
+import DefaultItem, { DefaultItemInitOption } from './DefaultItem'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -54,13 +54,13 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption | DefaultEditArrayInitOption | DefaultEditItemInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditContent | DefaultEditCustom | DefaultEditArray | DefaultEditItem
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditContent | DefaultEditCustom
 
-export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
+export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption | DefaultArrayInitOption | DefaultItemInitOption
 
-export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod
+export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod | DefaultArray | DefaultItem
 
 export type DictionaryModDataInitOption = {
   list?: false | DefaultListInitOption
@@ -132,9 +132,9 @@ export const initMod = function(modName: string, modInitOption: DictionaryModIni
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
       return new DefaultEditCustom(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'array') {
-      return new DefaultEditArray(editModInitOption, modName, parent)
+      return new DefaultArray(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'item') {
-      return new DefaultEditItem(editModInitOption, modName, parent)
+      return new DefaultItem(editModInitOption, modName, parent)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
