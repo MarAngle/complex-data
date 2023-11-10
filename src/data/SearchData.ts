@@ -35,6 +35,9 @@ class SearchData extends DictionaryData {
     data: Record<PropertyKey, unknown>
   }
   constructor(initOption: SearchDataInitOption) {
+    if (initOption.simple === undefined) {
+      initOption.simple = true
+    }
     const prop = initOption.prop || 'search'
     const menu = initOption.menu
     if (menu) {
@@ -46,7 +49,9 @@ class SearchData extends DictionaryData {
         initOption.list.push({
           prop: menuInitOption.prop,
           name: menuInitOption.name,
-          simple: true,
+          simple: {
+            edit: true
+          },
           mod: {
             [prop]: {
               $format: 'edit',

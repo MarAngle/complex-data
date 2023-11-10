@@ -59,6 +59,7 @@ export interface DictionaryDataOption {
 }
 
 export interface DictionaryDataInitOption extends DefaultDataInitOption {
+  simple?: boolean
   list?: DictionaryValueInitOption[]
   propData?: Partial<propDataType<string | propDataValueType>>
   option?: Partial<DictionaryDataOption>
@@ -66,17 +67,22 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
+  $simple?: boolean
   $data: Map<string, DictionaryValue>
-  $propData: propDataType<propDataValueType>
+  $propData?: propDataType<propDataValueType>
   $option: DictionaryDataOption
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryData', 'beforeCreate', initOption)
+    this.$simple = initOption.simple
     this.$data = new Map()
-    this.$propData = {
-      parentId: initPropData('parentId', initOption.propData),
-      id: initPropData('id', initOption.propData),
-      children: initPropData('children', initOption.propData)
+    if (!this.$simple) {
+      // 简单模式下不加载propData
+      this.$propData = {
+        parentId: initPropData('parentId', initOption.propData),
+        id: initPropData('id', initOption.propData),
+        children: initPropData('children', initOption.propData)
+      }
     }
     if (initOption.list) {
       for (let n = 0; n < initOption.list.length; n++) {
@@ -88,18 +94,18 @@ class DictionaryData extends DefaultData {
     this._triggerCreateLife('DictionaryData', 'created', initOption)
   }
   $setProp(value: string, prop: propDataKeys = 'id') {
-    this.$propData[prop].prop = value
+    this.$propData![prop].prop = value
     this.$syncData(true, '$setProp')
   }
   $getProp(prop: propDataKeys = 'id') {
-    return this.$propData[prop].prop
+    return this.$propData![prop].prop
   }
   $setPropValue(value: unknown, prop: propDataKeys = 'id') {
-    this.$propData[prop].value = value
+    this.$propData![prop].value = value
     this.$syncData(true, '$setPropValue')
   }
   $getPropValue(prop: propDataKeys = 'id') {
-    return this.$propData[prop].value
+    return this.$propData![prop].value
   }
   $getValue(prop: string) {
     return this.$data.get(prop)

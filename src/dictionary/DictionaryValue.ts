@@ -84,7 +84,10 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   prop: string
   name: InterfaceValueInitOption<string>
   originFrom?: string | string[]
-  simple?: boolean | string // 简单快速处理判断值
+  simple?: {
+    format?: boolean
+    edit?: boolean
+  } // 简单快速处理判断值
   originProp?: InterfaceValueInitOption<string> // 来源属性
   label?: InterfaceValueInitOption<string> // 名称
   showProp?: InterfaceValueInitOption<string> // 展示的属性
@@ -98,7 +101,10 @@ export type interfaceKeys = keyof DictionaryValue['$interface']
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
   $originFrom: string[]
-  $simple: boolean | string
+  $simple: {
+    format?: boolean
+    edit?: boolean
+  } // 简单快速处理判断值
   $interface: {
     name: InterfaceValue<string>
     originProp: InterfaceValue<string>
@@ -119,7 +125,7 @@ class DictionaryValue extends DefaultData implements functions {
     this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
     this.$setParent(parent)
     this.$originFrom = typeof initOption.originFrom === 'string' ? [initOption.originFrom] : ['list']
-    this.$simple = initOption.simple === undefined ? false : initOption.simple
+    this.$simple = initOption.simple || {}
     this.$interface = {
       name: new InterfaceValue(initOption.name),
       originProp: new InterfaceValue(initOption.originProp || this.$prop),
@@ -129,9 +135,12 @@ class DictionaryValue extends DefaultData implements functions {
       modType: new InterfaceValue()
     }
     // 加载基本自定义函数
-    this.format = initOption.format
     this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData.bind(this) : initOption.defaultGetData
-    this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
+    if (!this.$simple.edit) {
+      // 非简单编辑数据时
+      this.format = initOption.format
+      this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
+    }
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
@@ -212,32 +221,23 @@ class DictionaryValue extends DefaultData implements functions {
       return originData
     }
   }
-  $formatDataBySimple(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
-    const originProp = this.$getInterfaceValue('originProp', originFrom)!
-    // 快捷模式快速判断
-    if (!this.format || this.$prop !== originProp) {
-      setProp(targetData, this.$prop, getProp(originData, originProp), useSetData)
-    }
-    // 非新建模式下，prop不更名则不进行任何操作
-  }
-  $setTargetData(prop: string, originValue: unknown, funcName: funcKeys, option: payloadType ) {
+  $setTargetData(prop: string, originValue: unknown, funcName: funcKeys, option: payloadType, useSetData?: boolean ) {
     const targetValue = this.$triggerFunc(funcName, originValue, option)
-    setProp(option.targetData, prop, targetValue, true)
+    setProp(option.targetData, prop, targetValue, useSetData)
   }
   $formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
-      if (!this.format) {
-        // 快捷模式快速判断
-        this.$formatDataBySimple(targetData, originData, originFrom, useSetData)
-        return
-      }
       const originProp = this.$getInterfaceValue('originProp', originFrom)!
       const targetValue = getProp(originData, originProp)
-      this.$setTargetData(this.$prop, targetValue, 'format', {
-        targetData: targetData,
-        originData: originData,
-        type: originFrom
-      })
+      if (!this.format) {
+        setProp(targetData, this.$prop, targetValue, useSetData)
+      } else {
+        this.$setTargetData(this.$prop, targetValue, 'format', {
+          targetData: targetData,
+          originData: originData,
+          type: originFrom
+        }, useSetData)
+      }
     }
   }
   $getFormValue (mod: DictionaryEditMod, { targetData, originData, type, from = 'init' }: payloadType) {
