@@ -1,10 +1,11 @@
 import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
-import PromiseData, { PromiseDataInitData, PromiseOptionType } from '../module/PromiseData'
+import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import UpdateData from '../module/UpdateData'
 import config from '../../config'
+import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
@@ -38,40 +39,6 @@ export interface resetOptionType {
 
 export const parseResetOption = function(resetOption: resetOptionType, prop: string) {
   return getProp(resetOption, prop)
-}
-
-export interface ForceInitOption {
-  data?: boolean
-  ing?: boolean
-  sync?: boolean
-  promise?: PromiseOptionType
-  module?: {
-    [prop: string]: undefined | boolean | Record<string, unknown>
-  }
-}
-
-export class Force {
-  data: undefined | boolean
-  ing?: boolean
-  sync?: boolean
-  promise?: PromiseOptionType
-  module!: {
-    [prop: string]: undefined | boolean | Record<string, unknown>
-  }
-  constructor(initOption?: boolean | ForceInitOption | Force) {
-    if (!initOption || initOption === true) {
-      this.data = initOption
-      this.module = {}
-    } else if (initOption.constructor !== Force) {
-      this.data = initOption.data
-      this.ing = initOption.ing
-      this.sync = initOption.sync
-      this.promise = initOption.promise
-      this.module = initOption.module || {}
-    } else {
-      return initOption
-    }
-  }
 }
 
 class BaseData extends DefaultData {
@@ -323,8 +290,8 @@ class BaseData extends DefaultData {
     }])
     return this._setPromise('load', promise)
   }
-  $loadData(forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
-    const force = new Force(forceInitOption)
+  $loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
+    const force = new ForceValue(forceInitOption)
     const loadStatus = this.$getStatus('load')
     if (['un', 'fail'].indexOf(loadStatus) > -1) {
       this._triggerLoadData(...args)
@@ -348,8 +315,8 @@ class BaseData extends DefaultData {
     }
     return this._triggerPromise('load', force.promise)
   }
-  $reloadData(forceInitOption: boolean | ForceInitOption | Force = true, ...args: unknown[]) {
-    const force = new Force(forceInitOption)
+  $reloadData(forceInitOption: boolean | ForceValueInitOption | ForceValue = true, ...args: unknown[]) {
+    const force = new ForceValue(forceInitOption)
     this.$triggerLife('beforeReload', this, force, ...args)
     // 同步判断值
     const promise = this.$loadData(force, ...args)
@@ -431,8 +398,8 @@ class BaseData extends DefaultData {
     }])
     return this._setPromise('update', promise)
   }
-  $loadUpdateData (forceInitOption?: boolean | ForceInitOption | Force, ...args: unknown[]) {
-    const force = new Force(forceInitOption)
+  $loadUpdateData (forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
+    const force = new ForceValue(forceInitOption)
     const updateStatus = this.$getStatus('update')
     if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
       this._triggerUpdateData(...args)

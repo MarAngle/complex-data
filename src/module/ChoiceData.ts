@@ -1,5 +1,6 @@
 import BaseData from '../data/BaseData'
 import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
+import ForceValue from '../lib/ForceValue'
 import Data from './../data/Data'
 
 type resetOptionValue = {
@@ -10,8 +11,8 @@ type resetOption = {
   [prop: string]: boolean | resetOptionValue
 }
 
-type checkOption = {
-  from: true | string
+export type resetFromOption = {
+  from: string
   act?: string
 }
 
@@ -51,7 +52,6 @@ class ChoiceData extends Data {
     this.$resetOption = {
       load: false,
       reload: false,
-      update: false,
       search: {
         set: true,
         reset: true
@@ -113,62 +113,45 @@ class ChoiceData extends Data {
     this.data.id = idList
     this.data.list = list
   }
-  /**
-   * 根据option, defaultOption自动判断重置与否
-   * @param {object | string} [option] 参数
-   * @param {object | string} [defaultOption] 默认参数
-   */
-  autoReset(option: true | string | checkOption, defaultOption?: string | checkOption) {
-    option = this.$formatresetOption(option, defaultOption)
-    const force = this.$checkReset(option)
+  $resetByFrom(option?: boolean | string | resetFromOption, from = 'load') {
+    let force: undefined | boolean
+    switch (typeof option) {
+      case 'object':
+        force = this._parseFrom(option.from, option.act)
+        break;
+      case 'string':
+        force = this._parseFrom(option)
+        break;
+      case 'boolean':
+        force = option
+        break;
+      // case 'undefined':
+      //   force = this._parseFrom(from)
+      //   break;
+      default:
+        force = this._parseFrom(from)
+        break;
+    }
     this.reset(force)
   }
-  /**
-   * 根据defaultOption格式化option
-   * @param {object | string} [option] 参数
-   * @param {object | string} [defaultOption = 'load'] 默认参数
-   * @returns {object}
-   */
-  $formatresetOption(option: true | string | checkOption, defaultOption: string | checkOption = 'load') {
-    if (!option) {
-      option = defaultOption
-    }
-    if (typeof option !== 'object') {
-      option = {
-        from: option
-      }
-    }
-    return option
-  }
-  /**
-   * 检查是否进行重置
-   * @param {object} [option] 重置参数
-   * @param {boolean | string} [option.from] 当前操作
-   * @param {string} [option.act] 当前操作分支操作
-   * @returns {boolean}
-   */
-  $checkReset(option: checkOption = { from: '' }) {
-    const from = option.from
-    let reset
-    if (from === true) {
-      reset = true
-    } else if (this.$resetOption[from] !== undefined) {
-      if (this.$resetOption[from] && typeof this.$resetOption[from] === 'object') {
-        const act = option.act
+  protected _parseFrom(from: string, act?: string) {
+    const targetOption = this.$resetOption[from]
+    if (targetOption !== undefined) {
+      if (typeof targetOption === 'object') {
         if (!act) {
-          this.$exportMsg(`$checkReset函数中对应的from:${from}未定义act,可定义:${Object.keys(this.$resetOption[from])}`)
-        } else if ((this.$resetOption[from] as resetOptionValue)[act] !== undefined) {
-          reset = (this.$resetOption[from] as resetOptionValue)[act]
+          this.$exportMsg(`$resetByFrom函数中对应的from:${from}未定义act,可定义:${Object.keys(targetOption)}`)
+        } else if (targetOption[act] !== undefined) {
+          return targetOption[act]
         } else {
-          this.$exportMsg(`$checkReset函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(this.$resetOption[from])}`)
+          this.$exportMsg(`$resetByFrom函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(targetOption)}`)
         }
       } else {
-        reset = this.$resetOption[from]
+        return targetOption as boolean
       }
     } else {
-      this.$exportMsg(`$checkReset函数未找到对应的from:${from}`)
+      this.$exportMsg(`$resetByFrom函数未找到对应的from:${from}`)
     }
-    return !!reset
+    return undefined
   }
   /**
    * 重置操作
@@ -179,19 +162,29 @@ class ChoiceData extends Data {
       this.setData([], [])
     }
   }
+  $reset(option?: boolean) {
+    if (option !== false) {
+      this.reset(true)
+    }
+  }
+  $destroy(option?: boolean) {
+    if (option !== false) {
+      this.$reset(option)
+    }
+  }
   /**
    * 模块加载
    * @param {object} target 加载到的目标
    */
   $install (target: BaseData) {
     super.$install(target)
+    if (target.$module.dictionary) {
+      this.idProp = target.$module.dictionary.$getProp('id')
+    }
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
-      data: (instantiater, resetOption) => {
-        if (target.$module.dictionary) {
-          this.idProp = target.$module.dictionary.$getProp('id')
-        }
-        this.autoReset(resetOption.choice)
+      data: (instantiater, force: ForceValue) => {
+        this.$resetByFrom(force.module.choice, 'reload')
       }
     })
   }
@@ -202,16 +195,6 @@ class ChoiceData extends Data {
   $uninstall(target: BaseData) {
     super.$uninstall(target)
     target.$offLife('beforeReload', this.$getId('BeforeReload'))
-  }
-  $reset(option?: boolean) {
-    if (option !== false) {
-      this.reset(true)
-    }
-  }
-  $destroy(option?: boolean) {
-    if (option !== false) {
-      this.$reset(option)
-    }
   }
 }
 

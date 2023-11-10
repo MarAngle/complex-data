@@ -2,6 +2,7 @@ import { getNum } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
 import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
+import ForceValue from '../lib/ForceValue'
 import config from '../../config'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
@@ -158,9 +159,9 @@ class PaginationData extends DefaultData {
    * @param {number} size size参数
    * @param {number} page page参数
    */
-  setPageAndSize(data: { current: number, size: number }, unTriggerCurrentAndSizeLife?: boolean) {
+  setPageAndSize(data: { page: number, size: number }, unTriggerCurrentAndSizeLife?: boolean) {
     this.setSize(data.size, true)
-    this.setPage(data.current)
+    this.setPage(data.page)
     if (!unTriggerCurrentAndSizeLife) {
       this.$triggerLife('change', this, 'currentAndSize', data)
     }
@@ -201,8 +202,8 @@ class PaginationData extends DefaultData {
     super.$install(target)
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
-      data: (instantiater, resetOption) => {
-        let pageResetOption = resetOption.page
+      data: (instantiater, force: ForceValue) => {
+        let pageResetOption = force.module.pagination
         if (pageResetOption) {
           if (pageResetOption === true) {
             pageResetOption = {
@@ -218,7 +219,7 @@ class PaginationData extends DefaultData {
             this.setPage(pageResetOption.data, pageResetOption.untriggerLife)
           } else if (pageResetOption.prop === 'size') {
             this.setSize(pageResetOption.data, pageResetOption.untriggerLife)
-          } else if (pageResetOption.prop === 'currentAndSize') {
+          } else if (pageResetOption.prop === 'pageAndSize') {
             this.setPageAndSize(pageResetOption.data, pageResetOption.untriggerLife)
           }
         }
