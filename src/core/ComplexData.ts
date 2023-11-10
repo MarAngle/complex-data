@@ -131,7 +131,7 @@ class ComplexData extends BaseData {
           data: true,
           ing: true,
           module: {
-            page: true,
+            pagination: true,
             choice: {
               from: 'search',
               act: from

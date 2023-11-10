@@ -6,6 +6,7 @@ import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
 import SearchData, { SearchDataInitOption } from './SearchData'
+import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 
 export interface ModuleDataInitOption {
   depend?: boolean | DependDataInitOption
@@ -13,6 +14,7 @@ export interface ModuleDataInitOption {
   pagination?: boolean | PaginationDataInitOption
   dictionary?: boolean | DictionaryDataInitOption
   search?: boolean | SearchDataInitOption
+  choice?: boolean | ChoiceDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
@@ -24,7 +26,8 @@ const ModuleMap = {
   update: UpdateData,
   pagination: PaginationData,
   dictionary: DictionaryData,
-  search: SearchData
+  search: SearchData,
+  choice: ChoiceData
 }
 
 class ModuleData extends Data {
@@ -34,6 +37,7 @@ class ModuleData extends Data {
   pagination?: PaginationData
   dictionary?: DictionaryData
   search?: SearchData
+  choice?: ChoiceData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.$setParent(parent)
