@@ -1,4 +1,4 @@
-import { getProp, setProp, isExist } from 'complex-utils-next'
+import { getProp, setProp, isExist, exportMsg } from 'complex-utils-next'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import InterfaceValue, { InterfaceValueInitOption } from '../lib/InterfaceValue'
 import DefaultList, { DefaultListInitOption } from './DefaultList'
@@ -11,10 +11,12 @@ import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwi
 import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
 import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
 import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
-import DefaultEditText, { DefaultEditTextInitOption } from './DefaultEditText'
+import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 import DefaultMod, { DefaultModInitOption } from './DefaultMod'
 import DictionaryData from '../module/DictionaryData'
+import DefaultEditArray, { DefaultEditArrayInitOption } from './DefaultEditArray'
+import DefaultEditItem, { DefaultEditItemInitOption } from './DefaultEditItem'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -52,9 +54,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditTextInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption | DefaultEditArrayInitOption | DefaultEditItemInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditText | DefaultEditCustom
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditContent | DefaultEditCustom | DefaultEditArray | DefaultEditItem
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -97,6 +99,49 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
 }
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
+
+export const initMod = function(modName: string, modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue) {
+  if (modInitOption instanceof DefaultMod) {
+    return modInitOption
+  }
+  const $format = modInitOption.$format || modName
+  if ($format === 'list') {
+    return new DefaultList(modInitOption as DefaultListInitOption)
+  } else if ($format === 'info') {
+    return new DefaultInfo(modInitOption as DefaultInfoInitOption)
+  } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
+    const editModInitOption = modInitOption as DictionaryEditModInitOption
+    if (!editModInitOption.type || editModInitOption.type === 'input') {
+      return new DefaultEditInput(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'inputNumber') {
+      return new DefaultEditInputNumber(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'textArea') {
+      return new DefaultEditTextArea(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'select') {
+      return new DefaultEditSelect(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'switch') {
+      return new DefaultEditSwitch(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'cascader') {
+      return new DefaultEditCascader(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'file') {
+      return new DefaultEditFile(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'button') {
+      return new DefaultEditButton(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'content') {
+      return new DefaultEditContent(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
+      return new DefaultEditCustom(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'array') {
+      return new DefaultEditArray(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'item') {
+      return new DefaultEditItem(editModInitOption, modName, parent)
+    } else {
+      exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
+    }
+  } else {
+    exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
+  }
+}
 
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
@@ -149,48 +194,10 @@ class DictionaryValue extends DefaultData implements functions {
     for (const modName in mod) {
       const modInitOption = mod[modName]
       if (modInitOption) {
-        this.$mod[modName] = this._buildMod(modName, modInitOption)
+        this.$mod[modName] = initMod(modName, modInitOption)
       }
     }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)
-  }
-  protected _buildMod(modName: string, modInitOption: DictionaryModInitOption | DefaultMod) {
-    if (modInitOption instanceof DefaultMod) {
-      return modInitOption
-    }
-    const $format = modInitOption.$format || modName
-    if ($format === 'list') {
-      return new DefaultList(modInitOption as DefaultListInitOption)
-    } else if ($format === 'info') {
-      return new DefaultInfo(modInitOption as DefaultInfoInitOption)
-    } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
-      const editModInitOption = modInitOption as DictionaryEditModInitOption
-      if (!editModInitOption.type || editModInitOption.type === 'input') {
-        return new DefaultEditInput(editModInitOption)
-      } else if (editModInitOption.type === 'inputNumber') {
-        return new DefaultEditInputNumber(editModInitOption)
-      } else if (editModInitOption.type === 'textArea') {
-        return new DefaultEditTextArea(editModInitOption)
-      } else if (editModInitOption.type === 'select') {
-        return new DefaultEditSelect(editModInitOption)
-      } else if (editModInitOption.type === 'switch') {
-        return new DefaultEditSwitch(editModInitOption)
-      } else if (editModInitOption.type === 'cascader') {
-        return new DefaultEditCascader(editModInitOption)
-      } else if (editModInitOption.type === 'file') {
-        return new DefaultEditFile(editModInitOption)
-      } else if (editModInitOption.type === 'button') {
-        return new DefaultEditButton(editModInitOption)
-      } else if (editModInitOption.type === 'text') {
-        return new DefaultEditText(editModInitOption)
-      } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
-        return new DefaultEditCustom(editModInitOption)
-      } else {
-        this.$exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
-      }
-    } else {
-      this.$exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
-    }
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]

@@ -26,7 +26,7 @@ class DefaultEditButton extends DefaultEdit{
   click?: DefaultEditButtonClickType
   constructor(initOption: DefaultEditButtonInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'button'
+    this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditButton).$defaultOption
     this.$option = {

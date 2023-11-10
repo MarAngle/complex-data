@@ -31,7 +31,7 @@ class DefaultEditSelect extends DefaultEdit{
   $option: DefaultEditSelectOption
   constructor(initOption: DefaultEditSelectInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'select'
+    this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditSelect).$defaultOption
     this.$option = {

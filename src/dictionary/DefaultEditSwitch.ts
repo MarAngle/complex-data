@@ -10,7 +10,7 @@ class DefaultEditSwitch extends DefaultEdit{
   type: 'switch'
   constructor(initOption: DefaultEditSwitchInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'switch'
+    this.type = initOption.type
   }
 }
 

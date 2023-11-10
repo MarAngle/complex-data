@@ -23,7 +23,7 @@ class DefaultEditInput extends DefaultEdit{
   $option: DefaultEditInputOption
   constructor(initOption: DefaultEditInputInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'input'
+    this.type = initOption.type || 'input'
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditInput).$defaultOption
     this.$option = {

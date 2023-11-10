@@ -19,7 +19,7 @@ class DefaultEditInputNumber extends DefaultEdit{
   $option: DefaultEditInputNumberOption
   constructor(initOption: DefaultEditInputNumberInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'inputNumber'
+    this.type = initOption.type
     const option = initOption.option || {}
     this.$option = {
       max: option.max === undefined ? Infinity : option.max,

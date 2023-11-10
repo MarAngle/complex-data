@@ -32,7 +32,7 @@ class DefaultEditCascader extends DefaultEdit{
   $option: DefaultEditCascaderOption
   constructor(initOption: DefaultEditCascaderInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
-    this.type = 'cascader'
+    this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditCascader).$defaultOption
     this.$option = {
