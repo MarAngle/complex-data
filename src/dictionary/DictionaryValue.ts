@@ -17,6 +17,7 @@ import DefaultMod, { DefaultModInitOption } from './DefaultMod'
 import DictionaryData from '../module/DictionaryData'
 import DefaultArray, { DefaultArrayInitOption } from './DefaultArray'
 import DefaultItem, { DefaultItemInitOption } from './DefaultItem'
+import DefaultEdit from './DefaultEdit'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -247,7 +248,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  $getFormValue (mod: DictionaryEditMod, { targetData, originData, type, from = 'init' }: payloadType) {
+  $setFormValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
@@ -257,11 +258,7 @@ class DictionaryValue extends DefaultData implements functions {
         originData
       })
     } else if (mod.getValue) {
-      if (from === 'reset') {
-        targetValue = mod.getValue('reset')
-      } else {
-        targetValue = mod.getValue('init')
-      }
+      targetValue = mod.getValue(from === 'reset' ? 'reset' : 'init')
     }
     // 模块存在edit函数时将当前数据进行edit操作
     if (mod.edit) {
@@ -276,15 +273,21 @@ class DictionaryValue extends DefaultData implements functions {
   }
   $createFormValue (option: payloadType) {
     return new Promise((resolve) => {
-      const mod = this.$getMod(option.type) as DictionaryEditMod
-      const next = (status: string, targetValue: unknown) => {
-        setProp(option.targetData, this.$prop, targetValue, true)
+      const mod = this.$getMod(option.type)
+      const next = (status: string, targetValue: unknown, unSet?: boolean) => {
+        if (!unSet) {
+          setProp(option.targetData, this.$prop, targetValue, true)
+        }
         resolve({ status: status })
       }
       if (mod) {
-        next('success', this.$getFormValue(mod, option))
+        if (mod instanceof DefaultEdit) {
+          next('success', this.$setFormValue(mod, option))
+        } else {
+          next('mod is not edit', undefined, true)
+        }
       } else {
-        next('none', undefined)
+        next('mod is not exist', undefined)
       }
     })
   }
