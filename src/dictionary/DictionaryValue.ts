@@ -15,8 +15,6 @@ import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditC
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 import DefaultMod, { DefaultModInitOption } from './DefaultMod'
 import DictionaryData from '../module/DictionaryData'
-import DefaultArray, { DefaultArrayInitOption } from './DefaultArray'
-import DefaultItem, { DefaultItemInitOption } from './DefaultItem'
 import DefaultEdit from './DefaultEdit'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
@@ -59,9 +57,9 @@ export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEd
 
 export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditContent | DefaultEditCustom
 
-export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption | DefaultArrayInitOption | DefaultItemInitOption
+export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
-export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod | DefaultArray | DefaultItem
+export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod
 
 export type DictionaryModDataInitOption = {
   list?: false | DefaultListInitOption
@@ -132,10 +130,6 @@ export const initMod = function(modName: string, modInitOption: DictionaryModIni
       return new DefaultEditContent(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
       return new DefaultEditCustom(editModInitOption, modName, parent)
-    } else if (editModInitOption.type === 'array') {
-      return new DefaultArray(editModInitOption, modName, parent)
-    } else if (editModInitOption.type === 'item') {
-      return new DefaultItem(editModInitOption, modName, parent)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
