@@ -23,8 +23,13 @@ export interface DefaultModInitOption {
   reactive?: {
     [prop: string]: undefined | reactiveFunction
   }
+  render?: {
+    [prop: string]: undefined | renderType
+  }
   observe?: observeType
 }
+
+export type renderType<ARGS extends unknown[] = unknown[], RES = unknown> = (...args: ARGS) => RES
 
 class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'
@@ -39,6 +44,9 @@ class DefaultMod extends Data implements ArrayMapValueType {
   }
   $reactive?: {
     [prop: string]: undefined | reactiveFunction
+  }
+  $render?: {
+    [prop: string]: undefined | renderType
   }
   $observe?: observeType
   constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
@@ -60,6 +68,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
       }
     }
     this.$reactive = initOption.reactive
+    this.$render = initOption.render
     this.$observe = initOption.observe
   }
 }

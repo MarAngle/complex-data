@@ -28,12 +28,6 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
   message?: InterfaceValueInitOption<string>
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
   post?: false | functionType<unknown> // 编辑=>来源 格式化
-  slot?: {
-    type?: string
-    name?: string
-    label?: string
-    render?: (...args: unknown[]) => unknown
-  }
 }
 
 class DefaultEdit extends DefaultMod {
@@ -71,12 +65,6 @@ class DefaultEdit extends DefaultMod {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
-  $slot!: {
-    type: 'auto' | 'main' | 'item' | 'model'
-    name: string
-    label: string
-    render?: (...args: unknown[]) => unknown
-  }
   constructor(initOption: DefaultEditInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.$setParent(parent)
@@ -127,18 +115,6 @@ class DefaultEdit extends DefaultMod {
       init: initValue,
       reset: resetValue
     }
-    const slot = initOption.slot || {}
-    if (!slot.type) { // slot类型 auto/main/item/model
-      slot.type = 'auto'
-    }
-    if (!slot.name) { // name=>插槽默认名
-      slot.name = this.$prop
-    }
-    if (!slot.label) { // label=>title
-      slot.label = slot.name + '-label'
-    }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.$slot = slot as any
     // rule
     if (initOption.rules) {
       this.$rules = new InterfaceValue(initOption.rules)
