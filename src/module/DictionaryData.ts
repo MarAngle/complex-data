@@ -142,19 +142,35 @@ class DictionaryData extends DefaultData {
   $getPageItem(modName: string, ditem: DictionaryValue) {
     return ditem.$getMod(modName)!
   }
+  $getList(modName: string) {
+    const list: DictionaryValue[] = []
+    for (const ditem of this.$data.values()) {
+      const mod = ditem.$getMod(modName)
+      if (mod) {
+        list.push(ditem)
+      }
+    }
+    return list
+  }
   // 获取模块列表
-  $buildPageList(modName: string, list: DictionaryValue[]) {
+  $getPageList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+    if (!dictionaryValueList) {
+      dictionaryValueList = this.$getList(modName)
+    }
     const pageList: DictionaryMod[] = []
-    for (let n = 0; n < list.length; n++) {
-      pageList.push(this.$getPageItem(modName, list[n]))
+    for (let n = 0; n < dictionaryValueList.length; n++) {
+      pageList.push(this.$getPageItem(modName, dictionaryValueList[n]))
     }
     return pageList
   }
   // 获取响应式模块列表
-  $buildObserveList(modName: string, list: DictionaryValue[]) {
+  $buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+    if (!dictionaryValueList) {
+      dictionaryValueList = this.$getList(modName)
+    }
     const observeList = new ObserveList()
-    for (let n = 0; n < list.length; n++) {
-      observeList.push(this.$getPageItem(modName, list[n]))
+    for (let n = 0; n < dictionaryValueList.length; n++) {
+      observeList.push(this.$getPageItem(modName, dictionaryValueList[n]))
     }
     return observeList
   }
@@ -215,6 +231,7 @@ class DictionaryData extends DefaultData {
     return postData
   }
 
+  // SearchData重写加载/卸载
   $install(target: BaseData) {
     super.$install(target)
     // 监听事件

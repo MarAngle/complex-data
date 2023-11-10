@@ -5,12 +5,14 @@ import DependData, { DependDataInitOption } from './DependData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
+import SearchData, { SearchDataInitOption } from '../data/SearchData'
 
 export interface ModuleDataInitOption {
   depend?: boolean | DependDataInitOption
   update?: boolean | UpdateDataInitOption
   pagination?: boolean | PaginationDataInitOption
   dictionary?: boolean | DictionaryDataInitOption
+  search?: boolean | SearchDataInitOption
 }
 
 export type moduleKeys = keyof ModuleDataInitOption
@@ -21,7 +23,8 @@ const ModuleMap = {
   depend: DependData,
   update: UpdateData,
   pagination: PaginationData,
-  dictionary: DictionaryData
+  dictionary: DictionaryData,
+  search: SearchData
 }
 
 class ModuleData extends Data {
@@ -30,6 +33,7 @@ class ModuleData extends Data {
   update?: UpdateData
   pagination?: PaginationData
   dictionary?: DictionaryData
+  search?: SearchData
   constructor(initOption: undefined | ModuleDataInitOption, parent: BaseData) {
     super()
     this.$setParent(parent)

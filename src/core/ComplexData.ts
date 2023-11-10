@@ -1,4 +1,5 @@
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
+import SearchData, { resetFormOption } from "../data/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 
@@ -95,8 +96,11 @@ class ComplexData extends BaseData {
   $updateDataByDictionary (...args: Parameters<DictionaryData['$updateData']>) {
     return this.$module.dictionary!.$updateData(...args)
   }
-  $buildDictionaryPageList (...args: Parameters<DictionaryData['$buildPageList']>) {
-    return this.$module.dictionary!.$buildPageList(...args)
+  $getDictionaryList (...args: Parameters<DictionaryData['$getList']>) {
+    return this.$module.dictionary!.$getList(...args)
+  }
+  $getDictionaryPageList (...args: Parameters<DictionaryData['$getPageList']>) {
+    return this.$module.dictionary!.$getPageList(...args)
   }
   $buildDictionaryObserveList (...args: Parameters<DictionaryData['$buildObserveList']>) {
     return this.$module.dictionary!.$buildObserveList(...args)
@@ -108,6 +112,55 @@ class ComplexData extends BaseData {
     return this.$module.dictionary!.$createPostData(...args)
   }
   /* --- dictionary end --- */
+  /* --- search start --- */
+  $setSearchForm(...args: Parameters<SearchData['setForm']>) {
+    return this.$module.search!.setForm(...args)
+  }
+  $getSearch(...args: Parameters<SearchData['getData']>) {
+    if (this.$module.search) {
+      return this.$module.search.getData(...args)
+    } else {
+      return {}
+    }
+  }
+  $setSearch(from = 'set') {
+    return new Promise((resolve, reject) => {
+      this.$triggerLife('beforeSearch', this, from)
+      this.$module.search!.$syncFormData().then(() => {
+        this.$reloadData({
+          data: true,
+          ing: true,
+          module: {
+            page: true,
+            choice: {
+              from: 'search',
+              act: from
+            }
+          }
+        })!.then((res => {
+          this.$triggerLife('searched', this, from)
+          resolve(res)
+        })).catch(err => {
+          this.$triggerLife('searchFail', this, from, err)
+          reject(err)
+        })
+      }).catch(err => {
+        this.$triggerLife('searchFail', this, from, err)
+        reject(err)
+      })
+    })
+  }
+  $resetSearch(option?: resetFormOption) {
+    return new Promise((resolve, reject) => {
+      this.$module.search!.$resetFormData('reset', option)
+      this.$setSearch('reset').then(res => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+  /* --- search end --- */
 }
 
 export default ComplexData
