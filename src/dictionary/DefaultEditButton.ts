@@ -1,19 +1,19 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { payloadType } from "./DictionaryValue"
 
+export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
+
 export interface DefaultEditButtonOption {
   type: string
   icon?: string
   name?: string
   loading?: boolean
+  click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }
-
-export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
 export interface DefaultEditButtonInitOption extends DefaultEditInitOption {
   type: 'button'
   option?: Partial<DefaultEditButtonOption>
-  click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }
 
 class DefaultEditButton extends DefaultEdit{
@@ -23,7 +23,6 @@ class DefaultEditButton extends DefaultEdit{
   }
   type: 'button'
   $option: DefaultEditButtonOption
-  click?: DefaultEditButtonClickType
   constructor(initOption: DefaultEditButtonInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.type = initOption.type
@@ -33,9 +32,9 @@ class DefaultEditButton extends DefaultEdit{
       type: option.type || $defaultOption.type,
       icon: option.icon,
       name: option.name,
-      loading: option.loading
+      loading: option.loading,
+      click: option.click
     }
-    this.click = initOption.click
   }
 }
 
