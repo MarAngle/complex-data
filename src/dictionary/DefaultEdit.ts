@@ -1,7 +1,7 @@
 import { hasProp } from "complex-utils-next"
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
-import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 import DictionaryValue, { functionType } from "./DictionaryValue"
+import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
 // 考虑将width转换为layout的接口数据，通过判断值实现main/label/content
 

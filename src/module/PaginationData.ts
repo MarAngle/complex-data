@@ -1,8 +1,8 @@
 import { getNum } from 'complex-utils-next'
-import config from '../../config'
-import BaseData from '../data/BaseData'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
+import BaseData from '../data/BaseData'
 import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
+import config from '../../config'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
   size?: boolean | number | {

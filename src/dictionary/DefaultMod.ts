@@ -1,9 +1,9 @@
 import Data from "../data/Data"
 import DictionaryValue from "./DictionaryValue"
+import { observeType } from "./ObserveList"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 import InterfaceValue from "../lib/InterfaceValue"
-import { observeType } from "./ObserveList"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 
 export type reactiveFunction = (...args: unknown[]) => boolean

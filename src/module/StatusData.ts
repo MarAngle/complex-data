@@ -1,5 +1,5 @@
-import config from '../../config'
 import Data from '../data/Data'
+import config from '../../config'
 
 export type StatusDataValueType = 'un' | 'ing' | 'success' | 'fail'
 export type StatusDataLoadValueType = 'un' | 'ing' | 'success' | 'fail'

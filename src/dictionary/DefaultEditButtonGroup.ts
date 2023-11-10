@@ -1,7 +1,7 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import { DefaultEditButtonOption } from "./DefaultEditButton"
-import { renderType } from "./DefaultMod"
 import DictionaryValue, { payloadType } from "./DictionaryValue"
+import { renderType } from "./DefaultMod"
 
 export interface DefaultEditButtonGroupOption extends DefaultEditButtonOption {
   disabled?: boolean

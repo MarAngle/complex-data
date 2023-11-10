@@ -5,7 +5,7 @@ import DependData, { DependDataInitOption } from './DependData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
-import SearchData, { SearchDataInitOption } from '../data/SearchData'
+import SearchData, { SearchDataInitOption } from './SearchData'
 
 export interface ModuleDataInitOption {
   depend?: boolean | DependDataInitOption

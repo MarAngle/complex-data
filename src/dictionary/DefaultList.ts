@@ -1,6 +1,6 @@
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
-import config from "../../config"
 import DictionaryValue from "./DictionaryValue"
+import config from "../../config"
 
 export interface DefaultListInitOption extends DefaultModInitOption {
   align?: 'center' | 'left' | 'right'

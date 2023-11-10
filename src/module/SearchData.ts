@@ -1,9 +1,9 @@
-import DictionaryData, { DictionaryDataInitOption, createFormOption } from "../module/DictionaryData"
+import DictionaryData, { DictionaryDataInitOption, createFormOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryValueInitOption } from "../dictionary/DictionaryValue"
+import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
-import BaseData from "./BaseData"
-import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
+import BaseData from "./../data/BaseData"
 
 export interface resetFormOption {
   copy?: boolean

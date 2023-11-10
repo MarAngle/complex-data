@@ -1,5 +1,5 @@
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
-import SearchData, { resetFormOption } from "../data/SearchData"
+import SearchData, { resetFormOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 

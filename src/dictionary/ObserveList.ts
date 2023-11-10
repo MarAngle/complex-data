@@ -1,6 +1,6 @@
 import { Watcher, observe } from "complex-utils-next"
-import DefaultEdit from "./DefaultEdit"
 import ArrayMap from "../lib/ArrayMap"
+import DefaultEdit from "./DefaultEdit"
 import DefaultMod from "./DefaultMod"
 
 export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from?: string) => unknown

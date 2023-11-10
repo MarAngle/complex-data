@@ -1,8 +1,7 @@
-
 import { isPromise } from 'complex-utils-next'
-import config from '../../config'
-import BaseData from '../data/BaseData'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
+import BaseData from '../data/BaseData'
+import config from '../../config'
 
 export type triggerType = (next: UpdateData["next"], index: number) => void
 
