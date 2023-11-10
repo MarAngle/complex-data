@@ -11,6 +11,7 @@ import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwi
 import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
 import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
 import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
+import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from './DefaultEditButtonGroup'
 import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
 import DefaultMod, { DefaultModInitOption } from './DefaultMod'
@@ -53,9 +54,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditContent | DefaultEditCustom
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -126,6 +127,8 @@ export const initMod = function(modName: string, modInitOption: DictionaryModIni
       return new DefaultEditFile(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'button') {
       return new DefaultEditButton(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'buttonGroup') {
+      return new DefaultEditButtonGroup(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'content') {
       return new DefaultEditContent(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {

@@ -1,9 +1,9 @@
 import DictionaryData, { DictionaryDataInitOption, createFormOption } from "../module/DictionaryData"
-import { DefaultEditButtonInitOption, DefaultEditButtonOption } from "../dictionary/DefaultEditButton"
-import DictionaryValue from "../dictionary/DictionaryValue"
+import DictionaryValue, { DictionaryValueInitOption } from "../dictionary/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
 import BaseData from "./BaseData"
+import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
 
 export interface resetFormOption {
   copy?: boolean
@@ -11,16 +11,11 @@ export interface resetFormOption {
   limit?: createFormOption['limit']
 }
 
-export interface searchMenuType extends DefaultEditButtonOption {
-  prop: string
-  name: string
-  click?: DefaultEditButtonInitOption['click']
-  reactive?: DefaultEditButtonInitOption['reactive']
-}
-
 export interface SearchDataInitOption extends DictionaryDataInitOption {
   prop?: string
-  menu?: searchMenuType[]
+  menu?: {
+    list?: Partial<DefaultEditButtonGroupOption>[]
+  }
   formOption?: resetFormOption
 }
 
@@ -44,30 +39,22 @@ class SearchData extends DictionaryData {
       if (!initOption.list) {
         initOption.list = []
       }
-      for (let i = 0; i < menu.length; i++) {
-        const menuInitOption = menu[i]
-        initOption.list.push({
-          prop: menuInitOption.prop,
-          name: menuInitOption.name,
-          simple: {
-            edit: true
-          },
-          mod: {
-            [prop]: {
-              $format: 'edit',
-              type: 'button',
-              option: {
-                type: menuInitOption.type,
-                icon: menuInitOption.icon,
-                name: menuInitOption.name,
-                loading: menuInitOption.loading
-              },
-              click: menuInitOption.click,
-              reactive: menuInitOption.reactive
-            }
+      const menuList = menu.list || []
+      const buttonGroupInitOption = {
+        prop: '$searchButtonGroup',
+        name: '$searchButtonGroup',
+        simple: {
+          edit: true
+        },
+        mod: {
+          [prop]: {
+            $format: 'edit',
+            type: 'buttonGroup',
+            list: menuList
           }
-        })
-      }
+        }
+      } as DictionaryValueInitOption
+      initOption.list.push(buttonGroupInitOption)
     }
     super(initOption)
     this._triggerCreateLife('SearchData', 'beforeCreate', initOption)
