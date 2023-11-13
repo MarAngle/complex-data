@@ -63,15 +63,16 @@ class ChoiceData extends Data {
     }
     if (initOption.reset) {
       for (const n in initOption.reset) {
-        if (typeof initOption.reset[n] === 'object') {
+        const resetInitValue = initOption.reset[n]
+        if (typeof resetInitValue === 'object') {
           if (typeof this.$resetOption[n] !== 'object') {
             this.$resetOption[n] = {}
           }
-          for (const i in (initOption.reset[n] as resetOptionValue)) {
-            (this.$resetOption[n] as resetOptionValue)[i] = (initOption.reset[n] as resetOptionValue)[i]
+          for (const i in resetInitValue) {
+            (this.$resetOption[n] as resetOptionValue)[i] = resetInitValue[i]
           }
         } else {
-          this.$resetOption[n] = initOption.reset[n]
+          this.$resetOption[n] = resetInitValue
         }
       }
     }

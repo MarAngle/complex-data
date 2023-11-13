@@ -167,13 +167,6 @@ class PaginationData extends DefaultData {
     }
   }
   /**
-   * 重置
-   */
-  reset() {
-    this.setCount(0, true)
-    this.setPage(1)
-  }
-  /**
    * 根据分页器从list中获取对应的数组
    * @param {*[]} list 需要解析的数组
    * @param {boolean} [unOrigin] 是否是当前分页器的数据源，为真则不是，此时不对分页器数据做修正
@@ -252,7 +245,8 @@ class PaginationData extends DefaultData {
   }
   $reset(option?: boolean) {
     if (option !== false) {
-      this.reset()
+      this.setCount(0, true)
+      this.setPage(1)
     }
   }
   $destroy(option?: boolean) {

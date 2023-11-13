@@ -1,4 +1,5 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import PaginationData, { PaginationDataInitOption } from "../module/PaginationData"
+import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "./DictionaryValue"
 
 export interface DefaultEditSelectOption {
@@ -12,12 +13,13 @@ export interface DefaultEditSelectOption {
   emptyOptionContent?: string
 }
 
-export interface DefaultEditSelectInitOption extends DefaultEditInitOption {
+export interface DefaultEditSelectInitOption extends DefaultLoadEditInitOption {
   type: 'select'
   option?: Partial<DefaultEditSelectOption>
+  pagination?: PaginationDataInitOption
 }
 
-class DefaultEditSelect extends DefaultEdit{
+class DefaultEditSelect extends DefaultLoadEdit{
   static $name = 'DefaultEditSelect'
   static $defaultOption = {
     optionValue: 'value',
@@ -29,6 +31,7 @@ class DefaultEditSelect extends DefaultEdit{
   }
   type: 'select'
   $option: DefaultEditSelectOption
+  $pagination?: PaginationData
   constructor(initOption: DefaultEditSelectInitOption, modName?: string, parent?: DictionaryValue) {
     super(initOption, modName, parent)
     this.type = initOption.type
@@ -43,6 +46,15 @@ class DefaultEditSelect extends DefaultEdit{
       hideClear: option.hideClear || $defaultOption.hideClear,
       autoWidth: option.autoWidth || $defaultOption.autoWidth, // 宽度自适应
       emptyOptionContent: option.emptyOptionContent, // 无数据时文字显示 == 默认不传使用默认模板
+    }
+    if (initOption.pagination) {
+      this.$pagination = new PaginationData(initOption.pagination)
+    }
+  }
+  protected _clearData() {
+    this.$option.list = []
+    if (this.$pagination) {
+      this.$pagination.$reset(true)
     }
   }
 }
