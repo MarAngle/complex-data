@@ -11,8 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "complex-utils-next": "2.0.4 - 2.0.99",
-    "dayjs": "^1.11.9"
+    "complex-utils": "2.0.4 - 2.0.99"
   },
   "devDependencies": {
     "typescript": "^5.2.2"
