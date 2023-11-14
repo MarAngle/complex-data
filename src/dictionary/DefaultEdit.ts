@@ -1,4 +1,4 @@
-import { hasProp } from "complex-utils-next"
+import { hasProp } from "complex-utils"
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue, { functionType } from "./DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"

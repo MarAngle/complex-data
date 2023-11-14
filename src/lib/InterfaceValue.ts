@@ -1,4 +1,4 @@
-import { getType, setProp } from 'complex-utils-next'
+import { getType, setProp } from 'complex-utils'
 import Data from '../data/Data'
 
 export type InterfaceValueType<D> = undefined | D

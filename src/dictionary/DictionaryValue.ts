@@ -1,4 +1,4 @@
-import { getProp, setProp, isExist, exportMsg } from 'complex-utils-next'
+import { getProp, setProp, isExist, exportMsg } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import InterfaceValue, { InterfaceValueInitOption } from '../lib/InterfaceValue'
 import DictionaryData from '../module/DictionaryData'

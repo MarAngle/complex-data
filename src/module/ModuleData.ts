@@ -1,4 +1,4 @@
-import { getType } from 'complex-utils-next'
+import { getType } from 'complex-utils'
 import Data from '../data/Data'
 import BaseData, { resetOptionType } from '../data/BaseData'
 import DependData, { DependDataInitOption } from './DependData'

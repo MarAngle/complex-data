@@ -1,4 +1,4 @@
-import { getNum } from 'complex-utils-next'
+import { getNum } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
 import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'

@@ -1,4 +1,4 @@
-import { getType } from 'complex-utils-next'
+import { getType } from 'complex-utils'
 import Data from './Data'
 
 export interface SimpleDataInitOption {

@@ -1,4 +1,4 @@
-import { Watcher, observe } from "complex-utils-next"
+import { Watcher, observe } from "complex-utils"
 import ArrayMap from "../lib/ArrayMap"
 import DefaultEdit from "./DefaultEdit"
 import DefaultMod from "./DefaultMod"

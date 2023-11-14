@@ -1,4 +1,4 @@
-import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils-next'
+import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'

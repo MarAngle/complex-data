@@ -1,4 +1,4 @@
-import { isPromise } from 'complex-utils-next'
+import { isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
 import config from '../../config'

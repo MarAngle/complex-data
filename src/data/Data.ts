@@ -1,4 +1,4 @@
-import { Data as UtilsData } from 'complex-utils-next'
+import { Data as UtilsData } from 'complex-utils'
 import BaseData from './BaseData'
 
 let id = 0

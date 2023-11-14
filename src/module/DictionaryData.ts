@@ -1,5 +1,5 @@
-import { Limit, trimData } from "complex-utils-next"
-import { LimitInitOption } from "complex-utils-next/src/class/Limit"
+import { Limit, trimData } from "complex-utils"
+import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../dictionary/DictionaryValue"

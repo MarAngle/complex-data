@@ -1,5 +1,5 @@
-import { Life, upperCaseFirstChar } from 'complex-utils-next'
-import { LifeInitOption } from 'complex-utils-next/src/class/Life'
+import { Life, upperCaseFirstChar } from 'complex-utils'
+import { LifeInitOption } from 'complex-utils/src/class/Life'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
