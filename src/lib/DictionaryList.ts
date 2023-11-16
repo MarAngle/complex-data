@@ -159,6 +159,7 @@ class DictionaryList extends DefaultData implements HasLayoutData {
         this.$initDictionaryDataChildren(ditem!, ditemOption)
       }
     }
+    this.$triggerLife('updated', this, initOptionList, type)
     if (!unTriggerSync) {
       this.$syncData(true, '$initDictionaryList')
     }

@@ -251,7 +251,7 @@ class DictionaryData extends DefaultData implements customerFunction, HasLayoutD
   $formatDataBySimple(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, option: formatDataOption) {
     const originProp = this.$getInterface('originProp', originFrom)!
     // 快捷模式快速判断
-    if (!option.format || this.prop !== originProp) {
+    if (!this.format || this.prop !== originProp) {
       setProp(targetData, this.prop, getProp(originData, originProp), true)
     }
     // 非新建模式下，prop不更名则不进行任何操作
