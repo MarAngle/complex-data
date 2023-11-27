@@ -34,7 +34,7 @@ export interface BaseDataInitOption extends DefaultDataInitOption {
 }
 
 export interface resetOptionType {
-  [prop: string]: undefined | boolean | Record<string, unknown>
+  [prop: string | symbol]: undefined | boolean | Record<string | symbol, unknown>
 }
 
 export const parseResetOption = function(resetOption: resetOptionType, prop: string) {

@@ -11,7 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "complex-utils": "2.0.4 - 2.0.99"
+    "complex-utils": "2.0.5 - 2.0.99"
   },
   "devDependencies": {
     "typescript": "^5.2.2"
@@ -22,9 +22,5 @@
     "structure"
   ],
   "author": "MarAngle",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/MarAngle/complex-data-structure/issues"
-  },
-  "homepage": "https://github.com/MarAngle/complex-data-structure#readme"
+  "license": "ISC"
 }

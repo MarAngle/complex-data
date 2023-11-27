@@ -8,6 +8,7 @@ export interface DefaultEditButtonOption {
   icon?: string
   name?: string
   loading?: boolean
+  uploader?: boolean
   click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }
 
@@ -33,6 +34,7 @@ class DefaultEditButton extends DefaultEdit{
       icon: option.icon,
       name: option.name,
       loading: option.loading,
+      uploader: option.uploader,
       click: option.click
     }
   }
