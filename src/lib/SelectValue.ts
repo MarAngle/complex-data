@@ -2,14 +2,18 @@ import Data from "../data/Data"
 
 export type filterType = string | number
 
-export interface SelectValueType<V = unknown> {
-  label: string
-  value: V
-  $filter?: filterType[]
+export interface SelectValueType {
   [prop: PropertyKey]: unknown
 }
 
-export interface SelectValueInitOption<D extends SelectValueType = SelectValueType> {
+export interface DefaultSelectValueType<V = unknown> extends SelectValueType {
+  label: string
+  value: V
+  disabled?: boolean
+  filter?: filterType[]
+}
+
+export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
   list?: D[]
   dict: {
     value?: string
@@ -24,12 +28,12 @@ export interface SelectValueInitOption<D extends SelectValueType = SelectValueTy
   miss?: Record<PropertyKey, unknown>
 }
 
-class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
+class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Data {
   static $name = 'SelectValue'
   static dictValue = 'value'
   static dictLabel = 'label'
   static dictDisabled = 'disabled'
-  static dictFilter = 'filter'
+  static dictFilter = '$filter'
   list: D[]
   $dict: {
     value: string
@@ -72,7 +76,7 @@ class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
         })
       } else {
         this.list.forEach(item => {
-          if (item.$filter && item.$filter.indexOf(filter) > -1) {
+          if (item[this.$dict.filter] && (item[this.$dict.filter] as filterType[]).indexOf(filter) > -1) {
             list.push(item)
           }
         })

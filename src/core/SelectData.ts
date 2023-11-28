@@ -1,19 +1,19 @@
 import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
-import SelectValue, { SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
+import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
 import { StatusItem } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
 
-export type getDataType<D extends SelectValueType = SelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
+export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface SelectDataInitOption<D extends SelectValueType = SelectValueType> extends SelectValueInitOption<D> {
+export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectValueType> extends SelectValueInitOption<D> {
   reload?: boolean
   life?: LifeInitOption
   pagination?: PaginationDataInitOption
   getData: getDataType<D>
 }
 
-class SelectData<D extends SelectValueType = SelectValueType> extends SelectValue implements DataWithLife {
+class SelectData<D extends SelectValueType = DefaultSelectValueType> extends SelectValue<D> implements DataWithLife {
   $load: StatusItem
   $reload: boolean
   $life: Life
