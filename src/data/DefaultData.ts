@@ -1,5 +1,5 @@
 import { Life, upperCaseFirstChar } from 'complex-utils'
-import { LifeInitOption } from 'complex-utils/src/class/Life'
+import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
@@ -7,7 +7,7 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
   life?: LifeInitOption
 }
 
-class DefaultData extends SimpleData {
+class DefaultData extends SimpleData implements DataWithLife {
   static $name = 'DefaultData'
   $prop: string
   $life: Life

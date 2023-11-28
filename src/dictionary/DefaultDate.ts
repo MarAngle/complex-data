@@ -36,7 +36,7 @@ class DefaultEditDate extends DefaultEdit{
     },
     disabledDate (option: disabledDateConfig) {
       return function(value: unknown) {
-        //
+        return false
       }
     }
   }
