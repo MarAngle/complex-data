@@ -59,7 +59,7 @@ export class StatusItem extends Data {
    * @param {string} value 指定的属性值
    * @param {'reset'} [act] 操作判断值
    */
-  setData (value: StatusDataValueType, act?: 'reset') {
+  setCurrent (value: StatusDataValueType, act?: 'reset') {
     if (this.list.indexOf(value) > -1) {
       let build = true
       if (!act) {
@@ -69,7 +69,7 @@ export class StatusItem extends Data {
       }
       if (build && this.current !== value) {
         this.current = value
-        this.$syncData(true, 'setData')
+        this.$syncData(true, 'setCurrent')
       }
     } else {
       this.$exportMsg(`当前加载判断值${value}不存在`)
@@ -96,7 +96,7 @@ export class StatusItem extends Data {
         return false
       }
     }
-    this.setData(triggerDict.to)
+    this.setCurrent(triggerDict.to)
     if (triggerCallBack) {
       triggerCallBack(target, ...args)
     }
@@ -143,7 +143,7 @@ export class StatusItem extends Data {
    * 重置
    */
   reset () {
-    this.setData(this.default, 'reset')
+    this.setCurrent(this.default, 'reset')
   }
 }
 
@@ -195,7 +195,7 @@ class StatusData extends Data {
     return this.data[target].getCurrent()
   }
   setData(data: StatusDataValueType, target = 'operate', act?: 'reset') {
-    this.data[target].setData(data, act)
+    this.data[target].setCurrent(data, act)
   }
   /**
    * 重置
