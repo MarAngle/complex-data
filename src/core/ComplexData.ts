@@ -1,17 +1,83 @@
 import BaseData, { BaseDataInitOption } from "../data/BaseData"
+import ModuleData, { ModuleDataInitOption } from "../module/ModuleData"
 import SearchData, { resetFormOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
+import UpdateData from "../module/UpdateData"
+import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 
-export type ComplexDataInitOption = BaseDataInitOption
+export interface ComplexDataInitOption extends BaseDataInitOption {
+  module: ModuleDataInitOption
+}
 
 class ComplexData extends BaseData {
   static $name = 'ComplexData'
+  $module!: ModuleData
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', 'beforeCreate', initOption)
     this._triggerCreateLife('ComplexData', 'created', initOption)
   }
+  /* --- update start --- */
+  $startUpdate(...args: Parameters<UpdateData['start']>) {
+    return this.$module.update!.start(...args)
+  }
+  $updateImmerdiate(...args: Parameters<UpdateData['immerdiate']>) {
+    return this.$module.update!.immerdiate(...args)
+  }
+  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
+    return this.$module.update!.clear(...args)
+  }
+  $resetUpdate(...args: Parameters<UpdateData['$reset']>) {
+    return this.$module.update!.$reset(...args)
+  }
+  $destroyUpdate(...args: Parameters<UpdateData['$destroy']>) {
+    return this.$module.update!.$destroy(...args)
+  }
+  protected _triggerUpdateData (...args: unknown[]) {
+    if (this.$active.auto) {
+      // 自动激活模式下主动触发激活操作
+      this.$changeActive('actived', 'updateData')
+    }
+    const promise = this.$triggerMethodByOperate(['$updateData', args, 'update', false, (target, res) => {
+      if (target === 'start') {
+        this.$triggerLife('beforeUpdate', this, ...args)
+      } else if (target === 'success') {
+        this.$triggerLife('updated', this, {
+          res: res,
+          args: args
+        })
+      } else {
+        this.$triggerLife('updateFail', this, {
+          res: res,
+          args: args
+        })
+      }
+    }])
+    return this._setPromise('update', promise)
+  }
+  $loadUpdateData (forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
+    const force = new ForceValue(forceInitOption)
+    const updateStatus = this.$getStatus('update')
+    if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
+      this._triggerUpdateData(...args)
+    } else { // ing
+      // 直接then'
+      if (force.data && force.ing) {
+        this._triggerUpdateData(...args)
+      }
+    }
+    const emptyMsg = this.$createMsg(`promise模块无update数据(update状态:${updateStatus})`)
+    if (!force.promise) {
+      force.promise = {
+        emptyMsg: emptyMsg
+      }
+    } else if (force.promise.emptyMsg === undefined) {
+      force.promise.emptyMsg = emptyMsg
+    }
+    return this._triggerPromise('update', force.promise)
+  }
+  /* --- update end --- */
   /* --- pagination start --- */
   $setPageCount(...args: Parameters<PaginationData['setCount']>) {
     if (this.$module.pagination) {

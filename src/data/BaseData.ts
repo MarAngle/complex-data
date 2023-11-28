@@ -3,9 +3,8 @@ import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
-import UpdateData from '../module/UpdateData'
-import config from '../../config'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
+import config from '../../config'
 
 export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
 export interface BaseDataBindOption {
@@ -45,7 +44,7 @@ class BaseData extends DefaultData {
   static $name = 'BaseData'
   $status: StatusData
   $promise: PromiseData
-  $module: ModuleData
+  $module?: ModuleData
   $active: BaseDataActiveType
   $getData?: loadFunctionType
   constructor(initOption: BaseDataInitOption) {
@@ -53,7 +52,9 @@ class BaseData extends DefaultData {
     this._triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
-    this.$module = new ModuleData(initOption.module, this)
+    if (initOption.module) {
+      this.$module = new ModuleData(initOption.module, this)
+    }
     if (initOption.getData) {
       this.$getData = initOption.getData
     }
@@ -360,67 +361,6 @@ class BaseData extends DefaultData {
   }
   /* --- load end --- */
 
-  /* --- update start --- */
-  $startUpdate(...args: Parameters<UpdateData['start']>) {
-    return this.$module.update!.start(...args)
-  }
-  $updateImmerdiate(...args: Parameters<UpdateData['immerdiate']>) {
-    return this.$module.update!.immerdiate(...args)
-  }
-  $clearUpdate(...args: Parameters<UpdateData['clear']>) {
-    return this.$module.update!.clear(...args)
-  }
-  $resetUpdate(...args: Parameters<UpdateData['$reset']>) {
-    return this.$module.update!.$reset(...args)
-  }
-  $destroyUpdate(...args: Parameters<UpdateData['$destroy']>) {
-    return this.$module.update!.$destroy(...args)
-  }
-  protected _triggerUpdateData (...args: unknown[]) {
-    if (this.$active.auto) {
-      // 自动激活模式下主动触发激活操作
-      this.$changeActive('actived', 'updateData')
-    }
-    const promise = this.$triggerMethodByOperate(['$updateData', args, 'update', false, (target, res) => {
-      if (target === 'start') {
-        this.$triggerLife('beforeUpdate', this, ...args)
-      } else if (target === 'success') {
-        this.$triggerLife('updated', this, {
-          res: res,
-          args: args
-        })
-      } else {
-        this.$triggerLife('updateFail', this, {
-          res: res,
-          args: args
-        })
-      }
-    }])
-    return this._setPromise('update', promise)
-  }
-  $loadUpdateData (forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
-    const force = new ForceValue(forceInitOption)
-    const updateStatus = this.$getStatus('update')
-    if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
-      this._triggerUpdateData(...args)
-    } else { // ing
-      // 直接then'
-      if (force.data && force.ing) {
-        this._triggerUpdateData(...args)
-      }
-    }
-    const emptyMsg = this.$createMsg(`promise模块无update数据(update状态:${updateStatus})`)
-    if (!force.promise) {
-      force.promise = {
-        emptyMsg: emptyMsg
-      }
-    } else if (force.promise.emptyMsg === undefined) {
-      force.promise.emptyMsg = emptyMsg
-    }
-    return this._triggerPromise('update', force.promise)
-  }
-  /* --- update end --- */
-
   /* --- reset start --- */
   /**
    * 重置回调操作=>不清除额外数据以及生命周期函数
@@ -440,7 +380,9 @@ class BaseData extends DefaultData {
     if (parseResetOption(resetOption, 'extra') === true) {
       this.$clearExtra()
     }
-    this.$module.$reset(resetOption, ...args)
+    if (this.$module) {
+      this.$module.$reset(resetOption, ...args)
+    }
     this.$triggerLife('reseted', this, resetOption, ...args)
   }
   /**
@@ -463,7 +405,9 @@ class BaseData extends DefaultData {
     // if (parseResetOption(destroyOption, 'extra') === true) {
     //   this.$clearExtra()
     // }
-    this.$module.$destroy(destroyOption, ...args)
+    if (this.$module) {
+      this.$module.$destroy(destroyOption, ...args)
+    }
     this.$triggerLife('destroyed', this, destroyOption, ...args)
   }
   /* --- reset end --- */
