@@ -1,6 +1,6 @@
 import Data from "../data/Data"
 
-type filterType = string | number
+export type filterType = string | number
 
 export interface SelectValueType<V = unknown> {
   label: string
@@ -16,6 +16,7 @@ export interface SelectValueInitOption<D extends SelectValueType = SelectValueTy
 }
 
 class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
+  static $name = 'SelectValue'
   list: D[]
   equal?: boolean
   miss: Record<PropertyKey, unknown>
