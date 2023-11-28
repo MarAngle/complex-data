@@ -11,19 +11,49 @@ export interface SelectValueType<V = unknown> {
 
 export interface SelectValueInitOption<D extends SelectValueType = SelectValueType> {
   list?: D[]
-  equal?: boolean
+  dict: {
+    value?: string
+    label?: string
+    disabled?: string
+    filter?: string
+  }
+  option?: {
+    cascade?: boolean
+    equal?: boolean
+  }
   miss?: Record<PropertyKey, unknown>
 }
 
 class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
   static $name = 'SelectValue'
+  static dictValue = 'value'
+  static dictLabel = 'label'
+  static dictDisabled = 'disabled'
+  static dictFilter = 'filter'
   list: D[]
-  equal?: boolean
+  $dict: {
+    value: string
+    label: string
+    disabled: string
+    filter: string
+  }
+  $option: {
+    cascade?: boolean
+    equal?: boolean
+  }
   miss: Record<PropertyKey, unknown>
   constructor(initOption: SelectValueInitOption<D>) {
     super()
     this.list = initOption.list || []
-    this.equal = initOption.equal
+    const dict = initOption.dict || {}
+    const $constructor = (this.constructor as typeof SelectValue)
+    this.$dict = {
+      value: dict.value || $constructor.dictValue,
+      label: dict.label || $constructor.dictLabel,
+      disabled: dict.disabled || $constructor.dictDisabled,
+      filter: dict.filter || $constructor.dictFilter
+    }
+    this.$option = initOption.option || {}
     this.miss = initOption.miss || {}
   }
   setList(list: D[]) {
@@ -50,7 +80,10 @@ class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
       return list
     }
   }
-  get(value: unknown, prop: keyof D = 'value') {
+  get(value: unknown, prop?: keyof D) {
+    if (!prop) {
+      prop = this.$dict.value
+    }
     for (let n = 0; n < this.list.length; n++) {
       const item = this.list[n]
       if (this.check(value, item[prop])) {
@@ -60,7 +93,7 @@ class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
     return this.miss
   }
   check(value: unknown, itemValue: unknown) {
-    if (!this.equal) {
+    if (!this.$option.equal) {
       // eslint-disable-next-line eqeqeq
       return value == itemValue
     } else {
