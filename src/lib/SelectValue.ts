@@ -2,6 +2,8 @@ import Data from "../data/Data"
 
 export type filterType = string | number
 
+export type checkItem<D extends SelectValueType> = (item: D) => boolean
+
 export interface SelectValueType {
   [prop: PropertyKey]: unknown
 }
@@ -21,11 +23,43 @@ export interface SelectValueInitOption<D extends SelectValueType = DefaultSelect
     disabled?: string
     filter?: string
   }
+  hidden?: string
+  cascade?: string
   option?: {
-    cascade?: boolean
     equal?: boolean
   }
   miss?: Record<PropertyKey, unknown>
+}
+
+function checkItemHidden<D extends SelectValueType>(item: D, hiddenProp: string) {
+  return !item[hiddenProp]
+}
+
+function getFilter<D extends SelectValueType>(filter: undefined | checkItem<D> | filterType, filterProp: string, hidden: undefined | boolean, hiddenProp: undefined | string) {
+  const filterHidden = hiddenProp && !hidden
+  if (filter) {
+    if (typeof filter !== 'function') {
+      const filterValue = filter
+      filter = function(item: D) {
+        if(item[filterProp] && (item[filterProp] as filterType[]).indexOf(filterValue)) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
+    if (!filterHidden) {
+      return filter
+    } else {
+      return function(item: D) {
+        return checkItemHidden(item, hiddenProp) && (filter as checkItem<D>)(item)
+      }
+    }
+  } else if (filterHidden) {
+    return function(item: D) {
+      return checkItemHidden(item, hiddenProp)
+    }
+  }
 }
 
 class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Data {
@@ -41,11 +75,12 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     disabled: string
     filter: string
   }
+  hidden?: string
+  cascade?: string
   $option: {
-    cascade?: boolean
     equal?: boolean
   }
-  miss: Record<PropertyKey, unknown>
+  miss?: Record<PropertyKey, unknown>
   constructor(initOption: SelectValueInitOption<D>) {
     super()
     this.list = initOption.list || []
@@ -58,43 +93,45 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       filter: dict.filter || $constructor.dictFilter
     }
     this.$option = initOption.option || {}
-    this.miss = initOption.miss || {}
+    this.hidden = initOption.hidden
+    this.cascade = initOption.cascade
+    this.miss = initOption.miss
   }
   setList(list: D[]) {
     this.list = list || []
   }
-  getList(filter?: ((item: D) => boolean) | filterType) {
-    if (!filter) {
-      return this.list
+  getList({ filter, hidden }: { filter?: checkItem<D> | filterType, hidden?: boolean } = {}) {
+    if (!filter && (!this.hidden || hidden)) {
+      return [...this.list]
     } else {
+      const mainFilter = getFilter(filter, this.$dict.filter, hidden, this.hidden)!
       const list: D[] = []
-      if (typeof filter === 'function') {
-        this.list.forEach(item => {
-          if (filter(item)) {
-            list.push(item)
-          }
-        })
-      } else {
-        this.list.forEach(item => {
-          if (item[this.$dict.filter] && (item[this.$dict.filter] as filterType[]).indexOf(filter) > -1) {
-            list.push(item)
-          }
-        })
-      }
+      this.list.forEach(item => {
+        if (mainFilter(item)) {
+          list.push(item)
+        }
+      })
       return list
+    }
+  }
+  protected _getItem(list: D[], value: unknown, prop: keyof D, cascade?: string): D | undefined {
+    for (let n = 0; n < list.length; n++) {
+      const item = list[n]
+      if (this.check(value, item[prop])) {
+        return item
+      } else if (cascade && item[cascade]) {
+        const child = this._getItem(item[cascade] as D[], value, prop, cascade)
+        if (child) {
+          return child
+        }
+      }
     }
   }
   get(value: unknown, prop?: keyof D) {
     if (!prop) {
       prop = this.$dict.value
     }
-    for (let n = 0; n < this.list.length; n++) {
-      const item = this.list[n]
-      if (this.check(value, item[prop])) {
-        return item
-      }
-    }
-    return this.miss
+    return this._getItem(this.list, value, prop, this.cascade) || this.miss
   }
   check(value: unknown, itemValue: unknown) {
     if (!this.$option.equal) {
