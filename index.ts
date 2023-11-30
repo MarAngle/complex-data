@@ -1,49 +1,55 @@
 import ComplexData from './src/core/ComplexData'
 import ComplexInfo from './src/core/ComplexInfo'
 import ComplexList from './src/core/ComplexList'
+import SelectData from './src/core/SelectData'
 
-import Data from './src/data/Data'
-import SimpleData from './src/data/SimpleData'
-import DefaultData from './src/data/DefaultData'
 import BaseData from './src/data/BaseData'
+import Data from './src/data/Data'
+import DefaultData from './src/data/DefaultData'
+import SimpleData from './src/data/SimpleData'
 
-import AttributeData from './src/lib/AttributeValue'
-import InterfaceValue from './src/lib/InterfaceValue'
-import TipValue from './src/lib/TipValue'
-import FormValue from './src/lib/FormValue'
 import ArrayMap from './src/lib/ArrayMap'
+import AttributeData from './src/lib/AttributeValue'
+import FormValue from './src/lib/FormValue'
+import InterfaceValue from './src/lib/InterfaceValue'
+import SelectValue from './src/lib/SelectValue'
+import TipValue from './src/lib/TipValue'
 
-import StatusData from './src/module/StatusData'
-import PromiseData from './src/module/PromiseData'
-import ModuleData from './src/module/ModuleData'
+import ChoiceData from './src/module/ChoiceData'
 import DependData from './src/module/DependData'
-import UpdateData from './src/module/UpdateData'
-import PaginationData from './src/module/PaginationData'
 import DictionaryData from './src/module/DictionaryData'
+import ModuleData from './src/module/ModuleData'
+import PaginationData from './src/module/PaginationData'
+import PromiseData from './src/module/PromiseData'
 import SearchData from './src/module/SearchData'
+import StatusData from './src/module/StatusData'
+import UpdateData from './src/module/UpdateData'
 
 export {
   ComplexData,
   ComplexInfo,
   ComplexList,
+  SelectData,
 
-  Data,
-  SimpleData,
-  DefaultData,
   BaseData,
+  Data,
+  DefaultData,
+  SimpleData,
 
-  AttributeData,
-  InterfaceValue,
-  TipValue,
-  FormValue,
   ArrayMap,
+  AttributeData,
+  FormValue,
+  InterfaceValue,
+  SelectValue,
+  TipValue,
 
-  StatusData,
-  PromiseData,
-  ModuleData,
+  ChoiceData,
   DependData,
-  UpdateData,
-  PaginationData,
   DictionaryData,
+  ModuleData,
+  PaginationData,
+  PromiseData,
   SearchData,
+  StatusData,
+  UpdateData,
 }

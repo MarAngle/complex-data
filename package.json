@@ -1,6 +1,6 @@
 {
   "name": "complex-data-structure",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "a complex data structure",
   "main": "index.ts",
   "repository": {
