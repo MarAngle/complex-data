@@ -1,11 +1,11 @@
 {
-  "name": "complex-data-structure",
-  "version": "0.1.1",
-  "description": "a complex data structure",
+  "name": "complex-data",
+  "version": "4.0.1",
+  "description": "a complex data",
   "main": "index.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/MarAngle/complex-data-structure.git"
+    "url": "git+https://github.com/MarAngle/complex-data.git"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,8 +18,7 @@
   },
   "keywords": [
     "complex",
-    "data",
-    "structure"
+    "data"
   ],
   "author": "MarAngle",
   "license": "ISC"
