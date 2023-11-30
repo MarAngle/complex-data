@@ -1,11 +1,11 @@
 {
-  "name": "complex-data-next",
-  "version": "3.2.35",
+  "name": "complex-data",
+  "version": "3.2.36",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MarAngle/complex-data-next.git"
+    "url": "https://github.com/MarAngle/complex-data.git"
   },
   "dependencies": {
     "complex-plugin": "3.1.14 - 3.1.99",
