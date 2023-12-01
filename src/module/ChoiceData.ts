@@ -179,8 +179,8 @@ class ChoiceData extends Data {
    */
   $install (target: BaseData) {
     super.$install(target)
-    if (target.$module.dictionary) {
-      this.idProp = target.$module.dictionary.$getProp('id')
+    if (target.$module!.dictionary) {
+      this.idProp = target.$module!.dictionary.$getProp('id')
     }
     target.$onLife('beforeReload', {
       id: this.$getId('BeforeReload'),

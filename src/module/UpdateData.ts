@@ -1,6 +1,6 @@
 import { isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
-import BaseData from '../data/BaseData'
+import ComplexData from '../core/ComplexData'
 import config from '../../config'
 
 export type triggerType = (next: UpdateData["next"], index: number) => void
@@ -128,7 +128,7 @@ class UpdateData extends DefaultData {
       this.trigger(next, index)
     } else {
       const parent = this.$getParent()
-      if (parent && parent instanceof BaseData) {
+      if (parent && parent instanceof ComplexData) {
         parent.$loadUpdateData(true).then(() => {
           this.next()
         }).catch(() => {

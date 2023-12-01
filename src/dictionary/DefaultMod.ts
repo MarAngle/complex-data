@@ -6,7 +6,8 @@ import AttributeValue, { AttributeValueInitOption } from "../lib/AttributeValue"
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 
-export type reactiveFunction = (...args: unknown[]) => boolean
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type reactiveFunction = (...args: any[]) => boolean
 
 export interface DefaultModInitOption {
   $format?: string
@@ -29,7 +30,8 @@ export interface DefaultModInitOption {
   observe?: observeType
 }
 
-export type renderType<ARGS extends unknown[] = unknown[], RES = unknown> = (...args: ARGS) => RES
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type renderType<ARGS extends any[] = any[], RES = unknown> = (...args: ARGS) => RES
 
 class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'
@@ -70,6 +72,16 @@ class DefaultMod extends Data implements ArrayMapValueType {
     this.$reactive = initOption.reactive
     this.$render = initOption.render
     this.$observe = initOption.observe
+  }
+  $getRender(prop: string) {
+    if (this.$render) {
+      return this.$render[prop]
+    }
+  }
+  $getAttribute(prop: string) {
+    if (this.$local) {
+      return this.$local[prop]
+    }
   }
 }
 
