@@ -3,7 +3,7 @@ export interface AttrsValueInitOption {
   id?: string[]
   class?: string[]
   style?: Record<PropertyKey, unknown>
-  attributes?: Record<PropertyKey, unknown>
+  attrs?: Record<PropertyKey, unknown>
   props?: Record<PropertyKey, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on?: Record<PropertyKey, ((...args: any[]) => unknown)>
@@ -13,7 +13,7 @@ class AttrsValue {
   id: string[]
   class: string[]
   style: Record<PropertyKey, unknown>
-  attributes: Record<PropertyKey, unknown>
+  attrs: Record<PropertyKey, unknown>
   props: Record<PropertyKey, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on: Record<PropertyKey, ((...args: any[]) => unknown)>
@@ -24,7 +24,7 @@ class AttrsValue {
     this.id = initOption.id || []
     this.class = initOption.class || []
     this.style = initOption.style || {}
-    this.attributes = initOption.attributes || {}
+    this.attrs = initOption.attrs || {}
     this.props = initOption.props || {}
     this.on = initOption.on || {}
   }
@@ -66,8 +66,8 @@ class AttrsValue {
       for (const key in targetData.style) {
         this.style[key] = targetData.style[key]
       }
-      for (const key in targetData.attributes) {
-        this.attributes[key] = targetData.attributes[key]
+      for (const key in targetData.attrs) {
+        this.attrs[key] = targetData.attrs[key]
       }
       for (const key in targetData.props) {
         this.props[key] = targetData.props[key]
