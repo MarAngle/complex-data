@@ -1,5 +1,5 @@
 
-export interface AttributeValueInitOption {
+export interface AttrsValueInitOption {
   id?: string[]
   class?: string[]
   style?: Record<PropertyKey, unknown>
@@ -9,7 +9,7 @@ export interface AttributeValueInitOption {
   on?: Record<PropertyKey, ((...args: any[]) => unknown)>
 }
 
-class AttributeValue {
+class AttrsValue {
   id: string[]
   class: string[]
   style: Record<PropertyKey, unknown>
@@ -17,7 +17,7 @@ class AttributeValue {
   props: Record<PropertyKey, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   on: Record<PropertyKey, ((...args: any[]) => unknown)>
-  constructor(initOption?: AttributeValueInitOption) {
+  constructor(initOption?: AttrsValueInitOption) {
     if (!initOption) {
       initOption = {}
     }
@@ -55,7 +55,7 @@ class AttributeValue {
   removeClass(value: string) {
     return this._removeData(value, 'class')
   }
-  merge(targetData?: AttributeValue) {
+  merge(targetData?: AttrsValue) {
     if (targetData) {
       targetData.class.forEach(classStr => {
         this.pushClass(classStr)
@@ -79,4 +79,19 @@ class AttributeValue {
   }
 }
 
-export default AttributeValue
+export type LocalValueInitOption = Record<string, AttrsValueInitOption>
+export type LocalValue = Record<string, undefined | AttrsValue>
+
+export const createLocalValue = function(localValueInitOption?: LocalValueInitOption): undefined | LocalValue {
+  if (localValueInitOption) {
+    const data: LocalValue = {}
+    for (const key in localValueInitOption) {
+      data[key] = new AttrsValue(localValueInitOption[key])
+    }
+    return data
+  } else {
+    return undefined
+  }
+}
+
+export default AttrsValue

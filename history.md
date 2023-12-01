@@ -1,6 +1,10 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.4
+- 非兼容性更新: AttributeValue => AttrsValue
+- 统一$local/$attrs属性
+
 ### 4.0.2/3
 - 优化Attribute/Render相关逻辑
 

@@ -1,5 +1,5 @@
 import BaseData from '../data/BaseData'
-import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
+import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import ForceValue from '../lib/ForceValue'
 import Data from './../data/Data'
 
@@ -23,12 +23,7 @@ export type ChoiceDataData = {
 
 export interface ChoiceDataInitOption {
   reset?: resetOption
-  local?: {
-    parent?: AttributeValueInitOption
-    target?: AttributeValueInitOption
-    child?: AttributeValueInitOption
-    [prop: string]: undefined | AttributeValueInitOption
-  }
+  local?: LocalValueInitOption
 }
 
 class ChoiceData extends Data {
@@ -36,12 +31,7 @@ class ChoiceData extends Data {
   idProp: string
   data: ChoiceDataData
   $resetOption: resetOption
-  $local?: {
-    parent?: AttributeValue
-    target?: AttributeValue
-    child?: AttributeValue
-    [prop: string]: undefined | AttributeValue
-  }
+  $local?: LocalValue
   constructor (initOption: ChoiceDataInitOption) {
     super()
     this.idProp = 'id'
@@ -76,12 +66,11 @@ class ChoiceData extends Data {
         }
       }
     }
-    if (initOption.local) {
-      // 插件单独的设置，做特殊处理时使用，尽可能的将所有能用到的数据通过option做兼容处理避免问题
-      this.$local = {}
-      for (const prop in initOption.local) {
-        this.$local[prop] = new AttributeValue(initOption.local[prop])
-      }
+    this.$local = createLocalValue(initOption.local)
+  }
+  $getLocalAttrs(prop: string) {
+    if (this.$local) {
+      return this.$local[prop]
     }
   }
   /**

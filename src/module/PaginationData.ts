@@ -1,9 +1,10 @@
 import { getNum } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
-import AttributeValue, { AttributeValueInitOption } from '../lib/AttributeValue'
+import AttrsValue, { AttrsValueInitOption } from '../lib/AttrsValue'
 import ForceValue from '../lib/ForceValue'
 import config from '../../config'
+import { renderType } from '../dictionary/DefaultMod'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
   size?: boolean | number | {
@@ -12,7 +13,9 @@ export interface PaginationDataInitOption extends DefaultDataInitOption {
     list?: number[]
   }
   jumper?: boolean
-  local?: AttributeValueInitOption
+  simple?: boolean
+  attrs?: AttrsValueInitOption
+  render?: renderType
 }
 
 class PaginationData extends DefaultData {
@@ -28,7 +31,9 @@ class PaginationData extends DefaultData {
     list: number[]
   }
   jumper: boolean
-  $local?: AttributeValue
+  simple?: boolean
+  $attrs?: AttrsValue
+  $render?: renderType
   constructor(initOption: PaginationDataInitOption = {}) {
     super(initOption)
     this._triggerCreateLife('PaginationData', 'beforeCreate', initOption)
@@ -63,15 +68,10 @@ class PaginationData extends DefaultData {
       }
     }
     this.jumper = !!initOption.jumper
-    this.$local = initOption.local ? new AttributeValue(initOption.local) : undefined
+    this.simple = initOption.simple
+    this.$attrs = initOption.attrs ? new AttrsValue(initOption.attrs) : undefined
+    this.$render = initOption.render
     this._triggerCreateLife('PaginationData', 'created')
-  }
-  /**
-   * 获取UI设置项
-   * @returns {object}
-   */
-  getLocal() {
-    return this.$local
   }
   /**
    * 设置总数

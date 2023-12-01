@@ -9,7 +9,7 @@ import DefaultData from './src/data/DefaultData'
 import SimpleData from './src/data/SimpleData'
 
 import ArrayMap from './src/lib/ArrayMap'
-import AttributeValue from './src/lib/AttributeValue'
+import AttrsValue from './src/lib/AttrsValue'
 import FormValue from './src/lib/FormValue'
 import InterfaceValue from './src/lib/InterfaceValue'
 import SelectValue from './src/lib/SelectValue'
@@ -37,7 +37,7 @@ export {
   SimpleData,
 
   ArrayMap,
-  AttributeValue,
+  AttrsValue,
   FormValue,
   InterfaceValue,
   SelectValue,
