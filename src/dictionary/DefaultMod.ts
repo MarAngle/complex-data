@@ -19,7 +19,7 @@ export interface DefaultModInitOption {
   reactive?: {
     [prop: string]: undefined | reactiveFunction
   }
-  render?: {
+  renders?: {
     [prop: string]: undefined | renderType
   }
   observe?: observeType
@@ -37,7 +37,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
   $reactive?: {
     [prop: string]: undefined | reactiveFunction
   }
-  $render?: {
+  $renders?: {
     [prop: string]: undefined | renderType
   }
   $observe?: observeType
@@ -54,18 +54,8 @@ class DefaultMod extends Data implements ArrayMapValueType {
     }
     this.$local = createLocalValue(initOption.local)
     this.$reactive = initOption.reactive
-    this.$render = initOption.render
+    this.$renders = initOption.renders
     this.$observe = initOption.observe
-  }
-  $getRender(prop: string) {
-    if (this.$render) {
-      return this.$render[prop]
-    }
-  }
-  $getLocalAttrs(prop: string) {
-    if (this.$local) {
-      return this.$local[prop]
-    }
   }
 }
 

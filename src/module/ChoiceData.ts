@@ -68,11 +68,6 @@ class ChoiceData extends Data {
     }
     this.$local = createLocalValue(initOption.local)
   }
-  $getLocalAttrs(prop: string) {
-    if (this.$local) {
-      return this.$local[prop]
-    }
-  }
   /**
    * 获取数据
    */
