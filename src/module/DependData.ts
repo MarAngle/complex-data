@@ -1,5 +1,5 @@
-import BaseData, { BaseDataBindOption, BaseDataBindType, loadFunctionType } from "../data/BaseData"
 import Data from "../data/Data"
+import BaseData, { BaseDataBindOption, BaseDataBindType, loadFunctionType } from "../data/BaseData"
 
 export type nextTypeFunction<D> = (status: 'success' | 'fail', target: D, res: unknown) => unknown
 
