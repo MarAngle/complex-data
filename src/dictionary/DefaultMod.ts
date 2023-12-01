@@ -16,12 +16,8 @@ export interface DefaultModInitOption {
   name?: string
   local?: LocalValueInitOption
   tip?: TipValueInitOption
-  reactive?: {
-    [prop: string]: undefined | reactiveFunction
-  }
-  renders?: {
-    [prop: string]: undefined | renderType
-  }
+  reactives?: Record<string, undefined | reactiveFunction>
+  renders?: Record<string, undefined | renderType>
   observe?: observeType
 }
 
@@ -34,12 +30,8 @@ class DefaultMod extends Data implements ArrayMapValueType {
   $name: InterfaceValue<string>
   tip?: TipValue
   $local?: LocalValue
-  $reactive?: {
-    [prop: string]: undefined | reactiveFunction
-  }
-  $renders?: {
-    [prop: string]: undefined | renderType
-  }
+  $reactives?: Record<string, undefined | reactiveFunction>
+  $renders?: Record<string, undefined | renderType>
   $observe?: observeType
   constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
     if (initOption === true) {
@@ -53,7 +45,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
       this.tip = new TipValue(initOption.tip)
     }
     this.$local = createLocalValue(initOption.local)
-    this.$reactive = initOption.reactive
+    this.$reactives = initOption.reactives
     this.$renders = initOption.renders
     this.$observe = initOption.observe
   }

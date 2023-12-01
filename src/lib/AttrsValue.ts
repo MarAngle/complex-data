@@ -76,6 +76,7 @@ class AttrsValue {
         this.on[key] = targetData.on[key]
       }
     }
+    return this
   }
 }
 

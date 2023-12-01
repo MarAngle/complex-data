@@ -15,7 +15,7 @@ export interface PaginationDataInitOption extends DefaultDataInitOption {
   jumper?: boolean
   simple?: boolean
   attrs?: AttrsValueInitOption
-  render?: renderType
+  renders?: Record<string, undefined | renderType>
 }
 
 class PaginationData extends DefaultData {
@@ -33,7 +33,7 @@ class PaginationData extends DefaultData {
   jumper: boolean
   simple?: boolean
   $attrs?: AttrsValue
-  $render?: renderType
+  $renders?: Record<string, undefined | renderType>
   constructor(initOption: PaginationDataInitOption = {}) {
     super(initOption)
     this._triggerCreateLife('PaginationData', 'beforeCreate', initOption)
@@ -70,7 +70,7 @@ class PaginationData extends DefaultData {
     this.jumper = !!initOption.jumper
     this.simple = initOption.simple
     this.$attrs = initOption.attrs ? new AttrsValue(initOption.attrs) : undefined
-    this.$render = initOption.render
+    this.$renders = initOption.renders
     this._triggerCreateLife('PaginationData', 'created')
   }
   /**

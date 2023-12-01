@@ -1,7 +1,8 @@
+import Data from './../data/Data'
 import BaseData from '../data/BaseData'
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import ForceValue from '../lib/ForceValue'
-import Data from './../data/Data'
+import { renderType } from '../dictionary/DefaultMod'
 
 type resetOptionValue = {
   [prop: string]: boolean
@@ -24,6 +25,7 @@ export type ChoiceDataData = {
 export interface ChoiceDataInitOption {
   reset?: resetOption
   local?: LocalValueInitOption
+  renders?: Record<string, undefined | renderType>
 }
 
 class ChoiceData extends Data {
@@ -32,6 +34,7 @@ class ChoiceData extends Data {
   data: ChoiceDataData
   $resetOption: resetOption
   $local?: LocalValue
+  $renders?: Record<string, undefined | renderType>
   constructor (initOption: ChoiceDataInitOption) {
     super()
     this.idProp = 'id'
@@ -67,6 +70,7 @@ class ChoiceData extends Data {
       }
     }
     this.$local = createLocalValue(initOption.local)
+    this.$renders = initOption.renders
   }
   /**
    * 获取数据
