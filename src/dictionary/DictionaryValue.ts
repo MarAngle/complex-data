@@ -17,6 +17,7 @@ import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditBut
 import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from './DefaultEditButtonGroup'
 import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
+import LayoutValue, { LayoutValueInitOption } from '../lib/LayoutValue'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -37,7 +38,7 @@ const defaultGetData = function (this: DictionaryValue, data: unknown, { type }:
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
     if (data !== undefined && typeof data === 'object' && data !== null) {
-      return getProp(data, showProp)
+      return getProp(data as Record<PropertyKey, unknown>, showProp)
     } else {
       return undefined
     }
@@ -95,6 +96,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
+  layout?: LayoutValueInitOption
   mod?: DictionaryModDataInitOption
 }
 
@@ -162,6 +164,7 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
+  $layout?: LayoutValue
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
@@ -187,6 +190,9 @@ class DictionaryValue extends DefaultData implements functions {
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
+    if (initOption.layout) {
+      this.$layout = new LayoutValue(initOption.layout)
+    }
     this.$mod = {}
     const mod = initOption.mod || {}
     for (const modName in mod) {

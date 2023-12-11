@@ -12,10 +12,6 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
   required?: InterfaceValueInitOption<boolean>
   disabled?: InterfaceValueInitOption<boolean>
   placeholder?: InterfaceValueInitOption<string>
-  width?: string | number | {
-    data: string | number
-    main: string | number
-  }
   value?: {
     default?: unknown
     init?: unknown
@@ -49,10 +45,6 @@ class DefaultEdit extends DefaultMod {
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
   placeholder?: InterfaceValue<string>
-  $width: {
-    data?: string
-    main?: string
-  }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
   message: InterfaceValue<string>
@@ -81,32 +73,7 @@ class DefaultEdit extends DefaultMod {
     if (initOption.placeholder === undefined && parent) {
       this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
     }
-    // 宽度设置
-    const width = initOption.width
-    if (width !== undefined || width !== null) {
-      switch (typeof width) {
-        case 'object':
-          this.$width = {
-            data: typeof width.data === 'number' ? width.data + 'px' : width.data,
-            main: typeof width.main === 'number' ? width.main + 'px' : width.main
-          }
-          break;
-        case 'number':
-          this.$width = {
-            data: width + 'px'
-          }
-          break;
-        default:
-          this.$width = {
-            data: width
-          }
-          break;
-      }
-    } else {
-      this.$width = {}
-    }
     const initOptionValue = initOption.value || {}
-
     const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
     const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
     const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue

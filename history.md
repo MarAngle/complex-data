@@ -1,6 +1,10 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.8
+- 非兼容性更新:添加LayoutValue/InterfaceLayoutValue，优化组件的width到$layout中
+- 升级依赖
+
 ### 4.0.4/5/6/7
 - 非兼容性更新: AttributeValue => AttrsValue
 - 统一$local/$attrs属性
