@@ -3,8 +3,6 @@ import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue, { functionType } from "./DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
-// 考虑将width转换为layout的接口数据，通过判断值实现main/label/content
-
 export interface DefaultEditInitOption extends DefaultModInitOption {
   colon?: boolean
   trim?: boolean
@@ -19,7 +17,6 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
     [prop: PropertyKey]: unknown
   }
   on?: Record<PropertyKey, (...args: unknown[]) => unknown>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   rules?: Record<PropertyKey, Record<PropertyKey, unknown>[]>
   message?: InterfaceValueInitOption<string>
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
@@ -45,7 +42,6 @@ class DefaultEdit extends DefaultMod {
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
   placeholder?: InterfaceValue<string>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
   message: InterfaceValue<string>
   $value!: {

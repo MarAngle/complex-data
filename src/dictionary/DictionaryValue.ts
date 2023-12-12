@@ -13,6 +13,7 @@ import DefaultEditSelect, { DefaultEditSelectInitOption } from './DefaultEditSel
 import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwitch'
 import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
 import DefaultEditDate, { DefaultEditDateInitOption } from './DefaultEditDate'
+import DefaultEditDateRange, { DefaultEditDateRangeInitOption } from './DefaultEditDateRange'
 import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
 import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
 import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from './DefaultEditButtonGroup'
@@ -56,9 +57,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditDateInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditDateInitOption | DefaultEditDateRangeInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditDate | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditDate | DefaultEditDateRange | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -128,6 +129,8 @@ export const initMod = function(modName: string, modInitOption: DictionaryModIni
       return new DefaultEditCascader(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'date') {
       return new DefaultEditDate(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'dateRange') {
+      return new DefaultEditDateRange(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'file') {
       return new DefaultEditFile(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'button') {
