@@ -21,6 +21,9 @@ class InterfaceLayoutValue {
       this.data = new InterfaceValue(data)
     }
   }
+  getValue(prop?: string) {
+    return this.data.getValue(prop)
+  }
 }
 
 export default InterfaceLayoutValue

@@ -2,14 +2,14 @@ import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "./DictionaryValue"
 
 export interface DefaultEditCustomInitOption extends DefaultEditInitOption {
-  type: 'custom' | 'slot'
+  type: 'custom'
   option?: Record<PropertyKey, unknown>
   custom?: Record<PropertyKey, unknown>
 }
 
 class DefaultEditCustom extends DefaultEdit{
   static $name = 'DefaultEditCustom'
-  type: 'custom' | 'slot'
+  type: 'custom'
   $option: Record<PropertyKey, unknown>
   $custom: Record<PropertyKey, unknown>
   constructor(initOption: DefaultEditCustomInitOption, modName?: string, parent?: DictionaryValue) {

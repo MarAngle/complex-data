@@ -5,7 +5,7 @@ import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
-import LayoutValue, { LayoutValueInitOption } from "../lib/LayoutValue"
+import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from "../lib/InterfaceLayoutValue"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type reactiveFunction = (...args: any[]) => boolean
@@ -15,7 +15,7 @@ export interface DefaultModInitOption {
   $target?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
-  layout?: LayoutValueInitOption
+  layout?: InterfaceLayoutValueInitOption
   local?: LocalValueInitOption
   tip?: TipValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
@@ -30,7 +30,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'
   $prop: string
   $name: InterfaceValue<string>
-  $layout?: LayoutValue
+  $layout?: InterfaceLayoutValue
   tip?: TipValue
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
@@ -48,7 +48,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
       this.tip = new TipValue(initOption.tip)
     }
     if (initOption.layout) {
-      this.$layout = new LayoutValue(initOption.layout)
+      this.$layout = new InterfaceLayoutValue(initOption.layout)
     } else if (parent && parent.$layout) {
       this.$layout = parent.$layout
     }

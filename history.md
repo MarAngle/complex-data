@@ -3,6 +3,7 @@
 
 ### 4.0.8
 - 非兼容性更新:添加LayoutValue/InterfaceLayoutValue，优化组件的width到$layout中
+- 修正DefaultDate=>DefaultEditDate
 - 升级依赖
 
 ### 4.0.4/5/6/7

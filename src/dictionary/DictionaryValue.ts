@@ -12,12 +12,13 @@ import DefaultEditTextArea, { DefaultEditTextAreaInitOption } from './DefaultEdi
 import DefaultEditSelect, { DefaultEditSelectInitOption } from './DefaultEditSelect'
 import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwitch'
 import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
+import DefaultEditDate, { DefaultEditDateInitOption } from './DefaultEditDate'
 import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
 import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
 import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from './DefaultEditButtonGroup'
 import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
-import LayoutValue, { LayoutValueInitOption } from '../lib/LayoutValue'
+import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from '../lib/InterfaceLayoutValue'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -55,9 +56,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditDateInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
+export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditDate | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -96,7 +97,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
-  layout?: LayoutValueInitOption
+  layout?: InterfaceLayoutValueInitOption
   mod?: DictionaryModDataInitOption
 }
 
@@ -125,6 +126,8 @@ export const initMod = function(modName: string, modInitOption: DictionaryModIni
       return new DefaultEditSwitch(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'cascader') {
       return new DefaultEditCascader(editModInitOption, modName, parent)
+    } else if (editModInitOption.type === 'date') {
+      return new DefaultEditDate(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'file') {
       return new DefaultEditFile(editModInitOption, modName, parent)
     } else if (editModInitOption.type === 'button') {
@@ -164,7 +167,7 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
-  $layout?: LayoutValue
+  $layout?: InterfaceLayoutValue
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
@@ -191,7 +194,7 @@ class DictionaryValue extends DefaultData implements functions {
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
     if (initOption.layout) {
-      this.$layout = new LayoutValue(initOption.layout)
+      this.$layout = new InterfaceLayoutValue(initOption.layout)
     }
     this.$mod = {}
     const mod = initOption.mod || {}

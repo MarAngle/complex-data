@@ -72,6 +72,8 @@ class DefaultEdit extends DefaultMod {
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (initOption.placeholder === undefined && parent) {
       this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
+    } else if (initOption.placeholder) {
+      this.placeholder = new InterfaceValue(initOption.placeholder)
     }
     const initOptionValue = initOption.value || {}
     const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
