@@ -19,6 +19,7 @@ export type cascadeType<D> = D | cascadeTypeObject<D>
 class Data<P extends undefined | Data<any> = undefined> extends UtilsBaseData {
   static $name = 'Data'
   static $observe = false
+  static $format: (null | ((data: Data<any>) => Data<any>)) = null
   readonly $id!: string
   $parent?: P
   constructor() {
@@ -29,6 +30,10 @@ class Data<P extends undefined | Data<any> = undefined> extends UtilsBaseData {
       writable: true,
       value: createId()
     })
+    const $format = (this.constructor as typeof Data).$format
+    if ($format) {
+      return $format(this) as Data<P>
+    }
   }
   /**
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
