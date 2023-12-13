@@ -1,6 +1,9 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.10
+- 添加基础的Data构建格式化函数，适配不同环境
+
 ### 4.0.9
 - 优化AttrsValue/DefaultEditContent/DefaultEditDate/DefaultEditDateRange
 

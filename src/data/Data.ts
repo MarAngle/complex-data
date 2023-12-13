@@ -12,6 +12,7 @@ function createId(): string {
 class Data extends UtilsData {
   static $name = 'Data'
   static $observe = false
+  static $format: (null | ((data: Data) => Data)) = null
   readonly $id!: string
   $buffer!: {
     parent?: Data
@@ -33,6 +34,10 @@ class Data extends UtilsData {
       writable: true,
       value: {}
     })
+    const $format = (this.constructor as typeof Data).$format
+    if ($format) {
+      return $format(this)
+    }
   }
   /**
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
