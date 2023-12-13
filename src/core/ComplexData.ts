@@ -12,7 +12,7 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
 
 class ComplexData extends BaseData {
   static $name = 'ComplexData'
-  $module!: ModuleData
+  declare $module: ModuleData
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', 'beforeCreate', initOption)
