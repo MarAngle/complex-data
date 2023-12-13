@@ -3,7 +3,7 @@ import DictionaryValue from "./DictionaryValue"
 
 export interface DefaultEditContentOption {
   data?: string
-  style: Record<PropertyKey, unknown>
+  style?: Record<PropertyKey, unknown>
 }
 
 export interface DefaultEditContentInitOption extends DefaultEditInitOption {
@@ -21,7 +21,7 @@ class DefaultEditContent extends DefaultEdit{
     const option = initOption.option || {}
     this.$option = {
       data: option.data,
-      style: option.style || {}
+      style: option.style
     }
   }
 }

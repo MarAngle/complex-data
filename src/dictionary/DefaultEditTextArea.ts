@@ -15,7 +15,7 @@ export interface DefaultEditTextAreaInitOption extends DefaultEditInitOption {
 class DefaultEditTextArea extends DefaultEdit{
   static $name = 'DefaultEditTextArea'
   static $defaultOption = {
-    size: 1024,
+    size: 2048,
     autoSize: false,
     hideClear: false
   }

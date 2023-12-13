@@ -6,7 +6,7 @@ export interface AttrsValueInitOption {
   attrs?: Record<PropertyKey, unknown>
   props?: Record<PropertyKey, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on?: Record<PropertyKey, ((...args: any[]) => unknown)>
+  on?: Record<PropertyKey, undefined | ((...args: any[]) => unknown)>
 }
 
 class AttrsValue {
@@ -16,7 +16,7 @@ class AttrsValue {
   attrs: Record<PropertyKey, unknown>
   props: Record<PropertyKey, unknown>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on: Record<PropertyKey, ((...args: any[]) => unknown)>
+  on: Record<PropertyKey, undefined | ((...args: any[]) => unknown)>
   constructor(initOption?: AttrsValueInitOption) {
     if (!initOption) {
       initOption = {}
@@ -43,6 +43,15 @@ class AttrsValue {
     }
     return false
   }
+  protected _appendData(data: undefined | Record<PropertyKey, unknown>, prop: 'style' | 'attrs' | 'props') {
+    if (data) {
+      for (const key in data) {
+        this[prop][key] = data[key]
+      }
+      return true
+    }
+    return false
+  }
   pushId(value: string) {
     return this._pushData(value, 'id')
   }
@@ -54,6 +63,31 @@ class AttrsValue {
   }
   removeClass(value: string) {
     return this._removeData(value, 'class')
+  }
+  pushStyle(style?: Record<PropertyKey, unknown>) {
+    return this._appendData(style, 'style')
+  }
+  pushAttrs(attrs?: Record<PropertyKey, unknown>) {
+    return this._appendData(attrs, 'attrs')
+  }
+  pushProps(props?: Record<PropertyKey, unknown>) {
+    return this._appendData(props, 'props')
+  }
+  pushEvent(prop: string, event?: (...args: unknown[]) => unknown, type: 'before' | 'after' = 'after') {
+    if (event) {
+      if (this.on[prop]) {
+        const lastEvent = this.on[prop]!
+        this.on[prop] = type === 'after' ? function(...args) {
+          lastEvent(...args)
+          return event(...args)
+        } : function(...args) {
+          event(...args)
+          return lastEvent(...args)
+        }
+      } else {
+        this.on[prop] = event
+      }
+    }
   }
   merge(targetData?: AttrsValue) {
     if (targetData) {

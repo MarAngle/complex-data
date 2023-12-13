@@ -1,6 +1,9 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.9
+- 优化AttrsValue/DefaultEditContent/DefaultEditDate/DefaultEditDateRange
+
 ### 4.0.8
 - 非兼容性更新:添加LayoutValue/InterfaceLayoutValue，优化组件的width到$layout中
 - 修正DefaultDate=>DefaultEditDate.
