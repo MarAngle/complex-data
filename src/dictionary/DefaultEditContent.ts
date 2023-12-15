@@ -15,8 +15,8 @@ class DefaultEditContent extends DefaultEdit{
   static $name = 'DefaultEditContent'
   type: 'content'
   $option: DefaultEditContentOption
-  constructor(initOption: DefaultEditContentInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditContentInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
     this.$option = {

@@ -1,6 +1,10 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.12
+- BUG:修正DefaultMod相关类的初始化未正确传递parent的BUG
+- BUG:修正SelectValue的初始化类型中dict错误的被标记为必填项的BUG
+
 ### 4.0.10/11
 - 添加基础的Data构建格式化函数，适配不同环境
 - 升级依赖，修正类型报错

@@ -23,8 +23,8 @@ class DefaultEditButtonGroup extends DefaultEdit{
   }
   type: 'buttonGroup'
   $list: DefaultEditButtonGroupOption[]
-  constructor(initOption: DefaultEditButtonGroupInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditButtonGroupInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const list = initOption.list || []
     const $defaultOption = (this.constructor as typeof DefaultEditButtonGroup).$defaultOption

@@ -24,8 +24,8 @@ class DefaultEditFile extends DefaultEdit{
   }
   type: 'file'
   $option: DefaultEditFileOption
-  constructor(initOption: DefaultEditFileInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditFileInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditFile).$defaultOption

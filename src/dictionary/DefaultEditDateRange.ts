@@ -56,8 +56,8 @@ class DefaultEditDateRange extends DefaultEdit{
   }
   type: 'dateRange'
   $option: DefaultEditDateRangeOption
-  constructor(initOption: DefaultEditDateRangeInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditDateRangeInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditDateRange).$defaultOption

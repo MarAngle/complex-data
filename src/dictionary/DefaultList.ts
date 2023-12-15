@@ -17,11 +17,11 @@ class DefaultList extends DefaultMod {
   ellipsis: boolean
   auto: boolean
   show: DictionaryValue['show']
-  constructor(initOption: DefaultListInitOption | true, modName?: string, parent?: DictionaryValue) {
+  constructor(initOption: DefaultListInitOption | true, parent?: DictionaryValue, modName?: string) {
     if (initOption === true) {
       initOption = {}
     }
-    super(initOption, modName, parent)
+    super(initOption, parent, modName)
     this.show = initOption.show || (parent ? parent.show : undefined)
     this.align = initOption.align || 'center'
     this.width = initOption.width === undefined ? config.dictionary.module.list.width : initOption.width

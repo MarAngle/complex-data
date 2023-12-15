@@ -53,8 +53,8 @@ class DefaultEditDate extends DefaultEdit{
   }
   type: 'date'
   $option: DefaultEditDateOption
-  constructor(initOption: DefaultEditDateInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditDateInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditDate).$defaultOption

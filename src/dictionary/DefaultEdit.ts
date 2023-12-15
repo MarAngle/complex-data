@@ -53,9 +53,8 @@ class DefaultEdit extends DefaultMod {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
-  constructor(initOption: DefaultEditInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
-    this.$setParent(parent)
+  constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.colon = new InterfaceValue(initOption.colon === undefined ? true : initOption.colon)
     this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)

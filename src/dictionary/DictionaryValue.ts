@@ -104,43 +104,43 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
 
-export const initMod = function(modName: string, modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue) {
+export const initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
   if (modInitOption instanceof DefaultMod) {
     return modInitOption
   }
   const $format = modInitOption.$format || modName
   if ($format === 'list') {
-    return new DefaultList(modInitOption as DefaultListInitOption)
+    return new DefaultList(modInitOption as DefaultListInitOption, parent, modName)
   } else if ($format === 'info') {
-    return new DefaultInfo(modInitOption as DefaultInfoInitOption)
+    return new DefaultInfo(modInitOption as DefaultInfoInitOption, parent, modName)
   } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
     const editModInitOption = modInitOption as DictionaryEditModInitOption
     if (!editModInitOption.type || editModInitOption.type === 'input') {
-      return new DefaultEditInput(editModInitOption, modName, parent)
+      return new DefaultEditInput(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'inputNumber') {
-      return new DefaultEditInputNumber(editModInitOption, modName, parent)
+      return new DefaultEditInputNumber(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'textArea') {
-      return new DefaultEditTextArea(editModInitOption, modName, parent)
+      return new DefaultEditTextArea(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'select') {
-      return new DefaultEditSelect(editModInitOption, modName, parent)
+      return new DefaultEditSelect(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'switch') {
-      return new DefaultEditSwitch(editModInitOption, modName, parent)
+      return new DefaultEditSwitch(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'cascader') {
-      return new DefaultEditCascader(editModInitOption, modName, parent)
+      return new DefaultEditCascader(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'date') {
-      return new DefaultEditDate(editModInitOption, modName, parent)
+      return new DefaultEditDate(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'dateRange') {
-      return new DefaultEditDateRange(editModInitOption, modName, parent)
+      return new DefaultEditDateRange(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'file') {
-      return new DefaultEditFile(editModInitOption, modName, parent)
+      return new DefaultEditFile(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'button') {
-      return new DefaultEditButton(editModInitOption, modName, parent)
+      return new DefaultEditButton(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'buttonGroup') {
-      return new DefaultEditButtonGroup(editModInitOption, modName, parent)
+      return new DefaultEditButtonGroup(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'content') {
-      return new DefaultEditContent(editModInitOption, modName, parent)
+      return new DefaultEditContent(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
-      return new DefaultEditCustom(editModInitOption, modName, parent)
+      return new DefaultEditCustom(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
@@ -204,7 +204,7 @@ class DictionaryValue extends DefaultData implements functions {
     for (const modName in mod) {
       const modInitOption = mod[modName]
       if (modInitOption) {
-        this.$mod[modName] = initMod(modName, modInitOption)
+        this.$mod[modName] = initMod(modInitOption, this, modName)
       }
     }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)

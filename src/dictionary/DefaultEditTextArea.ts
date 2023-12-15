@@ -21,8 +21,8 @@ class DefaultEditTextArea extends DefaultEdit{
   }
   type: 'textArea'
   $option: DefaultEditTextAreaOption
-  constructor(initOption: DefaultEditTextAreaInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditTextAreaInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = 'textArea'
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditTextArea).$defaultOption

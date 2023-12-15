@@ -17,8 +17,8 @@ class DefaultEditInputNumber extends DefaultEdit{
   static $name = 'DefaultEditInputNumber'
   type: 'inputNumber'
   $option: DefaultEditInputNumberOption
-  constructor(initOption: DefaultEditInputNumberInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultEditInputNumberInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
     this.$option = {

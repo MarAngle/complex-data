@@ -14,8 +14,8 @@ class DefaultLoadEdit extends DefaultEdit{
     reload?: boolean
   }
   $getData?: loadFunctionType
-  constructor(initOption: DefaultLoadEditInitOption, modName?: string, parent?: DictionaryValue) {
-    super(initOption, modName, parent)
+  constructor(initOption: DefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
+    super(initOption, parent, modName)
     if (initOption.getData) {
       this.$getData = initOption.getData
       this.$load = {

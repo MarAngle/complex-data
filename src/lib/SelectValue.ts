@@ -17,7 +17,7 @@ export interface DefaultSelectValueType<V = unknown> extends SelectValueType {
 
 export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
   list?: D[]
-  dict: {
+  dict?: {
     value?: string
     label?: string
     disabled?: string

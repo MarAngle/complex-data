@@ -36,7 +36,8 @@ class DefaultMod extends Data implements ArrayMapValueType {
   $reactives?: Record<string, undefined | reactiveFunction>
   $renders?: Record<string, undefined | renderType>
   $observe?: observeType
-  constructor(initOption: DefaultModInitOption | true, modName?: string, parent?: DictionaryValue) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(initOption: DefaultModInitOption | true, parent?: DictionaryValue, modName?: string) {
     if (initOption === true) {
       initOption = {}
     }
