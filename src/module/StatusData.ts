@@ -30,6 +30,7 @@ export type StatusItemInitOption = 'load' | 'operate' | StatusItemInitOptionObje
 
 export class StatusItem extends Data {
   static $name = 'StatusItem'
+  static $formatConfig = { name: 'Data:StatusItem', level: 50, recommend: true }
   count?: number
   list: StatusDataValueType[]
   trigger: StatusTriggerType

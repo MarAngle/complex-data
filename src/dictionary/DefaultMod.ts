@@ -28,6 +28,7 @@ export type renderType<ARGS extends any[] = any[], RES = unknown> = (...args: AR
 
 class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'
+  static $formatConfig = { name: 'Data:DefaultMod', level: 40, recommend: true }
   $prop: string
   $name: InterfaceValue<string>
   $layout?: InterfaceLayoutValue

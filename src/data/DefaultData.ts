@@ -9,6 +9,7 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 
 class DefaultData extends SimpleData implements DataWithLife {
   static $name = 'DefaultData'
+  static $formatConfig = { name: 'Data:DefaultData', level: 40, recommend: true }
   $prop: string
   $life: Life
   constructor(initOption: DefaultDataInitOption) {

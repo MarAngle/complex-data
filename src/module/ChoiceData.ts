@@ -30,6 +30,7 @@ export interface ChoiceDataInitOption {
 
 class ChoiceData extends Data {
   static $name = 'ChoiceData'
+  static $formatConfig = { name: 'Data:ChoiceData', level: 50, recommend: true }
   idProp: string
   data: ChoiceDataData
   $resetOption: resetOption

@@ -67,6 +67,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
+  static $formatConfig = { name: 'Data:DictionaryData', level: 50, recommend: true }
   $simple?: boolean
   $data: Map<string, DictionaryValue>
   $propData?: propDataType<propDataValueType>

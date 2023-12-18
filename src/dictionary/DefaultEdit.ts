@@ -25,6 +25,7 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
 
 class DefaultEdit extends DefaultMod {
   static $name = 'DefaultEdit'
+  static $formatConfig = { name: 'Data:DefaultEdit', level: 50, recommend: true }
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : []
   }

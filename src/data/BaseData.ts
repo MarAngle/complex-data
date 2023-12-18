@@ -42,6 +42,7 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
 
 class BaseData extends DefaultData {
   static $name = 'BaseData'
+  static $formatConfig = { name: 'Data:BaseData', level: 80, recommend: true }
   $status: StatusData
   $promise: PromiseData
   $module?: ModuleData
