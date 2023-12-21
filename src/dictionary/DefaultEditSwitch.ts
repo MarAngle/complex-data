@@ -1,5 +1,5 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultEditSwitchInitOption extends DefaultEditInitOption {
   type: 'switch'

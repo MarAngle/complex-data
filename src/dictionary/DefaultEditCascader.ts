@@ -1,5 +1,5 @@
 import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultEditCascaderOption {
   list: Record<PropertyKey, unknown>[]

@@ -1,5 +1,5 @@
 import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultInfoInitOption extends DefaultModInitOption {
   show?: DictionaryValue['show']

@@ -1,5 +1,5 @@
 import DictionaryData, { DictionaryDataInitOption, createFormOption } from "./DictionaryData"
-import DictionaryValue, { DictionaryValueInitOption } from "../dictionary/DictionaryValue"
+import DictionaryValue, { DictionaryValueInitOption } from "../lib/DictionaryValue"
 import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"

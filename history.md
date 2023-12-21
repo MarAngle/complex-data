@@ -1,6 +1,9 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.14
+- 优化字段加载和文件目录，修正组件构建BUG
+
 ### 4.0.13
 - 升级依赖，适配formatConfig
 

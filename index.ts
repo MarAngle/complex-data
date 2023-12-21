@@ -10,6 +10,7 @@ import SimpleData from './src/data/SimpleData'
 
 import ArrayMap from './src/lib/ArrayMap'
 import AttrsValue from './src/lib/AttrsValue'
+import DictionaryValue from './src/lib/DictionaryValue'
 import FormValue from './src/lib/FormValue'
 import InterfaceValue from './src/lib/InterfaceValue'
 import SelectValue from './src/lib/SelectValue'
@@ -38,6 +39,7 @@ export {
 
   ArrayMap,
   AttrsValue,
+  DictionaryValue,
   FormValue,
   InterfaceValue,
   SelectValue,

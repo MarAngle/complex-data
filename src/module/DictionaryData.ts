@@ -2,7 +2,7 @@ import { Limit, trimData } from "complex-utils"
 import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
-import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../dictionary/DictionaryValue"
+import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import config from "../../config"
 
@@ -181,7 +181,7 @@ class DictionaryData extends DefaultData {
     }
     return observeList
   }
-  $createFormData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createFormOption = {}) {
+  $createFormData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createFormOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
     return new Promise((resolve) => {
       const formData = option.form || {}
       const from = option.from

@@ -1,25 +1,25 @@
 import { getProp, setProp, isExist, exportMsg } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
-import InterfaceValue, { InterfaceValueInitOption } from '../lib/InterfaceValue'
 import DictionaryData from '../module/DictionaryData'
-import DefaultMod, { DefaultModInitOption } from './DefaultMod'
-import DefaultList, { DefaultListInitOption } from './DefaultList'
-import DefaultInfo, { DefaultInfoInitOption } from './DefaultInfo'
-import DefaultEdit from './DefaultEdit'
-import DefaultEditInput, { DefaultEditInputInitOption } from './DefaultEditInput'
-import DefaultEditInputNumber, { DefaultEditInputNumberInitOption } from './DefaultEditInputNumber'
-import DefaultEditTextArea, { DefaultEditTextAreaInitOption } from './DefaultEditTextArea'
-import DefaultEditSelect, { DefaultEditSelectInitOption } from './DefaultEditSelect'
-import DefaultEditSwitch, { DefaultEditSwitchInitOption } from './DefaultEditSwitch'
-import DefaultEditCascader, { DefaultEditCascaderInitOption } from './DefaultEditCascader'
-import DefaultEditDate, { DefaultEditDateInitOption } from './DefaultEditDate'
-import DefaultEditDateRange, { DefaultEditDateRangeInitOption } from './DefaultEditDateRange'
-import DefaultEditFile, { DefaultEditFileInitOption } from './DefaultEditFile'
-import DefaultEditButton, { DefaultEditButtonInitOption } from './DefaultEditButton'
-import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from './DefaultEditButtonGroup'
-import DefaultEditContent, { DefaultEditContentInitOption } from './DefaultEditContent'
-import DefaultEditCustom, { DefaultEditCustomInitOption } from './DefaultEditCustom'
-import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from '../lib/InterfaceLayoutValue'
+import InterfaceValue, { InterfaceValueInitOption } from './InterfaceValue'
+import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from './InterfaceLayoutValue'
+import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
+import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
+import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
+import DefaultEdit from '../dictionary/DefaultEdit'
+import DefaultEditInput, { DefaultEditInputInitOption } from '../dictionary/DefaultEditInput'
+import DefaultEditInputNumber, { DefaultEditInputNumberInitOption } from '../dictionary/DefaultEditInputNumber'
+import DefaultEditTextArea, { DefaultEditTextAreaInitOption } from '../dictionary/DefaultEditTextArea'
+import DefaultEditSelect, { DefaultEditSelectInitOption } from '../dictionary/DefaultEditSelect'
+import DefaultEditSwitch, { DefaultEditSwitchInitOption } from '../dictionary/DefaultEditSwitch'
+import DefaultEditCascader, { DefaultEditCascaderInitOption } from '../dictionary/DefaultEditCascader'
+import DefaultEditDate, { DefaultEditDateInitOption } from '../dictionary/DefaultEditDate'
+import DefaultEditDateRange, { DefaultEditDateRangeInitOption } from '../dictionary/DefaultEditDateRange'
+import DefaultEditFile, { DefaultEditFileInitOption } from '../dictionary/DefaultEditFile'
+import DefaultEditButton, { DefaultEditButtonInitOption } from '../dictionary/DefaultEditButton'
+import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from '../dictionary/DefaultEditButtonGroup'
+import DefaultEditContent, { DefaultEditContentInitOption } from '../dictionary/DefaultEditContent'
+import DefaultEditCustom, { DefaultEditCustomInitOption } from '../dictionary/DefaultEditCustom'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -201,11 +201,19 @@ class DictionaryValue extends DefaultData implements functions {
     }
     this.$mod = {}
     const mod = initOption.mod || {}
+    const redirect: Record<string, string> = {}
     for (const modName in mod) {
       const modInitOption = mod[modName]
       if (modInitOption) {
-        this.$mod[modName] = initMod(modInitOption, this, modName)
+        if ((modInitOption as DictionaryModInitOption).$redirect) {
+          redirect[modName] = (modInitOption as DictionaryModInitOption).$redirect!
+        } else {
+          this.$mod[modName] = initMod(modInitOption, this, modName)
+        }
       }
+    }
+    for (const modName in redirect) {
+      this.$mod[modName] = this.$mod[redirect[modName]]
     }
     this._triggerCreateLife('DictionaryValue', 'created', initOption)
   }

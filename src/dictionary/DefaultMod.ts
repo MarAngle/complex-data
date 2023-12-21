@@ -1,5 +1,5 @@
 import Data from "../data/Data"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 import { observeType } from "./ObserveList"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
@@ -12,7 +12,7 @@ export type reactiveFunction = (...args: any[]) => boolean
 
 export interface DefaultModInitOption {
   $format?: string
-  $target?: string // 快捷格式化目标，内存指针指向对应的mod
+  $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
   layout?: InterfaceLayoutValueInitOption

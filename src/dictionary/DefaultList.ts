@@ -1,5 +1,5 @@
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 import config from "../../config"
 
 export interface DefaultListInitOption extends DefaultModInitOption {

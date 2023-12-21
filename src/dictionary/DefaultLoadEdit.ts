@@ -1,6 +1,6 @@
 import { loadFunctionType } from "../data/BaseData"
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultLoadEditInitOption extends DefaultEditInitOption {
   reload?: boolean

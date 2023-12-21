@@ -1,5 +1,5 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 type disabledDateConfig = { start?: unknown, end?: unknown }
 type disabledTimeConfig = { start?: unknown, end?: unknown }

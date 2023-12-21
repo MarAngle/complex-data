@@ -1,6 +1,6 @@
 import { hasProp } from "complex-utils"
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
-import DictionaryValue, { functionType } from "./DictionaryValue"
+import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
 export interface DefaultEditInitOption extends DefaultModInitOption {

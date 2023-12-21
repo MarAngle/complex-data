@@ -1,6 +1,6 @@
 import PaginationData, { PaginationDataInitOption } from "../module/PaginationData"
 import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
-import DictionaryValue from "./DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultEditSelectOption {
   list: Record<PropertyKey, unknown>[]

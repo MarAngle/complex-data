@@ -1,11 +1,11 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DictionaryValue, { payloadType } from "./DictionaryValue"
+import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
 export interface DefaultEditButtonOption {
   type: string
-  icon?: string
+  icon?: string | (() => unknown)
   name?: string
   loading?: boolean
   uploader?: boolean
