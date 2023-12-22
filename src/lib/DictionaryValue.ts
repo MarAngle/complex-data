@@ -265,14 +265,15 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  $setFormValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
+  $setEditValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
       targetValue = this.$triggerFunc('edit', originData[this.$prop], {
         type: type,
         targetData,
-        originData
+        originData,
+        from: from
       })
     } else if (mod.getValue) {
       targetValue = mod.getValue(from === 'reset' ? 'reset' : 'init')
@@ -288,7 +289,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
     return targetValue
   }
-  $createFormValue (option: payloadType) {
+  $createEditValue (option: payloadType) {
     return new Promise((resolve) => {
       const mod = this.$getMod(option.type)
       const next = (status: string, targetValue: unknown, unSet?: boolean) => {
@@ -299,7 +300,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
       if (mod) {
         if (mod instanceof DefaultEdit) {
-          next('success', this.$setFormValue(mod, option))
+          next('success', this.$setEditValue(mod, option))
         } else {
           next('mod is not edit', undefined, true)
         }

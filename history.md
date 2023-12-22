@@ -1,6 +1,10 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 4.0.15
+- 实现DefaultEditDate/DefaultEditDateRange的数据转换
+- 非兼容性更新:DictionaryData:$createEditData=>$createEditData，后续相关调用名称优化
+
 ### 4.0.14
 - 优化字段加载和文件目录，修正组件构建BUG
 

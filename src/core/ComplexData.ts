@@ -171,8 +171,8 @@ class ComplexData extends BaseData {
   $buildDictionaryObserveList (...args: Parameters<DictionaryData['$buildObserveList']>) {
     return this.$module.dictionary!.$buildObserveList(...args)
   }
-  $createFormDataByDictionary (...args: Parameters<DictionaryData['$createFormData']>) {
-    return this.$module.dictionary!.$createFormData(...args)
+  $createEditDataByDictionary (...args: Parameters<DictionaryData['$createEditData']>) {
+    return this.$module.dictionary!.$createEditData(...args)
   }
   $createPostDataByDictionary (...args: Parameters<DictionaryData['$createPostData']>) {
     return this.$module.dictionary!.$createPostData(...args)

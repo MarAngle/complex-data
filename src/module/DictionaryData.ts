@@ -48,8 +48,8 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
   return structData
 }
 
-export interface createFormOption {
-  form?: Record<PropertyKey, unknown>
+export interface createEditOption {
+  target?: Record<PropertyKey, unknown>
   from?: string
   limit?: Limit | LimitInitOption
 }
@@ -181,9 +181,9 @@ class DictionaryData extends DefaultData {
     }
     return observeList
   }
-  $createFormData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createFormOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
+  $createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
     return new Promise((resolve) => {
-      const formData = option.form || {}
+      const targetData = option.target || {}
       const from = option.from
       const limit = new Limit(option.limit)
       const size = dictionaryValueList.length
@@ -191,8 +191,8 @@ class DictionaryData extends DefaultData {
       for (let n = 0; n < size; n++) {
         const dictionaryValue = dictionaryValueList[n]
         if (!limit.getLimit(dictionaryValue.$prop)) {
-          promiseList.push(dictionaryValue.$createFormValue({
-            targetData: formData,
+          promiseList.push(dictionaryValue.$createEditValue({
+            targetData: targetData,
             originData: originData,
             type: modName,
             from: from
@@ -200,7 +200,7 @@ class DictionaryData extends DefaultData {
         }
       }
       Promise.allSettled(promiseList).then(() => {
-        resolve({ status: 'success', data: formData })
+        resolve({ status: 'success', data: targetData })
       })
     })
   }

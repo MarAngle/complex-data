@@ -1,4 +1,4 @@
-import DictionaryData, { DictionaryDataInitOption, createFormOption } from "./DictionaryData"
+import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryValueInitOption } from "../lib/DictionaryValue"
 import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
 import ObserveList from "../dictionary/ObserveList"
@@ -8,7 +8,7 @@ import BaseData from "./../data/BaseData"
 export interface resetFormOption {
   copy?: boolean
   observe?: boolean
-  limit?: createFormOption['limit']
+  limit?: createEditOption['limit']
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -96,8 +96,8 @@ class SearchData extends DictionaryData {
   }
   $resetFormData(from = '' , option: resetFormOption = {}) {
     const search = this.$search
-    this.$createFormData(search.dictionary, this.$prop, undefined, {
-      form: search.form.getData(),
+    this.$createEditData(search.dictionary, this.$prop, undefined, {
+      target: search.form.getData(),
       from: from,
       limit: option.limit
     })
