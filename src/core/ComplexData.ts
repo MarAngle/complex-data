@@ -1,4 +1,4 @@
-import BaseData, { BaseDataInitOption } from "../data/BaseData"
+import BaseData, { BaseDataInitOption, loadFunctionType } from "../data/BaseData"
 import ModuleData, { ModuleDataInitOption } from "../module/ModuleData"
 import SearchData, { resetFormOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
@@ -6,16 +6,41 @@ import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
 import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 
+export type buildDataType = (targetData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
+export type changeDataType = (targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
+export type deleteDataType = (targetData: Record<PropertyKey, unknown>, payload?: unknown) => Promise<unknown>
+export type multipleDeleteDataType = (choiceList: Record<PropertyKey, unknown>[], payload?: unknown) => Promise<unknown>
+export type exportDataType = loadFunctionType
+export type importDataType = (file: File, payload?: unknown) => Promise<unknown>
+
 export interface ComplexDataInitOption extends BaseDataInitOption {
   module: ModuleDataInitOption
+  buildData?: buildDataType
+  changeData?: changeDataType
+  deleteData?: deleteDataType
+  multipleDeleteData?: multipleDeleteDataType
+  exportData?: exportDataType
+  importData?: importDataType
 }
 
 class ComplexData extends BaseData {
   static $name = 'ComplexData'
   declare $module: ModuleData
+  $buildData?: buildDataType
+  $changeData?: changeDataType
+  $deleteData?: deleteDataType
+  $multipleDeleteData?: multipleDeleteDataType
+  $exportData?: exportDataType
+  $importData?: importDataType
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this.$buildData = initOption.buildData
+    this.$changeData = initOption.changeData
+    this.$deleteData = initOption.deleteData
+    this.$multipleDeleteData = initOption.multipleDeleteData
+    this.$exportData = initOption.exportData
+    this.$importData = initOption.importData
     this._triggerCreateLife('ComplexData', 'created', initOption)
   }
   /* --- update start --- */
