@@ -1,6 +1,10 @@
 ### ToDo
 - InterfaceData的setData中关于setProp的调用更改为setData的调用
 
+### 重要
+- 将当前的Depend/parent相关功能迁移到RelationData中，不可枚举
+- 关系存在:父子/普通...父子加载基础逻辑扩展到list中
+
 ### 4.0.15/16
 - 非兼容性更新:DictionaryData:$createEditData=>$createEditData，后续相关调用名称优化
 - 实现DefaultEditDate/DefaultEditDateRange的数据转换

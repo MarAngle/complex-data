@@ -1,6 +1,9 @@
 import Data from "../data/Data"
 import BaseData, { BaseDataBindOption, BaseDataBindType, loadFunctionType } from "../data/BaseData"
 
+
+// Base reset/destroy
+
 export type nextTypeFunction<D> = (status: 'success' | 'fail', target: D, res: unknown) => unknown
 
 export type nextType<D> = nextTypeFunction<D> | {
@@ -41,24 +44,24 @@ class DependData extends Data {
   static $name = 'DependData'
   type: 'sync' | 'order'
   $data: dependValueType[]
-  constructor(initOption: DependDataInitOption, parent: BaseData) {
+  constructor(initOption: DependDataInitOption, self: BaseData) {
     super()
     this.type = initOption.type || 'sync'
-    this.$data = initOption.data ? initOption.data.map(item => this._build(item, parent)) : []
+    this.$data = initOption.data ? initOption.data.map(item => this._build(item, self)) : []
   }
-  protected _build(item: dependValueInitType, parent: BaseData): dependValueType {
+  protected _build(item: dependValueInitType, self: BaseData): dependValueType {
     if (item instanceof BaseData) {
       return {
         data: item,
         name: '$loadData',
-        args: [true]
+        args: [false]
       }
     } else {
       if (!item.name) {
         item.name = '$loadData'
       }
       if (!item.args) {
-        item.args = [true]
+        item.args = [false]
       }
       if (item.next) {
         if (typeof item.next === 'function') {
@@ -70,9 +73,9 @@ class DependData extends Data {
       }
       if (item.bind) {
         if (typeof item.bind === 'function') {
-          parent.$bindLife(item.data, item.bind, {})
+          self.$bindLife(item.data, item.bind, {})
         } else {
-          parent.$bindLife(item.data, item.bind.data, item.bind)
+          self.$bindLife(item.data, item.bind.data, item.bind)
         }
       }
       return item as dependValueType

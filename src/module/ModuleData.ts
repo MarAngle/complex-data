@@ -1,7 +1,6 @@
 import { getType } from 'complex-utils'
 import Data from '../data/Data'
 import BaseData, { resetOptionType } from '../data/BaseData'
-import DependData, { DependDataInitOption } from './DependData'
 import UpdateData, { UpdateDataInitOption } from './UpdateData'
 import PaginationData, { PaginationDataInitOption } from './PaginationData'
 import DictionaryData, { DictionaryDataInitOption } from './DictionaryData'
@@ -9,7 +8,6 @@ import SearchData, { SearchDataInitOption } from './SearchData'
 import ChoiceData, { ChoiceDataInitOption } from './ChoiceData'
 
 export interface ModuleDataInitOption {
-  depend?: boolean | DependDataInitOption
   update?: boolean | UpdateDataInitOption
   pagination?: boolean | PaginationDataInitOption
   dictionary?: boolean | DictionaryDataInitOption
@@ -19,10 +17,9 @@ export interface ModuleDataInitOption {
 
 export type moduleKeys = keyof ModuleDataInitOption
 
-export const ModuleDataKeys: moduleKeys[] = ['depend', 'update']
+export const ModuleDataKeys: moduleKeys[] = ['update']
 
 const ModuleMap = {
-  depend: DependData,
   update: UpdateData,
   pagination: PaginationData,
   dictionary: DictionaryData,
@@ -32,7 +29,6 @@ const ModuleMap = {
 
 class ModuleData extends Data {
   static $name = 'ModuleData'
-  depend?: DependData
   update?: UpdateData
   pagination?: PaginationData
   dictionary?: DictionaryData
@@ -55,7 +51,7 @@ class ModuleData extends Data {
       if (modData === undefined || modData === true) {
         modData = {}
       }
-      return new ModuleClass(modData, this.$getParent() as BaseData)
+      return new ModuleClass(modData)
     }
     return modData
   }

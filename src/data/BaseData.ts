@@ -2,11 +2,13 @@ import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
+import DependData, { DependDataInitOption } from '../module/DependData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 import config from '../../config'
 
-export type BaseDataBindType = (target: BaseData, origin: BaseData, life: 'success' | 'fail') => void
+export type BaseDataBindType = (depend: BaseData, self: BaseData, life: 'success' | 'fail') => void
+
 export interface BaseDataBindOption {
   life?: 'load' | 'update'
   once?: boolean
@@ -27,6 +29,7 @@ export type loadFunctionType = (...args: unknown[]) => Promise<unknown>
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
+  depend?: DependDataInitOption
   module?: ModuleDataInitOption
   active?: BaseDataActiveType
   getData?: loadFunctionType
@@ -45,6 +48,7 @@ class BaseData extends DefaultData {
   static $formatConfig = { name: 'Data:BaseData', level: 80, recommend: true }
   $status: StatusData
   $promise: PromiseData
+  $depend?: DependData
   $module?: ModuleData
   $active: BaseDataActiveType
   $getData?: loadFunctionType
@@ -53,6 +57,14 @@ class BaseData extends DefaultData {
     this._triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
+    if (initOption.depend) {
+      Object.defineProperty(this, '$depend', {
+        enumerable: false,
+        configurable: false,
+        writable: true,
+        value: new DependData(initOption.depend, this)
+      })
+    }
     if (initOption.module) {
       this.$module = new ModuleData(initOption.module, this)
     }
@@ -74,14 +86,14 @@ class BaseData extends DefaultData {
   }
 
   /* --- bind&active start --- */
-  $bindLifeByActive(target: BaseData, bind: BaseDataBindType, from: 'success' | 'fail', active?: boolean, next?: () => void) {
+  $bindLifeByActive(depend: BaseData, bind: BaseDataBindType, from: 'success' | 'fail', active?: boolean, next?: () => void) {
     let sync = true
     if (active && !this.$isActive()) {
       // 需要判断激活状态且当前状态为未激活时不同步触发
       sync = false
     }
     if (sync) {
-      bind(target, this, from)
+      bind(depend, this, from)
       if (next) {
         next()
       }
@@ -89,11 +101,11 @@ class BaseData extends DefaultData {
       // 设置主数据被激活时触发bind函数
       // 设置相同id,使用replace模式，需要注意的是当函数变化后开始的函数可能还未被触发
       this.$onLife('actived', {
-        id: target.$getId('BindLife' + upperCaseFirstChar(from)),
+        id: depend.$getId('BindLife' + upperCaseFirstChar(from)),
         once: true,
         replace: true,
         data: () => {
-          bind(target, this, from)
+          bind(depend, this, from)
           if (next) {
             next()
           }
@@ -101,7 +113,8 @@ class BaseData extends DefaultData {
       })
     }
   }
-  $bindLife(target: BaseData, bind: BaseDataBindType, {
+  // 在依赖生命周期成功触发后触发bind的数据交互操作，依赖于生命周期函数
+  $bindLife(depend: BaseData, bind: BaseDataBindType, {
     life, // 生命周期名称
     once, // 成功后解除绑定
     active, // 是否只在激活状态下触发
@@ -114,29 +127,29 @@ class BaseData extends DefaultData {
       // 自动激活模式下，默认进行激活的判断
       active = true
     }
-    const currentStatus = target.$getStatus(life)
+    const currentStatus = depend.$getStatus(life)
     if (currentStatus === 'success') {
-      this.$bindLifeByActive(target, bind, 'success', active)
+      this.$bindLifeByActive(depend, bind, 'success', active)
       if (once) {
         return
       }
     } else if (fail && currentStatus === 'fail') {
-      this.$bindLifeByActive(target, bind, 'fail', active)
+      this.$bindLifeByActive(depend, bind, 'fail', active)
     }
     const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
-    const failLifeId = fail ? target.$onLife(failLifeName, {
+    const failLifeId = fail ? depend.$onLife(failLifeName, {
       once: once,
       data: () => {
-        this.$bindLifeByActive(target, bind, 'fail', active)
+        this.$bindLifeByActive(depend, bind, 'fail', active)
       }
     }) as PropertyKey : undefined
     const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    target.$onLife(successLifeName, {
+    depend.$onLife(successLifeName, {
       once: once,
       data: () => {
-        this.$bindLifeByActive(target, bind, 'success', active, (once && failLifeId) ? () => {
+        this.$bindLifeByActive(depend, bind, 'success', active, (once && failLifeId) ? () => {
           // once成功后且存在失败周期时解除失败回调
-          target.$offLife(failLifeName, failLifeId)
+          depend.$offLife(failLifeName, failLifeId)
         } : undefined)
       }
     })
@@ -290,7 +303,19 @@ class BaseData extends DefaultData {
         })
       }
     }])
-    return this._setPromise('load', promise)
+    if (this.$depend) {
+      return this._setPromise('load', new Promise((resolve, reject) => {
+        this.$depend!.$loadData().finally(() => {
+          promise.then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          })
+        })
+      }))
+    } else {
+      return this._setPromise('load', promise)
+    }
   }
   $loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
@@ -401,6 +426,9 @@ class BaseData extends DefaultData {
     }
     if (parseResetOption(destroyOption, 'life') === true) {
       this.$destroyLife()
+    }
+    if (parseResetOption(destroyOption, 'depend') === true && this.$depend) {
+      this.$depend.$destroy(true)
     }
     // 额外数据不存在destroy，因此不做销毁
     // if (parseResetOption(destroyOption, 'extra') === true) {
