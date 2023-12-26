@@ -15,6 +15,7 @@ export type importDataType = (file: File, payload?: unknown) => Promise<unknown>
 
 export interface ComplexDataInitOption extends BaseDataInitOption {
   module: ModuleDataInitOption
+  updateData?: loadFunctionType
   buildData?: buildDataType
   changeData?: changeDataType
   deleteData?: deleteDataType
@@ -26,6 +27,7 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
 class ComplexData extends BaseData {
   static $name = 'ComplexData'
   declare $module: ModuleData
+  $updateData?: loadFunctionType
   $buildData?: buildDataType
   $changeData?: changeDataType
   $deleteData?: deleteDataType
@@ -35,6 +37,7 @@ class ComplexData extends BaseData {
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this.$updateData = initOption.updateData
     this.$buildData = initOption.buildData
     this.$changeData = initOption.changeData
     this.$deleteData = initOption.deleteData
