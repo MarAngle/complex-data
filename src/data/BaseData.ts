@@ -2,19 +2,18 @@ import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
-import DependData, { DependDataInitOption } from '../module/DependData'
+import RelationData, { RelationDataInitOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 import config from '../../config'
 
-export type BaseDataBindType = (depend: BaseData, self: BaseData, life: 'success' | 'fail') => void
+export type bindLifeType = 'load' | 'update'
 
-export interface BaseDataBindOption {
-  life?: 'load' | 'update'
-  once?: boolean
-  update?: boolean
+export type bindType = (depend: BaseData, self: BaseData, from: string) => void
+
+export interface bindOption {
+  life?: bindLifeType
   active?: boolean
-  fail?: boolean
 }
 
 export type BaseDataActive = 'actived' | 'inactived'
@@ -29,7 +28,7 @@ export type loadFunctionType = (...args: unknown[]) => Promise<unknown>
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
-  depend?: DependDataInitOption
+  relation?: RelationDataInitOption
   module?: ModuleDataInitOption
   active?: BaseDataActiveType
   getData?: loadFunctionType
@@ -48,7 +47,7 @@ class BaseData extends DefaultData {
   static $formatConfig = { name: 'Data:BaseData', level: 80, recommend: true }
   $status: StatusData
   $promise: PromiseData
-  $depend?: DependData
+  $relation?: RelationData
   $module?: ModuleData
   $active: BaseDataActiveType
   $getData?: loadFunctionType
@@ -57,12 +56,12 @@ class BaseData extends DefaultData {
     this._triggerCreateLife('BaseData', 'beforeCreate', initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
-    if (initOption.depend) {
-      Object.defineProperty(this, '$depend', {
+    if (initOption.relation) {
+      Object.defineProperty(this, '$relation', {
         enumerable: false,
         configurable: false,
         writable: true,
-        value: new DependData(initOption.depend, this)
+        value: new RelationData(initOption.relation, this)
       })
     }
     if (initOption.module) {
@@ -86,7 +85,7 @@ class BaseData extends DefaultData {
   }
 
   /* --- bind&active start --- */
-  $bindLifeByActive(depend: BaseData, bind: BaseDataBindType, from: 'success' | 'fail', active?: boolean, next?: () => void) {
+  $bindDependByActive(depend: BaseData, bind: bindType, from: string, active?: boolean, next?: () => void) {
     let sync = true
     if (active && !this.$isActive()) {
       // 需要判断激活状态且当前状态为未激活时不同步触发
@@ -113,46 +112,36 @@ class BaseData extends DefaultData {
       })
     }
   }
-  // 在依赖生命周期成功触发后触发bind的数据交互操作，依赖于生命周期函数
-  $bindLife(depend: BaseData, bind: BaseDataBindType, {
-    life, // 生命周期名称
-    once, // 成功后解除绑定
+  $bindDependByLife(depend: BaseData, bind: bindType, life: bindLifeType, {
     active, // 是否只在激活状态下触发
-    fail // 失败是否触发bind
-  }: BaseDataBindOption = {}) {
-    if (!life) {
-      life = 'load'
-    }
+  }: bindOption = {}) {
     if (active === undefined && this.$active.auto) {
       // 自动激活模式下，默认进行激活的判断
       active = true
     }
+    const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
+    const successLifeName = life === 'load' ? 'loaded' : 'updated'
     const currentStatus = depend.$getStatus(life)
     if (currentStatus === 'success') {
-      this.$bindLifeByActive(depend, bind, 'success', active)
-      if (once) {
-        return
-      }
-    } else if (fail && currentStatus === 'fail') {
-      this.$bindLifeByActive(depend, bind, 'fail', active)
+      this.$bindDependByActive(depend, bind, successLifeName, active)
+    } else if (currentStatus === 'fail') {
+      this.$bindDependByActive(depend, bind, failLifeName, active)
     }
-    const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
-    const failLifeId = fail ? depend.$onLife(failLifeName, {
-      once: once,
+    const failLifeId = depend.$onLife(failLifeName, {
       data: () => {
-        this.$bindLifeByActive(depend, bind, 'fail', active)
+        this.$bindDependByActive(depend, bind, failLifeName, active)
       }
-    }) as PropertyKey : undefined
-    const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    depend.$onLife(successLifeName, {
-      once: once,
+    }) as PropertyKey
+    const successLifeId = depend.$onLife(successLifeName, {
       data: () => {
-        this.$bindLifeByActive(depend, bind, 'success', active, (once && failLifeId) ? () => {
-          // once成功后且存在失败周期时解除失败回调
-          depend.$offLife(failLifeName, failLifeId)
-        } : undefined)
+        this.$bindDependByActive(depend, bind, successLifeName, active)
       }
-    })
+    }) as PropertyKey
+  }
+  // 在依赖生命周期成功触发后触发bind的数据交互操作，依赖于生命周期函数
+  $bindDepend(depend: BaseData, bind: bindType, option: bindOption = {}) {
+    this.$bindDependByLife(depend, bind, 'load', option)
+    this.$bindDependByLife(depend, bind, 'update', option)
   }
   $getActive() {
     return this.$active.data
@@ -303,9 +292,9 @@ class BaseData extends DefaultData {
         })
       }
     }])
-    if (this.$depend) {
+    if (this.$relation) {
       return this._setPromise('load', new Promise((resolve, reject) => {
-        this.$depend!.$loadData().finally(() => {
+        this.$relation!.$loadDepend().finally(() => {
           promise.then(res => {
             resolve(res)
           }).catch(err => {
@@ -427,8 +416,8 @@ class BaseData extends DefaultData {
     if (parseResetOption(destroyOption, 'life') === true) {
       this.$destroyLife()
     }
-    if (parseResetOption(destroyOption, 'depend') === true && this.$depend) {
-      this.$depend.$destroy(true)
+    if (parseResetOption(destroyOption, 'depend') === true && this.$relation) {
+      this.$relation.$destroy(true)
     }
     // 额外数据不存在destroy，因此不做销毁
     // if (parseResetOption(destroyOption, 'extra') === true) {
