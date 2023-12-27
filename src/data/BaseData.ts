@@ -2,7 +2,7 @@ import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
-import RelationData, { RelationDataInitOption } from '../module/RelationData'
+import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 import config from '../../config'
@@ -308,7 +308,24 @@ class BaseData extends DefaultData {
     }
   }
   /* --- load end --- */
-
+  
+  /* --- relation start --- */
+  $bindParent(parent: bindParentOption) {
+    if (!this.$relation) {
+      Object.defineProperty(this, '$relation', {
+        enumerable: false,
+        configurable: false,
+        writable: true,
+        value: new RelationData({
+          parent: parent
+        }, this)
+      })
+    } else {
+      this.$relation.$bindParent(parent, this)
+    }
+  }
+  /* --- relation end --- */
+  
   /* --- reset start --- */
   /**
    * 重置回调操作=>不清除额外数据以及生命周期函数

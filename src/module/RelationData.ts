@@ -1,36 +1,27 @@
 import { upperCaseFirstChar } from "complex-utils"
 import BaseData, { loadFunctionType } from "../data/BaseData"
 
-export type bindLifeType = 'load' | 'update'
+export type bindLife = 'load' | 'update'
 
-export type unbindType = (life?: string[]) => void
+export type dependUnbind = (life?: string[]) => void
 
-export type bindType = (depend: BaseData, self: BaseData, success: boolean, life: bindLifeType, unbind: unbindType) => void
+export type dependBind = (depend: BaseData, self: BaseData, success: boolean, life: bindLife, unbind: dependUnbind) => void
 
-export interface bindOption {
-  life?: bindLifeType
+export interface dependBindOption {
+  life?: bindLife
   active?: boolean
 }
 
-export type nextTypeFunction<D> = (status: 'success' | 'fail', depend: D, res: unknown) => unknown
-
-export type nextType<D> = {
-  data: nextTypeFunction<D>
-  once?: boolean | 'success'
+export interface dependBindType extends dependBindOption {
+  data: dependBind
 }
 
-export interface dependBindOption extends bindOption {
-  data: bindType
-}
-
-export interface dependValueInitTypeObject<D extends BaseData = BaseData> {
+export type dependValueInitType<D extends BaseData = BaseData> = D | {
   data: D
   name?: keyof D
   args?: unknown[]
-  bind?: dependBindOption
+  bind?: dependBindType
 }
-
-export type dependValueInitType<D extends BaseData = BaseData> = D | dependValueInitTypeObject<D>
 
 export interface dependValueType<D extends BaseData = BaseData> {
   data: D
@@ -38,7 +29,12 @@ export interface dependValueType<D extends BaseData = BaseData> {
   args: unknown[]
 }
 
+export type bindParentOption = BaseData | {
+  data: BaseData
+}
+
 export interface RelationDataInitOption {
+  parent?: bindParentOption
   depend?: {
     type?: 'sync' | 'order'
     list?: dependValueInitType[]
@@ -48,7 +44,7 @@ export interface RelationDataInitOption {
 class RelationData {
   static $name = 'RelationData'
   static $formatConfig = { name: 'Data:RelationData', level: 10, recommend: false }
-  static $bindDependByActive(self: BaseData, depend: BaseData, bind: bindType, from: string, success: boolean, life: bindLifeType, unbind: () => void, active?: boolean) {
+  static $bindDependByActive(self: BaseData, depend: BaseData, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
     let sync = true
     if (active && !self.$isActive()) {
       // 需要判断激活状态且当前状态为未激活时不同步触发
@@ -69,9 +65,9 @@ class RelationData {
       })
     }
   }
-  static $bindDependByLife(self: BaseData, depend: BaseData, bind: bindType, life: bindLifeType, lifeDict: Record<string, PropertyKey> = {}, {
+  static $bindDependByLife(self: BaseData, depend: BaseData, bind: dependBind, life: bindLife, lifeDict: Record<string, PropertyKey> = {}, {
     active, // 是否只在激活状态下触发
-  }: bindOption = {}) {
+  }: dependBindOption = {}) {
     if (active === undefined && self.$active.auto) {
       // 自动激活模式下，默认进行激活的判断
       active = true
@@ -79,7 +75,7 @@ class RelationData {
     const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
     const successLifeName = life === 'load' ? 'loaded' : 'updated'
     const currentStatus = depend.$getStatus(life)
-    const unbind: unbindType = function(lifeList?: string[]) {
+    const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
         if (lifeList === undefined || lifeList.indexOf(lifeName) > -1) {
           depend.$offLife(lifeName, lifeDict[lifeName])
@@ -102,16 +98,23 @@ class RelationData {
       this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
     }
   }
-  static $bindDepend(self: BaseData, depend: BaseData, bind: bindType, option: bindOption = {}) {
+  static $bindDepend(self: BaseData, depend: BaseData, bind: dependBind, option: dependBindOption = {}) {
     const lifeDict: Record<string, PropertyKey> = {}
     this.$bindDependByLife(self, depend, bind, 'load', lifeDict, option)
     this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
   }
+  static $loadDepend(item: dependValueType) {
+    return (item.data[item.name] as loadFunctionType)(...item.args)
+  }
+  parent?: unknown
   depend?: {
     type: 'sync' | 'order'
     list: dependValueType[]
   }
   constructor(initOption: RelationDataInitOption, self: BaseData) {
+    if (initOption.parent) {
+      this.$bindParent(initOption.parent, self)
+    }
     if (initOption.depend) {
       this.depend = {
         type: initOption.depend.type || 'sync',
@@ -139,13 +142,10 @@ class RelationData {
       return item as dependValueType
     }
   }
-  protected _loadItem(item: dependValueType) {
-    return (item.data[item.name] as loadFunctionType)(...item.args)
-  }
   protected _loadSyncDepend() {
     const list: Promise<unknown>[] = []
     this.depend!.list.forEach(item => {
-      list.push(this._loadItem(item))
+      list.push(RelationData.$loadDepend(item))
     })
     return Promise.allSettled(list)
   }
@@ -156,7 +156,7 @@ class RelationData {
       const next = () => {
         index++
         if (index < this.depend!.list.length) {
-          this._loadItem(this.depend!.list[index]).then(res => {
+          RelationData.$loadDepend(this.depend!.list[index]).then(res => {
             resList.push(res)
             next()
           }).catch(err => {
@@ -168,6 +168,19 @@ class RelationData {
         }
       }
       next()
+    })
+  }
+  $bindParent(parent: bindParentOption, self: BaseData) {
+    if (parent instanceof BaseData) {
+      self.$setParent(parent)
+    } else {
+      self.$setParent(parent.data)
+    }
+    self.$onLife('parentChange', {
+      data: (current: unknown) => {
+        this.parent = current
+        self.$reloadData({ data: true, ing: true, sync: true, module: { pagination: true, choice: true } })
+      }
     })
   }
   $loadDepend() {
