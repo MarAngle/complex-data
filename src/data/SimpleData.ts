@@ -11,23 +11,15 @@ class SimpleData extends Data {
   $extra!: Record<PropertyKey, unknown>
   constructor(initOption: SimpleDataInitOption) {
     super()
-    if (getType(initOption.extra) === 'object') {
-      Object.defineProperty(this, '$extra', {
-        enumerable: false,
-        configurable: false,
-        writable: true,
-        value: initOption.extra!
-      })
-    } else {
-      Object.defineProperty(this, '$extra', {
-        enumerable: false,
-        configurable: false,
-        writable: true,
-        value: {}
-      })
-      if (initOption.extra !== undefined) {
-        this.$exportMsg('初始化extra出错，数据必须为对象！')
-      }
+    const extraType = getType(initOption.extra)
+    Object.defineProperty(this, '$extra', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: extraType === 'object' ? initOption.extra : {}
+    })
+    if (extraType !== 'object' && initOption.extra !== undefined) {
+      this.$exportMsg('初始化extra出错，数据必须为对象！')
     }
   }
   /**

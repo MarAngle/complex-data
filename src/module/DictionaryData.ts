@@ -68,6 +68,12 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
   static $formatConfig = { name: 'Data:DictionaryData', level: 50, recommend: true }
+  static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
+    for (const dictionaryValue of dictionary.$data.values()) {
+      dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
+    }
+    return targetData
+  }
   $simple?: boolean
   $data: Map<string, DictionaryValue>
   $propData?: propDataType<propDataValueType>
@@ -135,16 +141,10 @@ class DictionaryData extends DefaultData {
   }
   // 格式化函数
   $createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
-    return this._formatData({}, originData, originFrom, useSetData)
+    return DictionaryData.$formatData(this, {}, originData, originFrom, useSetData)
   }
   $updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
-    return this._formatData(targetData, originData, originFrom, useSetData)
-  }
-  protected _formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
-    for (const dictionaryValue of this.$data.values()) {
-      dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
-    }
-    return targetData
+    return DictionaryData.$formatData(this, targetData, originData, originFrom, useSetData)
   }
   $getPageItem(modName: string, ditem: DictionaryValue) {
     return ditem.$getMod(modName)!

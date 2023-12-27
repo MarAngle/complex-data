@@ -16,13 +16,18 @@ export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectV
 class SelectData<D extends SelectValueType = DefaultSelectValueType> extends SelectValue<D> implements DataWithLife {
   $load: StatusItem
   $reload: boolean
-  $life: Life
+  $life!: Life
   $pagination?: PaginationData
   $getData: getDataType<D>
   constructor(initOption: SelectDataInitOption<D>) {
     super(initOption)
     this.$load = new StatusItem('load')
-    this.$life = new Life(initOption.life)
+    Object.defineProperty(this, '$life', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: new Life(initOption.life)
+    })
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
     }

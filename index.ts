@@ -17,11 +17,11 @@ import SelectValue from './src/lib/SelectValue'
 import TipValue from './src/lib/TipValue'
 
 import ChoiceData from './src/module/ChoiceData'
-import DependData from './src/module/DependData'
 import DictionaryData from './src/module/DictionaryData'
 import ModuleData from './src/module/ModuleData'
 import PaginationData from './src/module/PaginationData'
 import PromiseData from './src/module/PromiseData'
+import RelationData from './src/module/RelationData'
 import SearchData from './src/module/SearchData'
 import StatusData from './src/module/StatusData'
 import UpdateData from './src/module/UpdateData'
@@ -46,11 +46,11 @@ export {
   TipValue,
 
   ChoiceData,
-  DependData,
   DictionaryData,
   ModuleData,
   PaginationData,
   PromiseData,
+  RelationData,
   SearchData,
   StatusData,
   UpdateData,

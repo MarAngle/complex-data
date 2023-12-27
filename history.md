@@ -1,11 +1,6 @@
 ### ToDo
-- InterfaceData的setData中关于setProp的调用更改为setData的调用
 
-### 重要
-- 将当前的Depend/parent相关功能迁移到RelationData中，不可枚举
-- 关系存在:父子/普通...父子加载基础逻辑扩展到list中
-
-### 4.0.15/16
+### 4.0.17
 - 非兼容性更新:DependData=>RelationData，位置由ModuleData转换为BaseData的不可枚举属性
 - 简化依赖相关函数，删除once等设置项，改为bind函数中传递解绑函数
 
