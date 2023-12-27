@@ -11,11 +11,16 @@ class DefaultData extends SimpleData implements DataWithLife {
   static $name = 'DefaultData'
   static $formatConfig = { name: 'Data:DefaultData', level: 40, recommend: true }
   $prop: string
-  $life: Life
+  $life!: Life
   constructor(initOption: DefaultDataInitOption) {
     super(initOption)
     this.$prop = initOption.prop || ''
-    this.$life = new Life(initOption.life)
+    Object.defineProperty(this, '$life', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: new Life(initOption.life)
+    })
     this._triggerCreateLife('DefaultData', 'beforeCreate', initOption)
     this._triggerCreateLife('DefaultData', 'created', initOption)
   }

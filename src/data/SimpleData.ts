@@ -8,13 +8,23 @@ export interface SimpleDataInitOption {
 class SimpleData extends Data {
   static $name = 'SimpleData'
   static $formatConfig = { name: 'Data:SimpleData', level: 30, recommend: false }
-  $extra: Record<PropertyKey, unknown>
+  $extra!: Record<PropertyKey, unknown>
   constructor(initOption: SimpleDataInitOption) {
     super()
     if (getType(initOption.extra) === 'object') {
-      this.$extra = initOption.extra!
+      Object.defineProperty(this, '$extra', {
+        enumerable: false,
+        configurable: false,
+        writable: true,
+        value: initOption.extra!
+      })
     } else {
-      this.$extra = {}
+      Object.defineProperty(this, '$extra', {
+        enumerable: false,
+        configurable: false,
+        writable: true,
+        value: {}
+      })
       if (initOption.extra !== undefined) {
         this.$exportMsg('初始化extra出错，数据必须为对象！')
       }

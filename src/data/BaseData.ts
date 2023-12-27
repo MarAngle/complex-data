@@ -1,4 +1,4 @@
-import { getProp, isPromise, upperCaseFirstChar } from 'complex-utils'
+import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
@@ -6,15 +6,6 @@ import RelationData, { RelationDataInitOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 import config from '../../config'
-
-export type bindLifeType = 'load' | 'update'
-
-export type bindType = (depend: BaseData, self: BaseData, from: string) => void
-
-export interface bindOption {
-  life?: bindLifeType
-  active?: boolean
-}
 
 export type BaseDataActive = 'actived' | 'inactived'
 
@@ -84,65 +75,7 @@ class BaseData extends DefaultData {
     this._triggerCreateLife('BaseData', 'created', initOption)
   }
 
-  /* --- bind&active start --- */
-  $bindDependByActive(depend: BaseData, bind: bindType, from: string, active?: boolean, next?: () => void) {
-    let sync = true
-    if (active && !this.$isActive()) {
-      // 需要判断激活状态且当前状态为未激活时不同步触发
-      sync = false
-    }
-    if (sync) {
-      bind(depend, this, from)
-      if (next) {
-        next()
-      }
-    } else {
-      // 设置主数据被激活时触发bind函数
-      // 设置相同id,使用replace模式，需要注意的是当函数变化后开始的函数可能还未被触发
-      this.$onLife('actived', {
-        id: depend.$getId('BindLife' + upperCaseFirstChar(from)),
-        once: true,
-        replace: true,
-        data: () => {
-          bind(depend, this, from)
-          if (next) {
-            next()
-          }
-        }
-      })
-    }
-  }
-  $bindDependByLife(depend: BaseData, bind: bindType, life: bindLifeType, {
-    active, // 是否只在激活状态下触发
-  }: bindOption = {}) {
-    if (active === undefined && this.$active.auto) {
-      // 自动激活模式下，默认进行激活的判断
-      active = true
-    }
-    const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
-    const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    const currentStatus = depend.$getStatus(life)
-    if (currentStatus === 'success') {
-      this.$bindDependByActive(depend, bind, successLifeName, active)
-    } else if (currentStatus === 'fail') {
-      this.$bindDependByActive(depend, bind, failLifeName, active)
-    }
-    const failLifeId = depend.$onLife(failLifeName, {
-      data: () => {
-        this.$bindDependByActive(depend, bind, failLifeName, active)
-      }
-    }) as PropertyKey
-    const successLifeId = depend.$onLife(successLifeName, {
-      data: () => {
-        this.$bindDependByActive(depend, bind, successLifeName, active)
-      }
-    }) as PropertyKey
-  }
-  // 在依赖生命周期成功触发后触发bind的数据交互操作，依赖于生命周期函数
-  $bindDepend(depend: BaseData, bind: bindType, option: bindOption = {}) {
-    this.$bindDependByLife(depend, bind, 'load', option)
-    this.$bindDependByLife(depend, bind, 'update', option)
-  }
+  /* --- active start --- */
   $getActive() {
     return this.$active.data
   }
@@ -166,7 +99,7 @@ class BaseData extends DefaultData {
     // 触发生命周期
     this.$triggerLife(this.$getActive(), this, realChange, from)
   }
-  /* --- bind&active end --- */
+  /* --- active end --- */
 
   /* --- status start --- */
   $getStatusValue(...args: Parameters<StatusData['getValue']>) {

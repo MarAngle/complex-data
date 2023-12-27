@@ -6,6 +6,10 @@
 - 关系存在:父子/普通...父子加载基础逻辑扩展到list中
 
 ### 4.0.15/16
+- 非兼容性更新:DependData=>RelationData，位置由ModuleData转换为BaseData的不可枚举属性
+- 简化依赖相关函数，删除once等设置项，改为bind函数中传递解绑函数
+
+### 4.0.15/16
 - 非兼容性更新:DictionaryData:$createEditData=>$createEditData，后续相关调用名称优化
 - 实现DefaultEditDate/DefaultEditDateRange的数据转换
 - 扩展ComplexData的常用函数，减少后期自定义类
