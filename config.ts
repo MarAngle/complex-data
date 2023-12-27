@@ -1,3 +1,4 @@
+import { DefaultEditButtonGroupOption } from "./src/dictionary/DefaultEditButtonGroup"
 
 const config = {
   active: {
@@ -72,6 +73,26 @@ const config = {
         ellipsis: true,
         auto: true
       }
+    }
+  },
+  search: {
+    menu: {
+      search: {
+        type: 'primary',
+        name: '查询',
+        prop: 'search',
+        icon: 'search'
+      },
+      reset: {
+        type: 'default',
+        name: '重置',
+        prop: 'reset',
+        icon: 'refresh'
+      }
+    } as {
+      search: DefaultEditButtonGroupOption
+      reset: DefaultEditButtonGroupOption
+      [prop: string]: undefined | DefaultEditButtonGroupOption
     }
   }
 }

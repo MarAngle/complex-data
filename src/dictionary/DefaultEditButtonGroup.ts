@@ -6,6 +6,7 @@ import { renderType } from "./DefaultMod"
 export interface DefaultEditButtonGroupOption extends DefaultEditButtonOption {
   disabled?: boolean
   name: string
+  prop: string
   render?: renderType
 }
 

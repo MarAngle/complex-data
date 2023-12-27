@@ -4,6 +4,7 @@ import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGro
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
+import config from "../../config"
 
 export interface resetFormOption {
   copy?: boolean
@@ -14,7 +15,8 @@ export interface resetFormOption {
 export interface SearchDataInitOption extends DictionaryDataInitOption {
   prop?: string
   menu?: {
-    list?: Partial<DefaultEditButtonGroupOption>[]
+    default?: false | string[]
+    list?: DefaultEditButtonGroupOption[]
   }
   formOption?: resetFormOption
 }
@@ -39,7 +41,18 @@ class SearchData extends DictionaryData {
       if (!initOption.list) {
         initOption.list = []
       }
-      const menuList = menu.list || []
+      const defaultMenuList: DefaultEditButtonGroupOption[] = []
+      if (menu.default !== false) {
+        const defaultList = menu.default || ['search', 'reset']
+        defaultList.forEach(menuName => {
+          const menuOption = config.search.menu[menuName]
+          if (menuOption) {
+            defaultMenuList.push(menuOption)
+          } else {
+            console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
+          }
+        })
+      }
       const buttonGroupInitOption = {
         prop: '$searchButtonGroup',
         name: '$searchButtonGroup',
@@ -50,7 +63,7 @@ class SearchData extends DictionaryData {
           [prop]: {
             $format: 'edit',
             type: 'buttonGroup',
-            list: menuList
+            list: menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList
           }
         }
       } as DictionaryValueInitOption
@@ -65,7 +78,7 @@ class SearchData extends DictionaryData {
     this.$search = {
       dictionary: dictionaryList,
       observe: observeList,
-      form: new form,
+      form: new form(),
       data: {}
     }
     this.$resetFormData('init', initOption.formOption)
