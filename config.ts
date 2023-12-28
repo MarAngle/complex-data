@@ -1,6 +1,9 @@
 import { DefaultEditButtonGroupOption } from "./src/dictionary/DefaultEditButtonGroup"
 
 const config = {
+  formatPixel(value: number) {
+    return value + 'px'
+  },
   active: {
     data: 'actived',
     auto: true

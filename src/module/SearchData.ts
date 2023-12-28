@@ -1,3 +1,4 @@
+import { getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryValueInitOption } from "../lib/DictionaryValue"
 import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
@@ -12,12 +13,16 @@ export interface resetFormOption {
   limit?: createEditOption['limit']
 }
 
+export type menuInitType = {
+  default?: false | string[]
+  prop?: string
+  name?: string
+  list?: DefaultEditButtonGroupOption[]
+}
+
 export interface SearchDataInitOption extends DictionaryDataInitOption {
   prop?: string
-  menu?: {
-    default?: false | string[]
-    list?: DefaultEditButtonGroupOption[]
-  }
+  menu?: menuInitType['default'] | menuInitType
   formOption?: resetFormOption
 }
 
@@ -35,40 +40,40 @@ class SearchData extends DictionaryData {
     if (initOption.simple === undefined) {
       initOption.simple = true
     }
-    const prop = initOption.prop || 'search'
-    const menu = initOption.menu
-    if (menu) {
-      if (!initOption.list) {
-        initOption.list = []
-      }
-      const defaultMenuList: DefaultEditButtonGroupOption[] = []
-      if (menu.default !== false) {
-        const defaultList = menu.default || ['search', 'reset']
-        defaultList.forEach(menuName => {
-          const menuOption = config.search.menu[menuName]
-          if (menuOption) {
-            defaultMenuList.push(menuOption)
-          } else {
-            console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
-          }
-        })
-      }
-      const buttonGroupInitOption = {
-        prop: '$searchButtonGroup',
-        name: '$searchButtonGroup',
-        simple: {
-          edit: true
-        },
-        mod: {
-          [prop]: {
-            $format: 'edit',
-            type: 'buttonGroup',
-            list: menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList
-          }
-        }
-      } as DictionaryValueInitOption
-      initOption.list.push(buttonGroupInitOption)
+    if (!initOption.list) {
+      initOption.list = []
     }
+    const prop = initOption.prop || 'search'
+    const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
+      default: initOption.menu as menuInitType['default']
+    }
+    const defaultMenuList: DefaultEditButtonGroupOption[] = []
+    if (menu.default !== false) {
+      const defaultList = menu.default || ['search', 'reset']
+      defaultList.forEach(menuName => {
+        const menuOption = config.search.menu[menuName]
+        if (menuOption) {
+          defaultMenuList.push(menuOption)
+        } else {
+          console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
+        }
+      })
+    }
+    const buttonGroupInitOption = {
+      prop: menu.prop || '$searchButtonGroup',
+      name: menu.name,
+      simple: {
+        edit: true
+      },
+      mod: {
+        [prop]: {
+          $format: 'edit',
+          type: 'buttonGroup',
+          list: menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList
+        }
+      }
+    } as DictionaryValueInitOption
+    initOption.list.push(buttonGroupInitOption)
     super(initOption)
     this._triggerCreateLife('SearchData', 'beforeCreate', initOption)
     this.$prop = prop

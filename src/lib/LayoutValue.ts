@@ -1,3 +1,4 @@
+import config from "../../config"
 
 export type LayoutValueGridType = {
   span: number
@@ -44,7 +45,7 @@ class LayoutValue {
     if (initOption.width) {
       for (const prop in initOption.width) {
         const widthValue = initOption.width[prop]
-        this.width[prop] = typeof widthValue === 'number' ? widthValue + 'px' : widthValue
+        this.width[prop] = typeof widthValue === 'number' ? config.formatPixel(widthValue) : widthValue
       }
     }
     this.grid = {

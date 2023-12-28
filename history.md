@@ -1,8 +1,10 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
-### 4.0.18
+### 4.0.18/19
 - SearchData菜单默认参数优化
+- config添加formatPixel函数
+- DefaultEditButtonGroup添加间隔设置项
 
 ### 4.0.17
 - 非兼容性更新:DependData=>RelationData，位置由ModuleData转换为BaseData的不可枚举属性
