@@ -44,7 +44,7 @@ class BaseData extends DefaultData {
   $getData?: loadFunctionType
   constructor(initOption: BaseDataInitOption) {
     super(initOption)
-    this._triggerCreateLife('BaseData', 'beforeCreate', initOption)
+    this._triggerCreateLife('BaseData', false, initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
     if (initOption.relation) {
@@ -72,7 +72,7 @@ class BaseData extends DefaultData {
         auto: true
       }
     }
-    this._triggerCreateLife('BaseData', 'created', initOption)
+    this._triggerCreateLife('BaseData', true, initOption)
   }
 
   /* --- active start --- */

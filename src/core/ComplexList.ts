@@ -7,7 +7,7 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
   $list: D[]
   constructor(initOption: ComplexListInitOption) {
     super(initOption)
-    this._triggerCreateLife('ComplexList', 'beforeCreate', initOption)
+    this._triggerCreateLife('ComplexList', false, initOption)
     this.$list = []
     this.$onLife('reseted', {
       id: 'AutoComplexListReseted',
@@ -17,7 +17,7 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
         }
       }
     })
-    this._triggerCreateLife('ComplexList', 'created', initOption)
+    this._triggerCreateLife('ComplexList', true, initOption)
   }
   $formatList (originList: O[] = [], totalNum?: number, originFrom?: string, useSetData?: boolean) {
     this.$list = this.$createListByDictionary(originList, originFrom, useSetData) as D[]

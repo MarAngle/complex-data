@@ -80,7 +80,7 @@ class DictionaryData extends DefaultData {
   $option: DictionaryDataOption
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
-    this._triggerCreateLife('DictionaryData', 'beforeCreate', initOption)
+    this._triggerCreateLife('DictionaryData', false, initOption)
     this.$simple = initOption.simple
     this.$data = new Map()
     if (!this.$simple) {
@@ -98,7 +98,7 @@ class DictionaryData extends DefaultData {
       }
     }
     this.$option = createOption({ empty: config.dictionary.empty }, initOption.option)
-    this._triggerCreateLife('DictionaryData', 'created', initOption)
+    this._triggerCreateLife('DictionaryData', true, initOption)
   }
   $setProp(value: string, prop: propDataKeys = 'id') {
     this.$propData![prop].prop = value

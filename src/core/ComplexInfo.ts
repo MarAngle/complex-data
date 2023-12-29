@@ -7,7 +7,7 @@ class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
   $info: object | D
   constructor(initOption: ComplexInfoInitOption) {
     super(initOption)
-    this._triggerCreateLife('ComplexInfo', 'beforeCreate', initOption)
+    this._triggerCreateLife('ComplexInfo', false, initOption)
     this.$info = {}
     this.$onLife('reseted', {
       id: 'AutoComplexInfoReseted',
@@ -17,7 +17,7 @@ class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
         }
       }
     })
-    this._triggerCreateLife('ComplexInfo', 'created', initOption)
+    this._triggerCreateLife('ComplexInfo', true, initOption)
   }
   $formatInfo (originData: O, originFrom = 'list', useSetData?: boolean) {
     this.$info = {

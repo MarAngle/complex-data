@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.0.20
+- 优化创建生命周期函数，通过$onCreatedLife实现生命周期创建完成回调
+
 ### 4.0.18/19
 - SearchData菜单默认参数优化
 - config添加formatPixel函数

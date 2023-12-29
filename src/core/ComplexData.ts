@@ -36,7 +36,7 @@ class ComplexData extends BaseData {
   $importData?: importDataType
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
-    this._triggerCreateLife('ComplexData', 'beforeCreate', initOption)
+    this._triggerCreateLife('ComplexData', false, initOption)
     this.$updateData = initOption.updateData
     this.$buildData = initOption.buildData
     this.$changeData = initOption.changeData
@@ -44,7 +44,7 @@ class ComplexData extends BaseData {
     this.$multipleDeleteData = initOption.multipleDeleteData
     this.$exportData = initOption.exportData
     this.$importData = initOption.importData
-    this._triggerCreateLife('ComplexData', 'created', initOption)
+    this._triggerCreateLife('ComplexData', true, initOption)
   }
   /* --- update start --- */
   $startUpdate(...args: Parameters<UpdateData['start']>) {

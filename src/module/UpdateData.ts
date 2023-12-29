@@ -29,7 +29,7 @@ class UpdateData extends DefaultData {
   trigger?: triggerType
   constructor(initOption: UpdateDataInitOption) {
     super(initOption)
-    this._triggerCreateLife('UpdateData', 'beforeCreate', initOption)
+    this._triggerCreateLife('UpdateData', false, initOption)
     this.load = {
       update: false, // 更新状态判断值，true说明update正在进行中，此时每间隔一段时间则进行触发操作
       operate: false, // 触发操作判断值，true说明trigger正在进行中
@@ -46,7 +46,7 @@ class UpdateData extends DefaultData {
     }
     this.offset = initOption.offset === undefined ? config.update.offset : initOption.offset
     this.next = this.next.bind(this as UpdateData)
-    this._triggerCreateLife('UpdateData', 'created')
+    this._triggerCreateLife('UpdateData', true)
   }
   /**
    * 获取间隔

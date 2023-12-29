@@ -75,7 +75,7 @@ class SearchData extends DictionaryData {
     } as DictionaryValueInitOption
     initOption.list.push(buttonGroupInitOption)
     super(initOption)
-    this._triggerCreateLife('SearchData', 'beforeCreate', initOption)
+    this._triggerCreateLife('SearchData', false, initOption)
     this.$prop = prop
     const dictionaryList = this.$getList(prop)
     const observeList = this.$buildObserveList(prop, dictionaryList)
@@ -87,7 +87,7 @@ class SearchData extends DictionaryData {
       data: {}
     }
     this.$resetFormData('init', initOption.formOption)
-    this._triggerCreateLife('SearchData', 'created')
+    this._triggerCreateLife('SearchData', true)
   }
   $validate(): Promise<{ status: string }> {
     return new Promise((resolve, reject) => {

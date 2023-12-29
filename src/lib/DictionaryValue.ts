@@ -174,7 +174,7 @@ class DictionaryValue extends DefaultData implements functions {
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
-    this._triggerCreateLife('DictionaryValue', 'beforeCreate', initOption)
+    this._triggerCreateLife('DictionaryValue', false, initOption)
     this.$setParent(parent)
     this.$originFrom = typeof initOption.originFrom === 'string' ? [initOption.originFrom] : ['list']
     this.$simple = initOption.simple || {}
@@ -215,7 +215,7 @@ class DictionaryValue extends DefaultData implements functions {
     for (const modName in redirect) {
       this.$mod[modName] = this.$mod[redirect[modName]]
     }
-    this._triggerCreateLife('DictionaryValue', 'created', initOption)
+    this._triggerCreateLife('DictionaryValue', true, initOption)
   }
   $getInterfaceData(target: interfaceKeys) {
     return this.$interface[target]

@@ -168,14 +168,16 @@ class ChoiceData extends Data {
    */
   $install (target: BaseData) {
     super.$install(target)
-    if (target.$module!.dictionary) {
-      this.idProp = target.$module!.dictionary.$getProp('id')
-    }
-    target.$onLife('beforeReload', {
-      id: this.$getId('BeforeReload'),
-      data: (instantiater, force: ForceValue) => {
-        this.$resetByFrom(force.module.choice, 'reload')
+    target.$onCreatedLife('BaseDataCreated', () => {
+      if (target.$module && target.$module.dictionary) {
+        this.idProp = target.$module.dictionary.$getProp('id')
       }
+      target.$onLife('beforeReload', {
+        id: this.$getId('BeforeReload'),
+        data: (instantiater, force: ForceValue) => {
+          this.$resetByFrom(force.module.choice, 'reload')
+        }
+      })
     })
   }
   /**

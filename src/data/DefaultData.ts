@@ -1,6 +1,7 @@
 import { Life, upperCaseFirstChar } from 'complex-utils'
-import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
+import { DataWithLife, LifeDataInitType, LifeInitOption } from 'complex-utils/src/class/Life'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
+import Data from './Data'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
   prop?: string
@@ -10,10 +11,16 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 class DefaultData extends SimpleData implements DataWithLife {
   static $name = 'DefaultData'
   static $formatConfig = { name: 'Data:DefaultData', level: 40, recommend: true }
+  declare $buffer: {
+    parent?: Data
+    create: Record<string, undefined | boolean>
+    [prop: string]: unknown
+  }
   $prop: string
   $life!: Life
   constructor(initOption: DefaultDataInitOption) {
     super(initOption)
+    this.$buffer.create = {}
     this.$prop = initOption.prop || ''
     Object.defineProperty(this, '$life', {
       enumerable: false,
@@ -21,8 +28,8 @@ class DefaultData extends SimpleData implements DataWithLife {
       writable: true,
       value: new Life(initOption.life)
     })
-    this._triggerCreateLife('DefaultData', 'beforeCreate', initOption)
-    this._triggerCreateLife('DefaultData', 'created', initOption)
+    this._triggerCreateLife('DefaultData', false, initOption)
+    this._triggerCreateLife('DefaultData', true, initOption)
   }
   /**
    * 触发创造生命周期
@@ -30,17 +37,28 @@ class DefaultData extends SimpleData implements DataWithLife {
    * @param {string} lifeName 生命周期
    * @param  {*[]} args 参数
    */
-  protected _triggerCreateLife(env: string, lifeName: string, ...args: unknown[]) {
+  protected _triggerCreateLife(env: string, isCreate: boolean, ...args: unknown[]) {
     if (!env) {
       this.$exportMsg('$triggerCreate函数需要传递env参数')
     }
+    const lifeName = isCreate ? 'created' : 'beforeCreate'
     const name = this.$getConstructorName()
     if (env === name) {
       // 当前环境是对应触发的类的环境时，触发独立的创建生命周期
       this.$triggerLife(lifeName, this, ...args)
+      this.$buffer.create[lifeName] = isCreate
     }
+    const lifeNameWithData = env + upperCaseFirstChar(lifeName)
     // 触发带类名称的创建生命周期
-    this.$triggerLife(env + upperCaseFirstChar(lifeName), this, ...args)
+    this.$triggerLife(lifeNameWithData, this, ...args)
+    this.$buffer.create[lifeNameWithData] = isCreate
+  }
+  $onCreatedLife(createdLifeName: string, data: LifeDataInitType['data']) {
+    if (this.$buffer.create[createdLifeName]) {
+      data(this)
+    } else {
+      return this.$life.on(createdLifeName, { data: data })
+    }
   }
   /**
    * 设置生命周期回调函数

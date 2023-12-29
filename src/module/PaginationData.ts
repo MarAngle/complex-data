@@ -37,7 +37,7 @@ class PaginationData extends DefaultData {
   $renders?: Record<string, undefined | renderType>
   constructor(initOption: PaginationDataInitOption = {}) {
     super(initOption)
-    this._triggerCreateLife('PaginationData', 'beforeCreate', initOption)
+    this._triggerCreateLife('PaginationData', false, initOption)
     this.page = {
       data: 1,
       total: 1
@@ -72,14 +72,14 @@ class PaginationData extends DefaultData {
     this.simple = initOption.simple
     this.$attrs = initOption.attrs ? new AttrsValue(initOption.attrs) : undefined
     this.$renders = initOption.renders
-    this._triggerCreateLife('PaginationData', 'created')
+    this._triggerCreateLife('PaginationData', true)
   }
   /**
    * 设置总数
    * @param {number} num 总数
    */
   setCount(num: number, unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
-    this.count = num < 0 ? 0 : num
+    this.count = num < 0 ? 0 : (num || 0)
     this._autoCountTotal(unCountCurrent, unTriggerCurrentLife)
     this.$syncData(true, 'setCount')
   }
