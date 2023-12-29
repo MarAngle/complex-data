@@ -50,12 +50,6 @@ class SimpleData extends Data {
       delete this.$extra[prop]
     }
   }
-  /**
-   * 重置额外数据，清除全部数据
-   */
-  resetExtra() {
-    this.clearExtra()
-  }
   // 如添加销毁函数需要添加到BaseData的destroy中
 }
 

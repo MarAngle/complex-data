@@ -67,7 +67,7 @@ class ComplexData extends BaseData {
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'updateData')
     }
-    const promise = this.triggerMethodByOperate(['$updateData', args, 'update', false, (target, res) => {
+    const promise = this.triggerMethodWithOperate(['$updateData', args, 'update', false, (target, res) => {
       if (target === 'start') {
         this.triggerLife('beforeUpdate', this, ...args)
       } else if (target === 'success') {

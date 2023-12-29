@@ -154,6 +154,7 @@ export type StatusDataInitOption = {
 
 class StatusData extends Data {
   static $name = 'StatusData'
+  static $formatConfig = { name: 'Data:StatusData', level: 50, recommend: true }
   data: {
     [prop: string]: StatusItem
   }

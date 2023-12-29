@@ -141,76 +141,67 @@ class BaseData extends DefaultData {
    * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
    * @returns 
    */
-  $triggerMethodByStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+  $triggerMethodWithStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
     const statusItem = this.getStatusValue(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict, triggerCallBack)) {
-        const next = this._triggerMethodByStatusNext(method, args)
-        if (next.promise) {
-          return new Promise((resolve, reject) => {
-            next.promise!.then((res: unknown) => {
-              statusItem.triggerChange('success', false, triggerCallBack, [res])
-              resolve(res)
-            }).catch(err => {
-              statusItem.triggerChange('fail', false, triggerCallBack, [err])
-              reject(err)
-            })
+        return new Promise((resolve, reject) => {
+          this._triggerMethod(method, args)!.then((res: unknown) => {
+            statusItem.triggerChange('success', false, triggerCallBack, [res])
+            resolve(res)
+          }).catch(err => {
+            statusItem.triggerChange('fail', false, triggerCallBack, [err])
+            reject(err)
           })
-        } else {
-          this.$exportMsg(next.msg)
-          return Promise.reject({ status: 'fail', code: next.code })
-        }
+        })
       } else {
-        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodByStatus函数在严格校验下不允许被触发！`)
+        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
         return Promise.reject({ status: 'fail', code: 'status clash' })
       }
     } else {
-      this.$exportMsg(`${statusProp}状态不存在，$triggerMethodByStatus函数失败！`)
+      this.$exportMsg(`${statusProp}状态不存在，$triggerMethodWithStatus函数失败！`)
       return Promise.reject({ status: 'fail', code: 'status empty' })
     }
   }
-  protected _triggerMethodByStatusNext(method: string, args: unknown[]) {
-    const next: {
-      promise: null | Promise<unknown>,
-      msg: string,
-      code: string
-    } = {
-      promise: null,
-      msg: '',
-      code: ''
-    }
+  protected _triggerMethod(method: string, args: unknown[]) {
     if (typeof method === 'string') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof ((this as unknown as any)[method]) === 'function') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        next.promise = (this as unknown as any)[method](...args)
+        const promise = (this as unknown as any)[method](...args)
+        if (!promise || !isPromise(promise)) {
+          this.$exportMsg(`${method}未返回Promise，$triggerMethodWithStatus函数触发失败！`)
+          return Promise.reject({ status: 'fail', code: 'return error' })
+        } else {
+          return promise
+        }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } else if ((this as unknown as any)[method] !== undefined) {
+        this.$exportMsg(`${method}不是函数，$triggerMethodWithStatus函数触发失败！`)
+        return Promise.reject({ status: 'fail', code: 'type error' })
       } else {
-        next.msg = `${method}不是函数，$triggerMethodByStatus函数触发失败！`
-        next.code = 'type error'
+        this.$exportMsg(`${method}不存在，$triggerMethodWithStatus函数触发失败！`)
+        return Promise.reject({ status: 'fail', code: 'method absent' })
       }
     } else {
-      next.msg = `method参数接受string，当前值为${method}，$triggerMethodByStatus函数触发失败！`
-      next.code = 'method error'
+      this.$exportMsg(`method参数接受string，当前值为${method}，$triggerMethodWithStatus函数触发失败！`)
+      return Promise.reject({ status: 'fail', code: 'method error' })
     }
-    if (next.promise && !isPromise(next.promise)) {
-      next.promise = null
-      next.msg = `${method}未返回Promise，$triggerMethodByStatus函数触发失败！`
-      next.code = 'return error'
-    }
-    return next
   }
+  // 触发函数联动operate
   triggerMethod(method: string, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    return this.$triggerMethodByStatus(method, args, 'operate', strict, triggerCallBack)
+    return this.$triggerMethodWithStatus(method, args, 'operate', strict, triggerCallBack)
   }
-  triggerMethodByOperate(args: Parameters<BaseData['$triggerMethodByStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    return this.triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
+  // 触发函数并联动status，再联动operate
+  triggerMethodWithOperate(args: Parameters<BaseData['$triggerMethodWithStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+    return this.triggerMethod('$triggerMethodWithStatus', args, strict, triggerCallBack)
   }
   protected _triggerLoadData(...args: unknown[]) {
     if (this.$active.auto) {
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'loadData')
     }
-    const promise = this.triggerMethodByOperate(['$getData', args, 'load', false, (target, res) => {
+    const promise = this.triggerMethodWithOperate(['$getData', args, 'load', false, (target, res) => {
       if (target === 'start') {
         this.triggerLife('beforeLoad', this, ...args)
       } else if (target === 'success') {
@@ -371,7 +362,7 @@ class BaseData extends DefaultData {
     }
     // 额外数据不存在destroy，因此不做销毁
     // if (parseResetOption(destroyOption, 'extra') === true) {
-    //   this.$clearExtra()
+    //   this.clearExtra()
     // }
     if (this.$module) {
       this.$module.destroy(destroyOption, ...args)
