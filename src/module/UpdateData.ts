@@ -129,7 +129,7 @@ class UpdateData extends DefaultData {
     } else {
       const parent = this.$getParent()
       if (parent && parent instanceof ComplexData) {
-        parent.$loadUpdateData(true).then(() => {
+        parent.loadUpdateData(true).then(() => {
           this.next()
         }).catch(() => {
           this.next()
@@ -152,7 +152,7 @@ class UpdateData extends DefaultData {
     this.timer = setTimeout(() => {
       // 准备开始trigger操作
       this.load.operate = true
-      this.$triggerLife('beforeTrigger', this, offset)
+      this.triggerLife('beforeTrigger', this, offset)
       this._trigger(this.next, this.getIndex())
     }, this._countOffset(offset)) as unknown as number
   }
@@ -163,7 +163,7 @@ class UpdateData extends DefaultData {
   next(this: UpdateData, offset?: false | number) {
     // trigger结束
     this.load.operate = false
-    this.$triggerLife('triggered', this, offset)
+    this.triggerLife('triggered', this, offset)
     if (this.load.update && !this.load.immerdiate) {
       if (offset !== false) {
         const checkRes = this.check(this.getIndex())
@@ -222,15 +222,15 @@ class UpdateData extends DefaultData {
   resetIndex() {
     this.index = 0
   }
-  $reset(option?: boolean) {
+  reset(option?: boolean) {
     if (option !== false) {
       this.clear()
       this.resetIndex()
     }
   }
-  $destroy(option?: boolean) {
+  destroy(option?: boolean) {
     if (option !== false) {
-      this.$reset(option)
+      this.reset(option)
     }
   }
 }

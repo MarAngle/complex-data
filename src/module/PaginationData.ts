@@ -122,7 +122,7 @@ class PaginationData extends DefaultData {
       this.page.data = current
       this.$syncData(true, 'setPage')
       if (!unTriggerCurrentLife) {
-        this.$triggerLife('change', this, 'current', current)
+        this.triggerLife('change', this, 'current', current)
       }
     }
   }
@@ -141,7 +141,7 @@ class PaginationData extends DefaultData {
     this.size.data = size
     this._autoCountTotal(unCountCurrent, true)
     if (!unTriggerSizeLife) {
-      this.$triggerLife('change', this, 'size', {
+      this.triggerLife('change', this, 'size', {
         size: size,
         page: this.getPage()
       })
@@ -164,7 +164,7 @@ class PaginationData extends DefaultData {
     this.setSize(data.size, true)
     this.setPage(data.page)
     if (!unTriggerCurrentAndSizeLife) {
-      this.$triggerLife('change', this, 'currentAndSize', data)
+      this.triggerLife('change', this, 'currentAndSize', data)
     }
   }
   /**
@@ -188,13 +188,24 @@ class PaginationData extends DefaultData {
     const end = start + size
     return list.slice(start, end)
   }
+  reset(option?: boolean) {
+    if (option !== false) {
+      this.setCount(0, true)
+      this.setPage(1)
+    }
+  }
+  destroy(option?: boolean) {
+    if (option !== false) {
+      this.reset(option)
+    }
+  }
   /**
    * 模块加载
    * @param {object} target 加载到的目标
    */
   $install(target: BaseData) {
     super.$install(target)
-    target.$onLife('beforeReload', {
+    target.onLife('beforeReload', {
       id: this.$getId('BeforeReload'),
       data: (instantiater, force: ForceValue) => {
         let pageResetOption = force.module.pagination
@@ -219,7 +230,7 @@ class PaginationData extends DefaultData {
         }
       }
     })
-    // target.$onLife('reseted', {
+    // target.onLife('reseted', {
     //   id: this.$getId('Reseted'),
     //   data: (instantiater, resetOption) => {
     //     if (target.$parseResetOption(resetOption, 'pagination') !== false) {
@@ -227,10 +238,10 @@ class PaginationData extends DefaultData {
     //     }
     //   }
     // })
-    this.$onLife('change', {
+    this.onLife('change', {
       id: target.$getId('PaginationChange'),
       data: (instantiater, prop, current) => {
-        target.$triggerLife('paginationChange', instantiater, prop, current)
+        target.triggerLife('paginationChange', instantiater, prop, current)
       }
     })
   }
@@ -240,20 +251,9 @@ class PaginationData extends DefaultData {
    */
   $uninstall(target: BaseData) {
     super.$uninstall(target)
-    target.$offLife('beforeReload', this.$getId('BeforeReload'))
-    // target.$offLife('reseted', this.$getId('Reseted'))
-    this.$offLife('change', target.$getId('PaginationChange'))
-  }
-  $reset(option?: boolean) {
-    if (option !== false) {
-      this.setCount(0, true)
-      this.setPage(1)
-    }
-  }
-  $destroy(option?: boolean) {
-    if (option !== false) {
-      this.$reset(option)
-    }
+    target.offLife('beforeReload', this.$getId('BeforeReload'))
+    // target.offLife('reseted', this.$getId('Reseted'))
+    this.offLife('change', target.$getId('PaginationChange'))
   }
 }
 

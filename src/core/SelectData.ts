@@ -43,29 +43,29 @@ class SelectData<D extends SelectValueType = DefaultSelectValueType> extends Sel
   }
   /* --- status end --- */
   /* --- life start --- */
-  $onLife(...args: Parameters<Life['on']>) {
+  onLife(...args: Parameters<Life['on']>) {
     return this.$life.on(...args)
   }
-  $emitLife(...args: Parameters<Life['emit']>) {
+  emitLife(...args: Parameters<Life['emit']>) {
     this.$life.emit(...args)
   }
-  $offLife(...args: Parameters<Life['off']>): boolean {
+  offLife(...args: Parameters<Life['off']>): boolean {
     return this.$life.off(...args)
   }
-  $triggerLife(...args: Parameters<Life['trigger']>) {
+  triggerLife(...args: Parameters<Life['trigger']>) {
     this.$life.trigger(...args)
   }
-  $clearLife(...args: Parameters<Life['clear']>) {
+  clearLife(...args: Parameters<Life['clear']>) {
     this.$life.clear(...args)
   }
-  $resetLife() {
+  resetLife() {
     this.$life.reset()
   }
-  $destroyLife() {
+  destroyLife() {
     this.$life.destroy()
   }
   /* --- life end --- */
-  $loadData(force?: { ing?: boolean }, ...args: unknown[]) {
+  loadData(force?: { ing?: boolean }, ...args: unknown[]) {
     const loadStatus = this.$getLoad()
     let getData = !!force || this.$reload
     // 强制加载或者需要reload的情况下，getData为真
@@ -83,11 +83,11 @@ class SelectData<D extends SelectValueType = DefaultSelectValueType> extends Sel
     if (getData) {
       return new Promise((resolve, reject) => {
         this.$setLoad('ing')
-        this.$triggerLife('beforeLoad', this, ...args)
+        this.triggerLife('beforeLoad', this, ...args)
         this.$getData(...args).then((res: unknown) => {
           // 触发生命周期重载完成事件
           this.$setLoad('success')
-          this.$triggerLife('loaded', this, {
+          this.triggerLife('loaded', this, {
             res: res,
             args: args
           })
@@ -97,7 +97,7 @@ class SelectData<D extends SelectValueType = DefaultSelectValueType> extends Sel
           // eslint-disable-next-line no-console
           console.error(err)
           // 触发生命周期重载失败事件
-          this.$triggerLife('loadFail', this, {
+          this.triggerLife('loadFail', this, {
             res: err,
             args: args
           })

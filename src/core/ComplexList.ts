@@ -9,7 +9,7 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
     super(initOption)
     this._triggerCreateLife('ComplexList', false, initOption)
     this.$list = []
-    this.$onLife('reseted', {
+    this.onLife('reseted', {
       id: 'AutoComplexListReseted',
       data: (resetOption) => {
         if (resetOption.list !== false) {
@@ -19,14 +19,14 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
     })
     this._triggerCreateLife('ComplexList', true, initOption)
   }
-  $formatList (originList: O[] = [], totalNum?: number, originFrom?: string, useSetData?: boolean) {
-    this.$list = this.$createListByDictionary(originList, originFrom, useSetData) as D[]
-    this.$setPageCount(totalNum!)
-    this.$syncData(true, '$formatList')
+  formatList (originList: O[] = [], totalNum?: number, originFrom?: string, useSetData?: boolean) {
+    this.$list = this.createListByDictionary(originList, originFrom, useSetData) as D[]
+    this.setPageCount(totalNum!)
+    this.$syncData(true, 'formatList')
   }
-  $getValue (data: unknown, prop?: string) {
+  getValue (data: unknown, prop?: string) {
     if (!prop) {
-      prop = this.$getDictionaryProp('id')
+      prop = this.getDictionaryProp('id')
     }
     for (let i = 0; i < this.$list.length; i++) {
       const item = this.$list[i]
@@ -35,10 +35,10 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
       }
     }
   }
-  $getValueIndex(item: D) {
+  getValueIndex(item: D) {
     return this.$list.indexOf(item)
   }
-  $getValueByIndex(index: number) {
+  getValueByIndex(index: number) {
     return this.$list[index]
   }
 }

@@ -105,25 +105,25 @@ class ModuleData extends Data {
     }
     return name
   }
-  $reset(resetOption: resetOptionType, ...args: unknown[]) {
+  reset(resetOption: resetOptionType, ...args: unknown[]) {
     ModuleDataKeys.forEach(modName => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
       if (resetOption[modName] !== false) {
         if (modData && modData.$reset) {
-          modData.$reset(resetOption[modName], ...args)
+          modData.reset(resetOption[modName], ...args)
         }
       }
     })
   }
-  $destroy(destroyOption: resetOptionType, ...args: unknown[]) {
-    this.$reset(destroyOption)
+  destroy(destroyOption: resetOptionType, ...args: unknown[]) {
+    this.reset(destroyOption)
     ModuleDataKeys.forEach(modName => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
       if (destroyOption[modName] !== false) {
         if (modData && modData.$destroy) {
-          modData.$destroy(destroyOption[modName], ...args)
+          modData.destroy(destroyOption[modName], ...args)
         }
       }
     })

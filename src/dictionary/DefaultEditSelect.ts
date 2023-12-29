@@ -54,7 +54,7 @@ class DefaultEditSelect extends DefaultLoadEdit{
   protected _clearData() {
     this.$option.list = []
     if (this.$pagination) {
-      this.$pagination.$reset(true)
+      this.$pagination.reset(true)
     }
   }
 }

@@ -100,56 +100,56 @@ class DictionaryData extends DefaultData {
     this.$option = createOption({ empty: config.dictionary.empty }, initOption.option)
     this._triggerCreateLife('DictionaryData', true, initOption)
   }
-  $setProp(value: string, prop: propDataKeys = 'id') {
+  setProp(value: string, prop: propDataKeys = 'id') {
     this.$propData![prop].prop = value
-    this.$syncData(true, '$setProp')
+    this.$syncData(true, 'setProp')
   }
-  $getProp(prop: propDataKeys = 'id') {
+  getProp(prop: propDataKeys = 'id') {
     return this.$propData![prop].prop
   }
-  $setPropValue(value: unknown, prop: propDataKeys = 'id') {
+  setPropValue(value: unknown, prop: propDataKeys = 'id') {
     this.$propData![prop].value = value
-    this.$syncData(true, '$setPropValue')
+    this.$syncData(true, 'setPropValue')
   }
-  $getPropValue(prop: propDataKeys = 'id') {
+  getPropValue(prop: propDataKeys = 'id') {
     return this.$propData![prop].value
   }
-  $getValue(prop: string) {
+  getValue(prop: string) {
     return this.$data.get(prop)
   }
   // 重新构建字典数据
-  $updateDictionary(dictionaryInitOptionList: DictionaryValueInitOption[], option: { clear?: boolean, replace?: boolean } = {}) {
-    this.$triggerLife('beforeUpdate', this, dictionaryInitOptionList, option)
+  updateDictionary(dictionaryInitOptionList: DictionaryValueInitOption[], option: { clear?: boolean, replace?: boolean } = {}) {
+    this.triggerLife('beforeUpdate', this, dictionaryInitOptionList, option)
     if (option.clear) {
       this.$data.clear()
     }
     for (let n = 0; n < dictionaryInitOptionList.length; n++) {
       const dictionaryValueInitOption = dictionaryInitOptionList[n]
       const prop = dictionaryValueInitOption.prop
-      if (!this.$getValue(prop) || option.replace) {
+      if (!this.getValue(prop) || option.replace) {
         this.$data.set(prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
     }
-    this.$triggerLife('updated', this, dictionaryInitOptionList, option)
+    this.triggerLife('updated', this, dictionaryInitOptionList, option)
   }
-  $createList(originList: Record<PropertyKey, unknown>[] = [], originFrom = 'list', useSetData?: boolean) {
+  createList(originList: Record<PropertyKey, unknown>[] = [], originFrom = 'list', useSetData?: boolean) {
     const targetList = []
     for (let i = 0; i < originList.length; i++) {
-      targetList.push(this.$createData(originList[i], originFrom, useSetData))
+      targetList.push(this.createData(originList[i], originFrom, useSetData))
     }
     return targetList
   }
   // 格式化函数
-  $createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
+  createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
     return DictionaryData.$formatData(this, {}, originData, originFrom, useSetData)
   }
-  $updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
+  updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
     return DictionaryData.$formatData(this, targetData, originData, originFrom, useSetData)
   }
   $getPageItem(modName: string, ditem: DictionaryValue) {
     return ditem.$getMod(modName)!
   }
-  $getList(modName: string) {
+  getList(modName: string) {
     const list: DictionaryValue[] = []
     for (const ditem of this.$data.values()) {
       const mod = ditem.$getMod(modName)
@@ -160,9 +160,9 @@ class DictionaryData extends DefaultData {
     return list
   }
   // 获取模块列表
-  $getPageList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+  getPageList(modName: string, dictionaryValueList?: DictionaryValue[]) {
     if (!dictionaryValueList) {
-      dictionaryValueList = this.$getList(modName)
+      dictionaryValueList = this.getList(modName)
     }
     const pageList: DictionaryMod[] = []
     for (let n = 0; n < dictionaryValueList.length; n++) {
@@ -171,9 +171,9 @@ class DictionaryData extends DefaultData {
     return pageList
   }
   // 获取响应式模块列表
-  $buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+  buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[]) {
     if (!dictionaryValueList) {
-      dictionaryValueList = this.$getList(modName)
+      dictionaryValueList = this.getList(modName)
     }
     const observeList = new ObserveList()
     for (let n = 0; n < dictionaryValueList.length; n++) {
@@ -181,7 +181,7 @@ class DictionaryData extends DefaultData {
     }
     return observeList
   }
-  $createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
+  createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
     return new Promise((resolve) => {
       const targetData = option.target || {}
       const from = option.from
@@ -204,7 +204,7 @@ class DictionaryData extends DefaultData {
       })
     })
   }
-  $createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string) {
+  createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string) {
     const postData: Record<string, unknown> = {}
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
@@ -242,17 +242,17 @@ class DictionaryData extends DefaultData {
   $install(target: BaseData) {
     super.$install(target)
     // 监听事件
-    this.$onLife('updated', {
+    this.onLife('updated', {
       id: target.$getId('dictionaryUpdated'),
       data: (...args) => {
-        target.$triggerLife('dictionaryUpdated', ...args)
+        target.triggerLife('dictionaryUpdated', ...args)
       }
     })
   }
   $uninstall(target: BaseData) {
     super.$uninstall(target)
     // 停止监听事件
-    this.$offLife('updated', target.$getId('dictionaryUpdated'))
+    this.offLife('updated', target.$getId('dictionaryUpdated'))
   }
 }
 

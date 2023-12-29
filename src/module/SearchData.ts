@@ -77,8 +77,8 @@ class SearchData extends DictionaryData {
     super(initOption)
     this._triggerCreateLife('SearchData', false, initOption)
     this.$prop = prop
-    const dictionaryList = this.$getList(prop)
-    const observeList = this.$buildObserveList(prop, dictionaryList)
+    const dictionaryList = this.getList(prop)
+    const observeList = this.buildObserveList(prop, dictionaryList)
     const form = SearchData.$form!
     this.$search = {
       dictionary: dictionaryList,
@@ -109,12 +109,12 @@ class SearchData extends DictionaryData {
     })
   }
   syncFormData() {
-    this.$search.data = this.$createPostData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
+    this.$search.data = this.createPostData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
     this.$syncData(true, 'syncFormData')
   }
   $resetFormData(from = '' , option: resetFormOption = {}) {
     const search = this.$search
-    this.$createEditData(search.dictionary, this.$prop, undefined, {
+    this.createEditData(search.dictionary, this.$prop, undefined, {
       target: search.form.getData(),
       from: from,
       limit: option.limit
@@ -147,17 +147,17 @@ class SearchData extends DictionaryData {
   $install(target: BaseData) {
     super.$install(target)
     // 监听事件
-    this.$onLife('updated', {
+    this.onLife('updated', {
       id: target.$getId('searchUpdated'),
       data: (...args) => {
-        target.$triggerLife('searchUpdated', ...args)
+        target.triggerLife('searchUpdated', ...args)
       }
     })
   }
   $uninstall(target: BaseData) {
     super.$uninstall(target)
     // 停止监听事件
-    this.$offLife('updated', target.$getId('searchUpdated'))
+    this.offLife('updated', target.$getId('searchUpdated'))
   }
 }
 

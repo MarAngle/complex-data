@@ -76,45 +76,45 @@ class BaseData extends DefaultData {
   }
 
   /* --- active start --- */
-  $getActive() {
+  getActive() {
     return this.$active.data
   }
-  $isActive() {
-    return this.$getActive() === 'actived'
+  isActive() {
+    return this.getActive() === 'actived'
   }
-  $changeActive(current?: 'actived' | 'inactived', from?: string) {
+  changeActive(current?: 'actived' | 'inactived', from?: string) {
     let realChange = true
     if (current) {
-      if (this.$getActive() === current) {
+      if (this.getActive() === current) {
         realChange = false
       } else {
         this.$active.data = current
       }
-    } else if (this.$getActive() === 'actived') {
+    } else if (this.getActive() === 'actived') {
       this.$active.data = 'inactived'
     } else {
       this.$active.data = 'actived'
     }
-    this.$syncData(true, '$changeActive')
+    this.$syncData(true, 'changeActive')
     // 触发生命周期
-    this.$triggerLife(this.$getActive(), this, realChange, from)
+    this.triggerLife(this.getActive(), this, realChange, from)
   }
   /* --- active end --- */
 
   /* --- status start --- */
-  $getStatusValue(...args: Parameters<StatusData['getValue']>) {
+  getStatusValue(...args: Parameters<StatusData['getValue']>) {
     return this.$status.getValue(...args)
   }
-  $setStatus(...args: Parameters<StatusData['setData']>) {
+  setStatus(...args: Parameters<StatusData['setData']>) {
     this.$status.setData(...args)
   }
-  $getStatus(target: 'load' | 'update'): StatusDataLoadValueType
-  $getStatus(target: 'operate'): StatusDataOperateValueType
-  $getStatus(target: string): StatusDataValueType
-  $getStatus(...args: Parameters<StatusData['getCurrent']>) {
+  getStatus(target: 'load' | 'update'): StatusDataLoadValueType
+  getStatus(target: 'operate'): StatusDataOperateValueType
+  getStatus(target: string): StatusDataValueType
+  getStatus(...args: Parameters<StatusData['getCurrent']>) {
     return this.$status.getCurrent(...args)
   }
-  $resetStatus() {
+  resetStatus() {
     this.$status.reset()
   }
   /* --- status end --- */
@@ -142,7 +142,7 @@ class BaseData extends DefaultData {
    * @returns 
    */
   $triggerMethodByStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    const statusItem = this.$getStatusValue(statusProp)
+    const statusItem = this.getStatusValue(statusProp)
     if (statusItem) {
       if (statusItem.triggerChange('start', strict, triggerCallBack)) {
         const next = this._triggerMethodByStatusNext(method, args)
@@ -199,27 +199,27 @@ class BaseData extends DefaultData {
     }
     return next
   }
-  $triggerMethod(method: string, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+  triggerMethod(method: string, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
     return this.$triggerMethodByStatus(method, args, 'operate', strict, triggerCallBack)
   }
-  $triggerMethodByOperate(args: Parameters<BaseData['$triggerMethodByStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    return this.$triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
+  triggerMethodByOperate(args: Parameters<BaseData['$triggerMethodByStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+    return this.triggerMethod('$triggerMethodByStatus', args, strict, triggerCallBack)
   }
   protected _triggerLoadData(...args: unknown[]) {
     if (this.$active.auto) {
       // 自动激活模式下主动触发激活操作
-      this.$changeActive('actived', 'loadData')
+      this.changeActive('actived', 'loadData')
     }
-    const promise = this.$triggerMethodByOperate(['$getData', args, 'load', false, (target, res) => {
+    const promise = this.triggerMethodByOperate(['$getData', args, 'load', false, (target, res) => {
       if (target === 'start') {
-        this.$triggerLife('beforeLoad', this, ...args)
+        this.triggerLife('beforeLoad', this, ...args)
       } else if (target === 'success') {
-        this.$triggerLife('loaded', this, {
+        this.triggerLife('loaded', this, {
           res: res,
           args: args
         })
       } else {
-        this.$triggerLife('loadFail', this, {
+        this.triggerLife('loadFail', this, {
           res: res,
           args: args
         })
@@ -227,7 +227,7 @@ class BaseData extends DefaultData {
     }])
     if (this.$relation) {
       return this._setPromise('load', new Promise((resolve, reject) => {
-        this.$relation!.$loadDepend().finally(() => {
+        this.$relation!.loadDepend().finally(() => {
           promise.then(res => {
             resolve(res)
           }).catch(err => {
@@ -239,9 +239,9 @@ class BaseData extends DefaultData {
       return this._setPromise('load', promise)
     }
   }
-  $loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
+  loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
-    const loadStatus = this.$getStatus('load')
+    const loadStatus = this.getStatus('load')
     if (['un', 'fail'].indexOf(loadStatus) > -1) {
       this._triggerLoadData(...args)
     } else if (loadStatus === 'ing') {
@@ -264,15 +264,15 @@ class BaseData extends DefaultData {
     }
     return this._triggerPromise('load', force.promise)
   }
-  $reloadData(forceInitOption: boolean | ForceValueInitOption | ForceValue = true, ...args: unknown[]) {
+  reloadData(forceInitOption: boolean | ForceValueInitOption | ForceValue = true, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
-    this.$triggerLife('beforeReload', this, force, ...args)
+    this.triggerLife('beforeReload', this, force, ...args)
     // 同步判断值
-    const promise = this.$loadData(force, ...args)
+    const promise = this.loadData(force, ...args)
     if (force.sync) {
       promise.then((res: unknown) => {
         // 触发生命周期重载完成事件
-        this.$triggerLife('reloaded', this, {
+        this.triggerLife('reloaded', this, {
           res: res,
           args: args
         })
@@ -280,7 +280,7 @@ class BaseData extends DefaultData {
         // eslint-disable-next-line no-console
         console.error(err)
         // 触发生命周期重载失败事件
-        this.$triggerLife('reloadFail', this, {
+        this.triggerLife('reloadFail', this, {
           res: err,
           args: args
         })
@@ -289,7 +289,7 @@ class BaseData extends DefaultData {
       return new Promise((resolve, reject) => {
         promise.then((res: unknown) => {
           // 触发生命周期重载完成事件
-          this.$triggerLife('reloaded', this, {
+          this.triggerLife('reloaded', this, {
             res: res,
             args: args
           })
@@ -298,7 +298,7 @@ class BaseData extends DefaultData {
           // eslint-disable-next-line no-console
           console.error(err)
           // 触发生命周期重载失败事件
-          this.$triggerLife('reloadFail', this, {
+          this.triggerLife('reloadFail', this, {
             res: err,
             args: args
           })
@@ -310,7 +310,7 @@ class BaseData extends DefaultData {
   /* --- load end --- */
   
   /* --- relation start --- */
-  $bindParent(parent: bindParentOption) {
+  bindParent(parent: bindParentOption) {
     if (!this.$relation) {
       Object.defineProperty(this, '$relation', {
         enumerable: false,
@@ -321,7 +321,7 @@ class BaseData extends DefaultData {
         }, this)
       })
     } else {
-      this.$relation.$bindParent(parent, this)
+      this.$relation.bindParent(parent, this)
     }
   }
   /* --- relation end --- */
@@ -331,52 +331,52 @@ class BaseData extends DefaultData {
    * 重置回调操作=>不清除额外数据以及生命周期函数
    * @param  {...unknown} args 参数
    */
-  $reset(resetOption: resetOptionType = {}, ...args: unknown[]) {
-    this.$triggerLife('beforeReset', this, resetOption, ...args)
+  reset(resetOption: resetOptionType = {}, ...args: unknown[]) {
+    this.triggerLife('beforeReset', this, resetOption, ...args)
     if (parseResetOption(resetOption, 'status') !== false) {
-      this.$status.$reset()
+      this.$status.reset()
     }
     if (parseResetOption(resetOption, 'promise') === true) {
-      this.$promise.$reset()
+      this.$promise.reset()
     }
     if (parseResetOption(resetOption, 'life') === true) {
-      this.$resetLife()
+      this.resetLife()
     }
     if (parseResetOption(resetOption, 'extra') === true) {
-      this.$clearExtra()
+      this.clearExtra()
     }
     if (this.$module) {
-      this.$module.$reset(resetOption, ...args)
+      this.$module.reset(resetOption, ...args)
     }
-    this.$triggerLife('reseted', this, resetOption, ...args)
+    this.triggerLife('reseted', this, resetOption, ...args)
   }
   /**
    * 销毁回调操作
    * @param  {...unknown} args 参数
    */
-  $destroy(destroyOption: resetOptionType = {}, ...args: unknown[]) {
-    this.$triggerLife('beforeDestroy', this, destroyOption, ...args)
-    this.$reset(destroyOption, ...args)
+  destroy(destroyOption: resetOptionType = {}, ...args: unknown[]) {
+    this.triggerLife('beforeDestroy', this, destroyOption, ...args)
+    this.reset(destroyOption, ...args)
     if (parseResetOption(destroyOption, 'status') !== false) {
-      this.$status.$destroy()
+      this.$status.destroy()
     }
     if (parseResetOption(destroyOption, 'promise') === true) {
-      this.$promise.$destroy()
+      this.$promise.destroy()
     }
     if (parseResetOption(destroyOption, 'life') === true) {
-      this.$destroyLife()
+      this.destroyLife()
     }
     if (parseResetOption(destroyOption, 'depend') === true && this.$relation) {
-      this.$relation.$destroy(true)
+      this.$relation.destroy(true)
     }
     // 额外数据不存在destroy，因此不做销毁
     // if (parseResetOption(destroyOption, 'extra') === true) {
     //   this.$clearExtra()
     // }
     if (this.$module) {
-      this.$module.$destroy(destroyOption, ...args)
+      this.$module.destroy(destroyOption, ...args)
     }
-    this.$triggerLife('destroyed', this, destroyOption, ...args)
+    this.triggerLife('destroyed', this, destroyOption, ...args)
   }
   /* --- reset end --- */
 }

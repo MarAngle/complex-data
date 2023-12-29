@@ -46,7 +46,7 @@ class RelationData {
   static $formatConfig = { name: 'Data:RelationData', level: 10, recommend: false }
   static $bindDependByActive(self: BaseData, depend: BaseData, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
     let sync = true
-    if (active && !self.$isActive()) {
+    if (active && !self.isActive()) {
       // 需要判断激活状态且当前状态为未激活时不同步触发
       sync = false
     }
@@ -55,7 +55,7 @@ class RelationData {
     } else {
       // 设置主数据被激活时触发bind函数
       // 设置相同id,使用replace模式，需要注意的是当函数变化后开始的函数可能还未被触发
-      self.$onLife('actived', {
+      self.onLife('actived', {
         id: depend.$getId('BindLife' + upperCaseFirstChar(from)),
         once: true,
         replace: true,
@@ -74,20 +74,20 @@ class RelationData {
     }
     const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
     const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    const currentStatus = depend.$getStatus(life)
+    const currentStatus = depend.getStatus(life)
     const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
         if (lifeList === undefined || lifeList.indexOf(lifeName) > -1) {
-          depend.$offLife(lifeName, lifeDict[lifeName])
+          depend.offLife(lifeName, lifeDict[lifeName])
         }
       }
     }
-    lifeDict[successLifeName] = depend.$onLife(successLifeName, {
+    lifeDict[successLifeName] = depend.onLife(successLifeName, {
       data: () => {
         this.$bindDependByActive(self, depend, bind, successLifeName, true, life, unbind, active)
       }
     }) as PropertyKey
-    lifeDict[failLifeName] = depend.$onLife(failLifeName, {
+    lifeDict[failLifeName] = depend.onLife(failLifeName, {
       data: () => {
         this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
       }
@@ -113,7 +113,7 @@ class RelationData {
   }
   constructor(initOption: RelationDataInitOption, self: BaseData) {
     if (initOption.parent) {
-      this.$bindParent(initOption.parent, self)
+      this.bindParent(initOption.parent, self)
     }
     if (initOption.depend) {
       this.depend = {
@@ -126,12 +126,12 @@ class RelationData {
     if (item instanceof BaseData) {
       return {
         data: item,
-        name: '$loadData',
+        name: 'loadData',
         args: [false]
       }
     } else {
       if (!item.name) {
-        item.name = '$loadData'
+        item.name = 'loadData'
       }
       if (!item.args) {
         item.args = [false]
@@ -170,20 +170,20 @@ class RelationData {
       next()
     })
   }
-  $bindParent(parent: bindParentOption, self: BaseData) {
+  bindParent(parent: bindParentOption, self: BaseData) {
     if (parent instanceof BaseData) {
       self.$setParent(parent)
     } else {
       self.$setParent(parent.data)
     }
-    self.$onLife('parentChange', {
+    self.onLife('parentChange', {
       data: (current: unknown) => {
         this.parent = current
-        self.$reloadData({ data: true, ing: true, sync: true, module: { pagination: true, choice: true } })
+        self.reloadData({ data: true, ing: true, sync: true, module: { pagination: true, choice: true } })
       }
     })
   }
-  $loadDepend() {
+  loadDepend() {
     if (this.depend) {
       if (this.depend.type === 'sync') {
         return this._loadSyncDepend()
@@ -194,7 +194,7 @@ class RelationData {
       return Promise.resolve({ status: 'success', code: 'depend is empty' })
     }
   }
-  $destroy(option?: boolean) {
+  destroy(option?: boolean) {
     if (option === true) {
       // 此处后续考虑数据的解绑操作
     }

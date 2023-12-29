@@ -24,7 +24,7 @@ class DefaultLoadEdit extends DefaultEdit{
       }
     }
   }
-  $loadData(force?: boolean, ...args: unknown[]) {
+  loadData(force?: boolean, ...args: unknown[]) {
     if (this.$getData) {
       if (force === undefined) {
         force = this.$load!.reload

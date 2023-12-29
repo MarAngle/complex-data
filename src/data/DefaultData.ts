@@ -45,12 +45,12 @@ class DefaultData extends SimpleData implements DataWithLife {
     const name = this.$getConstructorName()
     if (env === name) {
       // 当前环境是对应触发的类的环境时，触发独立的创建生命周期
-      this.$triggerLife(lifeName, this, ...args)
+      this.triggerLife(lifeName, this, ...args)
       this.$buffer.create[lifeName] = isCreate
     }
     const lifeNameWithData = env + upperCaseFirstChar(lifeName)
     // 触发带类名称的创建生命周期
-    this.$triggerLife(lifeNameWithData, this, ...args)
+    this.triggerLife(lifeNameWithData, this, ...args)
     this.$buffer.create[lifeNameWithData] = isCreate
   }
   $onCreatedLife(createdLifeName: string, data: LifeDataInitType['data']) {
@@ -66,7 +66,7 @@ class DefaultData extends SimpleData implements DataWithLife {
    * @param {*} data 回调对象
    * @returns {string | string} id/idList
    */
-  $onLife(...args: Parameters<Life['on']>) {
+  onLife(...args: Parameters<Life['on']>) {
     return this.$life.on(...args)
   }
   /**
@@ -75,7 +75,7 @@ class DefaultData extends SimpleData implements DataWithLife {
    * @param {string} id 指定ID
    * @param  {...any} args 参数
    */
-  $emitLife(...args: Parameters<Life['emit']>) {
+  emitLife(...args: Parameters<Life['emit']>) {
     this.$life.emit(...args)
   }
   /**
@@ -84,7 +84,7 @@ class DefaultData extends SimpleData implements DataWithLife {
    * @param {string} id 指定ID
    * @returns {boolean}
    */
-  $offLife(...args: Parameters<Life['off']>): boolean {
+  offLife(...args: Parameters<Life['off']>): boolean {
     return this.$life.off(...args)
   }
   /**
@@ -92,26 +92,26 @@ class DefaultData extends SimpleData implements DataWithLife {
    * @param {string} name 生命周期
    * @param  {...any} args 参数
    */
-  $triggerLife(...args: Parameters<Life['trigger']>) {
+  triggerLife(...args: Parameters<Life['trigger']>) {
     this.$life.trigger(...args)
   }
   /**
    * 清除生命周期
    * @param {string} name 生命周期
    */
-  $clearLife(...args: Parameters<Life['clear']>) {
+  clearLife(...args: Parameters<Life['clear']>) {
     this.$life.clear(...args)
   }
   /**
    * 生命周期重置
    */
-  $resetLife() {
+  resetLife() {
     this.$life.reset()
   }
   /**
    * 生命周期销毁
    */
-  $destroyLife() {
+  destroyLife() {
     this.$life.destroy()
   }
   $getName(): string {

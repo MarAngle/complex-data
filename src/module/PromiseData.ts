@@ -93,16 +93,16 @@ class PromiseData extends Data {
       }
     })
   }
-  $reset(option?: boolean) {
+  reset(option?: boolean) {
     if (option !== false) {
       for (const prop in this.data) {
         delete this.data[prop]
       }
     }
   }
-  $destroy(option?: boolean) {
+  destroy(option?: boolean) {
     if (option !== false) {
-      this.$reset(option)
+      this.reset(option)
     }
   }
 }

@@ -201,19 +201,19 @@ class StatusData extends Data {
   /**
    * 重置
    */
-  reset() {
+  $reset() {
     for (const n in this.data) {
       this.data[n].reset()
     }
   }
-  $reset(option?: boolean) {
+  reset(option?: boolean) {
     if (option !== false) {
-      this.reset()
+      this.$reset()
     }
   }
-  $destroy(option?: boolean) {
+  destroy(option?: boolean) {
     if (option !== false) {
-      this.$reset(option)
+      this.reset(option)
     }
   }
 }

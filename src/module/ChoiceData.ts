@@ -147,19 +147,19 @@ class ChoiceData extends Data {
    * 重置操作
    * @param {boolean} force 重置判断值
    */
-  reset(force?: boolean) {
+  $reset(force?: boolean) {
     if (force) {
       this.setData([], [])
     }
   }
-  $reset(option?: boolean) {
+  reset(option?: boolean) {
     if (option !== false) {
-      this.reset(true)
+      this.$reset(true)
     }
   }
-  $destroy(option?: boolean) {
+  destroy(option?: boolean) {
     if (option !== false) {
-      this.$reset(option)
+      this.reset(option)
     }
   }
   /**
@@ -170,9 +170,9 @@ class ChoiceData extends Data {
     super.$install(target)
     target.$onCreatedLife('BaseDataCreated', () => {
       if (target.$module && target.$module.dictionary) {
-        this.idProp = target.$module.dictionary.$getProp('id')
+        this.idProp = target.$module.dictionary.getProp('id')
       }
-      target.$onLife('beforeReload', {
+      target.onLife('beforeReload', {
         id: this.$getId('BeforeReload'),
         data: (instantiater, force: ForceValue) => {
           this.$resetByFrom(force.module.choice, 'reload')
@@ -186,7 +186,7 @@ class ChoiceData extends Data {
    */
   $uninstall(target: BaseData) {
     super.$uninstall(target)
-    target.$offLife('beforeReload', this.$getId('BeforeReload'))
+    target.offLife('beforeReload', this.$getId('BeforeReload'))
   }
 }
 

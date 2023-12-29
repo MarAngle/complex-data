@@ -9,7 +9,7 @@ class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
     super(initOption)
     this._triggerCreateLife('ComplexInfo', false, initOption)
     this.$info = {}
-    this.$onLife('reseted', {
+    this.onLife('reseted', {
       id: 'AutoComplexInfoReseted',
       data: (resetOption) => {
         if (resetOption.info !== false) {
@@ -19,11 +19,11 @@ class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
     })
     this._triggerCreateLife('ComplexInfo', true, initOption)
   }
-  $formatInfo (originData: O, originFrom = 'list', useSetData?: boolean) {
+  formatInfo (originData: O, originFrom = 'list', useSetData?: boolean) {
     this.$info = {
-      ...this.$updateDataByDictionary(this.$info as D, originData, originFrom, useSetData)
+      ...this.updateDataByDictionary(this.$info as D, originData, originFrom, useSetData)
     }
-    this.$syncData(true, '$formatInfo')
+    this.$syncData(true, 'formatInfo')
   }
 }
 

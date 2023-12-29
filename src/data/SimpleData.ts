@@ -27,7 +27,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  $setExtra(prop: string, data: unknown) {
+  setExtra(prop: string, data: unknown) {
     this.$extra[prop] = data
   }
   /**
@@ -35,7 +35,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  $getExtra(prop: string) {
+  getExtra(prop: string) {
     return this.$extra[prop]
   }
   /**
@@ -43,7 +43,7 @@ class SimpleData extends Data {
    * @param {string} prop 属性
    * @returns {*}
    */
-  $clearExtra(prop?: string) {
+  clearExtra(prop?: string) {
     if (!prop) {
       this.$extra = {}
     } else {
@@ -53,8 +53,8 @@ class SimpleData extends Data {
   /**
    * 重置额外数据，清除全部数据
    */
-  $resetExtra() {
-    this.$clearExtra()
+  resetExtra() {
+    this.clearExtra()
   }
   // 如添加销毁函数需要添加到BaseData的destroy中
 }
