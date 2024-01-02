@@ -1,14 +1,11 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import { DefaultEditButtonOption } from "./DefaultEditButton"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
-import { renderType } from "./DefaultMod"
 import config from "../../config"
 
 export interface DefaultEditButtonGroupOption extends DefaultEditButtonOption {
-  disabled?: boolean
   name: string
   prop: string
-  render?: renderType
 }
 
 export type DefaultEditButtonGroupClickType = (payload: payloadType) => void | Promise<unknown>

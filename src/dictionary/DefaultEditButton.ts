@@ -1,5 +1,6 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
+import { renderType } from "./DefaultMod"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
@@ -8,7 +9,9 @@ export interface DefaultEditButtonOption {
   icon?: string | (() => unknown)
   name?: string
   loading?: boolean
+  disabled?: boolean
   uploader?: boolean
+  render?: renderType
   click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }
 
@@ -29,14 +32,10 @@ class DefaultEditButton extends DefaultEdit{
     this.type = initOption.type
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditButton).$defaultOption
-    this.$option = {
-      type: option.type || $defaultOption.type,
-      icon: option.icon,
-      name: option.name,
-      loading: option.loading,
-      uploader: option.uploader,
-      click: option.click
+    if (!option.type) {
+      option.type = $defaultOption.type
     }
+    this.$option = option as DefaultEditButtonOption
   }
 }
 

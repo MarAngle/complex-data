@@ -1,8 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
-### 4.1.1-ing
+### 4.1.1
 - 修正BaseData的triggerMethod相关逻辑BUG
+- 优化检索函数的菜单默认为独立模块
 
 ### 4.1.0
 - 优化函数命名规则：外部函数以字母开头，内部函数以$开头，私有函数以_开头

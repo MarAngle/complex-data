@@ -80,24 +80,27 @@ const config = {
   },
   search: {
     menu: {
-      search: {
-        type: 'primary',
-        name: '查询',
-        prop: 'search',
-        icon: 'search'
-      },
-      reset: {
-        type: 'default',
-        name: '重置',
-        prop: 'reset',
-        icon: 'refresh'
+      group: false,
+      data: {
+        search: {
+          type: 'primary',
+          name: '查询',
+          prop: 'search',
+          icon: 'search'
+        },
+        reset: {
+          type: 'default',
+          name: '重置',
+          prop: 'reset',
+          icon: 'refresh'
+        }
+      } as {
+        search: DefaultEditButtonGroupOption
+        reset: DefaultEditButtonGroupOption
+        [prop: string]: undefined | DefaultEditButtonGroupOption
       }
-    } as {
-      search: DefaultEditButtonGroupOption
-      reset: DefaultEditButtonGroupOption
-      [prop: string]: undefined | DefaultEditButtonGroupOption
     }
-  }
+    }
 }
 
 export default config
