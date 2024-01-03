@@ -1,6 +1,5 @@
 import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue from "../lib/DictionaryValue"
-import config from "../../config"
 
 export interface DefaultListInitOption extends DefaultModInitOption {
   align?: 'center' | 'left' | 'right'
@@ -12,6 +11,11 @@ export interface DefaultListInitOption extends DefaultModInitOption {
 
 class DefaultList extends DefaultMod {
   static $name = 'DefaultList'
+  static $option = {
+    width: 100,
+    ellipsis: true,
+    auto: true
+  }
   align: 'center' | 'left' | 'right'
   width?: number | string
   ellipsis: boolean
@@ -24,9 +28,9 @@ class DefaultList extends DefaultMod {
     super(initOption, parent, modName)
     this.show = initOption.show || (parent ? parent.show : undefined)
     this.align = initOption.align || 'center'
-    this.width = initOption.width === undefined ? config.dictionary.module.list.width : initOption.width
-    this.ellipsis = initOption.ellipsis === undefined ? config.dictionary.module.list.ellipsis : initOption.ellipsis
-    this.auto = initOption.auto === undefined ? config.dictionary.module.list.auto : initOption.auto
+    this.width = initOption.width === undefined ? DefaultList.$option.width : initOption.width
+    this.ellipsis = initOption.ellipsis === undefined ? DefaultList.$option.ellipsis : initOption.ellipsis
+    this.auto = initOption.auto === undefined ? DefaultList.$option.auto : initOption.auto
   }
 }
 

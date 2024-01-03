@@ -4,7 +4,6 @@ import BaseData from "../data/BaseData"
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
-import config from "../../config"
 
 type propDataValueType = {
   prop: string
@@ -68,6 +67,8 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
   static $formatConfig = { name: 'Data:DictionaryData', level: 50, recommend: true }
+  static $empty = true
+  static $depth = Symbol('depth')
   static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of dictionary.$data.values()) {
       dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
@@ -97,7 +98,7 @@ class DictionaryData extends DefaultData {
         this.$data.set(dictionaryValueInitOption.prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
     }
-    this.$option = createOption({ empty: config.dictionary.empty }, initOption.option)
+    this.$option = createOption({ empty: DictionaryData.$empty }, initOption.option)
     this._triggerCreateLife('DictionaryData', true, initOption)
   }
   setProp(value: string, prop: propDataKeys = 'id') {

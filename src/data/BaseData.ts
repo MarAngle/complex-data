@@ -5,7 +5,6 @@ import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
-import config from '../../config'
 
 export type BaseDataActive = 'actived' | 'inactived'
 
@@ -36,6 +35,10 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
 class BaseData extends DefaultData {
   static $name = 'BaseData'
   static $formatConfig = { name: 'Data:BaseData', level: 80, recommend: true }
+  static $active = {
+    data: 'actived',
+    auto: true
+  }
   $status: StatusData
   $promise: PromiseData
   $relation?: RelationData
@@ -63,8 +66,8 @@ class BaseData extends DefaultData {
     }
     if (initOption.active) {
       this.$active = {
-        data: initOption.active.data || config.active.data,
-        auto: initOption.active.auto === undefined ? config.active.auto : initOption.active.auto
+        data: initOption.active.data || BaseData.$active.data,
+        auto: initOption.active.auto === undefined ? BaseData.$active.auto : initOption.active.auto
       }
     } else {
       this.$active = {

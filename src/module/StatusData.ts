@@ -1,5 +1,4 @@
 import Data from '../data/Data'
-import config from '../../config'
 
 export type StatusDataValueType = 'un' | 'ing' | 'success' | 'fail'
 export type StatusDataLoadValueType = 'un' | 'ing' | 'success' | 'fail'
@@ -31,6 +30,45 @@ export type StatusItemInitOption = 'load' | 'operate' | StatusItemInitOptionObje
 export class StatusItem extends Data {
   static $name = 'StatusItem'
   static $formatConfig = { name: 'Data:StatusItem', level: 50, recommend: true }
+  static $data = {
+    load: {
+      trigger: {
+        start: {
+          from: ['un', 'fail'],
+          to: 'ing'
+        },
+        success: {
+          from: ['ing'],
+          to: 'success'
+        },
+        fail: {
+          from: ['ing'],
+          to: 'fail'
+        }
+      },
+      list: ['un', 'ing', 'success', 'fail']
+    } as StatusItemInitOptionObject,
+    operate: {
+      trigger: {
+        start: {
+          from: ['un'],
+          to: 'ing'
+        },
+        success: {
+          from: ['ing'],
+          to: 'un'
+        },
+        fail: {
+          from: ['ing'],
+          to: 'un'
+        }
+      },
+      list: ['un', 'ing'],
+      option: {
+        type: 'count'
+      }
+    } as StatusItemInitOptionObject
+  }
   count?: number
   list: StatusDataValueType[]
   trigger: StatusTriggerType
@@ -39,9 +77,9 @@ export class StatusItem extends Data {
   constructor (initOption: StatusItemInitOption) {
     super()
     if (initOption === 'load') {
-      initOption = config.status.data.load as StatusItemInitOptionObject
+      initOption = StatusItem.$data.load
     } else if (initOption === 'operate') {
-      initOption = config.status.data.operate as StatusItemInitOptionObject
+      initOption = StatusItem.$data.operate
     }
     if (!initOption.list || initOption.list.length === 0) {
       this.$exportMsg('未设置初始化列表！')

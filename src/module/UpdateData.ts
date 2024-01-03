@@ -1,7 +1,6 @@
 import { isPromise } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import ComplexData from '../core/ComplexData'
-import config from '../../config'
 
 export type triggerType = (next: UpdateData["next"], index: number) => void
 
@@ -18,6 +17,7 @@ export interface UpdateDataInitOption extends DefaultDataInitOption {
 
 class UpdateData extends DefaultData {
   static $name = 'UpdateData'
+  static $offset = 60000
   load: {
     update: boolean
     operate: boolean
@@ -44,7 +44,7 @@ class UpdateData extends DefaultData {
     if (initOption.check) {
       this.check = initOption.check
     }
-    this.offset = initOption.offset === undefined ? config.update.offset : initOption.offset
+    this.offset = initOption.offset === undefined ? UpdateData.$offset : initOption.offset
     this.next = this.next.bind(this as UpdateData)
     this._triggerCreateLife('UpdateData', true)
   }

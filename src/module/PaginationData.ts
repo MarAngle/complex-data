@@ -3,7 +3,6 @@ import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
 import AttrsValue, { AttrsValueInitOption } from '../lib/AttrsValue'
 import ForceValue from '../lib/ForceValue'
-import config from '../../config'
 import { renderType } from '../dictionary/DefaultMod'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
@@ -21,6 +20,16 @@ export interface PaginationDataInitOption extends DefaultDataInitOption {
 class PaginationData extends DefaultData {
   static $name = 'PaginationData'
   static $formatConfig = { name: 'Data:PaginationData', level: 50, recommend: true }
+  static $option = {
+    size: {
+      show: true,
+      data: 10,
+      list: [10, 20, 50, 100]
+    },
+    jumper: {
+      change: true
+    }
+  }
   count: number
   page: {
     data: number
@@ -45,15 +54,15 @@ class PaginationData extends DefaultData {
     this.count = 0
     if (initOption.size === undefined) {
       this.size = {
-        show: config.pagination.size.show,
-        data: config.pagination.size.data,
-        list: [ ...config.pagination.size.list ]
+        show: PaginationData.$option.size.show,
+        data: PaginationData.$option.size.data,
+        list: [ ...PaginationData.$option.size.list ]
       }
     } else if (initOption.size === true || initOption.size === false) {
       this.size = {
         show: initOption.size,
-        data: config.pagination.size.data,
-        list: [ ...config.pagination.size.list ]
+        data: PaginationData.$option.size.data,
+        list: [ ...PaginationData.$option.size.list ]
       }
     } else if (typeof initOption.size === 'number') {
       this.size = {
