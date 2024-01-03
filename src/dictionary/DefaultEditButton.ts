@@ -8,9 +8,9 @@ export interface DefaultEditButtonOption {
   type: string
   icon?: string | (() => unknown)
   name?: string
-  loading?: boolean
-  disabled?: boolean
-  uploader?: boolean
+  loading?: boolean | ((...args: unknown[]) => boolean)
+  disabled?: boolean | ((...args: unknown[]) => boolean)
+  uploader?: (file:(File | File[])) => Promise<unknown>
   render?: renderType
   click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }

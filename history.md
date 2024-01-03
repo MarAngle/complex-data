@@ -1,6 +1,10 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.3
+- 按钮加载/禁用接收函数
+- 扩展检索菜单默认值
+
 ### 4.1.2
 - 优化字典构建函数
 - 修正检索menu.name被非预期赋值

@@ -93,10 +93,31 @@ const config = {
           name: '重置',
           prop: 'reset',
           icon: 'refresh'
+        },
+        delete: {
+          type: 'danger',
+          name: '删除',
+          prop: 'delete',
+          icon: 'delete'
+        },
+        import: {
+          type: 'primary',
+          name: '导入',
+          prop: 'import',
+          icon: 'upload'
+        },
+        export: {
+          type: 'primary',
+          name: '导出',
+          prop: 'export',
+          icon: 'download'
         }
       } as {
         search: DefaultEditButtonGroupOption
         reset: DefaultEditButtonGroupOption
+        delete: DefaultEditButtonGroupOption
+        import: DefaultEditButtonGroupOption
+        export: DefaultEditButtonGroupOption
         [prop: string]: undefined | DefaultEditButtonGroupOption
       }
     }

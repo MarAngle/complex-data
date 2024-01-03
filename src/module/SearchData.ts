@@ -26,9 +26,50 @@ export interface SearchDataInitOption extends DictionaryDataInitOption {
   formOption?: resetFormOption
 }
 
+function $parseMenu (menuInitOptionList: DefaultEditButtonGroupOption[], prop: string): DictionaryValueInitOption[]
+function $parseMenu (menuInitOptionList: DefaultEditButtonGroupOption[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
+function $parseMenu(menuInitOptionList: DefaultEditButtonGroupOption[], prop: string, group?: string, groupName?: string) {
+  if (!group) {
+    return menuInitOptionList.map(menuInitOption => {
+      return {
+        prop: menuInitOption.prop,
+        name: '',
+        simple: {
+          edit: true
+        },
+        mod: {
+          [prop]: {
+            $format: 'edit',
+            type: 'button',
+            option: {
+              ...menuInitOption
+            }
+          }
+        }
+      } as DictionaryValueInitOption
+    })
+  } else {
+    return {
+      prop: group,
+      name: groupName,
+      simple: {
+        edit: true
+      },
+      mod: {
+        [prop]: {
+          $format: 'edit',
+          type: 'buttonGroup',
+          list: menuInitOptionList
+        }
+      }
+    } as DictionaryValueInitOption
+  }
+}
+
 class SearchData extends DictionaryData {
   static $name = 'SearchData'
   static $form: null | (new() => FormValue) = null
+  static $parseMenu = $parseMenu
   $prop: string
   $search: {
     dictionary: DictionaryValue[]
@@ -60,42 +101,13 @@ class SearchData extends DictionaryData {
       })
     }
     if ((menu.group === undefined && !config.search.menu.group) || menu.group === false) {
-      const list = menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList
-      list.forEach(menuOption => {
-        const buttonInitOption = {
-          prop: menuOption.prop,
-          name: '',
-          simple: {
-            edit: true
-          },
-          mod: {
-            [prop]: {
-              $format: 'edit',
-              type: 'button',
-              option: {
-                ...menuOption
-              }
-            }
-          }
-        } as DictionaryValueInitOption
+      const list = SearchData.$parseMenu(menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList, prop)
+      list.forEach(buttonInitOption => {
         initOption.list!.push(buttonInitOption)
       })
     } else {
-      const buttonGroupInitOption = {
-        prop: menu.group === true ? '$searchButtonGroup' : menu.group,
-        name: menu.name,
-        simple: {
-          edit: true
-        },
-        mod: {
-          [prop]: {
-            $format: 'edit',
-            type: 'buttonGroup',
-            list: menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList
-          }
-        }
-      } as DictionaryValueInitOption
-      initOption.list.push(buttonGroupInitOption)
+      const dictionaryProp = (menu.group === true || menu.group === undefined) ? '$searchButtonGroup' : menu.group
+      initOption.list.push(SearchData.$parseMenu(menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList, prop, dictionaryProp, menu.name))
     }
     super(initOption)
     this._triggerCreateLife('SearchData', false, initOption)
