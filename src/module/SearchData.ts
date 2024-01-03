@@ -64,7 +64,7 @@ class SearchData extends DictionaryData {
       list.forEach(menuOption => {
         const buttonInitOption = {
           prop: menuOption.prop,
-          name: menuOption.name,
+          name: '',
           simple: {
             edit: true
           },

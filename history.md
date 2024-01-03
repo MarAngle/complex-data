@@ -1,6 +1,10 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.2
+- 优化字典构建函数
+- 修正检索menu.name被非预期赋值
+
 ### 4.1.1
 - 修正BaseData的triggerMethod相关逻辑BUG
 - 优化检索函数的菜单默认为独立模块

@@ -104,17 +104,9 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
 
-export const initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
-  if (modInitOption instanceof DefaultMod) {
-    return modInitOption
-  }
-  const $format = modInitOption.$format || modName
-  if ($format === 'list') {
-    return new DefaultList(modInitOption as DefaultListInitOption, parent, modName)
-  } else if ($format === 'info') {
-    return new DefaultInfo(modInitOption as DefaultInfoInitOption, parent, modName)
-  } else if ($format === 'edit' || modName === 'build' || modName === 'change') {
-    const editModInitOption = modInitOption as DictionaryEditModInitOption
+class DictionaryValue extends DefaultData implements functions {
+  static $name = 'DictionaryValue'
+  static _initEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
     if (!editModInitOption.type || editModInitOption.type === 'input') {
       return new DefaultEditInput(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'inputNumber') {
@@ -144,13 +136,30 @@ export const initMod = function(modInitOption: DictionaryModInitOption | Default
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
-  } else {
-    exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
   }
-}
-
-class DictionaryValue extends DefaultData implements functions {
-  static $name = 'DictionaryValue'
+  static $initEditMod = function(editModInitOption: DictionaryEditMod | DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
+    if (editModInitOption instanceof DefaultEdit) {
+      return editModInitOption
+    } else {
+      return DictionaryValue._initEditMod(editModInitOption, parent, modName)
+    }
+  }
+  static $initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
+    if (modInitOption instanceof DefaultMod) {
+      return modInitOption
+    }
+    const $format = modInitOption.$format || modName
+    if ($format === 'list') {
+      return new DefaultList(modInitOption as DefaultListInitOption, parent, modName)
+    } else if ($format === 'info') {
+      return new DefaultInfo(modInitOption as DefaultInfoInitOption, parent, modName)
+    } else if ($format === 'edit' || $format === 'build' || $format === 'change' || $format === 'search') {
+      const editModInitOption = modInitOption as DictionaryEditModInitOption
+      return DictionaryValue._initEditMod(editModInitOption, parent, modName)
+    } else {
+      exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
+    }
+  }
   $originFrom: string[]
   $simple: {
     format?: boolean
@@ -208,7 +217,7 @@ class DictionaryValue extends DefaultData implements functions {
         if ((modInitOption as DictionaryModInitOption).$redirect) {
           redirect[modName] = (modInitOption as DictionaryModInitOption).$redirect!
         } else {
-          this.$mod[modName] = initMod(modInitOption, this, modName)
+          this.$mod[modName] = DictionaryValue.$initMod(modInitOption, this, modName)
         }
       }
     }
@@ -292,20 +301,25 @@ class DictionaryValue extends DefaultData implements functions {
   $createEditValue (option: payloadType) {
     return new Promise((resolve) => {
       const mod = this.$getMod(option.type)
-      const next = (status: string, targetValue: unknown, unSet?: boolean) => {
+      const next = (code: string, targetValue: unknown, unSet?: boolean) => {
         if (!unSet) {
           setProp(option.targetData, this.$prop, targetValue, true)
         }
-        resolve({ status: status })
+        resolve({ status: !code ? 'success' : code, code: code })
       }
       if (mod) {
         if (mod instanceof DefaultEdit) {
-          next('success', this.$setEditValue(mod, option))
+          if (mod instanceof DefaultEditButton || mod instanceof DefaultEditButtonGroup || mod instanceof DefaultEditContent) {
+            // 按钮相关和content相关不生成字段
+            next('mod is not write edit', undefined, true)
+          } else {
+            next('', this.$setEditValue(mod, option))
+          }
         } else {
           next('mod is not edit', undefined, true)
         }
       } else {
-        next('mod is not exist', undefined)
+        next('mod is not exist', undefined, true)
       }
     })
   }
