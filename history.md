@@ -1,5 +1,6 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
+- 将配置项集成在类静态属性中
 
 ### 4.1.3
 - 按钮加载/禁用接收函数

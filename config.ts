@@ -1,4 +1,3 @@
-import { DefaultEditButtonGroupOption } from "./src/dictionary/DefaultEditButtonGroup"
 
 const config = {
   formatPixel(value: number) {
@@ -77,51 +76,7 @@ const config = {
         auto: true
       }
     }
-  },
-  search: {
-    menu: {
-      group: false,
-      data: {
-        search: {
-          type: 'primary',
-          name: '查询',
-          prop: 'search',
-          icon: 'search'
-        },
-        reset: {
-          type: 'default',
-          name: '重置',
-          prop: 'reset',
-          icon: 'refresh'
-        },
-        delete: {
-          type: 'danger',
-          name: '删除',
-          prop: 'delete',
-          icon: 'delete'
-        },
-        import: {
-          type: 'primary',
-          name: '导入',
-          prop: 'import',
-          icon: 'upload'
-        },
-        export: {
-          type: 'primary',
-          name: '导出',
-          prop: 'export',
-          icon: 'download'
-        }
-      } as {
-        search: DefaultEditButtonGroupOption
-        reset: DefaultEditButtonGroupOption
-        delete: DefaultEditButtonGroupOption
-        import: DefaultEditButtonGroupOption
-        export: DefaultEditButtonGroupOption
-        [prop: string]: undefined | DefaultEditButtonGroupOption
-      }
-    }
-    }
+  }
 }
 
 export default config

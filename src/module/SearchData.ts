@@ -5,7 +5,6 @@ import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGro
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
-import config from "../../config"
 
 export interface resetFormOption {
   copy?: boolean
@@ -13,11 +12,15 @@ export interface resetFormOption {
   limit?: createEditOption['limit']
 }
 
+export interface searchMenuType extends DefaultEditButtonGroupOption{
+  choice?: boolean | number
+}
+
 export type menuInitType = {
   default?: false | string[]
   group?: boolean | string
   name?: string
-  list?: DefaultEditButtonGroupOption[]
+  list?: searchMenuType[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -26,9 +29,9 @@ export interface SearchDataInitOption extends DictionaryDataInitOption {
   formOption?: resetFormOption
 }
 
-function $parseMenu (menuInitOptionList: DefaultEditButtonGroupOption[], prop: string): DictionaryValueInitOption[]
-function $parseMenu (menuInitOptionList: DefaultEditButtonGroupOption[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
-function $parseMenu(menuInitOptionList: DefaultEditButtonGroupOption[], prop: string, group?: string, groupName?: string) {
+function $parseMenu (menuInitOptionList: searchMenuType[], prop: string): DictionaryValueInitOption[]
+function $parseMenu (menuInitOptionList: searchMenuType[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
+function $parseMenu(menuInitOptionList: searchMenuType[], prop: string, group?: string, groupName?: string) {
   if (!group) {
     return menuInitOptionList.map(menuInitOption => {
       return {
@@ -68,7 +71,58 @@ function $parseMenu(menuInitOptionList: DefaultEditButtonGroupOption[], prop: st
 
 class SearchData extends DictionaryData {
   static $name = 'SearchData'
+  static $menu = {
+    group: false,
+    data: {
+      search: {
+        type: 'primary',
+        name: '查询',
+        prop: 'search',
+        icon: 'search'
+      },
+      reset: {
+        type: 'default',
+        name: '重置',
+        prop: 'reset',
+        icon: 'refresh'
+      },
+      delete: {
+        type: 'danger',
+        name: '删除',
+        prop: 'delete',
+        icon: 'delete',
+        choice: true
+      },
+      import: {
+        type: 'primary',
+        name: '导入',
+        prop: 'import',
+        icon: 'upload'
+      },
+      export: {
+        type: 'primary',
+        name: '导出',
+        prop: 'export',
+        icon: 'download'
+      }
+    } as {
+      search: searchMenuType
+      reset: searchMenuType
+      delete: searchMenuType
+      import: searchMenuType
+      export: searchMenuType
+      [prop: string]: undefined | searchMenuType
+    }
+  }
   static $form: null | (new() => FormValue) = null
+  static $getMenu = function(menuName: string) {
+    const menuOption = SearchData.$menu.data[menuName]
+    if (menuOption) {
+      return menuOption
+    } else {
+      console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
+    }
+  }
   static $parseMenu = $parseMenu
   $prop: string
   $search: {
@@ -88,19 +142,17 @@ class SearchData extends DictionaryData {
     const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
       default: initOption.menu as menuInitType['default']
     }
-    const defaultMenuList: DefaultEditButtonGroupOption[] = []
+    const defaultMenuList: searchMenuType[] = []
     if (menu.default !== false) {
       const defaultList = menu.default || ['search', 'reset']
       defaultList.forEach(menuName => {
-        const menuOption = config.search.menu.data[menuName]
+        const menuOption = SearchData.$getMenu(menuName)
         if (menuOption) {
           defaultMenuList.push(menuOption)
-        } else {
-          console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
         }
       })
     }
-    if ((menu.group === undefined && !config.search.menu.group) || menu.group === false) {
+    if ((menu.group === undefined && !SearchData.$menu.group) || menu.group === false) {
       const list = SearchData.$parseMenu(menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList, prop)
       list.forEach(buttonInitOption => {
         initOption.list!.push(buttonInitOption)
