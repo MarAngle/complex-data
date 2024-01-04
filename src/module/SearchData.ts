@@ -17,10 +17,8 @@ export interface searchMenuType extends DefaultEditButtonGroupOption{
 }
 
 export type menuInitType = {
-  default?: false | string[]
-  group?: boolean | string
-  name?: string
-  list?: searchMenuType[]
+  default?: boolean
+  list?: (string | searchMenuType)[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -72,7 +70,7 @@ function $parseMenu(menuInitOptionList: searchMenuType[], prop: string, group?: 
 class SearchData extends DictionaryData {
   static $name = 'SearchData'
   static $menu = {
-    group: false,
+    default: ['search', 'reset'],
     data: {
       search: {
         type: 'primary',
@@ -85,6 +83,12 @@ class SearchData extends DictionaryData {
         name: '重置',
         prop: 'reset',
         icon: 'refresh'
+      },
+      build: {
+        type: 'primary',
+        name: '新增',
+        prop: 'build',
+        icon: 'plus'
       },
       delete: {
         type: 'danger',
@@ -131,37 +135,15 @@ class SearchData extends DictionaryData {
     form: FormValue
     data: Record<PropertyKey, unknown>
   }
+  $menu: {
+    list: (string | searchMenuType)[]
+  }
   constructor(initOption: SearchDataInitOption) {
     if (initOption.simple === undefined) {
       initOption.simple = true
     }
-    if (!initOption.list) {
-      initOption.list = []
-    }
-    const prop = initOption.prop || 'search'
-    const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
-      default: initOption.menu as menuInitType['default']
-    }
-    const defaultMenuList: searchMenuType[] = []
-    if (menu.default !== false) {
-      const defaultList = menu.default || ['search', 'reset']
-      defaultList.forEach(menuName => {
-        const menuOption = SearchData.$getMenu(menuName)
-        if (menuOption) {
-          defaultMenuList.push(menuOption)
-        }
-      })
-    }
-    if ((menu.group === undefined && !SearchData.$menu.group) || menu.group === false) {
-      const list = SearchData.$parseMenu(menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList, prop)
-      list.forEach(buttonInitOption => {
-        initOption.list!.push(buttonInitOption)
-      })
-    } else {
-      const dictionaryProp = (menu.group === true || menu.group === undefined) ? '$searchButtonGroup' : menu.group
-      initOption.list.push(SearchData.$parseMenu(menu.list ? defaultMenuList.concat(menu.list) : defaultMenuList, prop, dictionaryProp, menu.name))
-    }
     super(initOption)
+    const prop = initOption.prop || 'search'
     this._triggerCreateLife('SearchData', false, initOption)
     this.$prop = prop
     const dictionaryList = this.getList(prop)
@@ -173,6 +155,13 @@ class SearchData extends DictionaryData {
       form: new form(),
       data: {}
     }
+    const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
+      default: initOption.menu as menuInitType['default']
+    }
+    const menuList = menu.list || []
+    this.$menu = {
+      list: menu.default !== false ? [...SearchData.$menu.default, ...menuList] : menuList
+    }    
     this.$resetFormData('init', initOption.formOption)
     this._triggerCreateLife('SearchData', true)
   }
