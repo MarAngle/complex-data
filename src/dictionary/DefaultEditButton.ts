@@ -1,6 +1,7 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import { renderType } from "./DefaultMod"
+import { DefaultEditFileOption } from "./DefaultEditFile"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
@@ -10,7 +11,8 @@ export interface DefaultEditButtonOption {
   name?: string
   loading?: boolean | ((...args: unknown[]) => boolean)
   disabled?: boolean | ((...args: unknown[]) => boolean)
-  uploader?: (file:(File | File[])) => Promise<unknown>
+  upload?: (file: File) => Promise<unknown>
+  uploadOption?: Partial<DefaultEditFileOption>
   render?: renderType
   click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }

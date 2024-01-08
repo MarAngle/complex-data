@@ -1,13 +1,22 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import { DefaultEditButtonOption } from "./DefaultEditButton"
 import DictionaryValue from "../lib/DictionaryValue"
 
+export interface uploadFileDataType {
+  data: string
+  name: string
+  url?: string
+}
+
 export interface DefaultEditFileOption {
+  type?: string
+  icon?: DefaultEditButtonOption['icon']
   accept?: string
   multipleAppend: boolean
   max: number
   min: number
   size: number
-  upload?: (file: File) => Promise<{ data: { name: string, url: string, data: string } }>
+  upload?: ((file: File) => Promise<{ file: uploadFileDataType }>) | ((file: File[]) => Promise<{ file: uploadFileDataType[] }>)
   layout: string
 }
 
@@ -30,6 +39,8 @@ class DefaultEditFile extends DefaultEdit{
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof DefaultEditFile).$defaultOption
     this.$option = {
+      type: option.type,
+      icon: option.icon,
       accept: option.accept,
       multipleAppend: option.multipleAppend === undefined ? $defaultOption.multipleAppend : option.multipleAppend,
       max: option.max || 0,
