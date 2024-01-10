@@ -19,10 +19,7 @@ class DefaultEditContent extends DefaultEdit{
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    this.$option = {
-      data: option.data,
-      style: option.style
-    }
+    this.$option = option
   }
 }
 

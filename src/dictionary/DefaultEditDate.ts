@@ -1,8 +1,12 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
-type disabledDateConfig = { start?: unknown, end?: unknown }
-type disabledTimeConfig = { start?: unknown, end?: unknown }
+export type dateConfigValue = {
+  value: unknown
+  eq?: boolean
+}
+
+export type dateConfig = { start?: dateConfigValue, end?: dateConfigValue }
 
 export interface DefaultEditDateOption {
   format: string
@@ -26,8 +30,8 @@ export interface PartialDefaultEditDateOption {
     showFormat?: string
     defaultValue?: string
   }
-  disabledDate?: disabledDateConfig | ((value: unknown) => boolean)
-  disabledTime?: disabledTimeConfig | ((value: unknown) => boolean)
+  disabledDate?: dateConfig | ((value: unknown) => boolean)
+  disabledTime?: (value: unknown) => boolean
 }
 
 export interface DefaultEditDateInitOption extends DefaultEditInitOption {
@@ -39,6 +43,41 @@ class DefaultEditDate extends DefaultEdit{
   static $name = 'DefaultEditDate'
   static $edit: undefined | ((value: undefined | string, format: string) => undefined | unknown)
   static $post: undefined | ((value: undefined | unknown, format: string) => undefined | string)
+  static $parseDate = function(dateValue: dateConfigValue): unknown { return dateValue.value }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  static $compareDate = function(target: unknown, other: unknown): 'before' | 'same' | 'after' {
+    // 判断other相对于target的状态
+    const targetTime = (target as Date).getTime()
+    const otherTime = (other as Date).getTime()
+    const offset = otherTime - targetTime
+    return offset > 0 ? 'after' : offset === 0 ? 'same' : 'before'
+  }
+  static $disabledDate = function(option: dateConfig) {
+    const start = option.start
+    const end = option.end
+    return function(value: unknown) {
+      let disable = false
+      if (start) {
+        const startCompare = DefaultEditDate.$compareDate(DefaultEditDate.$parseDate(start), value)
+        if (startCompare === 'before') {
+          // 当前时间在开始时间之前则禁用
+          disable = true
+        } else if (startCompare === 'same' && !start.eq) {
+          disable = true
+        }
+      }
+      if (!disable && end) {
+        const endCompare = DefaultEditDate.$compareDate(DefaultEditDate.$parseDate(end), value)
+        if (endCompare === 'after') {
+          // 当前时间在结束时间之后则禁用
+          disable = true
+        } else if (endCompare === 'same' && !end.eq) {
+          disable = true
+        }
+      }
+      return disable
+    }
+  }
   static $defaultOption = {
     format: 'YYYY-MM-DD',
     formatWithTime: 'YYYY-MM-DD HH:mm:ss',
@@ -46,16 +85,6 @@ class DefaultEditDate extends DefaultEdit{
     time: {
       format: 'HH:mm:ss',
       defaultValue: '00:00:00'
-    },
-    disabledDate (option: disabledDateConfig) {
-      return function(value: unknown) {
-        return false
-      }
-    },
-    disabledTime (option: disabledDateConfig) {
-      return function(value: unknown) {
-        return false
-      }
     }
   }
   type: 'date'
@@ -82,12 +111,9 @@ class DefaultEditDate extends DefaultEdit{
     }
     if (option.disabledDate) {
       if (typeof option.disabledDate === 'object') {
-        this.$option.disabledDate = $defaultOption.disabledDate(option.disabledDate)
-      }
-    }
-    if (option.disabledTime) {
-      if (typeof option.disabledTime === 'object') {
-        this.$option.disabledTime = $defaultOption.disabledTime(option.disabledTime)
+        this.$option.disabledDate = $constructor.$disabledDate(option.disabledDate)
+      } else {
+        this.$option.disabledDate = option.disabledDate
       }
     }
     if (this.edit === undefined) {

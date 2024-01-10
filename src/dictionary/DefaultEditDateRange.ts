@@ -1,9 +1,6 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DefaultEditDate from "./DefaultEditDate"
+import DefaultEditDate, { dateConfig } from "./DefaultEditDate"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
-
-type disabledDateConfig = { start?: unknown, end?: unknown }
-type disabledTimeConfig = { start?: unknown, end?: unknown }
 
 export interface DefaultEditDateRangeOption {
   format: string
@@ -29,8 +26,8 @@ export interface PartialDefaultEditDateRangeOption {
     showFormat?: string
     defaultValue?: string[]
   }
-  disabledDate?: disabledDateConfig | ((value: unknown) => boolean)
-  disabledTime?: disabledTimeConfig | ((value: unknown) => boolean)
+  disabledDate?: dateConfig | ((value: unknown) => boolean)
+  disabledTime?: ((value: unknown) => boolean)
 }
 
 export interface DefaultEditDateRangeInitOption extends DefaultEditInitOption {
@@ -50,16 +47,6 @@ class DefaultEditDateRange extends DefaultEdit{
     time: {
       format: undefined as undefined | string,
       defaultValue: ['00:00:00', '23:59:59']
-    },
-    disabledDate (option: disabledDateConfig) {
-      return function(value: unknown) {
-        return false
-      }
-    },
-    disabledTime (option: disabledDateConfig) {
-      return function(value: unknown) {
-        return false
-      }
     }
   }
   type: 'dateRange'
@@ -87,12 +74,9 @@ class DefaultEditDateRange extends DefaultEdit{
     }
     if (option.disabledDate) {
       if (typeof option.disabledDate === 'object') {
-        this.$option.disabledDate = $defaultOption.disabledDate(option.disabledDate)
-      }
-    }
-    if (option.disabledTime) {
-      if (typeof option.disabledTime === 'object') {
-        this.$option.disabledTime = $defaultOption.disabledTime(option.disabledTime)
+        this.$option.disabledDate = DefaultEditDate.$disabledDate(option.disabledDate)
+      } else {
+        this.$option.disabledDate = option.disabledDate
       }
     }
     if (this.edit === undefined) {
