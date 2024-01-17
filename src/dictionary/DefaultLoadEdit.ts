@@ -44,7 +44,7 @@ class DefaultLoadEdit extends DefaultEdit{
         return Promise.resolve({ status: this.$load!.status })
       }
     } else {
-      return Promise.reject({ status: 'fail', code: 'getData is not exist', msg: '未定义getData函数！' })
+      return Promise.resolve({ status: 'success' })
     }
   }
 }

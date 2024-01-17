@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.9
+- 优化加载编辑数据逻辑
+
 ### 4.1.8
 - 升级依赖
 - 实现disabledDate相关逻辑

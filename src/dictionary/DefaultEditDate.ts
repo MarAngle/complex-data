@@ -18,7 +18,6 @@ export interface DefaultEditDateOption {
     defaultValue: string
   }
   disabledDate?: (value: unknown) => boolean
-  disabledTime?: (value: unknown) => boolean
 }
 
 export interface PartialDefaultEditDateOption {
@@ -31,7 +30,6 @@ export interface PartialDefaultEditDateOption {
     defaultValue?: string
   }
   disabledDate?: dateConfig | ((value: unknown) => boolean)
-  disabledTime?: (value: unknown) => boolean
 }
 
 export interface DefaultEditDateInitOption extends DefaultEditInitOption {

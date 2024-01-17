@@ -20,6 +20,7 @@ import DefaultEditButton, { DefaultEditButtonInitOption } from '../dictionary/De
 import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from '../dictionary/DefaultEditButtonGroup'
 import DefaultEditContent, { DefaultEditContentInitOption } from '../dictionary/DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from '../dictionary/DefaultEditCustom'
+import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 
 export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
 
@@ -301,7 +302,7 @@ class DictionaryValue extends DefaultData implements functions {
   $createEditValue (option: payloadType) {
     return new Promise((resolve) => {
       const mod = this.$getMod(option.type)
-      const next = (code: string, targetValue: unknown, unSet?: boolean) => {
+      const next = (targetValue: unknown, code: string, unSet?: boolean) => {
         if (!unSet) {
           setProp(option.targetData, this.$prop, targetValue, true)
         }
@@ -311,15 +312,19 @@ class DictionaryValue extends DefaultData implements functions {
         if (mod instanceof DefaultEdit) {
           if (mod instanceof DefaultEditButton || mod instanceof DefaultEditButtonGroup || mod instanceof DefaultEditContent) {
             // 按钮相关和content相关不生成字段
-            next('mod is not write edit', undefined, true)
+            next(undefined, 'mod is not write edit', true)
+          } else if (mod instanceof DefaultLoadEdit) {
+            mod.loadData().finally(() => {
+              next(this.$setEditValue(mod, option), '')
+            })
           } else {
-            next('', this.$setEditValue(mod, option))
+            next(this.$setEditValue(mod, option), '')
           }
         } else {
-          next('mod is not edit', undefined, true)
+          next(undefined, 'mod is not edit', true)
         }
       } else {
-        next('mod is not exist', undefined, true)
+        next(undefined, 'mod is not exist', true)
       }
     })
   }

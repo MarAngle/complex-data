@@ -13,7 +13,6 @@ export interface DefaultEditDateRangeOption {
     defaultValue: string[]
   }
   disabledDate?: (value: unknown) => boolean
-  disabledTime?: (value: unknown) => boolean
 }
 
 export interface PartialDefaultEditDateRangeOption {
@@ -27,7 +26,6 @@ export interface PartialDefaultEditDateRangeOption {
     defaultValue?: string[]
   }
   disabledDate?: dateConfig | ((value: unknown) => boolean)
-  disabledTime?: ((value: unknown) => boolean)
 }
 
 export interface DefaultEditDateRangeInitOption extends DefaultEditInitOption {
