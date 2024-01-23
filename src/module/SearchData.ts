@@ -6,9 +6,8 @@ import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
 
-export interface resetFormOption {
+export interface resetOption {
   copy?: boolean
-  observe?: boolean
   limit?: createEditOption['limit']
 }
 
@@ -24,7 +23,8 @@ export type menuInitType = {
 export interface SearchDataInitOption extends DictionaryDataInitOption {
   prop?: string
   menu?: menuInitType['default'] | menuInitType
-  formOption?: resetFormOption
+  observe?: boolean
+  resetOption?: resetOption
 }
 
 function $parseMenu (menuInitOptionList: searchMenuType[], prop: string): DictionaryValueInitOption[]
@@ -138,6 +138,8 @@ class SearchData extends DictionaryData {
   $menu: {
     list: (string | searchMenuType)[]
   }
+  $observe?: boolean
+  $resetOption?: resetOption
   constructor(initOption: SearchDataInitOption) {
     if (initOption.simple === undefined) {
       initOption.simple = true
@@ -161,8 +163,10 @@ class SearchData extends DictionaryData {
     const menuList = menu.list || []
     this.$menu = {
       list: menu.default !== false ? [...SearchData.$menu.default, ...menuList] : menuList
-    }    
-    this.$resetFormData('init', initOption.formOption)
+    }
+    this.$observe = initOption.observe
+    this.$resetOption = initOption.resetOption
+    this.$resetFormData('init')
     this._triggerCreateLife('SearchData', true)
   }
   $validate(): Promise<{ status: string }> {
@@ -188,7 +192,10 @@ class SearchData extends DictionaryData {
     this.$search.data = this.createPostData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
     this.$syncData(true, 'syncFormData')
   }
-  $resetFormData(from = '' , option: resetFormOption = {}) {
+  $resetFormData(from = '' , option?: resetOption) {
+    if (!option) {
+      option = this.$resetOption || {}
+    }
     const search = this.$search
     this.createEditData(search.dictionary, this.$prop, undefined, {
       target: search.form.getData(),
@@ -196,7 +203,7 @@ class SearchData extends DictionaryData {
       limit: option.limit
     })
     search.form.clearValidate()
-    if (option.observe) {
+    if (this.$observe) {
       search.observe.setForm(search.form.getData(), this.$prop)
     }
     if (option.copy !== false) {

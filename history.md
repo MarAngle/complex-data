@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.10
+- 优化SearchData的observe传参
+
 ### 4.1.9
 - 优化加载编辑数据逻辑
 
