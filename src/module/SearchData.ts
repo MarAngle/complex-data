@@ -118,7 +118,7 @@ class SearchData extends DictionaryData {
       [prop: string]: undefined | searchMenuType
     }
   }
-  static $form: null | (new() => FormValue) = null
+  static $form = FormValue
   static $getMenu = function(menuName: string) {
     const menuOption = SearchData.$menu.data[menuName]
     if (menuOption) {
@@ -150,7 +150,7 @@ class SearchData extends DictionaryData {
     this.$prop = prop
     const dictionaryList = this.getList(prop)
     const observeList = this.buildObserveList(prop, dictionaryList)
-    const form = SearchData.$form!
+    const form = SearchData.$form
     this.$search = {
       dictionary: dictionaryList,
       observe: observeList,

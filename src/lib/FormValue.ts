@@ -1,5 +1,10 @@
-abstract class FormValue {
+class FormValue {
   static $name = 'FormValue'
+  static clearValidate = function(formValue: FormValue, ...args: unknown[]) { console.error('未定义clearValidate函数') }
+  static validate = function(formValue: FormValue, ...args: unknown[]) {
+    console.error('未定义validate函数')
+    return Promise.reject({ status: 'fail', code: 'undefined validate function' })
+  }
   ref: unknown
   data: Record<PropertyKey, unknown>
   constructor() {
@@ -18,8 +23,12 @@ abstract class FormValue {
   getData() {
     return this.data
   }
-  abstract clearValidate(...args: unknown[]): void
-  abstract validate(...args: unknown[]): Promise<unknown>
+  clearValidate(...args: unknown[]): void {
+    return (this.constructor as typeof FormValue).clearValidate(this, ...args)
+  }
+  validate(...args: unknown[]): Promise<unknown> {
+    return (this.constructor as typeof FormValue).validate(this, ...args)
+  }
 }
 
 export default FormValue
