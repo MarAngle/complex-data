@@ -1,7 +1,7 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
-import { renderType } from "./DefaultMod"
 import { DefaultEditFileOption } from "./DefaultEditFile"
+import { renderType } from "../type"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 

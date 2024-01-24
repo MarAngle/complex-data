@@ -6,6 +6,7 @@ import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/Attrs
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from "../lib/InterfaceLayoutValue"
+import { renderType } from "../type"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type reactiveFunction = (...args: any[]) => boolean
@@ -22,9 +23,6 @@ export interface DefaultModInitOption {
   renders?: Record<string, undefined | renderType>
   observe?: observeType
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type renderType<ARGS extends any[] = any[], RES = unknown> = (...args: ARGS) => RES
 
 class DefaultMod extends Data implements ArrayMapValueType {
   static $name = 'DefaultMod'

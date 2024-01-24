@@ -3,7 +3,7 @@ import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
 import AttrsValue, { AttrsValueInitOption } from '../lib/AttrsValue'
 import ForceValue from '../lib/ForceValue'
-import { renderType } from '../dictionary/DefaultMod'
+import { renderType } from '../type'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
   size?: boolean | number | {

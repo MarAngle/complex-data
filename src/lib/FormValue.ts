@@ -1,7 +1,7 @@
 class FormValue {
   static $name = 'FormValue'
-  static clearValidate = function(formValue: FormValue, ...args: unknown[]) { console.error('未定义clearValidate函数') }
-  static validate = function(formValue: FormValue, ...args: unknown[]) {
+  static clearValidate = function(formValue: FormValue, ...args: any[]) { console.error('未定义clearValidate函数') }
+  static validate = function(formValue: FormValue, ...args: any[]): Promise<unknown> {
     console.error('未定义validate函数')
     return Promise.reject({ status: 'fail', code: 'undefined validate function' })
   }

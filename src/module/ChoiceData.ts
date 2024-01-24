@@ -2,7 +2,7 @@ import Data from './../data/Data'
 import BaseData from '../data/BaseData'
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import ForceValue from '../lib/ForceValue'
-import { renderType } from '../dictionary/DefaultMod'
+import { renderType } from '../type'
 
 type resetOptionValue = {
   [prop: string]: boolean
