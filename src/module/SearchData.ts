@@ -1,8 +1,8 @@
 import { getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryValueInitOption } from "../lib/DictionaryValue"
-import { DefaultEditButtonGroupOption } from "../dictionary/DefaultEditButtonGroup"
 import ObserveList from "../dictionary/ObserveList"
+import { ButtonValue } from "../dictionary/DefaultEditButton"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
 
@@ -11,13 +11,13 @@ export interface resetOption {
   limit?: createEditOption['limit']
 }
 
-export interface searchMenuType extends DefaultEditButtonGroupOption{
+export interface SearchButtonValue extends ButtonValue{
   choice?: boolean | number
 }
 
 export type menuInitType = {
   default?: boolean
-  list?: (string | searchMenuType)[]
+  list?: (string | SearchButtonValue)[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -27,9 +27,9 @@ export interface SearchDataInitOption extends DictionaryDataInitOption {
   resetOption?: resetOption
 }
 
-function $parseMenu (menuInitOptionList: searchMenuType[], prop: string): DictionaryValueInitOption[]
-function $parseMenu (menuInitOptionList: searchMenuType[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
-function $parseMenu(menuInitOptionList: searchMenuType[], prop: string, group?: string, groupName?: string) {
+function $parseMenu (menuInitOptionList: SearchButtonValue[], prop: string): DictionaryValueInitOption[]
+function $parseMenu (menuInitOptionList: SearchButtonValue[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
+function $parseMenu(menuInitOptionList: SearchButtonValue[], prop: string, group?: string, groupName?: string) {
   if (!group) {
     return menuInitOptionList.map(menuInitOption => {
       return {
@@ -110,12 +110,12 @@ class SearchData extends DictionaryData {
         icon: 'download'
       }
     } as {
-      search: searchMenuType
-      reset: searchMenuType
-      delete: searchMenuType
-      import: searchMenuType
-      export: searchMenuType
-      [prop: string]: undefined | searchMenuType
+      search: SearchButtonValue
+      reset: SearchButtonValue
+      delete: SearchButtonValue
+      import: SearchButtonValue
+      export: SearchButtonValue
+      [prop: string]: undefined | SearchButtonValue
     }
   }
   static $form = FormValue
@@ -136,7 +136,7 @@ class SearchData extends DictionaryData {
     data: Record<PropertyKey, unknown>
   }
   $menu: {
-    list: (string | searchMenuType)[]
+    list: (string | SearchButtonValue)[]
   }
   $observe?: boolean
   $resetOption?: resetOption

@@ -5,39 +5,38 @@ import { renderType } from "../type"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
-export interface DefaultEditButtonOption {
-  type: string
+export interface PureButtonValue<E = MouseEvent> {
+  name: string
+  prop: string
+  type?: string
   icon?: string | (() => unknown)
-  name?: string
   loading?: boolean | ((...args: unknown[]) => boolean)
   disabled?: boolean | ((...args: unknown[]) => boolean)
+  click?: (e: E) => void | Promise<unknown> // 返回Promise则根据状态切换loading
+}
+
+export interface ButtonValue<E = MouseEvent> extends PureButtonValue<E> {
   upload?: (file: File) => Promise<unknown>
   uploadOption?: Partial<DefaultEditFileOption>
   render?: renderType
-  click?: DefaultEditButtonClickType // 返回Promise则根据状态切换loading
 }
+
+export type DefaultEditButtonOption<E = payloadType> = Partial<ButtonValue<E>>
 
 export interface DefaultEditButtonInitOption extends DefaultEditInitOption {
   type: 'button'
-  option?: Partial<DefaultEditButtonOption>
+  option?: DefaultEditButtonOption
 }
 
 class DefaultEditButton extends DefaultEdit{
   static $name = 'DefaultEditButton'
-  static $defaultOption = {
-    type: 'default'
-  }
   type: 'button'
   $option: DefaultEditButtonOption
   constructor(initOption: DefaultEditButtonInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    const $defaultOption = (this.constructor as typeof DefaultEditButton).$defaultOption
-    if (!option.type) {
-      option.type = $defaultOption.type
-    }
-    this.$option = option as DefaultEditButtonOption
+    this.$option = option
   }
 }
 

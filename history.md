@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.11
+- 优化ButtonValue类型
+
 ### 4.1.10
 - 优化SearchData的observe传参
 - 重要：FormValue由抽象类转换为实体类，避免加载顺序导致的BUG
