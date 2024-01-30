@@ -1,8 +1,8 @@
 import { getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
-import DictionaryValue, { DictionaryValueInitOption } from "../lib/DictionaryValue"
+import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
-import { ButtonValue } from "../dictionary/DefaultEditButton"
+import DefaultEditButton from "../dictionary/DefaultEditButton"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
 
@@ -11,13 +11,9 @@ export interface resetOption {
   limit?: createEditOption['limit']
 }
 
-export interface SearchButtonValue extends ButtonValue{
-  choice?: boolean | number
-}
-
 export type menuInitType = {
   default?: boolean
-  list?: (string | SearchButtonValue)[]
+  list?: (string | DictionaryEditMod)[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -27,95 +23,73 @@ export interface SearchDataInitOption extends DictionaryDataInitOption {
   resetOption?: resetOption
 }
 
-function $parseMenu (menuInitOptionList: SearchButtonValue[], prop: string): DictionaryValueInitOption[]
-function $parseMenu (menuInitOptionList: SearchButtonValue[], prop: string, group: string, groupName?: string): DictionaryValueInitOption
-function $parseMenu(menuInitOptionList: SearchButtonValue[], prop: string, group?: string, groupName?: string) {
-  if (!group) {
-    return menuInitOptionList.map(menuInitOption => {
-      return {
-        prop: menuInitOption.prop,
-        name: '',
-        simple: {
-          edit: true
-        },
-        mod: {
-          [prop]: {
-            $format: 'edit',
-            type: 'button',
-            option: {
-              ...menuInitOption
-            }
-          }
-        }
-      } as DictionaryValueInitOption
-    })
-  } else {
-    return {
-      prop: group,
-      name: groupName,
-      simple: {
-        edit: true
-      },
-      mod: {
-        [prop]: {
-          $format: 'edit',
-          type: 'buttonGroup',
-          list: menuInitOptionList
-        }
-      }
-    } as DictionaryValueInitOption
-  }
-}
-
 class SearchData extends DictionaryData {
   static $name = 'SearchData'
   static $menu = {
     default: ['search', 'reset'],
     data: {
-      search: {
-        type: 'primary',
-        name: '查询',
-        prop: 'search',
-        icon: 'search'
-      },
-      reset: {
-        type: 'default',
-        name: '重置',
-        prop: 'reset',
-        icon: 'refresh'
-      },
-      build: {
-        type: 'primary',
-        name: '新增',
-        prop: 'build',
-        icon: 'plus'
-      },
-      delete: {
-        type: 'danger',
-        name: '删除',
-        prop: 'delete',
-        icon: 'delete',
-        choice: true
-      },
-      import: {
-        type: 'primary',
-        name: '导入',
-        prop: 'import',
-        icon: 'upload'
-      },
-      export: {
-        type: 'primary',
-        name: '导出',
-        prop: 'export',
-        icon: 'download'
-      }
+      search: new DefaultEditButton({
+        type: 'button',
+        prop: '$search',
+        option: {
+          type: 'primary',
+          name: '查询',
+          icon: 'search'
+        }
+      }),
+      reset: new DefaultEditButton({
+        type: 'button',
+        prop: '$reset',
+        option: {
+          type: 'primary',
+          name: '查询',
+          icon: 'reset'
+        }
+      }),
+      build: new DefaultEditButton({
+        type: 'button',
+        prop: '$build',
+        option: {
+          type: 'primary',
+          name: '新增',
+          icon: 'build'
+        }
+      }),
+      delete: new DefaultEditButton({
+        type: 'button',
+        prop: '$delete',
+        option: {
+          type: 'danger',
+          name: '删除',
+          icon: 'delete'
+        }
+      }),
+      import: new DefaultEditButton({
+        type: 'button',
+        prop: '$import',
+        option: {
+          type: 'primary',
+          name: '导入',
+          icon: 'import'
+        }
+      }),
+      export: new DefaultEditButton({
+        type: 'button',
+        prop: '$export',
+        option: {
+          type: 'primary',
+          name: '导出',
+          icon: 'export'
+        }
+      })
     } as {
-      search: SearchButtonValue
-      reset: SearchButtonValue
-      delete: SearchButtonValue
-      import: SearchButtonValue
-      export: SearchButtonValue
-      [prop: string]: undefined | SearchButtonValue
+      search: DefaultEditButton
+      reset: DefaultEditButton
+      build: DefaultEditButton
+      delete: DefaultEditButton
+      import: DefaultEditButton
+      export: DefaultEditButton
+      [prop: string]: undefined | DictionaryEditMod
     }
   }
   static $form = FormValue
@@ -127,7 +101,6 @@ class SearchData extends DictionaryData {
       console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
     }
   }
-  static $parseMenu = $parseMenu
   $prop: string
   $search: {
     dictionary: DictionaryValue[]
@@ -136,7 +109,7 @@ class SearchData extends DictionaryData {
     data: Record<PropertyKey, unknown>
   }
   $menu: {
-    list: (string | SearchButtonValue)[]
+    list: (string | DictionaryEditMod)[]
   }
   $observe?: boolean
   $resetOption?: resetOption

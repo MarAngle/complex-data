@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.12
+- SearchData的Button提前生成
+
 ### 4.1.11
 - 优化ButtonValue类型
 
