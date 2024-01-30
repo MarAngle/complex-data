@@ -66,7 +66,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 
 class DictionaryData extends DefaultData {
   static $name = 'DictionaryData'
-  static $formatConfig = { name: 'Data:DictionaryData', level: 50, recommend: true }
+  static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
   static $empty = true
   static $depth = Symbol('depth')
   static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {

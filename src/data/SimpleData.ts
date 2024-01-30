@@ -7,7 +7,7 @@ export interface SimpleDataInitOption {
 
 class SimpleData extends Data {
   static $name = 'SimpleData'
-  static $formatConfig = { name: 'Data:SimpleData', level: 30, recommend: false }
+  static $formatConfig = { name: 'SimpleData', level: 30, recommend: false }
   $extra!: Record<PropertyKey, unknown>
   constructor(initOption: SimpleDataInitOption) {
     super()

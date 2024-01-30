@@ -3,6 +3,7 @@
 
 ### 4.1.13
 - DefaultEdit添加simple设置项
+- DefaultMod基类由Data切换为SimpleData,实现extra
 
 ### 4.1.12
 - SearchData的Button提前生成

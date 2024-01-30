@@ -29,7 +29,7 @@ export type StatusItemInitOption = 'load' | 'operate' | StatusItemInitOptionObje
 
 export class StatusItem extends Data {
   static $name = 'StatusItem'
-  static $formatConfig = { name: 'Data:StatusItem', level: 50, recommend: true }
+  static $formatConfig = { name: 'StatusItem', level: 50, recommend: true }
   static $data = {
     load: {
       trigger: {
@@ -192,7 +192,7 @@ export type StatusDataInitOption = {
 
 class StatusData extends Data {
   static $name = 'StatusData'
-  static $formatConfig = { name: 'Data:StatusData', level: 50, recommend: true }
+  static $formatConfig = { name: 'StatusData', level: 50, recommend: true }
   data: {
     [prop: string]: StatusItem
   }

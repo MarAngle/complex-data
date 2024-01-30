@@ -34,7 +34,7 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
 
 class BaseData extends DefaultData {
   static $name = 'BaseData'
-  static $formatConfig = { name: 'Data:BaseData', level: 80, recommend: true }
+  static $formatConfig = { name: 'BaseData', level: 80, recommend: true }
   static $active = {
     data: 'actived',
     auto: true

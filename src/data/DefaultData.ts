@@ -10,7 +10,7 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
 
 class DefaultData extends SimpleData implements DataWithLife {
   static $name = 'DefaultData'
-  static $formatConfig = { name: 'Data:DefaultData', level: 40, recommend: true }
+  static $formatConfig = { name: 'DefaultData', level: 40, recommend: true }
   declare $buffer: {
     parent?: Data
     create: Record<string, undefined | boolean>

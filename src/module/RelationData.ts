@@ -43,7 +43,7 @@ export interface RelationDataInitOption {
 
 class RelationData {
   static $name = 'RelationData'
-  static $formatConfig = { name: 'Data:RelationData', level: 10, recommend: false }
+  static $formatConfig = { name: 'RelationData', level: 10, recommend: false }
   static $bindDependByActive(self: BaseData, depend: BaseData, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
     let sync = true
     if (active && !self.isActive()) {

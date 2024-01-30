@@ -1,4 +1,4 @@
-import Data from "../data/Data"
+import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import DictionaryValue from "../lib/DictionaryValue"
 import { observeType } from "./ObserveList"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
@@ -11,7 +11,7 @@ import { renderType } from "../type"
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type reactiveFunction = (...args: any[]) => boolean
 
-export interface DefaultModInitOption {
+export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string
   $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
@@ -24,9 +24,9 @@ export interface DefaultModInitOption {
   observe?: observeType
 }
 
-class DefaultMod extends Data implements ArrayMapValueType {
+class DefaultMod extends SimpleData implements ArrayMapValueType {
   static $name = 'DefaultMod'
-  static $formatConfig = { name: 'Data:DefaultMod', level: 40, recommend: true }
+  static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
   $prop: string
   $name: InterfaceValue<string>
   $layout?: InterfaceLayoutValue
@@ -40,7 +40,7 @@ class DefaultMod extends Data implements ArrayMapValueType {
     if (initOption === true) {
       initOption = {}
     }
-    super()
+    super(initOption)
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.$name = (initOption.name !== undefined || !parent) ? new InterfaceValue(initOption.name) : parent.$getInterfaceData('name')

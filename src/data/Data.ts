@@ -12,7 +12,7 @@ function createId(): string {
 class Data extends UtilsData {
   static $name = 'Data'
   static $observe = false
-  static $formatConfig = { name: 'Data:Data', level: 20, recommend: false }
+  static $formatConfig = { name: 'Data', level: 20, recommend: false }
   readonly $id!: string
   $buffer!: {
     parent?: Data

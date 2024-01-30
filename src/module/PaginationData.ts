@@ -19,7 +19,7 @@ export interface PaginationDataInitOption extends DefaultDataInitOption {
 
 class PaginationData extends DefaultData {
   static $name = 'PaginationData'
-  static $formatConfig = { name: 'Data:PaginationData', level: 50, recommend: true }
+  static $formatConfig = { name: 'PaginationData', level: 50, recommend: true }
   static $option = {
     size: {
       show: true,

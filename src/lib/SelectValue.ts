@@ -64,7 +64,7 @@ function getFilter<D extends SelectValueType>(filter: undefined | checkItem<D> |
 
 class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Data {
   static $name = 'SelectValue'
-  static $formatConfig = { name: 'Data:SelectValue', level: 50, recommend: true }
+  static $formatConfig = { name: 'SelectValue', level: 50, recommend: true }
   static dictValue = 'value'
   static dictLabel = 'label'
   static dictDisabled = 'disabled'
