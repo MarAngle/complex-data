@@ -30,6 +30,10 @@ class SearchData extends DictionaryData {
     data: {
       search: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$search',
         option: {
           type: 'primary',
@@ -39,15 +43,23 @@ class SearchData extends DictionaryData {
       }),
       reset: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$reset',
         option: {
           type: 'primary',
           name: '查询',
-          icon: 'reset'
+          icon: 'refresh'
         }
       }),
       build: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$build',
         option: {
           type: 'primary',
@@ -57,6 +69,10 @@ class SearchData extends DictionaryData {
       }),
       delete: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$delete',
         option: {
           type: 'danger',
@@ -66,6 +82,10 @@ class SearchData extends DictionaryData {
       }),
       import: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$import',
         option: {
           type: 'primary',
@@ -75,6 +95,10 @@ class SearchData extends DictionaryData {
       }),
       export: new DefaultEditButton({
         type: 'button',
+        simple: {
+          value: true,
+          rules: true
+        },
         prop: '$export',
         option: {
           type: 'primary',

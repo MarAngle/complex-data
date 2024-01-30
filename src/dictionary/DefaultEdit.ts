@@ -4,6 +4,10 @@ import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
 export interface DefaultEditInitOption extends DefaultModInitOption {
+  simple?: {
+    value?: boolean
+    rules?: boolean
+  }
   colon?: boolean
   trim?: boolean
   multiple?: boolean
@@ -37,6 +41,10 @@ class DefaultEdit extends DefaultMod {
     })
     return data
   }
+  simple: {
+    value?: boolean
+    rules?: boolean
+  }
   colon: InterfaceValue<boolean>
   trim: boolean
   multiple: boolean
@@ -45,10 +53,10 @@ class DefaultEdit extends DefaultMod {
   placeholder?: InterfaceValue<string>
   $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
   message: InterfaceValue<string>
-  $value!: {
-    default: unknown
-    init: unknown
-    reset: unknown
+  $value: {
+    default?: unknown
+    init?: unknown
+    reset?: unknown
     [prop: PropertyKey]: unknown
   }
   edit?: false | functionType<unknown>
@@ -56,6 +64,7 @@ class DefaultEdit extends DefaultMod {
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
   constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
+    this.simple = initOption.simple || {}
     this.colon = new InterfaceValue(initOption.colon === undefined ? true : initOption.colon)
     this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)
@@ -71,14 +80,18 @@ class DefaultEdit extends DefaultMod {
     } else if (initOption.placeholder) {
       this.placeholder = new InterfaceValue(initOption.placeholder)
     }
-    const initOptionValue = initOption.value || {}
-    const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
-    const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
-    const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
-    this.$value = {
-      default: defaultValue,
-      init: initValue,
-      reset: resetValue
+    if (this.simple.value !== true) {
+      const initOptionValue = initOption.value || {}
+      const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
+      const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
+      const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
+      this.$value = {
+        default: defaultValue,
+        init: initValue,
+        reset: resetValue
+      }
+    } else {
+      this.$value = {}
     }
     // rule
     if (initOption.rules) {
@@ -93,20 +106,22 @@ class DefaultEdit extends DefaultMod {
       message = this.placeholder
     }
     this.message = message
-    this.$rules.map((rules, prop) => {
-      const ruleList = rules[prop]
-      if (ruleList) {
-        for (let n = 0; n < ruleList.length; n++) {
-          const rule = ruleList[n];
-          if (rule.required === undefined) {
-            rule.required = this.required.getValue(prop)
-          }
-          if (rule.message === undefined && this.message.isInit()) {
-            rule.message = this.message.getValue(prop)
+    if (this.simple.rules !== true) {
+      this.$rules.map((rules, prop) => {
+        const ruleList = rules[prop]
+        if (ruleList) {
+          for (let n = 0; n < ruleList.length; n++) {
+            const rule = ruleList[n];
+            if (rule.required === undefined) {
+              rule.required = this.required.getValue(prop)
+            }
+            if (rule.message === undefined && this.message.isInit()) {
+              rule.message = this.message.getValue(prop)
+            }
           }
         }
-      }
-    })
+      })
+    }
   }
   setValue(value: unknown, prop = 'default') {
     this.$value[prop] = value

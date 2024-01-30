@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.13
+- DefaultEdit添加simple设置项
+
 ### 4.1.12
 - SearchData的Button提前生成
 
