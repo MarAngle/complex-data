@@ -64,7 +64,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '新增',
-          icon: 'build'
+          icon: 'plus'
         }
       }),
       delete: new DefaultEditButton({
@@ -77,7 +77,14 @@ class SearchData extends DictionaryData {
         option: {
           type: 'danger',
           name: '删除',
-          icon: 'delete'
+          icon: 'delete',
+          disabled(payload) {
+            if (!payload.choice) {
+              return true
+            } else {
+              return false
+            }
+          }
         }
       }),
       import: new DefaultEditButton({
@@ -90,7 +97,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导入',
-          icon: 'import'
+          icon: 'upload'
         }
       }),
       export: new DefaultEditButton({
@@ -103,7 +110,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导出',
-          icon: 'export'
+          icon: 'download'
         }
       })
     } as {

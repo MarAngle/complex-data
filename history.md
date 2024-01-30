@@ -1,9 +1,11 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
-### 4.1.13
+### 4.1.13/14
 - DefaultEdit添加simple设置项
 - DefaultMod基类由Data切换为SimpleData,实现extra
+- 优化PureButtonValue类型
+- 修正错误icon
 
 ### 4.1.12
 - SearchData的Button提前生成

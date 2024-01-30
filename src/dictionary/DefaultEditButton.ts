@@ -5,23 +5,23 @@ import { renderType } from "../type"
 
 export type DefaultEditButtonClickType = (payload: payloadType) => void | Promise<unknown>
 
-export interface PureButtonValue<E = MouseEvent> {
+export interface PureButtonValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   name: string
   prop: string
   type?: string
   icon?: string | (() => unknown)
-  loading?: boolean | ((...args: unknown[]) => boolean)
-  disabled?: boolean | ((...args: unknown[]) => boolean)
+  loading?: boolean | ((...args: A) => boolean)
+  disabled?: boolean | ((...args: A) => boolean)
   click?: (e: E) => void | Promise<unknown> // 返回Promise则根据状态切换loading
 }
 
-export interface ButtonValue<E = MouseEvent> extends PureButtonValue<E> {
+export interface ButtonValue<E = MouseEvent, A extends unknown[] = unknown[]> extends PureButtonValue<E, A> {
   upload?: (file: File) => Promise<unknown>
   uploadOption?: Partial<DefaultEditFileOption>
   render?: renderType
 }
 
-export type DefaultEditButtonOption<E = payloadType> = Partial<ButtonValue<E>>
+export type DefaultEditButtonOption<E = payloadType, A extends unknown[] = [payloadType]> = Partial<ButtonValue<E, A>>
 
 export interface DefaultEditButtonInitOption extends DefaultEditInitOption {
   type: 'button'

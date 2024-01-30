@@ -22,7 +22,16 @@ import DefaultEditContent, { DefaultEditContentInitOption } from '../dictionary/
 import DefaultEditCustom, { DefaultEditCustomInitOption } from '../dictionary/DefaultEditCustom'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 
-export type payloadType = { targetData: Record<PropertyKey, unknown>, originData?: Record<PropertyKey, unknown>, type: string, from?: string, depth?: number, index?: number, payload?: Record<PropertyKey, unknown> }
+export type payloadType = {
+  targetData: Record<PropertyKey, unknown>
+  originData?: Record<PropertyKey, unknown>
+  type: string
+  from?: string
+  depth?: number
+  index?: number
+  choice?: number
+  payload?: Record<PropertyKey, unknown>
+}
 
 export type functionType<R> = (data: unknown, payload: payloadType) => R
 
