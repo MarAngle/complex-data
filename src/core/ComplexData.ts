@@ -1,6 +1,6 @@
 import BaseData, { BaseDataInitOption, loadFunctionType } from "../data/BaseData"
 import ModuleData, { ModuleDataInitOption } from "../module/ModuleData"
-import SearchData, { resetFormOption } from "../module/SearchData"
+import SearchData, { resetOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
@@ -132,12 +132,12 @@ class ComplexData extends BaseData {
       return this.$module.pagination.getPage(...args)
     }
   }
-  setSize(...args: Parameters<PaginationData['setSize']>) {
+  setPageSize(...args: Parameters<PaginationData['setSize']>) {
     if (this.$module.pagination) {
       return this.$module.pagination.setSize(...args)
     }
   }
-  getSize(...args: Parameters<PaginationData['getSize']>) {
+  getPageSize(...args: Parameters<PaginationData['getSize']>) {
     if (this.$module.pagination) {
       return this.$module.pagination.getSize(...args)
     }
@@ -244,7 +244,7 @@ class ComplexData extends BaseData {
       })
     })
   }
-  resetSearch(option?: resetFormOption) {
+  resetSearch(option?: resetOption) {
     return new Promise((resolve, reject) => {
       this.$module.search!.$resetFormData('reset', option)
       this.setSearch('reset').then(res => {

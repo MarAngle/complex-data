@@ -1,6 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
+### 4.1.15
+- ComplexData修正getSize/setSize => getPageSize/setPageSize
+
 ### 4.1.13/14
 - DefaultEdit添加simple设置项
 - DefaultMod基类由Data切换为SimpleData,实现extra
