@@ -1,9 +1,9 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import { DefaultEditButtonOption } from "./DefaultEditButton"
+import { ButtonValue } from "./DefaultEditButton"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import config from "../../config"
 
-export type DefaultEditButtonGroupOption<E = payloadType, A extends unknown[] = [payloadType]> = DefaultEditButtonOption<E, A>
+export type DefaultEditButtonGroupOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValue<E, A>
 
 export interface DefaultEditButtonGroupInitOption extends DefaultEditInitOption {
   type: 'buttonGroup'

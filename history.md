@@ -1,8 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 
-### 4.1.15
+### 4.1.15/16
 - ComplexData修正getSize/setSize => getPageSize/setPageSize
+- DefaultEditButtonGroupOption类型修正
 
 ### 4.1.13/14
 - DefaultEdit添加simple设置项
