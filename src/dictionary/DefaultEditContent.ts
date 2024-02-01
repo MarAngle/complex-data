@@ -13,6 +13,7 @@ export interface DefaultEditContentInitOption extends DefaultEditInitOption {
 
 class DefaultEditContent extends DefaultEdit{
   static $name = 'DefaultEditContent'
+  static $editable = false
   type: 'content'
   $option: DefaultEditContentOption
   constructor(initOption: DefaultEditContentInitOption, parent?: DictionaryValue, modName?: string) {

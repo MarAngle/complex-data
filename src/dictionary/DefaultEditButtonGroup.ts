@@ -13,6 +13,7 @@ export interface DefaultEditButtonGroupInitOption extends DefaultEditInitOption 
 
 class DefaultEditButtonGroup extends DefaultEdit{
   static $name = 'DefaultEditButtonGroup'
+  static $editable = false
   static $defaultOption = {
     interval: 16
   }

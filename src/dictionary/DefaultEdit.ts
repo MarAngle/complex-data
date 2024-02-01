@@ -4,9 +4,10 @@ import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
 export interface DefaultEditInitOption extends DefaultModInitOption {
-  simple?: {
-    value?: boolean
-    rules?: boolean
+  editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
+  simple?: { // 简单逻辑判断值
+    value?: boolean // 值简单逻辑:即不加载
+    rules?: boolean // 规则判断简单逻辑:即不判断
   }
   colon?: boolean
   trim?: boolean
@@ -30,6 +31,7 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
 class DefaultEdit extends DefaultMod {
   static $name = 'DefaultEdit'
   static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
+  static $editable = true
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : []
   }
@@ -41,6 +43,7 @@ class DefaultEdit extends DefaultMod {
     })
     return data
   }
+  $editable: boolean
   simple: {
     value?: boolean
     rules?: boolean
@@ -64,7 +67,17 @@ class DefaultEdit extends DefaultMod {
   $on: Record<PropertyKey, (...args: unknown[]) => unknown>
   constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
+    const $constructor = (this.constructor as typeof DefaultEdit)
+    this.$editable = initOption.editable === undefined ? $constructor.$editable : initOption.editable
     this.simple = initOption.simple || {}
+    if (!this.$editable) {
+      if (this.simple.value === undefined) {
+        this.simple.value = true
+      }
+      if (this.simple.rules === undefined) {
+        this.simple.rules = true
+      }
+    }
     this.colon = new InterfaceValue(initOption.colon === undefined ? true : initOption.colon)
     this.multiple = !!initOption.multiple
     this.required = new InterfaceValue(initOption.required || false)
@@ -73,7 +86,6 @@ class DefaultEdit extends DefaultMod {
     this.edit = initOption.edit
     this.post = initOption.post
     this.$on = initOption.on || {}
-    const $constructor = (this.constructor as typeof DefaultEdit)
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (initOption.placeholder === undefined && parent) {
       this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))

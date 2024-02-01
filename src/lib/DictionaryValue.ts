@@ -211,6 +211,8 @@ class DictionaryValue extends DefaultData implements functions {
       // 非简单编辑数据时
       this.format = initOption.format
       this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
+    } else if (initOption.format) {
+      this.$exportMsg('当前编辑为简单模式,不接受format函数!')
     }
     this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
     this.post = initOption.post
@@ -319,21 +321,22 @@ class DictionaryValue extends DefaultData implements functions {
       }
       if (mod) {
         if (mod instanceof DefaultEdit) {
-          if (mod instanceof DefaultEditButton || mod instanceof DefaultEditButtonGroup || mod instanceof DefaultEditContent) {
-            // 按钮相关和content相关不生成字段
-            next(undefined, 'mod is not write edit', true)
-          } else if (mod instanceof DefaultLoadEdit) {
-            mod.loadData().finally(() => {
+          if (mod.$editable) {
+            if (mod instanceof DefaultLoadEdit) {
+              mod.loadData().finally(() => {
+                next(this.$setEditValue(mod, option), '')
+              })
+            } else {
               next(this.$setEditValue(mod, option), '')
-            })
+            }
           } else {
-            next(this.$setEditValue(mod, option), '')
+            next(undefined, 'not editable', true)
           }
         } else {
-          next(undefined, 'mod is not edit', true)
+          next(undefined, 'not edit', true)
         }
       } else {
-        next(undefined, 'mod is not exist', true)
+        next(undefined, 'not exist', true)
       }
     })
   }

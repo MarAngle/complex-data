@@ -4,6 +4,7 @@
 ### 4.1.15/16
 - ComplexData修正getSize/setSize => getPageSize/setPageSize
 - DefaultEditButtonGroupOption类型修正
+- Default添加editable判断是否是需要编辑的数据
 
 ### 4.1.13/14
 - DefaultEdit添加simple设置项

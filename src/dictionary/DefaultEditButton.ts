@@ -30,6 +30,7 @@ export interface DefaultEditButtonInitOption extends DefaultEditInitOption {
 
 class DefaultEditButton extends DefaultEdit{
   static $name = 'DefaultEditButton'
+  static $editable = false
   type: 'button'
   $option: DefaultEditButtonOption
   constructor(initOption: DefaultEditButtonInitOption, parent?: DictionaryValue, modName?: string) {

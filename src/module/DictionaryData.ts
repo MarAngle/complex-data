@@ -210,6 +210,10 @@ class DictionaryData extends DefaultData {
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
       if (mod) {
+        if (!mod.$editable) {
+          // 不可编辑的模块不参与最终的生成数据逻辑
+          return
+        }
         if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', formData[dictionaryValue.$prop], {
           targetData: postData,
           originData: formData,
