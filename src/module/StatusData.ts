@@ -1,8 +1,15 @@
 import Data from '../data/Data'
 
-export type StatusDataValueType = 'un' | 'ing' | 'success' | 'fail'
-export type StatusDataLoadValueType = 'un' | 'ing' | 'success' | 'fail'
-export type StatusDataOperateValueType = 'un' | 'ing'
+export enum StatusValue {
+  un = 'un',
+  ing = 'ing',
+  success = 'success',
+  fail = 'fail'
+}
+
+export type StatusDataValueType = StatusValue.un | StatusValue.ing | StatusValue.success | StatusValue.fail
+export type StatusDataLoadValueType = StatusValue.un | StatusValue.ing | StatusValue.success | StatusValue.fail
+export type StatusDataOperateValueType = StatusValue.un | StatusValue.ing
 
 interface triggerDataType {
   from: StatusDataValueType[]
@@ -34,36 +41,36 @@ export class StatusItem extends Data {
     load: {
       trigger: {
         start: {
-          from: ['un', 'fail'],
-          to: 'ing'
+          from: [StatusValue.un, StatusValue.fail],
+          to: StatusValue.ing
         },
         success: {
-          from: ['ing'],
-          to: 'success'
+          from: [StatusValue.ing],
+          to: StatusValue.success
         },
         fail: {
-          from: ['ing'],
-          to: 'fail'
+          from: [StatusValue.ing],
+          to: StatusValue.fail
         }
       },
-      list: ['un', 'ing', 'success', 'fail']
+      list: [StatusValue.un, StatusValue.ing, StatusValue.success, StatusValue.fail]
     } as StatusItemInitOptionObject,
     operate: {
       trigger: {
         start: {
-          from: ['un'],
-          to: 'ing'
+          from: [StatusValue.un],
+          to: StatusValue.ing
         },
         success: {
-          from: ['ing'],
-          to: 'un'
+          from: [StatusValue.ing],
+          to: StatusValue.un
         },
         fail: {
-          from: ['ing'],
-          to: 'un'
+          from: [StatusValue.ing],
+          to: StatusValue.un
         }
       },
-      list: ['un', 'ing'],
+      list: [StatusValue.un, StatusValue.ing],
       option: {
         type: 'count'
       }
