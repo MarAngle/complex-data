@@ -397,7 +397,7 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     } else if (this.type === 'dateRange') {
       // 日期范围选择
       (this.$option as DefaultEditOptionType<'dateRange'>).time = dateConfig.parseRangeTime((initOption.option as PartialDefaultEditOptionType<'dateRange'>).time);
-      (this.$option as DefaultEditOptionType<'dateRange'>).show = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).show || (this.$option as DefaultEditOptionType<'dateRange'>).time ? 'YYYY-MM-DD ' + (this.$option as DefaultEditOptionType<'dateRange'>).time!.show! : 'YYYY-MM-DD';
+      (this.$option as DefaultEditOptionType<'dateRange'>).show = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).show || ((this.$option as DefaultEditOptionType<'dateRange'>).time ? 'YYYY-MM-DD ' + (this.$option as DefaultEditOptionType<'dateRange'>).time!.show! : 'YYYY-MM-DD');
       (this.$option as DefaultEditOptionType<'dateRange'>).format = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).format || (this.$option as DefaultEditOptionType<'dateRange'>).show;
       (this.$option as DefaultEditOptionType<'dateRange'>).hideClear = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).hideClear || false;
       (this.$option as DefaultEditOptionType<'dateRange'>).separator = (initOption.option as PartialDefaultEditOptionType<'dateRange'>).separator || '-';
