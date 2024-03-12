@@ -375,6 +375,7 @@ class BaseData<P extends undefined | DefaultData<any> = undefined> extends Defau
             })
           })
         } else {
+          statusItem.triggerChange('fail', false, triggerCallBack, [])
           this.$exportMsg(next.msg)
           return Promise.reject({ status: 'fail', code: next.code })
         }
