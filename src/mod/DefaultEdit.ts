@@ -97,8 +97,7 @@ interface DefaultEditFileType {
   max: number
   min: number
   size: number
-  upload: boolean
-  fileUpload: boolean
+  upload?: (file: File) => Promise<any>
   layout: string
 }
 interface DefaultEditButtonType {
@@ -436,12 +435,8 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
       (this.$option as DefaultEditOptionType<'file'>).max = (initOption.option as PartialDefaultEditOptionType<'file'>).max || 0;
       (this.$option as DefaultEditOptionType<'file'>).min = (initOption.option as PartialDefaultEditOptionType<'file'>).min || 0;
       (this.$option as DefaultEditOptionType<'file'>).size = (initOption.option as PartialDefaultEditOptionType<'file'>).size || 0;
-      (this.$option as DefaultEditOptionType<'file'>).upload = (initOption.option as PartialDefaultEditOptionType<'file'>).upload || false;
-      (this.$option as DefaultEditOptionType<'file'>).fileUpload = (initOption.option as PartialDefaultEditOptionType<'file'>).fileUpload || false;
+      (this.$option as DefaultEditOptionType<'file'>).upload = (initOption.option as PartialDefaultEditOptionType<'file'>).upload;
       (this.$option as DefaultEditOptionType<'file'>).layout = (initOption.option as PartialDefaultEditOptionType<'file'>).layout === undefined ? 'auto' : (initOption.option as DefaultEditOptionType<'file'>).layout;
-      if ((this.$option as DefaultEditOptionType<'file'>).upload && !(this.$option as DefaultEditOptionType<'file'>).fileUpload) {
-        this.$exportMsg('上传插件需要定义上传方法:fileUpload=>option')
-      }
     } else if (this.type === 'button') {
       // 按钮
       (this.$option as DefaultEditOptionType<'button'>).loading = (initOption.option as PartialDefaultEditOptionType<'button'>).loading || false;
