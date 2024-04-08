@@ -1,5 +1,9 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
+- Observe考虑设置为仅跟随数据变化触发对应模块的响应式
+
+### 4.1.18
+- 修正$triggerMethodWithStatus无函数时的状态回滚
 
 ### 4.1.15/16/17
 - ComplexData修正getSize/setSize => getPageSize/setPageSize
