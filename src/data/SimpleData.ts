@@ -15,19 +15,19 @@ class SimpleData<Buffer extends SimpleBuffer = SimpleBuffer> extends Data {
   static $name = 'SimpleData'
   static $observe = false
   static $formatConfig = { name: 'Data', level: 20, recommend: false }
-  readonly $id!: string
-  $buffer!: Buffer
+  readonly _id!: string
+  _buffer!: Buffer
   constructor() {
     super()
-    // $id不可枚举，不可更改，不可配置
-    Object.defineProperty(this, '$id', {
+    // _id不可枚举，不可更改，不可配置
+    Object.defineProperty(this, '_id', {
       enumerable: false,
       configurable: false,
       writable: false,
       value: createId()
     })
-    // $buffer不可枚举，不可配置
-    Object.defineProperty(this, '$buffer', {
+    // _buffer不可枚举，不可配置
+    Object.defineProperty(this, '_buffer', {
       enumerable: false,
       configurable: false,
       writable: true,
@@ -38,22 +38,22 @@ class SimpleData<Buffer extends SimpleBuffer = SimpleBuffer> extends Data {
    * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
    * @param {object} parent 父数据
    */
-  $setParent(parent?: Data) {
-    this.$buffer.parent = parent
+  $setParent(parent?: SimpleData) {
+    this._buffer.parent = parent
   }
   /**
    * 获取父数据
    * @returns {object | undefined}
    */
   $getParent() {
-    return this.$buffer.parent
+    return this._buffer.parent
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _syncData(self: boolean, act: string, ...args: unknown[]) {
     // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
   }
   _getId(prop = ''): string {
-    return this.$id + prop
+    return this._id + prop
   }
   _getName(): string {
     return `CLASS:${super._getName()}-ID:${this._getId()}`

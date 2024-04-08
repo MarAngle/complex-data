@@ -1,0 +1,56 @@
+import { getType } from 'complex-utils'
+import SimpleData, { SimpleBuffer } from './SimpleData'
+
+export interface DefaultDataInitOption {
+  extra?: Record<PropertyKey, unknown>
+}
+
+class DefaultData<Buffer extends SimpleBuffer = SimpleBuffer> extends SimpleData<Buffer> {
+  static $name = 'DefaultData'
+  static $formatConfig = { name: 'DefaultData', level: 30, recommend: false }
+  $extra!: Record<PropertyKey, unknown>
+  constructor(initOption: DefaultDataInitOption) {
+    super()
+    const extraType = getType(initOption.extra)
+    Object.defineProperty(this, '$extra', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: extraType === 'object' ? initOption.extra : {}
+    })
+    if (extraType !== 'object' && initOption.extra !== undefined) {
+      this.$exportMsg('初始化额外数据出错，额外数据初始化参数必须为对象！')
+    }
+  }
+  /**
+   * 设置额外数据
+   * @param {string} prop 属性
+   * @param {*} data 数据
+   */
+  setExtra(prop: string, data: unknown) {
+    this.$extra[prop] = data
+  }
+  /**
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
+  getExtra(prop: string) {
+    return this.$extra[prop]
+  }
+  /**
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
+  clearExtra(prop?: string) {
+    if (!prop) {
+      this.$extra = {}
+    } else {
+      delete this.$extra[prop]
+    }
+  }
+  // 如添加销毁函数需要添加到BaseData的destroy中
+}
+
+export default DefaultData
