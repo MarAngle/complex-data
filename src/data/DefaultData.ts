@@ -1,56 +1,117 @@
-import { getType } from 'complex-utils'
-import SimpleData, { SimpleBuffer } from './SimpleData'
+import { Life, upperCaseFirstChar } from 'complex-utils'
+import { DataWithLife, LifeItemInitOption, LifeDataInitOption } from 'complex-utils/src/class/Life'
+import SimpleData, { SimpleDataInitOption } from './SimpleData'
+import { BufferType } from './Data'
 
-export interface DefaultDataInitOption {
-  extra?: Record<PropertyKey, unknown>
+export interface DefaultDataInitOption extends SimpleDataInitOption {
+  prop?: string
+  life?: LifeDataInitOption
 }
 
-class DefaultData<Buffer extends SimpleBuffer = SimpleBuffer> extends SimpleData<Buffer> {
+export interface DefaultDataBuffer extends BufferType {
+  create: Record<string, undefined | boolean>
+}
+
+class DefaultData<Buffer extends DefaultDataBuffer = DefaultDataBuffer> extends SimpleData<Buffer> implements DataWithLife {
   static $name = 'DefaultData'
-  static $formatConfig = { name: 'DefaultData', level: 30, recommend: false }
-  $extra!: Record<PropertyKey, unknown>
+  static $formatConfig = { name: 'DefaultData', level: 40, recommend: true }
+  $prop: string
+  $life!: Life
   constructor(initOption: DefaultDataInitOption) {
-    super()
-    const extraType = getType(initOption.extra)
-    Object.defineProperty(this, '$extra', {
+    super(initOption)
+    this._buffer.create = {}
+    this.$prop = initOption.prop || ''
+    Object.defineProperty(this, '$life', {
       enumerable: false,
       configurable: false,
       writable: true,
-      value: extraType === 'object' ? initOption.extra : {}
+      value: new Life(initOption.life)
     })
-    if (extraType !== 'object' && initOption.extra !== undefined) {
-      this.$exportMsg('初始化额外数据出错，额外数据初始化参数必须为对象！')
+    this._triggerCreateLife('DefaultData', false, initOption)
+    this._triggerCreateLife('DefaultData', true, initOption)
+  }
+  /**
+   * 触发创造生命周期
+   * @param {string} env 当前调用对象名称
+   * @param {string} lifeName 生命周期
+   * @param  {*[]} args 参数
+   */
+  protected _triggerCreateLife(env: string, isCreate: boolean, ...args: unknown[]) {
+    if (!env) {
+      this.$exportMsg('$triggerCreate函数需要传递env参数')
     }
-  }
-  /**
-   * 设置额外数据
-   * @param {string} prop 属性
-   * @param {*} data 数据
-   */
-  setExtra(prop: string, data: unknown) {
-    this.$extra[prop] = data
-  }
-  /**
-   * 获取额外数据
-   * @param {string} prop 属性
-   * @returns {*}
-   */
-  getExtra(prop: string) {
-    return this.$extra[prop]
-  }
-  /**
-   * 获取额外数据
-   * @param {string} prop 属性
-   * @returns {*}
-   */
-  clearExtra(prop?: string) {
-    if (!prop) {
-      this.$extra = {}
-    } else {
-      delete this.$extra[prop]
+    const lifeName = isCreate ? 'created' : 'beforeCreate'
+    const name = this._getConstructorName()
+    if (env === name) {
+      // 当前环境是对应触发的类的环境时，触发独立的创建生命周期
+      this.triggerLife(lifeName, this, ...args)
+      this._buffer.create[lifeName] = isCreate
     }
+    const lifeNameWithData = env + upperCaseFirstChar(lifeName)
+    // 触发带类名称的创建生命周期
+    this.triggerLife(lifeNameWithData, this, ...args)
+    this._buffer.create[lifeNameWithData] = isCreate
   }
-  // 如添加销毁函数需要添加到BaseData的destroy中
+  $onCreatedLife(createdLifeName: string, data: LifeItemInitOption['data']) {
+    return this.$life.on(createdLifeName, { data: data, immediate: this._buffer.create[createdLifeName] })
+  }
+  /**
+   * 设置生命周期回调函数
+   * @param {string} name 对应生命周期
+   * @param {*} data 回调对象
+   * @returns {string | string} id/idList
+   */
+  onLife(...args: Parameters<Life['on']>) {
+    return this.$life.on(...args)
+  }
+  /**
+   * 触发生命周期指定id函数
+   * @param {string} name 生命周期
+   * @param {string} id 指定ID
+   * @param  {...any} args 参数
+   */
+  emitLife(...args: Parameters<Life['emit']>) {
+    this.$life.emit(...args)
+  }
+  /**
+   * 删除生命周期指定函数
+   * @param {string} name 生命周期
+   * @param {string} id 指定ID
+   * @returns {boolean}
+   */
+  offLife(...args: Parameters<Life['off']>): boolean {
+    return this.$life.off(...args)
+  }
+  /**
+   * 触发生命周期
+   * @param {string} name 生命周期
+   * @param  {...any} args 参数
+   */
+  triggerLife(...args: Parameters<Life['trigger']>) {
+    this.$life.trigger(...args)
+  }
+  /**
+   * 清除生命周期
+   * @param {string} name 生命周期
+   */
+  clearLife(...args: Parameters<Life['clear']>) {
+    this.$life.clear(...args)
+  }
+  /**
+   * 生命周期重置
+   */
+  resetLife() {
+    this.$life.reset()
+  }
+  /**
+   * 生命周期销毁
+   */
+  destroyLife() {
+    this.$life.destroy()
+  }
+  _getName(): string {
+    return `[${super._getName()}-(${this.$prop})]`
+  }
 }
 
 export default DefaultData

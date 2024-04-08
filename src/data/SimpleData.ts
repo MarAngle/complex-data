@@ -1,71 +1,56 @@
-import { Data } from 'complex-utils'
+import { getType } from 'complex-utils'
+import Data, { BufferType } from './Data'
 
-let id = 0
-
-function createId(): string {
-  id++
-  return id.toString()
+export interface SimpleDataInitOption {
+  extra?: Record<PropertyKey, unknown>
 }
 
-export interface SimpleBuffer {
-  parent?: SimpleData<any>
-}
-
-class SimpleData<Buffer extends SimpleBuffer = SimpleBuffer> extends Data {
+class SimpleData<Buffer extends BufferType = BufferType> extends Data<Buffer> {
   static $name = 'SimpleData'
-  static $observe = false
-  static $formatConfig = { name: 'Data', level: 20, recommend: false }
-  readonly _id!: string
-  _buffer!: Buffer
-  constructor() {
+  static $formatConfig = { name: 'SimpleData', level: 30, recommend: false }
+  $extra!: Record<PropertyKey, unknown>
+  constructor(initOption: SimpleDataInitOption) {
     super()
-    // _id不可枚举，不可更改，不可配置
-    Object.defineProperty(this, '_id', {
-      enumerable: false,
-      configurable: false,
-      writable: false,
-      value: createId()
-    })
-    // _buffer不可枚举，不可配置
-    Object.defineProperty(this, '_buffer', {
+    const extraType = getType(initOption.extra)
+    Object.defineProperty(this, '$extra', {
       enumerable: false,
       configurable: false,
       writable: true,
-      value: {}
+      value: extraType === 'object' ? initOption.extra : {}
     })
+    if (extraType !== 'object' && initOption.extra !== undefined) {
+      this.$exportMsg('初始化额外数据出错，额外数据初始化参数必须为对象！')
+    }
   }
   /**
-   * 设置父数据,需要设置为不可枚举避免循环递归：主要针对微信小程序环境
-   * @param {object} parent 父数据
+   * 设置额外数据
+   * @param {string} prop 属性
+   * @param {*} data 数据
    */
-  $setParent(parent?: SimpleData) {
-    this._buffer.parent = parent
+  setExtra(prop: string, data: unknown) {
+    this.$extra[prop] = data
   }
   /**
-   * 获取父数据
-   * @returns {object | undefined}
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
    */
-  $getParent() {
-    return this._buffer.parent
+  getExtra(prop: string) {
+    return this.$extra[prop]
   }
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _syncData(self: boolean, act: string, ...args: unknown[]) {
-    // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
+  /**
+   * 获取额外数据
+   * @param {string} prop 属性
+   * @returns {*}
+   */
+  clearExtra(prop?: string) {
+    if (!prop) {
+      this.$extra = {}
+    } else {
+      delete this.$extra[prop]
+    }
   }
-  _getId(prop = ''): string {
-    return this._id + prop
-  }
-  _getName(): string {
-    return `CLASS:${super._getName()}-ID:${this._getId()}`
-  }
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // $install(target: BaseData, from?: string) {
-  //   //
-  // }
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // $uninstall(target: BaseData, from?: string) {
-  //   this.$setParent()
-  // }
+  // 如添加销毁函数需要添加到BaseData的destroy中
 }
 
 export default SimpleData
