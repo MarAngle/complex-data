@@ -1,5 +1,5 @@
 import PaginationData, { PaginationDataInitOption } from "../module/PaginationData"
-import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
+import LoadEdit, { LoadEditInitOption } from "./LoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultEditSelectOption {
@@ -13,13 +13,13 @@ export interface DefaultEditSelectOption {
   emptyOptionContent?: string
 }
 
-export interface DefaultEditSelectInitOption extends DefaultLoadEditInitOption {
+export interface DefaultEditSelectInitOption extends LoadEditInitOption {
   type: 'select'
   option?: Partial<DefaultEditSelectOption>
   pagination?: PaginationDataInitOption
 }
 
-class DefaultEditSelect extends DefaultLoadEdit{
+class DefaultEditSelect extends LoadEdit{
   static $name = 'DefaultEditSelect'
   static $defaultOption = {
     optionValue: 'value',

@@ -20,7 +20,7 @@ import DefaultEditButton, { DefaultEditButtonInitOption } from '../dictionary/De
 import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from '../dictionary/DefaultEditButtonGroup'
 import DefaultEditContent, { DefaultEditContentInitOption } from '../dictionary/DefaultEditContent'
 import DefaultEditCustom, { DefaultEditCustomInitOption } from '../dictionary/DefaultEditCustom'
-import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
+import LoadEdit from '../dictionary/LoadEdit'
 
 export type payloadType = {
   targetData: Record<PropertyKey, unknown>
@@ -322,7 +322,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (mod) {
         if (mod instanceof DefaultEdit) {
           if (mod.$editable) {
-            if (mod instanceof DefaultLoadEdit) {
+            if (mod instanceof LoadEdit) {
               mod.loadData().finally(() => {
                 next(this.$setEditValue(mod, option), '')
               })

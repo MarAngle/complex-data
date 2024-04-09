@@ -1,34 +1,29 @@
 import { hasProp } from "complex-utils"
-import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
-import DictionaryValue, { functionType } from "../lib/DictionaryValue"
+import DictionaryValue from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
+import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
 
-export interface DefaultEditInitOption extends DefaultModInitOption {
+export interface DefaultEditInitOption extends SimpleEditInitOption {
   editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
   simple?: { // 简单逻辑判断值
     value?: boolean // 值简单逻辑:即不加载
+    placeholder?: boolean // 占位符不加载
     rules?: boolean // 规则判断简单逻辑:即不判断
   }
-  colon?: boolean
   trim?: boolean
   multiple?: boolean
-  required?: InterfaceValueInitOption<boolean>
-  disabled?: InterfaceValueInitOption<boolean>
-  placeholder?: InterfaceValueInitOption<string>
+  placeholder?: false | InterfaceValueInitOption<string>
   value?: {
     default?: any
     init?: any
     reset?: any
     [prop: PropertyKey]: any
   }
-  on?: Record<PropertyKey, (...args: any[]) => any>
   rules?: Record<PropertyKey, Record<PropertyKey, any>[]>
   message?: InterfaceValueInitOption<string>
-  edit?: false | functionType<any> // 数据=>编辑 格式化
-  post?: false | functionType<any> // 编辑=>来源 格式化
 }
 
-class DefaultEdit extends DefaultMod {
+class DefaultEdit extends SimpleEdit {
   static $name = 'DefaultEdit'
   static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
   static $editable = true
@@ -46,25 +41,20 @@ class DefaultEdit extends DefaultMod {
   $editable: boolean
   simple: {
     value?: boolean
+    placeholder?: boolean
     rules?: boolean
   }
-  colon: InterfaceValue<boolean>
   trim: boolean
   multiple: boolean
-  required: InterfaceValue<boolean>
-  disabled: InterfaceValue<boolean>
   placeholder?: InterfaceValue<string>
-  $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
-  message: InterfaceValue<string>
+  $rules?: InterfaceValue<Record<PropertyKey, unknown>[]>
+  message?: InterfaceValue<string>
   $value: {
     default?: any
     init?: any
     reset?: any
     [prop: PropertyKey]: any
   }
-  edit?: false | functionType<any>
-  post?: false | functionType<any>
-  $on: Record<PropertyKey, (...args: any[]) => any>
   constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultEdit)
@@ -78,19 +68,14 @@ class DefaultEdit extends DefaultMod {
         this.simple.rules = true
       }
     }
-    this.colon = new InterfaceValue(initOption.colon === undefined ? true : initOption.colon)
     this.multiple = !!initOption.multiple
-    this.required = new InterfaceValue(initOption.required || false)
-    this.disabled = new InterfaceValue(initOption.disabled || false)
-    // 组件事件监控
-    this.edit = initOption.edit
-    this.post = initOption.post
-    this.$on = initOption.on || {}
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
-    if (initOption.placeholder === undefined && parent) {
-      this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
-    } else if (initOption.placeholder) {
-      this.placeholder = new InterfaceValue(initOption.placeholder)
+    if (this.simple.placeholder !== true) {
+      if (initOption.placeholder === undefined && parent) {
+        this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
+      } else if (initOption.placeholder) {
+        this.placeholder = new InterfaceValue(initOption.placeholder)
+      }
     }
     if (this.simple.value !== true) {
       const initOptionValue = initOption.value || {}
@@ -105,20 +90,20 @@ class DefaultEdit extends DefaultMod {
     } else {
       this.$value = {}
     }
-    // rule
-    if (initOption.rules) {
-      this.$rules = new InterfaceValue(initOption.rules)
-    } else {
-      this.$rules = new InterfaceValue({
-        default: [{}]
-      })
-    }
-    let message = new InterfaceValue(initOption.message)
-    if (!message.isInit() && this.placeholder) {
-      message = this.placeholder
-    }
-    this.message = message
     if (this.simple.rules !== true) {
+      // rule
+      if (initOption.rules) {
+        this.$rules = new InterfaceValue(initOption.rules)
+      } else {
+        this.$rules = new InterfaceValue({
+          default: [{}]
+        })
+      }
+      let message = new InterfaceValue(initOption.message)
+      if (!message.isInit() && this.placeholder) {
+        message = this.placeholder
+      }
+      this.message = message
       this.$rules.map((rules, prop) => {
         const ruleList = rules[prop]
         if (ruleList) {
@@ -127,8 +112,8 @@ class DefaultEdit extends DefaultMod {
             if (rule.required === undefined) {
               rule.required = this.required.getValue(prop)
             }
-            if (rule.message === undefined && this.message.isInit()) {
-              rule.message = this.message.getValue(prop)
+            if (rule.message === undefined && this.message!.isInit()) {
+              rule.message = this.message!.getValue(prop)
             }
           }
         }

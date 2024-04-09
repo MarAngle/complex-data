@@ -1,8 +1,9 @@
+import { DefaultBufferType } from "../data/DefaultData"
 import ComplexData, { ComplexDataInitOption } from "./../data/ComplexData"
 
 export type ComplexInfoInitOption = ComplexDataInitOption
 
-class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>, O extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>> extends ComplexData {
+class ComplexInfo<D extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>, O extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
   static $name = 'ComplexInfo'
   $info: object | D
   constructor(initOption: ComplexInfoInitOption) {
