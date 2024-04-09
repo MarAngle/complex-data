@@ -1,30 +1,8 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import { DefaultEditButtonOption } from "./DefaultEditButton"
 import DictionaryValue from "../lib/DictionaryValue"
+import { fileOption } from "../type"
 
-export interface uploadFileDataType {
-  data: string
-  name: string
-  url?: string
-}
-
-export interface DefaultEditFileOption {
-  accept?: string
-  size?: number
-  upload?: (file: File | File[]) => Promise<{ file: uploadFileDataType | uploadFileDataType[] }>
-  layout?: string
-  complex?: boolean
-  multiple?: {
-    min?: number
-    max?: number
-    append?: boolean
-  }
-  button?: {
-    name?: DefaultEditButtonOption['name']
-    type?: DefaultEditButtonOption['type']
-    icon?: DefaultEditButtonOption['icon']
-  }
-}
+export interface DefaultEditFileOption extends fileOption {}
 
 export interface DefaultEditFileInitOption extends DefaultEditInitOption {
   type: 'file'
@@ -38,8 +16,7 @@ class DefaultEditFile extends DefaultEdit{
   constructor(initOption: DefaultEditFileInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
-    const option = initOption.option || {}
-    this.$option = option
+    this.$option = initOption.option || {}
   }
 }
 

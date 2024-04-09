@@ -12,7 +12,7 @@ import { renderType } from "../type"
 export type reactiveFunction = (...args: any[]) => boolean
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
-  $format?: string
+  $format?: string // 格式化类型
   $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
@@ -36,10 +36,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
   $renders?: Record<string, undefined | renderType>
   $observe?: observeType
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(initOption: DefaultModInitOption | true, parent?: DictionaryValue, modName?: string) {
-    if (initOption === true) {
-      initOption = {}
-    }
+  constructor(initOption: DefaultModInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption)
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')

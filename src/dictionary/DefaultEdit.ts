@@ -16,16 +16,16 @@ export interface DefaultEditInitOption extends DefaultModInitOption {
   disabled?: InterfaceValueInitOption<boolean>
   placeholder?: InterfaceValueInitOption<string>
   value?: {
-    default?: unknown
-    init?: unknown
-    reset?: unknown
-    [prop: PropertyKey]: unknown
+    default?: any
+    init?: any
+    reset?: any
+    [prop: PropertyKey]: any
   }
-  on?: Record<PropertyKey, (...args: unknown[]) => unknown>
-  rules?: Record<PropertyKey, Record<PropertyKey, unknown>[]>
+  on?: Record<PropertyKey, (...args: any[]) => any>
+  rules?: Record<PropertyKey, Record<PropertyKey, any>[]>
   message?: InterfaceValueInitOption<string>
-  edit?: false | functionType<unknown> // 数据=>编辑 格式化
-  post?: false | functionType<unknown> // 编辑=>来源 格式化
+  edit?: false | functionType<any> // 数据=>编辑 格式化
+  post?: false | functionType<any> // 编辑=>来源 格式化
 }
 
 class DefaultEdit extends DefaultMod {
@@ -57,14 +57,14 @@ class DefaultEdit extends DefaultMod {
   $rules: InterfaceValue<Record<PropertyKey, unknown>[]>
   message: InterfaceValue<string>
   $value: {
-    default?: unknown
-    init?: unknown
-    reset?: unknown
-    [prop: PropertyKey]: unknown
+    default?: any
+    init?: any
+    reset?: any
+    [prop: PropertyKey]: any
   }
-  edit?: false | functionType<unknown>
-  post?: false | functionType<unknown>
-  $on: Record<PropertyKey, (...args: unknown[]) => unknown>
+  edit?: false | functionType<any>
+  post?: false | functionType<any>
+  $on: Record<PropertyKey, (...args: any[]) => any>
   constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultEdit)
@@ -135,7 +135,7 @@ class DefaultEdit extends DefaultMod {
       })
     }
   }
-  setValue(value: unknown, prop = 'default') {
+  setValue(value: any, prop = 'default') {
     this.$value[prop] = value
   }
   getValue(prop = 'default') {

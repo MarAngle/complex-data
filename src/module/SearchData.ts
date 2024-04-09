@@ -1,10 +1,12 @@
 import { getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
-import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
+import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
-import DefaultEditButton from "../dictionary/DefaultEditButton"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
+import ButtonValue, { ButtonValueInitOption } from "../lib/ButtonValue"
+
+export type SearchButtonOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
 
 export interface resetOption {
   copy?: boolean
@@ -13,7 +15,7 @@ export interface resetOption {
 
 export type menuInitType = {
   default?: boolean
-  list?: (string | DictionaryEditMod)[]
+  list?: (string | SearchButtonOption)[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -28,99 +30,57 @@ class SearchData extends DictionaryData {
   static $menu = {
     default: ['search', 'reset'],
     data: {
-      search: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      search: new ButtonValue<payloadType, [payloadType]>({
         prop: '$search',
-        option: {
-          type: 'primary',
-          name: '查询',
-          icon: 'search'
-        }
+        type: 'primary',
+        name: '查询',
+        icon: 'search'
       }),
-      reset: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      reset: new ButtonValue<payloadType, [payloadType]>({
         prop: '$reset',
-        option: {
-          type: 'primary',
-          name: '查询',
-          icon: 'refresh'
-        }
+        type: 'primary',
+        name: '查询',
+        icon: 'refresh'
       }),
-      build: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      build: new ButtonValue<payloadType, [payloadType]>({
         prop: '$build',
-        option: {
-          type: 'primary',
-          name: '新增',
-          icon: 'plus'
-        }
+        type: 'primary',
+        name: '新增',
+        icon: 'plus'
       }),
-      delete: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      delete: new ButtonValue<payloadType, [payloadType]>({
         prop: '$delete',
-        option: {
-          type: 'danger',
-          name: '删除',
-          icon: 'delete',
-          disabled(payload) {
-            if (!payload.choice) {
-              return true
-            } else {
-              return false
-            }
+        type: 'danger',
+        name: '删除',
+        icon: 'delete',
+        disabled(payload) {
+          if (!payload.choice) {
+            return true
+          } else {
+            return false
           }
         }
       }),
-      import: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      import: new ButtonValue({
         prop: '$import',
-        option: {
-          type: 'primary',
-          name: '导入',
-          icon: 'upload'
-        }
+        type: 'primary',
+        name: '导入',
+        icon: 'upload'
       }),
-      export: new DefaultEditButton({
-        type: 'button',
-        simple: {
-          value: true,
-          rules: true
-        },
+      export: new ButtonValue({
         prop: '$export',
-        option: {
-          type: 'primary',
-          name: '导出',
-          icon: 'download'
-        }
+        type: 'primary',
+        name: '导出',
+        icon: 'download'
       })
     } as {
-      search: DefaultEditButton
-      reset: DefaultEditButton
-      build: DefaultEditButton
-      delete: DefaultEditButton
-      import: DefaultEditButton
-      export: DefaultEditButton
-      [prop: string]: undefined | DictionaryEditMod
+      search: ButtonValue<payloadType, [payloadType]>
+      reset: ButtonValue<payloadType, [payloadType]>
+      build: ButtonValue<payloadType, [payloadType]>
+      delete: ButtonValue<payloadType, [payloadType]>
+      import: ButtonValue<payloadType, [payloadType]>
+      export: ButtonValue<payloadType, [payloadType]>
+      [prop: string]: undefined | ButtonValue<payloadType, [payloadType]>
     }
   }
   static $form = FormValue
@@ -140,7 +100,7 @@ class SearchData extends DictionaryData {
     data: Record<PropertyKey, unknown>
   }
   $menu: {
-    list: (string | DictionaryEditMod)[]
+    list: (string | ButtonValue<payloadType, [payloadType]>)[]
   }
   $observe?: boolean
   $resetOption?: resetOption
