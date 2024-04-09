@@ -212,8 +212,8 @@ class PaginationData extends DefaultData {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install(target: BaseData) {
-    super.$install(target)
+  _install(target: BaseData) {
+    super._install(target)
     target.onLife('beforeReload', {
       id: this._getId('BeforeReload'),
       data: (instantiater, force: ForceValue) => {
@@ -258,8 +258,8 @@ class PaginationData extends DefaultData {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  $uninstall(target: BaseData) {
-    super.$uninstall(target)
+  _uninstall(target: BaseData) {
+    super._uninstall(target)
     target.offLife('beforeReload', this._getId('BeforeReload'))
     // target.offLife('reseted', this._getId('Reseted'))
     this.offLife('change', target._getId('PaginationChange'))

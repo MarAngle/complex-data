@@ -1,11 +1,12 @@
 import { Life, upperCaseFirstChar } from 'complex-utils'
-import { DataWithLife, LifeItemInitOption, LifeDataInitOption } from 'complex-utils/src/class/Life'
+import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
+import { LifeDataInitOptionWithExtra } from 'complex-utils/src/class/LifeItem'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import { BufferType } from './Data'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
   prop?: string
-  life?: LifeDataInitOption
+  life?: LifeInitOption
 }
 
 export interface DefaultBufferType extends BufferType {
@@ -52,7 +53,7 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     this.triggerLife(lifeNameWithData, this, ...args)
     this._buffer.create[lifeNameWithData] = isCreate
   }
-  $onCreatedLife(createdLifeName: string, data: LifeItemInitOption['data']) {
+  $onCreatedLife(createdLifeName: string, data: LifeDataInitOptionWithExtra['data']) {
     return this.$life.on(createdLifeName, { data: data, immediate: this._buffer.create[createdLifeName] })
   }
   /**

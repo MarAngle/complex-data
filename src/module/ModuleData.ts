@@ -68,8 +68,8 @@ class ModuleData extends Data {
     }
     modData = this._buildModuleData(modName, modData)
     this[modName] = modData
-    if (modData && modData.$install) {
-      modData.$install(this.$getParent(), from)
+    if (modData && modData._install) {
+      modData._install(this.$getParent(), from)
     }
     if (!unTriggerSync) {
       this._syncData(true, 'installData')
@@ -87,8 +87,8 @@ class ModuleData extends Data {
     const modData = this[modName]
     if (modData) {
       // 存在旧数据时需要对旧数据进行卸载操作
-      if (modData.$uninstall) {
-        modData.$uninstall(this.$getParent() as BaseData, from)
+      if (modData._uninstall) {
+        modData._uninstall(this.$getParent() as BaseData, from)
       }
       this[modName] = undefined
     }

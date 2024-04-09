@@ -1,4 +1,5 @@
 import { _Data } from 'complex-utils'
+import BaseData from './BaseData'
 
 let id = 0
 
@@ -57,14 +58,14 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
   _getName(): string {
     return `CLASS:${super._getName()}-ID:${this._getId()}`
   }
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // $install(target: BaseData, from?: string) {
-  //   //
-  // }
-  // // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  // $uninstall(target: BaseData, from?: string) {
-  //   this.$setParent()
-  // }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _install(target: BaseData, from?: string) {
+    //
+  }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  _uninstall(target: BaseData, from?: string) {
+    this.$setParent()
+  }
 }
 
 export default Data

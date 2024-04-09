@@ -244,8 +244,8 @@ class DictionaryData extends DefaultData {
   }
 
   // SearchData重写加载/卸载
-  $install(target: BaseData) {
-    super.$install(target)
+  _install(target: BaseData) {
+    super._install(target)
     // 监听事件
     this.onLife('updated', {
       id: target._getId('dictionaryUpdated'),
@@ -254,8 +254,8 @@ class DictionaryData extends DefaultData {
       }
     })
   }
-  $uninstall(target: BaseData) {
-    super.$uninstall(target)
+  _uninstall(target: BaseData) {
+    super._uninstall(target)
     // 停止监听事件
     this.offLife('updated', target._getId('dictionaryUpdated'))
   }

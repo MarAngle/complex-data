@@ -166,8 +166,8 @@ class ChoiceData extends Data {
    * 模块加载
    * @param {object} target 加载到的目标
    */
-  $install (target: BaseData) {
-    super.$install(target)
+  _install (target: BaseData) {
+    super._install(target)
     target.$onCreatedLife('BaseDataCreated', () => {
       if (target.$module && target.$module.dictionary) {
         this.idProp = target.$module.dictionary.getProp('id')
@@ -184,8 +184,8 @@ class ChoiceData extends Data {
    * 模块卸载
    * @param {object} target 卸载到的目标
    */
-  $uninstall(target: BaseData) {
-    super.$uninstall(target)
+  _uninstall(target: BaseData) {
+    super._uninstall(target)
     target.offLife('beforeReload', this._getId('BeforeReload'))
   }
 }
