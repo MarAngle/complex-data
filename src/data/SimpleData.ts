@@ -2,13 +2,13 @@ import { getType } from 'complex-utils'
 import Data, { BufferType } from './Data'
 
 export interface SimpleDataInitOption {
-  extra?: Record<PropertyKey, unknown>
+  extra?: Record<PropertyKey, any>
 }
 
 class SimpleData<Buffer extends BufferType = BufferType> extends Data<Buffer> {
   static $name = 'SimpleData'
   static $formatConfig = { name: 'SimpleData', level: 30, recommend: false }
-  $extra!: Record<PropertyKey, unknown>
+  $extra!: Record<PropertyKey, any>
   constructor(initOption: SimpleDataInitOption) {
     super()
     const extraType = getType(initOption.extra)
@@ -27,7 +27,7 @@ class SimpleData<Buffer extends BufferType = BufferType> extends Data<Buffer> {
    * @param {string} prop 属性
    * @param {*} data 数据
    */
-  setExtra(prop: string, data: unknown) {
+  setExtra(prop: string, data: any) {
     this.$extra[prop] = data
   }
   /**

@@ -1,5 +1,5 @@
 import { getProp, isPromise } from 'complex-utils'
-import DefaultData, { DefaultDataInitOption } from './DefaultData'
+import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
 import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
@@ -32,7 +32,7 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
   return getProp(resetOption, prop)
 }
 
-class BaseData extends DefaultData {
+class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
   static $name = 'BaseData'
   static $formatConfig = { name: 'BaseData', level: 80, recommend: true }
   static $active = {

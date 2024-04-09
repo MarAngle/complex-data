@@ -8,11 +8,11 @@ export interface DefaultDataInitOption extends SimpleDataInitOption {
   life?: LifeDataInitOption
 }
 
-export interface DefaultDataBuffer extends BufferType {
+export interface DefaultBufferType extends BufferType {
   create: Record<string, undefined | boolean>
 }
 
-class DefaultData<Buffer extends DefaultDataBuffer = DefaultDataBuffer> extends SimpleData<Buffer> implements DataWithLife {
+class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends SimpleData<Buffer> implements DataWithLife {
   static $name = 'DefaultData'
   static $formatConfig = { name: 'DefaultData', level: 40, recommend: true }
   $prop: string

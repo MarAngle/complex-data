@@ -5,6 +5,7 @@ import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
 import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
+import { DefaultBufferType } from "./DefaultData"
 
 export type buildDataType = (targetData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
 export type changeDataType = (targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
@@ -24,7 +25,7 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
   importData?: importDataType
 }
 
-class ComplexData extends BaseData {
+class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> {
   static $name = 'ComplexData'
   declare $module: ModuleData
   $updateData?: loadFunctionType
