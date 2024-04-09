@@ -2,7 +2,7 @@ import PaginationData, { PaginationDataInitOption } from "../module/PaginationDa
 import LoadEdit, { LoadEditInitOption } from "./LoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultEditSelectOption {
+export interface SelectEditOption {
   list: Record<PropertyKey, unknown>[]
   optionValue: string
   optionLabel: string
@@ -13,14 +13,14 @@ export interface DefaultEditSelectOption {
   emptyOptionContent?: string
 }
 
-export interface DefaultEditSelectInitOption extends LoadEditInitOption {
+export interface SelectEditInitOption extends LoadEditInitOption {
   type: 'select'
-  option?: Partial<DefaultEditSelectOption>
+  option?: Partial<SelectEditOption>
   pagination?: PaginationDataInitOption
 }
 
-class DefaultEditSelect extends LoadEdit{
-  static $name = 'DefaultEditSelect'
+class SelectEdit extends LoadEdit{
+  static $name = 'SelectEdit'
   static $defaultOption = {
     optionValue: 'value',
     optionLabel: 'label',
@@ -30,13 +30,13 @@ class DefaultEditSelect extends LoadEdit{
     autoWidth: false
   }
   type: 'select'
-  $option: DefaultEditSelectOption
+  $option: SelectEditOption
   $pagination?: PaginationData
-  constructor(initOption: DefaultEditSelectInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: SelectEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    const $defaultOption = (this.constructor as typeof DefaultEditSelect).$defaultOption
+    const $defaultOption = (this.constructor as typeof SelectEdit).$defaultOption
     this.$option = {
       list: option.list || [],
       optionValue: option.optionValue || $defaultOption.optionValue,
@@ -59,4 +59,4 @@ class DefaultEditSelect extends LoadEdit{
   }
 }
 
-export default DefaultEditSelect
+export default SelectEdit

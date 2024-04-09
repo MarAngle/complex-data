@@ -1,7 +1,7 @@
 import LoadEdit, { LoadEditInitOption } from "./LoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultEditCascaderOption {
+export interface CascaderEditOption {
   list: Record<PropertyKey, unknown>[]
   optionValue: string
   optionLabel: string
@@ -12,14 +12,14 @@ export interface DefaultEditCascaderOption {
   autoWidth: boolean
 }
 
-export interface DefaultEditCascaderInitOption extends LoadEditInitOption {
+export interface CascaderEditInitOption extends LoadEditInitOption {
   type: 'cascader'
-  option?: Partial<DefaultEditCascaderOption>
+  option?: Partial<CascaderEditOption>
 }
 
 // 后期考虑子数据的加载
-class DefaultEditCascader extends LoadEdit{
-  static $name = 'DefaultEditCascader'
+class CascaderEdit extends LoadEdit{
+  static $name = 'CascaderEdit'
   static $defaultOption = {
     optionValue: 'value',
     optionLabel: 'label',
@@ -30,12 +30,12 @@ class DefaultEditCascader extends LoadEdit{
     autoWidth: false
   }
   type: 'cascader'
-  $option: DefaultEditCascaderOption
-  constructor(initOption: DefaultEditCascaderInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: CascaderEditOption
+  constructor(initOption: CascaderEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    const $defaultOption = (this.constructor as typeof DefaultEditCascader).$defaultOption
+    const $defaultOption = (this.constructor as typeof CascaderEdit).$defaultOption
     this.$option = {
       list: option.list || [],
       optionValue: option.optionValue || $defaultOption.optionValue,
@@ -49,4 +49,4 @@ class DefaultEditCascader extends LoadEdit{
   }
 }
 
-export default DefaultEditCascader
+export default CascaderEdit

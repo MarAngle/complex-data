@@ -1,23 +1,23 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultEditInputNumberOption {
+export interface InputNumberEditOption {
   max: number
   min: number
   precision: number
   step: number
 }
 
-export interface DefaultEditInputNumberInitOption extends DefaultEditInitOption {
+export interface InputNumberEditInitOption extends DefaultEditInitOption {
   type: 'inputNumber'
-  option?: Partial<DefaultEditInputNumberOption>
+  option?: Partial<InputNumberEditOption>
 }
 
-class DefaultEditInputNumber extends DefaultEdit{
-  static $name = 'DefaultEditInputNumber'
+class InputNumberEdit extends DefaultEdit{
+  static $name = 'InputNumberEdit'
   type: 'inputNumber'
-  $option: DefaultEditInputNumberOption
-  constructor(initOption: DefaultEditInputNumberInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: InputNumberEditOption
+  constructor(initOption: InputNumberEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
@@ -30,4 +30,4 @@ class DefaultEditInputNumber extends DefaultEdit{
   }
 }
 
-export default DefaultEditInputNumber
+export default InputNumberEdit

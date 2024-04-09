@@ -7,19 +7,19 @@ import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
 import DefaultEdit from '../dictionary/DefaultEdit'
-import DefaultEditInput, { DefaultEditInputInitOption } from '../dictionary/DefaultEditInput'
-import DefaultEditInputNumber, { DefaultEditInputNumberInitOption } from '../dictionary/DefaultEditInputNumber'
-import DefaultEditTextArea, { DefaultEditTextAreaInitOption } from '../dictionary/DefaultEditTextArea'
-import DefaultEditSelect, { DefaultEditSelectInitOption } from '../dictionary/DefaultEditSelect'
-import DefaultEditSwitch, { DefaultEditSwitchInitOption } from '../dictionary/DefaultEditSwitch'
-import DefaultEditCascader, { DefaultEditCascaderInitOption } from '../dictionary/DefaultEditCascader'
-import DefaultEditDate, { DefaultEditDateInitOption } from '../dictionary/DefaultEditDate'
-import DefaultEditDateRange, { DefaultEditDateRangeInitOption } from '../dictionary/DefaultEditDateRange'
-import DefaultEditFile, { DefaultEditFileInitOption } from '../dictionary/DefaultEditFile'
-import DefaultEditButton, { DefaultEditButtonInitOption } from '../dictionary/DefaultEditButton'
-import DefaultEditButtonGroup, { DefaultEditButtonGroupInitOption } from '../dictionary/DefaultEditButtonGroup'
-import DefaultEditContent, { DefaultEditContentInitOption } from '../dictionary/DefaultEditContent'
-import DefaultEditCustom, { DefaultEditCustomInitOption } from '../dictionary/DefaultEditCustom'
+import InputEdit, { InputEditInitOption } from '../dictionary/InputEdit'
+import InputNumberEdit, { InputNumberEditInitOption } from '../dictionary/InputNumberEdit'
+import TextAreaEdit, { TextAreaEditInitOption } from '../dictionary/TextAreaEdit'
+import SelectEdit, { SelectEditInitOption } from '../dictionary/SelectEdit'
+import SwitchEdit, { SwitchEditInitOption } from '../dictionary/SwitchEdit'
+import CascaderEdit, { CascaderEditInitOption } from '../dictionary/CascaderEdit'
+import DateEdit, { DateEditInitOption } from '../dictionary/DateEdit'
+import DateRangeEdit, { DateRangeEditInitOption } from '../dictionary/DateRangeEdit'
+import FileEdit, { FileEditInitOption } from '../dictionary/FileEdit'
+import ButtonEdit, { ButtonEditInitOption } from '../dictionary/ButtonEdit'
+import ButtonGroupEdit, { ButtonGroupEditInitOption } from '../dictionary/ButtonGroupEdit'
+import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
+import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
 import LoadEdit from '../dictionary/LoadEdit'
 
 export type payloadType = {
@@ -67,9 +67,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = DefaultEditInputInitOption | DefaultEditInputNumberInitOption | DefaultEditSwitchInitOption | DefaultEditTextAreaInitOption | DefaultEditSelectInitOption | DefaultEditCascaderInitOption | DefaultEditDateInitOption | DefaultEditDateRangeInitOption | DefaultEditFileInitOption | DefaultEditButtonInitOption | DefaultEditButtonGroupInitOption | DefaultEditContentInitOption | DefaultEditCustomInitOption
+export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | CascaderEditInitOption | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption
 
-export type DictionaryEditMod = DefaultEditInput | DefaultEditInputNumber | DefaultEditSwitch | DefaultEditTextArea | DefaultEditSelect | DefaultEditCascader | DefaultEditFile | DefaultEditDate | DefaultEditDateRange | DefaultEditButton | DefaultEditButtonGroup | DefaultEditContent | DefaultEditCustom
+export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | CascaderEdit | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -118,31 +118,31 @@ class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
   static _initEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
     if (!editModInitOption.type || editModInitOption.type === 'input') {
-      return new DefaultEditInput(editModInitOption, parent, modName)
+      return new InputEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'inputNumber') {
-      return new DefaultEditInputNumber(editModInitOption, parent, modName)
+      return new InputNumberEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'textArea') {
-      return new DefaultEditTextArea(editModInitOption, parent, modName)
+      return new TextAreaEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'select') {
-      return new DefaultEditSelect(editModInitOption, parent, modName)
+      return new SelectEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'switch') {
-      return new DefaultEditSwitch(editModInitOption, parent, modName)
+      return new SwitchEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'cascader') {
-      return new DefaultEditCascader(editModInitOption, parent, modName)
+      return new CascaderEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'date') {
-      return new DefaultEditDate(editModInitOption, parent, modName)
+      return new DateEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'dateRange') {
-      return new DefaultEditDateRange(editModInitOption, parent, modName)
+      return new DateRangeEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'file') {
-      return new DefaultEditFile(editModInitOption, parent, modName)
+      return new FileEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'button') {
-      return new DefaultEditButton(editModInitOption, parent, modName)
+      return new ButtonEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'buttonGroup') {
-      return new DefaultEditButtonGroup(editModInitOption, parent, modName)
+      return new ButtonGroupEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'content') {
-      return new DefaultEditContent(editModInitOption, parent, modName)
+      return new ContentEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
-      return new DefaultEditCustom(editModInitOption, parent, modName)
+      return new CustomEdit(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }

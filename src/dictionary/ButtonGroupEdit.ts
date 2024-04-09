@@ -3,16 +3,16 @@ import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import ButtonValue, { ButtonValueInitOption } from "../lib/ButtonValue"
 import config from "../../config"
 
-export type DefaultEditButtonGroupOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
+export type ButtonGroupEditOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
 
-export interface DefaultEditButtonGroupInitOption extends DefaultEditInitOption {
+export interface ButtonGroupEditInitOption extends DefaultEditInitOption {
   type: 'buttonGroup'
   interval?: number | string
-  list: DefaultEditButtonGroupOption[]
+  list: ButtonGroupEditOption[]
 }
 
-class DefaultEditButtonGroup extends DefaultEdit{
-  static $name = 'DefaultEditButtonGroup'
+class ButtonGroupEdit extends DefaultEdit{
+  static $name = 'ButtonGroupEdit'
   static $editable = false
   static $defaultOption = {
     interval: 16
@@ -20,14 +20,14 @@ class DefaultEditButtonGroup extends DefaultEdit{
   type: 'buttonGroup'
   interval: string
   $list: ButtonValue<payloadType, [payloadType]>[]
-  constructor(initOption: DefaultEditButtonGroupInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: ButtonGroupEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
-    const $defaultOption = (this.constructor as typeof DefaultEditButtonGroup).$defaultOption
+    const $defaultOption = (this.constructor as typeof ButtonGroupEdit).$defaultOption
     const interval = initOption.interval === undefined ? $defaultOption.interval : initOption.interval
     this.interval = typeof interval === 'number' ? config.formatPixel(interval) : interval
     this.$list = initOption.list.map(option => new ButtonValue(option))
   }
 }
 
-export default DefaultEditButtonGroup
+export default ButtonGroupEdit

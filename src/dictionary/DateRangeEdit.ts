@@ -1,8 +1,8 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DefaultEditDate, { dateConfig } from "./DefaultEditDate"
+import DateEdit, { dateConfig } from "./DateEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
-export interface DefaultEditDateRangeOption {
+export interface DateRangeEditOption {
   format: string
   showFormat: string
   separator: string
@@ -15,7 +15,7 @@ export interface DefaultEditDateRangeOption {
   disabledDate?: (value: unknown) => boolean
 }
 
-export interface PartialDefaultEditDateRangeOption {
+export interface PartialDateRangeEditOption {
   format?: string
   showFormat?: string
   separator?: string
@@ -28,13 +28,13 @@ export interface PartialDefaultEditDateRangeOption {
   disabledDate?: dateConfig | ((value: unknown) => boolean)
 }
 
-export interface DefaultEditDateRangeInitOption extends DefaultEditInitOption {
+export interface DateRangeEditInitOption extends DefaultEditInitOption {
   type: 'dateRange'
-  option?: PartialDefaultEditDateRangeOption
+  option?: PartialDateRangeEditOption
 }
 
-class DefaultEditDateRange extends DefaultEdit{
-  static $name = 'DefaultEditDateRange'
+class DateRangeEdit extends DefaultEdit{
+  static $name = 'DateRangeEdit'
   static $edit: undefined | ((value: undefined | string, format: string) => undefined | unknown)
   static $post: undefined | ((value: undefined | unknown, format: string) => undefined | string)
   static $defaultOption = {
@@ -48,22 +48,22 @@ class DefaultEditDateRange extends DefaultEdit{
     }
   }
   type: 'dateRange'
-  $option: DefaultEditDateRangeOption
-  constructor(initOption: DefaultEditDateRangeInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: DateRangeEditOption
+  constructor(initOption: DateRangeEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    const $constructor = (this.constructor as typeof DefaultEditDateRange)
+    const $constructor = (this.constructor as typeof DateRangeEdit)
     const $defaultOption = $constructor.$defaultOption
-    const format = option.format || option.time ? ($defaultOption.formatWithTime || DefaultEditDate.$defaultOption.formatWithTime) : ($defaultOption.format || DefaultEditDate.$defaultOption.format)
+    const format = option.format || option.time ? ($defaultOption.formatWithTime || DateEdit.$defaultOption.formatWithTime) : ($defaultOption.format || DateEdit.$defaultOption.format)
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
       separator: option.separator || $defaultOption.separator,
-      hideClear: option.hideClear === undefined ? ($defaultOption.hideClear === undefined ? DefaultEditDate.$defaultOption.hideClear : $defaultOption.hideClear) : option.hideClear
+      hideClear: option.hideClear === undefined ? ($defaultOption.hideClear === undefined ? DateEdit.$defaultOption.hideClear : $defaultOption.hideClear) : option.hideClear
     }
     if (option.time) {
-      const timeFormat = option.time.format || $defaultOption.time.format || DefaultEditDate.$defaultOption.time.format
+      const timeFormat = option.time.format || $defaultOption.time.format || DateEdit.$defaultOption.time.format
       this.$option.time = {
         format: timeFormat,
         showFormat: option.time.showFormat || timeFormat,
@@ -72,28 +72,28 @@ class DefaultEditDateRange extends DefaultEdit{
     }
     if (option.disabledDate) {
       if (typeof option.disabledDate === 'object') {
-        this.$option.disabledDate = DefaultEditDate.$disabledDate(option.disabledDate)
+        this.$option.disabledDate = DateEdit.$disabledDate(option.disabledDate)
       } else {
         this.$option.disabledDate = option.disabledDate
       }
     }
     if (this.edit === undefined) {
-      this.edit = function(this: DefaultEditDateRange, value: string) {
+      this.edit = function(this: DateRangeEdit, value: string) {
         if ($constructor.$edit) {
           $constructor.$edit(value, this.$option.format)
-        } else if (DefaultEditDate.$edit) {
-          DefaultEditDate.$edit(value, this.$option.format)
+        } else if (DateEdit.$edit) {
+          DateEdit.$edit(value, this.$option.format)
         } else {
           return value
         }
       } as functionType<unknown>
     }
     if (this.post === undefined) {
-      this.post = function(this: DefaultEditDateRange, value: string) {
+      this.post = function(this: DateRangeEdit, value: string) {
         if ($constructor.$post) {
           $constructor.$post(value, this.$option.format)
-        } else if (DefaultEditDate.$post) {
-          DefaultEditDate.$post(value, this.$option.format)
+        } else if (DateEdit.$post) {
+          DateEdit.$post(value, this.$option.format)
         } else {
           return value
         }
@@ -102,4 +102,4 @@ class DefaultEditDateRange extends DefaultEdit{
   }
 }
 
-export default DefaultEditDateRange
+export default DateRangeEdit

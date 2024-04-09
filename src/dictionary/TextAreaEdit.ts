@@ -1,31 +1,31 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultEditTextAreaOption {
+export interface TextAreaEditOption {
   size: number
   autoSize: boolean
   hideClear: boolean
 }
 
-export interface DefaultEditTextAreaInitOption extends DefaultEditInitOption {
+export interface TextAreaEditInitOption extends DefaultEditInitOption {
   type: 'textArea'
-  option?: Partial<DefaultEditTextAreaOption>
+  option?: Partial<TextAreaEditOption>
 }
 
-class DefaultEditTextArea extends DefaultEdit{
-  static $name = 'DefaultEditTextArea'
+class TextAreaEdit extends DefaultEdit{
+  static $name = 'TextAreaEdit'
   static $defaultOption = {
     size: 2048,
     autoSize: false,
     hideClear: false
   }
   type: 'textArea'
-  $option: DefaultEditTextAreaOption
-  constructor(initOption: DefaultEditTextAreaInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: TextAreaEditOption
+  constructor(initOption: TextAreaEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = 'textArea'
     const option = initOption.option || {}
-    const $defaultOption = (this.constructor as typeof DefaultEditTextArea).$defaultOption
+    const $defaultOption = (this.constructor as typeof TextAreaEdit).$defaultOption
     this.$option = {
       size: option.size || $defaultOption.size,
       autoSize: option.autoSize === undefined ? $defaultOption.autoSize : option.autoSize,
@@ -34,4 +34,4 @@ class DefaultEditTextArea extends DefaultEdit{
   }
 }
 
-export default DefaultEditTextArea
+export default TextAreaEdit

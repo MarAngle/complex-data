@@ -7,7 +7,7 @@
 
 ### 4.1.15/16/17
 - ComplexData修正getSize/setSize => getPageSize/setPageSize
-- DefaultEditButtonGroupOption类型修正
+- ButtonGroupEditOption类型修正
 - Default添加editable判断是否是需要编辑的数据
 - Status类型优化
 - 依赖升级
@@ -61,7 +61,7 @@
 ### 4.0.18/19
 - SearchData菜单默认参数优化
 - config添加formatPixel函数
-- DefaultEditButtonGroup添加间隔设置项
+- ButtonGroupEdit添加间隔设置项
 
 ### 4.0.17
 - 非兼容性更新:DependData=>RelationData，位置由ModuleData转换为BaseData的不可枚举属性
@@ -69,7 +69,7 @@
 
 ### 4.0.15/16
 - 非兼容性更新:DictionaryData:$createEditData=>$createEditData，后续相关调用名称优化
-- 实现DefaultEditDate/DefaultEditDateRange的数据转换
+- 实现DateEdit/DateRangeEdit的数据转换
 - 扩展ComplexData的常用函数，减少后期自定义类
 
 ### 4.0.14
@@ -87,12 +87,12 @@
 - 升级依赖，修正类型报错
 
 ### 4.0.9
-- 优化AttrsValue/DefaultEditContent/DefaultEditDate/DefaultEditDateRange
+- 优化AttrsValue/ContentEdit/DateEdit/DateRangeEdit
 
 ### 4.0.8
 - 非兼容性更新:添加LayoutValue/InterfaceLayoutValue，优化组件的width到$layout中
-- 修正DefaultDate=>DefaultEditDate.
-- 添加DefaultEditDateRange
+- 修正DefaultDate=>DateEdit.
+- 添加DateRangeEdit
 - 升级依赖
 
 ### 4.0.4/5/6/7

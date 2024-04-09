@@ -1,31 +1,31 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultEditInputOption {
+export interface InputEditOption {
   type: string
   size: number
   hideClear: boolean
 }
 
-export interface DefaultEditInputInitOption extends DefaultEditInitOption {
+export interface InputEditInitOption extends DefaultEditInitOption {
   type?: 'input'
-  option?: Partial<DefaultEditInputOption>
+  option?: Partial<InputEditOption>
 }
 
-class DefaultEditInput extends DefaultEdit{
-  static $name = 'DefaultEditInput'
+class InputEdit extends DefaultEdit{
+  static $name = 'InputEdit'
   static $defaultOption = {
     type: 'text',
     size: 128,
     hideClear: false
   }
   type: 'input'
-  $option: DefaultEditInputOption
-  constructor(initOption: DefaultEditInputInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: InputEditOption
+  constructor(initOption: InputEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type || 'input'
     const option = initOption.option || {}
-    const $defaultOption = (this.constructor as typeof DefaultEditInput).$defaultOption
+    const $defaultOption = (this.constructor as typeof InputEdit).$defaultOption
     this.$option = {
       type: option.type || $defaultOption.type,
       size: option.size || $defaultOption.size,
@@ -34,4 +34,4 @@ class DefaultEditInput extends DefaultEdit{
   }
 }
 
-export default DefaultEditInput
+export default InputEdit

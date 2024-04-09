@@ -8,7 +8,7 @@ export type dateConfigValue = {
 
 export type dateConfig = { start?: dateConfigValue, end?: dateConfigValue }
 
-export interface DefaultEditDateOption {
+export interface DateEditOption {
   format: string
   showFormat: string
   hideClear: boolean
@@ -20,7 +20,7 @@ export interface DefaultEditDateOption {
   disabledDate?: (value: unknown) => boolean
 }
 
-export interface PartialDefaultEditDateOption {
+export interface PartialDateEditOption {
   format?: string
   showFormat?: string
   hideClear?: boolean
@@ -32,13 +32,13 @@ export interface PartialDefaultEditDateOption {
   disabledDate?: dateConfig | ((value: unknown) => boolean)
 }
 
-export interface DefaultEditDateInitOption extends DefaultEditInitOption {
+export interface DateEditInitOption extends DefaultEditInitOption {
   type: 'date'
-  option?: PartialDefaultEditDateOption
+  option?: PartialDateEditOption
 }
 
-class DefaultEditDate extends DefaultEdit{
-  static $name = 'DefaultEditDate'
+class DateEdit extends DefaultEdit{
+  static $name = 'DateEdit'
   static $edit: undefined | ((value: undefined | string, format: string) => undefined | unknown)
   static $post: undefined | ((value: undefined | unknown, format: string) => undefined | string)
   static $parseDate = function(dateValue: dateConfigValue): unknown { return dateValue.value }
@@ -56,7 +56,7 @@ class DefaultEditDate extends DefaultEdit{
     return function(value: unknown) {
       let disable = false
       if (start) {
-        const startCompare = DefaultEditDate.$compareDate(DefaultEditDate.$parseDate(start), value)
+        const startCompare = DateEdit.$compareDate(DateEdit.$parseDate(start), value)
         if (startCompare === 'before') {
           // 当前时间在开始时间之前则禁用
           disable = true
@@ -65,7 +65,7 @@ class DefaultEditDate extends DefaultEdit{
         }
       }
       if (!disable && end) {
-        const endCompare = DefaultEditDate.$compareDate(DefaultEditDate.$parseDate(end), value)
+        const endCompare = DateEdit.$compareDate(DateEdit.$parseDate(end), value)
         if (endCompare === 'after') {
           // 当前时间在结束时间之后则禁用
           disable = true
@@ -86,12 +86,12 @@ class DefaultEditDate extends DefaultEdit{
     }
   }
   type: 'date'
-  $option: DefaultEditDateOption
-  constructor(initOption: DefaultEditDateInitOption, parent?: DictionaryValue, modName?: string) {
+  $option: DateEditOption
+  constructor(initOption: DateEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
-    const $constructor = (this.constructor as typeof DefaultEditDate)
+    const $constructor = (this.constructor as typeof DateEdit)
     const $defaultOption = $constructor.$defaultOption
     const format = option.format || option.time ? $defaultOption.formatWithTime : $defaultOption.format
     this.$option = {
@@ -115,7 +115,7 @@ class DefaultEditDate extends DefaultEdit{
       }
     }
     if (this.edit === undefined) {
-      this.edit = function(this: DefaultEditDate, value: string) {
+      this.edit = function(this: DateEdit, value: string) {
         if ($constructor.$edit) {
           return $constructor.$edit(value, this.$option.format)
         } else {
@@ -124,7 +124,7 @@ class DefaultEditDate extends DefaultEdit{
       } as functionType<unknown>
     }
     if (this.post === undefined) {
-      this.post = function(this: DefaultEditDate, value: string) {
+      this.post = function(this: DateEdit, value: string) {
         if ($constructor.$post) {
           return $constructor.$post(value, this.$option.format)
         } else {
@@ -135,4 +135,4 @@ class DefaultEditDate extends DefaultEdit{
   }
 }
 
-export default DefaultEditDate
+export default DateEdit
