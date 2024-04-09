@@ -1,12 +1,10 @@
 import { getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
-import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
+import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
 import BaseData from "./../data/BaseData"
-import ButtonValue, { ButtonValueInitOption } from "../lib/ButtonValue"
-
-export type SearchButtonOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
+import ButtonEdit from "../dictionary/ButtonEdit"
 
 export interface resetOption {
   copy?: boolean
@@ -15,7 +13,7 @@ export interface resetOption {
 
 export type menuInitType = {
   default?: boolean
-  list?: (string | SearchButtonOption)[]
+  list?: (string | DictionaryEditMod)[]
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
@@ -30,57 +28,75 @@ class SearchData extends DictionaryData {
   static $menu = {
     default: ['search', 'reset'],
     data: {
-      search: new ButtonValue<payloadType, [payloadType]>({
+      search: new ButtonEdit({
+        type: 'button',
         prop: '$search',
-        type: 'primary',
-        name: '查询',
-        icon: 'search'
+        option: {
+          type: 'primary',
+          name: '查询',
+          icon: 'search'
+        }
       }),
-      reset: new ButtonValue<payloadType, [payloadType]>({
+      reset: new ButtonEdit({
+        type: 'button',
         prop: '$reset',
-        type: 'primary',
-        name: '查询',
-        icon: 'refresh'
+        option: {
+          type: 'primary',
+          name: '查询',
+          icon: 'refresh'
+        }
       }),
-      build: new ButtonValue<payloadType, [payloadType]>({
+      build: new ButtonEdit({
+        type: 'button',
         prop: '$build',
-        type: 'primary',
-        name: '新增',
-        icon: 'plus'
+        option: {
+          type: 'primary',
+          name: '新增',
+          icon: 'plus'
+        }
       }),
-      delete: new ButtonValue<payloadType, [payloadType]>({
+      delete: new ButtonEdit({
+        type: 'button',
         prop: '$delete',
-        type: 'danger',
-        name: '删除',
-        icon: 'delete',
-        disabled(payload) {
-          if (!payload.choice) {
-            return true
-          } else {
-            return false
+        option: {
+          type: 'danger',
+          name: '删除',
+          icon: 'delete',
+          disabled(payload) {
+            if (!payload.choice) {
+              return true
+            } else {
+              return false
+            }
           }
         }
       }),
-      import: new ButtonValue({
+      import: new ButtonEdit({
+        type: 'button',
         prop: '$import',
-        type: 'primary',
-        name: '导入',
-        icon: 'upload'
+        option: {
+          type: 'primary',
+          name: '导入',
+          icon: 'upload'
+        }
       }),
-      export: new ButtonValue({
+      export: new ButtonEdit({
+        type: 'button',
         prop: '$export',
-        type: 'primary',
-        name: '导出',
-        icon: 'download'
+        option: {
+          type: 'primary',
+          name: '导出',
+          icon: 'download'
+        }
       })
     } as {
-      search: ButtonValue<payloadType, [payloadType]>
-      reset: ButtonValue<payloadType, [payloadType]>
-      build: ButtonValue<payloadType, [payloadType]>
-      delete: ButtonValue<payloadType, [payloadType]>
-      import: ButtonValue<payloadType, [payloadType]>
-      export: ButtonValue<payloadType, [payloadType]>
-      [prop: string]: undefined | ButtonValue<payloadType, [payloadType]>
+      search: ButtonEdit
+      reset: ButtonEdit
+      build: ButtonEdit
+      delete: ButtonEdit
+      import: ButtonEdit
+      export: ButtonEdit
+      [prop: string]: undefined | DictionaryEditMod
     }
   }
   static $form = FormValue
@@ -100,7 +116,7 @@ class SearchData extends DictionaryData {
     data: Record<PropertyKey, unknown>
   }
   $menu: {
-    list: (string | ButtonValue<payloadType, [payloadType]>)[]
+    list: (string | DictionaryEditMod)[]
   }
   $observe?: boolean
   $resetOption?: resetOption

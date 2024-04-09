@@ -2,7 +2,7 @@ import { menuIcon } from "../type"
 
 export interface MenuValueInitOption<E = MouseEvent, A extends unknown[] = unknown[]> {
   name: string
-  prop: string
+  prop?: string
   type?: string
   icon?: menuIcon
   loading?: boolean | ((...args: A) => boolean)
@@ -12,7 +12,7 @@ export interface MenuValueInitOption<E = MouseEvent, A extends unknown[] = unkno
 
 class MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   name: string
-  prop: string
+  prop?: string
   type?: string
   icon?: menuIcon
   loading?: boolean | ((...args: A) => boolean)
