@@ -8,11 +8,11 @@ export interface SelectValueType {
   [prop: PropertyKey]: unknown
 }
 
-export interface DefaultSelectValueType<V = unknown> extends SelectValueType {
+export interface DefaultSelectValueType<V = any> extends SelectValueType {
   label: string
   value: V
   disabled?: boolean
-  filter?: filterType[]
+  $filter?: filterType[]
 }
 
 export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
@@ -24,11 +24,10 @@ export interface SelectValueInitOption<D extends SelectValueType = DefaultSelect
     filter?: string
   }
   hidden?: string
-  cascade?: string
   option?: {
     equal?: boolean
   }
-  miss?: Record<PropertyKey, unknown>
+  miss?: D
 }
 
 function checkItemHidden<D extends SelectValueType>(item: D, hiddenProp: string) {
@@ -77,11 +76,10 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     filter: string
   }
   hidden?: string
-  cascade?: string
   $option: {
     equal?: boolean
   }
-  miss?: Record<PropertyKey, unknown>
+  miss?: D
   constructor(initOption: SelectValueInitOption<D>) {
     super()
     this.list = initOption.list || []
@@ -95,7 +93,6 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     }
     this.$option = initOption.option || {}
     this.hidden = initOption.hidden
-    this.cascade = initOption.cascade
     this.miss = initOption.miss
   }
   setList(list: D[]) {
@@ -115,26 +112,21 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       return list
     }
   }
-  protected _getItem(list: D[], value: unknown, prop: keyof D, cascade?: string): D | undefined {
+  protected _getItem (list: D[], prop: keyof D, value: any) {
     for (let n = 0; n < list.length; n++) {
       const item = list[n]
       if (this.check(value, item[prop])) {
         return item
-      } else if (cascade && item[cascade]) {
-        const child = this._getItem(item[cascade] as D[], value, prop, cascade)
-        if (child) {
-          return child
-        }
       }
     }
   }
-  get(value: unknown, prop?: keyof D) {
+  get(value: any, prop?: keyof D) {
     if (!prop) {
       prop = this.$dict.value
     }
-    return this._getItem(this.list, value, prop, this.cascade) || this.miss
+    return this._getItem(this.list, prop, value) || this.miss
   }
-  check(value: unknown, itemValue: unknown) {
+  check(value: any, itemValue: any) {
     if (!this.$option.equal) {
       // eslint-disable-next-line eqeqeq
       return value == itemValue
