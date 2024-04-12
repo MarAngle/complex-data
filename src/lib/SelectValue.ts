@@ -15,7 +15,16 @@ export interface DefaultSelectValueType<V = any> extends SelectValueType {
   $filter?: filterType[]
 }
 
-export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
+export type CascadeValueType<C extends PropertyKey = 'children'> = SelectValueType & {
+  [prop in C]?: CascadeValueType<C>[]
+}
+
+export type DefaultCascadeValueType<C extends PropertyKey = 'children', V = any> = DefaultSelectValueType<V> & {
+  [prop in C]?: DefaultCascadeValueType<C, V>[]
+}
+
+export interface SelectValueInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> {
+  cascade: C
   list?: D[]
   dict?: {
     value?: string
@@ -61,13 +70,14 @@ function getFilter<D extends SelectValueType>(filter: undefined | checkItem<D> |
   }
 }
 
-class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Data {
+class SelectValue<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends Data {
   static $name = 'SelectValue'
   static $formatConfig = { name: 'SelectValue', level: 50, recommend: true }
   static dictValue = 'value'
   static dictLabel = 'label'
   static dictDisabled = 'disabled'
   static dictFilter = '$filter'
+  cascade: C
   list: D[]
   $dict: {
     value: string
@@ -80,8 +90,9 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     equal?: boolean
   }
   miss?: D
-  constructor(initOption: SelectValueInitOption<D>) {
+  constructor(initOption: SelectValueInitOption<C, D>) {
     super()
+    this.cascade = initOption.cascade
     this.list = initOption.list || []
     const dict = initOption.dict || {}
     const $constructor = (this.constructor as typeof SelectValue)
@@ -94,6 +105,53 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     this.$option = initOption.option || {}
     this.hidden = initOption.hidden
     this.miss = initOption.miss
+  }
+  protected _getItem (list: D[], value: any, prop: keyof D, cascade?: boolean): undefined | D {
+    for (let n = 0; n < list.length; n++) {
+      const item = list[n]
+      if (this.check(value, item[prop])) {
+        return item
+      } else if (cascade && this.cascade && item[this.cascade]) {
+        const child = this._getItem(item[this.cascade] as D[], value, prop)
+        if (child) {
+          // 函数内部已经push，此时不需要做额外操作
+          return child
+        }
+      }
+    }
+  }
+  protected _getCascadeItemList(list: D[], valueList: any[], prop: keyof D, result: D[] = [], deep = 0): D[] {
+    // 当前深度>=数组长度时，说明此时已经超过需要检索的深度，直接返回
+    if (this.cascade && deep < valueList.length) {
+      const currentValue = valueList[deep]
+      const item = this._getItem(list, currentValue, prop)
+      if (item) {
+        result.push(item)
+        if (item[this.cascade]) {
+          this._getCascadeItemList(item[this.cascade] as D[], valueList, prop, result, deep + 1)
+        }
+      }
+    }
+    return result
+  }
+  protected _getCascadeList(list: D[], value: any[], prop: keyof D): D[] {
+    const result: D[] = []
+    if (this.cascade) {
+      for (let n = 0; n < list.length; n++) {
+        const item = list[n]
+        if (this.check(value, item[prop])) {
+          result.push(item)
+          break
+        } else if (item[this.cascade]) {
+          const childResultList = this._getCascadeList(item[this.cascade] as D[], value, prop)
+          if (childResultList.length) {
+            result.push(item, ...childResultList)
+            break
+          }
+        }
+      }
+    }
+    return result
   }
   setList(list: D[]) {
     this.list = list || []
@@ -112,19 +170,33 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       return list
     }
   }
-  protected _getItem (list: D[], prop: keyof D, value: any) {
-    for (let n = 0; n < list.length; n++) {
-      const item = list[n]
-      if (this.check(value, item[prop])) {
-        return item
-      }
-    }
-  }
-  get(value: any, prop?: keyof D) {
+  // 获取匹配数据，cascade为真则说明检索子类
+  getItem(value: any, prop?: keyof D, cascade?: boolean) {
     if (!prop) {
       prop = this.$dict.value
     }
-    return this._getItem(this.list, prop, value) || this.miss
+    return this._getItem(this.list, value, prop, cascade) || this.miss
+  }
+  // 获取匹配数据且检索子类
+  getCascadeItem(value: any, prop?: keyof D) {
+    if (!prop) {
+      prop = this.$dict.value
+    }
+    return this._getItem(this.list, value, prop, true) || this.miss
+  }
+  // 根据值数组获取匹配数组
+  getCascadeItemList(valueList: any[], prop?: keyof D) {
+    if (!prop) {
+      prop = this.$dict.value
+    }
+    return this._getCascadeItemList(this.list, valueList, prop, [])
+  }
+  // 根据值获取匹配相关数组
+  getCascadeList(value: any, prop?: keyof D) {
+    if (!prop) {
+      prop = this.$dict.value
+    }
+    return this._getCascadeList(this.list, value, prop)
   }
   check(value: any, itemValue: any) {
     if (!this.$option.equal) {

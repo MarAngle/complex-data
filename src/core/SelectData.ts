@@ -1,25 +1,25 @@
 import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
-import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
+import SelectValue, { CascadeValueType, DefaultCascadeValueType, DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
 import { StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectValueType> extends SelectValueInitOption<D> {
+export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<C, D> {
   reload?: boolean
   life?: LifeInitOption
   pagination?: PaginationDataInitOption
   getData: getDataType<D>
 }
 
-class SelectData<D extends SelectValueType = DefaultSelectValueType> extends SelectValue<D> implements DataWithLife {
+class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<C, D> implements DataWithLife {
   $load: StatusItem
   $reload: boolean
   $life!: Life
   $pagination?: PaginationData
   $getData: getDataType<D>
-  constructor(initOption: SelectDataInitOption<D>) {
+  constructor(initOption: SelectDataInitOption<C, D>) {
     super(initOption)
     this.$load = new StatusItem('load')
     Object.defineProperty(this, '$life', {
