@@ -2,6 +2,12 @@
 - DictionaryData中添加菜单转DictionaryValue的函数
 - Observe考虑设置为仅跟随数据变化触发对应模块的响应式
 
+### 4.2.0
+- 优化函数名称，_为私有属性，理论上不对外使用，$为功能函数，理论上可对外使用，但可能存在更改逻辑的情况
+- 优化整个按钮相关逻辑，统一调用链
+- 优化SelectValue，适配可能存在的级联数据
+- 优化ObserveList的响应式逻辑，仅监控需要的属性，且通过defineReactive实现而不是之前的observe实现，减少性能消耗
+
 ### 4.1.18
 - 修正$triggerMethodWithStatus无函数时的状态回滚
 

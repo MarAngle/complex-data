@@ -3,7 +3,7 @@ import ComplexData, { ComplexDataInitOption } from "./../data/ComplexData"
 
 export type ComplexListInitOption = ComplexDataInitOption
 
-class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>, O extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
+class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>, O extends Record<PropertyKey, any> = Record<PropertyKey, any>, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
   static $name = 'ComplexList'
   $list: D[]
   constructor(initOption: ComplexListInitOption) {
@@ -25,7 +25,7 @@ class ComplexList<D extends Record<PropertyKey, unknown> = Record<PropertyKey, u
     this.setPageCount(totalNum!)
     this._syncData(true, 'formatList')
   }
-  getValue (data: unknown, prop?: string) {
+  getValue (data: any, prop?: string) {
     if (!prop) {
       prop = this.getDictionaryProp('id')
     }
