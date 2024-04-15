@@ -1,6 +1,6 @@
 import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusDataTriggerCallBackType } from '../module/StatusData'
+import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
@@ -13,7 +13,7 @@ export interface BaseDataActiveType {
   auto: boolean
 }
 
-export type loadFunctionType = (...args: unknown[]) => Promise<unknown>
+export type loadFunctionType = (...args: any[]) => Promise<any>
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption
@@ -44,7 +44,6 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   $relation?: RelationData
   $module?: ModuleData
   $active: BaseDataActiveType
-  $getData?: loadFunctionType
   constructor(initOption: BaseDataInitOption) {
     super(initOption)
     this._triggerCreateLife('BaseData', false, initOption)
@@ -135,39 +134,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   /* --- promise end --- */
 
   /* --- load start --- */
-  /**
-   * 触发指定Promise函数，指定状态跟随Promise状态变化
-   * @param method 需要触发的Promise函数
-   * @param args 函数参数
-   * @param statusProp 需要跟随变化的状态
-   * @param strict 是否启用严格模式，开启后当前状态不在目标周期的来源时，严格校验失败打断（un=>ing=>end）
-   * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
-   * @returns 
-   */
-  $triggerMethodWithStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
-    const statusItem = this.getStatusValue(statusProp)
-    if (statusItem) {
-      if (statusItem.triggerChange('start', strict, triggerCallBack)) {
-        return new Promise((resolve, reject) => {
-          this._triggerMethod(method, args)!.then((res: unknown) => {
-            statusItem.triggerChange('success', false, triggerCallBack, [res])
-            resolve(res)
-          }).catch(err => {
-            statusItem.triggerChange('fail', false, triggerCallBack, [err])
-            reject(err)
-          })
-        })
-      } else {
-        statusItem.triggerChange('fail', false, triggerCallBack, [])
-        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
-        return Promise.reject({ status: 'fail', code: 'status clash' })
-      }
-    } else {
-      this.$exportMsg(`${statusProp}状态不存在，$triggerMethodWithStatus函数失败！`)
-      return Promise.reject({ status: 'fail', code: 'status empty' })
-    }
-  }
-  protected _triggerMethod(method: string, args: unknown[]) {
+  protected _triggerMethod(method: string, args: any[]) {
     if (typeof method === 'string') {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof ((this as unknown as any)[method]) === 'function') {
@@ -192,15 +159,50 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       return Promise.reject({ status: 'fail', code: 'method error' })
     }
   }
+  /**
+   * 触发指定Promise函数，指定状态跟随Promise状态变化
+   * @param method 需要触发的Promise函数
+   * @param args 函数参数
+   * @param statusProp 需要跟随变化的状态
+   * @param strict 是否启用严格模式，开启后当前状态不在目标周期的来源时，严格校验失败打断（un=>ing=>end）
+   * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
+   * @returns 
+   */
+  $triggerMethodWithStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
+    const statusItem = this.getStatusValue(statusProp)
+    if (statusItem) {
+      if (statusItem.triggerChange('start', strict, triggerCallBack)) {
+        return new Promise((resolve, reject) => {
+          this._triggerMethod(method, args)!.then((res: unknown) => {
+            statusItem.triggerChange('success', false, triggerCallBack, [res])
+            resolve(res)
+          }).catch(err => {
+            statusItem.triggerChange('fail', false, triggerCallBack, [err])
+            reject(err)
+          })
+        })
+      } else {
+        statusItem.triggerChange('fail', false, triggerCallBack, [])
+        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
+        return Promise.reject({ status: 'fail', code: 'status clash' })
+      }
+    } else {
+      this.$exportMsg(`${statusProp}状态不存在，$triggerMethodWithStatus函数失败！`)
+      return Promise.reject({ status: 'fail', code: 'status empty' })
+    }
+  }
   // 触发函数联动operate
-  triggerMethod(method: string, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+  triggerMethod(method: string, args: any[] = [], strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
     return this.$triggerMethodWithStatus(method, args, 'operate', strict, triggerCallBack)
   }
-  // 触发函数并联动status，再联动operate
-  triggerMethodWithOperate(args: Parameters<BaseData['$triggerMethodWithStatus']>, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType) {
+  // 触发函数并联动目标status，再联动operate
+  triggerMethodWithOperate(args: Parameters<BaseData['$triggerMethodWithStatus']>, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
     return this.triggerMethod('$triggerMethodWithStatus', args, strict, triggerCallBack)
   }
-  protected _triggerLoadData(...args: unknown[]) {
+  $getData(...args: any[]): Promise<any> {
+    return Promise.reject({ status: 'fail', code: '$getData absent', msg: '$getData函数未定义' })
+  }
+  protected _triggerLoadData(...args: any[]) {
     if (this.$active.auto) {
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'loadData')

@@ -22,7 +22,7 @@ export interface StatusTriggerType {
   fail: triggerDataType
 }
 
-export type StatusDataTriggerCallBackType = (target: keyof StatusTriggerType, ...args: unknown[]) => void
+export type StatusTriggerCallBackType = (target: keyof StatusTriggerType, ...args: unknown[]) => void
 
 export type StatusItemInitOptionObject = {
   list: StatusDataValueType[]
@@ -133,7 +133,7 @@ export class StatusItem extends Data {
       }
     }
   }
-  triggerChange(target: keyof StatusTriggerType, strict?: boolean, triggerCallBack?: StatusDataTriggerCallBackType, args: unknown[] = []) {
+  triggerChange(target: keyof StatusTriggerType, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType, args: unknown[] = []) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
     if (strict) {
