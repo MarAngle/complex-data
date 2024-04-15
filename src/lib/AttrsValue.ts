@@ -2,21 +2,19 @@
 export interface AttrsValueInitOption {
   id?: string[]
   class?: string[]
-  style?: Record<PropertyKey, unknown>
-  attrs?: Record<PropertyKey, unknown>
-  props?: Record<PropertyKey, unknown>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on?: Record<PropertyKey, undefined | ((...args: any[]) => unknown)>
+  style?: Record<PropertyKey, any>
+  attrs?: Record<PropertyKey, any>
+  props?: Record<PropertyKey, any>
+  on?: Record<PropertyKey, undefined | ((...args: any[]) => any)>
 }
 
 class AttrsValue {
   id: string[]
   class: string[]
-  style: Record<PropertyKey, unknown>
-  attrs: Record<PropertyKey, unknown>
-  props: Record<PropertyKey, unknown>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  on: Record<PropertyKey, undefined | ((...args: any[]) => unknown)>
+  style: Record<PropertyKey, any>
+  attrs: Record<PropertyKey, any>
+  props: Record<PropertyKey, any>
+  on: Record<PropertyKey, undefined | ((...args: any[]) => any)>
   constructor(initOption?: AttrsValueInitOption) {
     if (!initOption) {
       initOption = {}
@@ -115,6 +113,7 @@ class AttrsValue {
 }
 
 export type LocalValueInitOption = Record<string, AttrsValueInitOption>
+
 export type LocalValue = Record<string, undefined | AttrsValue>
 
 export const createLocalValue = function(localValueInitOption?: LocalValueInitOption): undefined | LocalValue {

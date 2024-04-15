@@ -1,32 +1,28 @@
 import { getType, setProp } from 'complex-utils'
-import Data from '../data/Data'
 
 export type InterfaceValueType<D> = undefined | D
 
 export type InterfaceValueInitOption<D> = D | Record<PropertyKey, InterfaceValueType<D>>
 
-class InterfaceValue<D> extends Data {
+class InterfaceValue<D> extends null {
   static $name = 'InterfaceValue'
   init: boolean
   value: Record<PropertyKey, InterfaceValueType<D>>
   constructor(initOption?: InterfaceValueInitOption<D>) {
-    super()
-    this.init = false
-    this.value = {
-      default: undefined
-    }
-    this.setData(initOption)
-  }
-  setData(initOption?: InterfaceValueInitOption<D>) {
-    if (initOption !== undefined) {
-      if (getType(initOption) !== 'object') {
-        this.setValue('default', initOption as D)
-      } else {
-        for (const n in (initOption as Record<PropertyKey, InterfaceValueType<D>>)) {
-          this.setValue(n, (initOption as Record<PropertyKey, InterfaceValueType<D>>)[n])
-        }
+    if (initOption === undefined) {
+      this.init = false
+      this.value = {
+        default: undefined
       }
+    } else {
       this.init = true
+      if (getType(initOption) !== 'object') {
+        this.value = {
+          default: initOption as D
+        }
+      } else {
+        this.value = initOption as Record<PropertyKey, InterfaceValueType<D>>
+      }
     }
   }
   getData() {

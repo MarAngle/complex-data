@@ -1,7 +1,7 @@
 import { Limit, trimData } from "complex-utils"
 import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
-import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
+import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import EditData from "../dictionary/EditData"
@@ -65,7 +65,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
   option?: Partial<DictionaryDataOption>
 }
 
-class DictionaryData extends DefaultData {
+class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
   static $name = 'DictionaryData'
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
   static $empty = true

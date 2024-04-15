@@ -117,7 +117,7 @@ export type interfaceKeys = keyof DictionaryValue['$interface']
 
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
-  static _initEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
+  static _buildEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
     if (!editModInitOption.type || editModInitOption.type === 'input') {
       return new InputEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'inputNumber') {
@@ -152,7 +152,7 @@ class DictionaryValue extends DefaultData implements functions {
     if (editModInitOption instanceof SimpleEdit) {
       return editModInitOption
     } else {
-      return DictionaryValue._initEditMod(editModInitOption, parent, modName)
+      return DictionaryValue._buildEditMod(editModInitOption, parent, modName)
     }
   }
   static $initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
@@ -166,7 +166,7 @@ class DictionaryValue extends DefaultData implements functions {
       return new DefaultInfo(modInitOption as DefaultInfoInitOption, parent, modName)
     } else if ($format === 'edit' || $format === 'build' || $format === 'change' || $format === 'search') {
       const editModInitOption = modInitOption as DictionaryEditModInitOption
-      return DictionaryValue._initEditMod(editModInitOption, parent, modName)
+      return DictionaryValue._buildEditMod(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
@@ -182,7 +182,6 @@ class DictionaryValue extends DefaultData implements functions {
     showProp: InterfaceValue<string>
     type: InterfaceValue<string>
     showType: InterfaceValue<string>
-    modType: InterfaceValue<string>
   }
   format?: false | functionType<unknown>
   defaultGetData?: false | functionType<unknown>
@@ -203,8 +202,7 @@ class DictionaryValue extends DefaultData implements functions {
       originProp: new InterfaceValue(initOption.originProp || this.$prop),
       showProp: new InterfaceValue(initOption.showProp),
       type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string'),
-      showType: new InterfaceValue(initOption.showType),
-      modType: new InterfaceValue()
+      showType: new InterfaceValue(initOption.showType)
     }
     // 加载基本自定义函数
     this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData.bind(this) : initOption.defaultGetData
