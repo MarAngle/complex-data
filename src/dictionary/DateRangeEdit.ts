@@ -1,4 +1,4 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import EditData, { EditDataInitOption } from "./EditData"
 import DateEdit, { dateConfig } from "./DateEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
@@ -28,12 +28,12 @@ export interface PartialDateRangeEditOption {
   disabledDate?: dateConfig | ((value: unknown) => boolean)
 }
 
-export interface DateRangeEditInitOption extends DefaultEditInitOption {
+export interface DateRangeEditInitOption extends EditDataInitOption {
   type: 'dateRange'
   option?: PartialDateRangeEditOption
 }
 
-class DateRangeEdit extends DefaultEdit{
+class DateRangeEdit extends EditData{
   static $name = 'DateRangeEdit'
   static $edit: undefined | ((value: undefined | string, format: string) => undefined | unknown)
   static $post: undefined | ((value: undefined | unknown, format: string) => undefined | string)

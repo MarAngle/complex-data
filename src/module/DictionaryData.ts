@@ -4,6 +4,7 @@ import BaseData from "../data/BaseData"
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
+import EditData from "../dictionary/EditData"
 
 type propDataValueType = {
   prop: string
@@ -209,7 +210,7 @@ class DictionaryData extends DefaultData {
     const postData: Record<string, unknown> = {}
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
-      if (mod) {
+      if (mod && mod instanceof EditData) {
         if (!mod.$editable) {
           // 不可编辑的模块不参与最终的生成数据逻辑
           return

@@ -1,13 +1,13 @@
 import { loadFunctionType } from "../data/BaseData"
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import EditData, { EditDataInitOption } from "./EditData"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface LoadEditInitOption extends DefaultEditInitOption {
+export interface LoadEditInitOption extends EditDataInitOption {
   reload?: boolean
   getData?: loadFunctionType
 }
 
-class LoadEdit extends DefaultEdit{
+class LoadEdit extends EditData{
   static $name = 'LoadEdit'
   $load?: {
     status: 'un' | 'ing' | 'success' | 'fail'

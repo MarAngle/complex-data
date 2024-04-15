@@ -19,7 +19,7 @@
 - 依赖升级
 
 ### 4.1.13/14
-- DefaultEdit添加simple设置项
+- EditData添加simple设置项
 - DefaultMod基类由Data切换为SimpleData,实现extra
 - 优化PureButtonValue类型
 - 修正错误icon

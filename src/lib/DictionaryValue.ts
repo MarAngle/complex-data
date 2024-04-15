@@ -6,7 +6,7 @@ import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from './Interfac
 import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
-import DefaultEdit from '../dictionary/DefaultEdit'
+import EditData from '../dictionary/EditData'
 import InputEdit, { InputEditInitOption } from '../dictionary/InputEdit'
 import InputNumberEdit, { InputNumberEditInitOption } from '../dictionary/InputNumberEdit'
 import TextAreaEdit, { TextAreaEditInitOption } from '../dictionary/TextAreaEdit'
@@ -21,6 +21,7 @@ import ButtonGroupEdit, { ButtonGroupEditInitOption } from '../dictionary/Button
 import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
 import LoadEdit from '../dictionary/LoadEdit'
+import SimpleEdit from '../dictionary/SimpleEdit'
 
 export type payloadType = {
   targetData: Record<PropertyKey, unknown>
@@ -148,7 +149,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
   }
   static $initEditMod = function(editModInitOption: DictionaryEditMod | DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
-    if (editModInitOption instanceof DefaultEdit) {
+    if (editModInitOption instanceof SimpleEdit) {
       return editModInitOption
     } else {
       return DictionaryValue._initEditMod(editModInitOption, parent, modName)
@@ -286,7 +287,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  $setEditValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
+  $setEditValue (mod: EditData, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
@@ -320,7 +321,7 @@ class DictionaryValue extends DefaultData implements functions {
         resolve({ status: !code ? 'success' : code, code: code })
       }
       if (mod) {
-        if (mod instanceof DefaultEdit) {
+        if (mod instanceof EditData) {
           if (mod.$editable) {
             if (mod instanceof LoadEdit) {
               mod.loadData().finally(() => {

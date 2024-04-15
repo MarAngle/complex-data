@@ -3,7 +3,7 @@ import DictionaryValue from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
 import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
 
-export interface DefaultEditInitOption extends SimpleEditInitOption {
+export interface EditDataInitOption extends SimpleEditInitOption {
   editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
   simple?: { // 简单逻辑判断值
     value?: boolean // 值简单逻辑:即不加载
@@ -23,9 +23,9 @@ export interface DefaultEditInitOption extends SimpleEditInitOption {
   message?: InterfaceValueInitOption<string>
 }
 
-class DefaultEdit extends SimpleEdit {
-  static $name = 'DefaultEdit'
-  static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
+class EditData extends SimpleEdit {
+  static $name = 'EditData'
+  static $formatConfig = { name: 'EditData', level: 50, recommend: true }
   static $editable = true
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : []
@@ -55,9 +55,9 @@ class DefaultEdit extends SimpleEdit {
     reset?: any
     [prop: PropertyKey]: any
   }
-  constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: EditDataInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
-    const $constructor = (this.constructor as typeof DefaultEdit)
+    const $constructor = (this.constructor as typeof EditData)
     this.$editable = initOption.editable === undefined ? $constructor.$editable : initOption.editable
     this.simple = initOption.simple || {}
     if (!this.$editable) {
@@ -133,4 +133,4 @@ class DefaultEdit extends SimpleEdit {
   }
 }
 
-export default DefaultEdit
+export default EditData
