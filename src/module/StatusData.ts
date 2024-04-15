@@ -133,7 +133,7 @@ export class StatusItem extends Data {
       }
     }
   }
-  triggerChange(target: keyof StatusTriggerType, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType, args: unknown[] = []) {
+  triggerChange(target: keyof StatusTriggerType, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
     if (strict) {

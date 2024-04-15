@@ -136,9 +136,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   /* --- load start --- */
   protected _triggerMethod(method: string, args: any[]) {
     if (typeof method === 'string') {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       if (typeof ((this as unknown as any)[method]) === 'function') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const promise = (this as unknown as any)[method](...args)
         if (!promise || !isPromise(promise)) {
           this.$exportMsg(`${method}未返回Promise，$triggerMethodWithStatus函数触发失败！`)
@@ -146,7 +144,6 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
         } else {
           return promise
         }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } else if ((this as unknown as any)[method] !== undefined) {
         this.$exportMsg(`${method}不是函数，$triggerMethodWithStatus函数触发失败！`)
         return Promise.reject({ status: 'fail', code: 'type error' })
@@ -168,21 +165,21 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
    * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
    * @returns 
    */
-  $triggerMethodWithStatus(method: string, args: unknown[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
+  $triggerMethodWithStatus(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
     const statusItem = this.getStatusValue(statusProp)
     if (statusItem) {
-      if (statusItem.triggerChange('start', strict, triggerCallBack)) {
+      if (statusItem.triggerChange('start', [], strict, triggerCallBack)) {
         return new Promise((resolve, reject) => {
-          this._triggerMethod(method, args)!.then((res: unknown) => {
-            statusItem.triggerChange('success', false, triggerCallBack, [res])
+          this._triggerMethod(method, args)!.then((res: any) => {
+            statusItem.triggerChange('success', [res], strict, triggerCallBack)
             resolve(res)
           }).catch(err => {
-            statusItem.triggerChange('fail', false, triggerCallBack, [err])
+            statusItem.triggerChange('fail', [err], strict, triggerCallBack)
             reject(err)
           })
         })
       } else {
-        statusItem.triggerChange('fail', false, triggerCallBack, [])
+        statusItem.triggerChange('fail', [], strict, triggerCallBack)
         this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
         return Promise.reject({ status: 'fail', code: 'status clash' })
       }
@@ -196,8 +193,8 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     return this.$triggerMethodWithStatus(method, args, 'operate', strict, triggerCallBack)
   }
   // 触发函数并联动目标status，再联动operate
-  triggerMethodWithOperate(args: Parameters<BaseData['$triggerMethodWithStatus']>, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
-    return this.triggerMethod('$triggerMethodWithStatus', args, strict, triggerCallBack)
+  triggerMethodWithOperate(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType, operateStrict?: boolean, OperateTriggerCallBack?: StatusTriggerCallBackType) {
+    return this.triggerMethod('$triggerMethodWithStatus', [method, args, statusProp, strict, triggerCallBack] as Parameters<BaseData['$triggerMethodWithStatus']>, operateStrict, OperateTriggerCallBack)
   }
   $getData(...args: any[]): Promise<any> {
     return Promise.reject({ status: 'fail', code: '$getData absent', msg: '$getData函数未定义' })
@@ -207,7 +204,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'loadData')
     }
-    const promise = this.triggerMethodWithOperate(['$getData', args, 'load', false, (target, res) => {
+    const promise = this.triggerMethodWithOperate('$getData', args, 'load', false, (target, res) => {
       if (target === 'start') {
         this.triggerLife('beforeLoad', this, ...args)
       } else if (target === 'success') {
@@ -221,7 +218,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
           args: args
         })
       }
-    }])
+    })
     if (this.$relation) {
       return this._setPromise('load', new Promise((resolve, reject) => {
         this.$relation!.loadDepend().finally(() => {
