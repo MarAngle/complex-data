@@ -38,7 +38,7 @@ export type functionType<R> = (data: unknown, payload: payloadType) => R
 
 interface functions {
   format?: false | functionType<unknown> // 来源=>本地 格式化函数
-  defaultGetData?: false | functionType<unknown> // 默认获取数据的函数
+  parseData?: false | functionType<unknown> // 默认获取数据的函数
   show?: false | functionType<unknown> // 数据=>展示 格式化
   edit?: false | functionType<unknown> // 数据=>编辑 格式化
   post?: false | functionType<unknown> // 编辑=>来源 格式化
@@ -47,7 +47,7 @@ interface functions {
 
 export type funcKeys = keyof functions
 
-const defaultGetData = function (this: DictionaryValue, data: unknown, { type }: payloadType) {
+const parseData = function (this: DictionaryValue, data: unknown, { type }: payloadType) {
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
     if (data !== undefined && typeof data === 'object' && data !== null) {
@@ -184,7 +184,7 @@ class DictionaryValue extends DefaultData implements functions {
     showType: InterfaceValue<string>
   }
   format?: false | functionType<unknown>
-  defaultGetData?: false | functionType<unknown>
+  parseData?: false | functionType<unknown>
   show?: false | functionType<unknown>
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
@@ -195,7 +195,7 @@ class DictionaryValue extends DefaultData implements functions {
     super(initOption)
     this._triggerCreateLife('DictionaryValue', false, initOption)
     this.$setParent(parent)
-    this.$originFrom = typeof initOption.originFrom === 'string' ? [initOption.originFrom] : ['list']
+    this.$originFrom = initOption.originFrom === undefined ? ['list'] : typeof initOption.originFrom === 'string' ? [initOption.originFrom] : initOption.originFrom
     this.$simple = initOption.simple || {}
     this.$interface = {
       name: new InterfaceValue(initOption.name),
@@ -205,35 +205,37 @@ class DictionaryValue extends DefaultData implements functions {
       showType: new InterfaceValue(initOption.showType)
     }
     // 加载基本自定义函数
-    this.defaultGetData = initOption.defaultGetData === undefined ? defaultGetData.bind(this) : initOption.defaultGetData
+    this.parseData = initOption.parseData === undefined ? parseData.bind(this) : initOption.parseData
     if (!this.$simple.edit) {
       // 非简单编辑数据时
       this.format = initOption.format
-      this.show = initOption.show === undefined ? this.defaultGetData : initOption.show
+      this.show = initOption.show === undefined ? this.parseData : initOption.show
     } else if (initOption.format) {
       this.$exportMsg('当前编辑为简单模式,不接受format函数!')
     }
-    this.edit = initOption.edit === undefined ? this.defaultGetData : initOption.edit
+    this.edit = initOption.edit === undefined ? this.parseData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
     if (initOption.layout) {
       this.$layout = new InterfaceLayoutValue(initOption.layout)
     }
     this.$mod = {}
-    const mod = initOption.mod || {}
-    const redirect: Record<string, string> = {}
-    for (const modName in mod) {
-      const modInitOption = mod[modName]
-      if (modInitOption) {
-        if ((modInitOption as DictionaryModInitOption).$redirect) {
-          redirect[modName] = (modInitOption as DictionaryModInitOption).$redirect!
-        } else {
-          this.$mod[modName] = DictionaryValue.$initMod(modInitOption, this, modName)
+    if (initOption.mod) {
+      const mod = initOption.mod
+      const redirect: Record<string, string> = {}
+      for (const modName in mod) {
+        const modInitOption = mod[modName]
+        if (modInitOption) {
+          if ((modInitOption as DictionaryModInitOption).$redirect) {
+            redirect[modName] = (modInitOption as DictionaryModInitOption).$redirect!
+          } else {
+            this.$mod[modName] = DictionaryValue.$initMod(modInitOption, this, modName)
+          }
         }
       }
-    }
-    for (const modName in redirect) {
-      this.$mod[modName] = this.$mod[redirect[modName]]
+      for (const modName in redirect) {
+        this.$mod[modName] = this.$mod[redirect[modName]]
+      }
     }
     this._triggerCreateLife('DictionaryValue', true, initOption)
   }
