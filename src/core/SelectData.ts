@@ -3,20 +3,23 @@ import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import SelectValue, { CascadeValueType, DefaultCascadeValueType, DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
 import { StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
+import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
 export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<C, D> {
   reload?: boolean
   life?: LifeInitOption
+  storage?: StorageValueInitOption
   pagination?: PaginationDataInitOption
   getData: getDataType<D>
 }
 
-class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<C, D> implements DataWithLife {
+class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<C, D> implements DataWithLife, DataWithStorage {
   $load: StatusItem
   $reload: boolean
   $life!: Life
+  $storage?: StorageValue
   $pagination?: PaginationData
   $getData: getDataType<D>
   constructor(initOption: SelectDataInitOption<C, D>) {
@@ -30,6 +33,45 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     })
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
+    }
+    if (initOption.storage) {
+      this.$storage = new StorageValue(initOption.storage, this._getConstructorName())
+      this.$storage.push('list', {
+        init: (value) => {
+          this.list = [
+            ...value
+          ]
+        },
+        save: () => {
+          return this.list
+        }
+      })
+      // 创建完成时触发本地化加载
+      this.onLife('created', {
+        data: () => {
+          this.$storage!.init(this)
+        }
+      })
+      // 数据加载完成时，触发保存到本地
+      this.onLife('loaded', {
+        data: () => {
+          // 数据加载完成后自动取消可能存在的数据更新逻辑
+          this.$storage!.stop()
+          this.saveStorage()
+        }
+      })
+      // 本地化加载完成：本地化加载完成不触发loaded事件！
+      this.onLife('initStoraged', {
+        data: () => {
+          this.$setLoad(StatusValue.success)
+        }
+      })
+      // reloadStorage触发本地加载
+      this.onLife('reloadStorage', {
+        data: () => {
+          this.loadData({ ing: false })
+        }
+      })
     }
     this.$reload = initOption.reload === undefined ? !!this.$pagination : initOption.reload
     this.$getData = initOption.getData
@@ -63,6 +105,13 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
   }
   destroyLife() {
     this.$life.destroy()
+  }
+  saveStorage() {
+    if (this.$storage) {
+      this.triggerLife('beforeSaveStorage', this)
+      this.$storage.save()
+      this.triggerLife('saveStoraged', this)
+    }
   }
   /* --- life end --- */
   loadData(force?: { ing?: boolean }, ...args: unknown[]) {

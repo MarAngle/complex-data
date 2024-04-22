@@ -56,7 +56,7 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
     return this._id + prop
   }
   _getName(): string {
-    return `CLASS:${super._getName()}-ID:${this._getId()}`
+    return `${super._getName()}-${this._getId()}`
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _install(target: BaseData, from?: string) {

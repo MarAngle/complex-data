@@ -3,21 +3,24 @@ import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import { LifeDataInitOptionWithExtra } from 'complex-utils/src/class/LifeItem'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import { BufferType } from './Data'
+import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {
   prop?: string
   life?: LifeInitOption
+  storage?: StorageValueInitOption
 }
 
 export interface DefaultBufferType extends BufferType {
   create: Record<string, undefined | boolean>
 }
 
-class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends SimpleData<Buffer> implements DataWithLife {
+class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends SimpleData<Buffer> implements DataWithLife, DataWithStorage {
   static $name = 'DefaultData'
   static $formatConfig = { name: 'DefaultData', level: 40, recommend: true }
   $prop: string
   $life!: Life
+  $storage?: StorageValue
   constructor(initOption: DefaultDataInitOption) {
     super(initOption)
     this._buffer.create = {}
@@ -29,6 +32,26 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       value: new Life(initOption.life)
     })
     this._triggerCreateLife('DefaultData', false, initOption)
+    if (initOption.storage) {
+      this.$storage = new StorageValue(initOption.storage, this._getRealName())
+      this.$storage.push('extra', {
+        init: (value) => {
+          const extra = this.$extra
+          this.$extra = {
+            ...value,
+            ...extra
+          }
+        },
+        save: () => {
+          return this.$extra
+        }
+      })
+      this.onLife('created', {
+        data: () => {
+          this.$storage!.init(this)
+        }
+      })
+    }
     this._triggerCreateLife('DefaultData', true, initOption)
   }
   /**
@@ -109,6 +132,16 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
    */
   destroyLife() {
     this.$life.destroy()
+  }
+  saveStorage() {
+    if (this.$storage) {
+      this.triggerLife('beforeSaveStorage', this)
+      this.$storage.save()
+      this.triggerLife('saveStoraged', this)
+    }
+  }
+  _getRealName() {
+    return `${this._getConstructorName}-${this.$prop}`
   }
   _getName(): string {
     return `[${super._getName()}-(${this.$prop})]`
