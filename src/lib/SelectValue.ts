@@ -134,20 +134,17 @@ class SelectValue<C extends PropertyKey | undefined = undefined, D extends (C ex
     }
     return result
   }
-  protected _getCascadeList(list: D[], value: any[], prop: keyof D): D[] {
-    const result: D[] = []
+  protected _getCascadeList(list: D[], value: any[], prop: keyof D, index = 0, result: D[] = []): D[] {
     if (this.cascade) {
+      const currentValue = value[index]
       for (let n = 0; n < list.length; n++) {
         const item = list[n]
-        if (this.check(value, item[prop])) {
+        if (this.check(currentValue, item[prop])) {
           result.push(item)
-          break
-        } else if (item[this.cascade]) {
-          const childResultList = this._getCascadeList(item[this.cascade] as D[], value, prop)
-          if (childResultList.length) {
-            result.push(item, ...childResultList)
-            break
+          if (item[this.cascade] && index < value.length - 1) {
+            this._getCascadeList(item[this.cascade] as D[], value, prop, index + 1, result)
           }
+          break
         }
       }
     }
