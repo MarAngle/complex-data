@@ -151,6 +151,10 @@ export interface DefaultEditInitOption<T extends DefaultEditTypeDict = DefaultEd
   }
 }
 
+function defaultGetMultipleValue() {
+  return []
+}
+
 class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends BaseData<DictionaryData> implements ObserveItem{
   static $name = 'DefaultEdit'
   declare parent: DictionaryData
@@ -265,6 +269,21 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : defaultOption ? defaultOption.default : undefined
     const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
     const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
+    if (defaultValue || initValue || resetValue) {
+      const valuePropList = [] as string[]
+      if (defaultValue !== null && typeof defaultValue === 'object') {
+        valuePropList.push('default')
+      }
+      if (initValue !== null && typeof initValue === 'object') {
+        valuePropList.push('init')
+      }
+      if (resetValue !== null && typeof resetValue === 'object') {
+        valuePropList.push('reset')
+      }
+      if (valuePropList.length > 0) {
+        this.$exportMsg(`value属性[${valuePropList.join(',')}]为对象格式，可能会导致引用问题，请注意！`, 'warn')
+      }
+    }
     this.$value = {
       default: defaultValue,
       init: initValue,
@@ -301,8 +320,8 @@ class DefaultEdit<T extends DefaultEditTypeDict = DefaultEditTypeDict> extends B
     for (let n = 0; n < config.DefaultEdit.option.valuePropList.length; n++) {
       const prop = config.DefaultEdit.option.valuePropList[n]
       const type = getType(this.getValueData(prop))
-      if (type !== 'array') {
-        this.setValueData([], prop, true)
+      if (type !== 'array' && type !== 'function') {
+        this.setValueData(defaultGetMultipleValue, prop, true)
       }
     }
     if (!unTriggerSync) {
