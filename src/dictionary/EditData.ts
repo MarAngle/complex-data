@@ -23,12 +23,16 @@ export interface EditDataInitOption extends SimpleEditInitOption {
   message?: InterfaceValueInitOption<string>
 }
 
+function defaultMultipleValue() {
+  return [] as any[]
+}
+
 class EditData extends SimpleEdit {
   static $name = 'EditData'
   static $formatConfig = { name: 'EditData', level: 50, recommend: true }
   static $editable = true
   static $defaultValue = function(multiple: boolean) {
-    return !multiple ? undefined : []
+    return !multiple ? undefined : defaultMultipleValue
   }
   static $defaultTrim = false
   static $defaultPlaceholder = function (name: InterfaceValue<string>) {
@@ -82,6 +86,21 @@ class EditData extends SimpleEdit {
       const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
       const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
       const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
+      if (defaultValue || initValue || resetValue) {
+        const valuePropList = [] as string[]
+        if (defaultValue !== null && typeof defaultValue === 'object') {
+          valuePropList.push('default')
+        }
+        if (initValue !== null && typeof initValue === 'object') {
+          valuePropList.push('init')
+        }
+        if (resetValue !== null && typeof resetValue === 'object') {
+          valuePropList.push('reset')
+        }
+        if (valuePropList.length > 0) {
+          this.$exportMsg(`value属性[${valuePropList.join(',')}]为对象格式，可能会导致引用问题，请注意！`, 'warn')
+        }
+      }
       this.$value = {
         default: defaultValue,
         init: initValue,

@@ -1,6 +1,8 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
-- Observe考虑设置为仅跟随数据变化触发对应模块的响应式
+- Observe添加额外逻辑，实现删除和恢复，隐藏仅隐藏参与逻辑判断，删除的则不会在最后参与构建
+- 布局通过基础布局参数和解析器实现，基础布局仅设置大方向，解析器进行个体解析，实现页面的整体和个体设置
+
 
 ### 4.2.0
 - 优化函数名称，_为私有属性，理论上不对外使用，$为功能函数，理论上可对外使用，但可能存在更改逻辑的情况
@@ -8,6 +10,7 @@
 - 优化SelectValue，适配可能存在的级联数据
 - 优化ObserveList的响应式逻辑，仅监控需要的属性，且通过defineReactive实现而不是之前的observe实现，减少性能消耗+
 - 添加StorageValue本地缓存数据控制器，持续优化中
+- 修正DefaultEdit在multiple时默认值为[]导致的引用问题
 
 ### 4.1.18
 - 修正$triggerMethodWithStatus无函数时的状态回滚

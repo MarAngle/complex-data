@@ -2,7 +2,6 @@ import { getProp, setProp, isExist, exportMsg } from 'complex-utils'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData from '../module/DictionaryData'
 import InterfaceValue, { InterfaceValueInitOption } from './InterfaceValue'
-import InterfaceLayoutValue, { InterfaceLayoutValueInitOption } from './InterfaceLayoutValue'
 import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
@@ -109,7 +108,6 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<string> // 值类型
   showType?: InterfaceValueInitOption<string> // 展示的类型
-  layout?: InterfaceLayoutValueInitOption
   mod?: DictionaryModDataInitOption
 }
 
@@ -189,7 +187,6 @@ class DictionaryValue extends DefaultData implements functions {
   edit?: false | functionType<unknown>
   post?: false | functionType<unknown>
   check?: false | functionType<boolean>
-  $layout?: InterfaceLayoutValue
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
@@ -216,9 +213,6 @@ class DictionaryValue extends DefaultData implements functions {
     this.edit = initOption.edit === undefined ? this.parseData : initOption.edit
     this.post = initOption.post
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
-    if (initOption.layout) {
-      this.$layout = new InterfaceLayoutValue(initOption.layout)
-    }
     this.$mod = {}
     if (initOption.mod) {
       const mod = initOption.mod

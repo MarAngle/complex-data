@@ -5,6 +5,7 @@ import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/D
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import EditData from "../dictionary/EditData"
+import GridParse, { GridParseInitOption } from "../lib/GridParse"
 
 type propDataValueType = {
   prop: string
@@ -62,6 +63,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
   simple?: boolean
   list?: DictionaryValueInitOption[]
   propData?: Partial<propDataType<string | propDataValueType>>
+  grid?: GridParseInitOption
   option?: Partial<DictionaryDataOption>
 }
 
@@ -79,6 +81,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   $simple?: boolean
   $data: Map<string, DictionaryValue>
   $propData?: propDataType<propDataValueType>
+  $grid: GridParse
   $option: DictionaryDataOption
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
@@ -99,6 +102,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         this.$data.set(dictionaryValueInitOption.prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
     }
+    this.$grid = new GridParse(initOption.grid)
     this.$option = createOption({ empty: DictionaryData.$empty }, initOption.option)
     this._triggerCreateLife('DictionaryData', true, initOption)
   }
