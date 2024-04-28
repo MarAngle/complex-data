@@ -114,6 +114,9 @@ const config = {
     }
   },
   DefaultEdit: {
+    date: {
+      format: 'YYYY-MM-DD'
+    },
     option: {
       valuePropList: ['init', 'default', 'reset'],
       data: {
