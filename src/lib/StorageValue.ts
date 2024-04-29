@@ -8,15 +8,15 @@ export interface StorageValueInitOption {
   offset?: number // 时间间隔基础偏移量[分钟]
   version?: number // 版本号
   validity?: number // 有效期[天]
-  times?: number // 读取次数
+  num?: number // 读取次数
   stability?: number // 稳定性
 }
 
 export interface storageDataType {
   version: number // 版本号
-  times: number // 读取次数
+  num: number // 读取次数
   time: number // 数据保存时间
-  data: Record<string, any>
+  value: Record<string, any>
 }
 
 type controlType<D = any> = {
@@ -35,7 +35,7 @@ class StorageValue extends Data {
     float: 5, // 默认浮动时间间隔5分钟
     offset: 10, // 默认基础更新时间间隔10分钟
     validity: 7, // 默认有效期7天
-    times: 21, // 读取次数
+    num: 21, // 读取次数
     stability: 10, // 默认稳定性10，请注意在稳定性80的情况下哪怕进度为90，实际的加权进度也仅为18，因此高稳定度带来的结果是除非读取和有效期到达，否则很难触发
   }
   static $parse = function(storageValue: StorageValue, storageData: storageDataType) {
@@ -43,20 +43,19 @@ class StorageValue extends Data {
     if (validityPercent >= 1) {
       return 100
     }
-    const timesPercent = storageData.times / storageValue.times // 访问次数比率
-    if (timesPercent >= 1) {
+    const numPercent = storageData.num / storageValue.num // 访问次数比率
+    if (numPercent >= 1) {
       return 100
     }
-    const stability = storageValue.stability // 稳定性
-    const totalPercent = (validityPercent + timesPercent) / 2
-    const stabilityRate = (100 - stability) / 100 // 0 - 1 越大说明越不稳定
-    return totalPercent * stabilityRate * 100
+    const totalPercent = (validityPercent + numPercent) / 2
+    const stabilityRate = 100 - storageValue.stability // 0 - 100 越大说明越不稳定
+    return totalPercent * stabilityRate
   }
   prop: string
   offset: number // 时间间隔基础偏移量[毫秒]
   version: number
   validity: number // 有效期[毫秒]
-  times: number // 读取次数
+  num: number // 读取次数
   stability: number // 稳定性[0 - 100]:数据变化的可能性，数据越小数据变化的可能性越大
   control: Record<string, controlType>
   timer: undefined | number // 定时器
@@ -69,7 +68,7 @@ class StorageValue extends Data {
     this.offset = (offset + getRandomNum(0, float * 10) / 10) * 60 * 1000
     this.version = initOption.version || 0
     this.validity = (initOption.validity === undefined ? $constructor.$config.validity : initOption.validity) * 24 * 60 * 60 * 1000
-    this.times = initOption.times === undefined ? $constructor.$config.times : initOption.times
+    this.num = initOption.num === undefined ? $constructor.$config.num : initOption.num
     this.stability = initOption.stability === undefined ? $constructor.$config.stability : initOption.stability
     this.control = {}
   }
@@ -81,19 +80,19 @@ class StorageValue extends Data {
     }
   }
   collect() {
-    const collectData = {} as storageDataType['data']
+    const collectValue = {} as storageDataType['value']
     for (const prop in this.control) {
       const control = this.control[prop]
-      collectData[prop] = control.save()
+      collectValue[prop] = control.save()
     }
-    return collectData
+    return collectValue
   }
   save() {
     const storageData = {
       version: this.version,
       time: Date.now(),
-      times: 0,
-      data: this.collect()
+      num: 0,
+      value: this.collect()
     } as storageDataType
     return storage.setData(this.prop, storageData)
   }
@@ -109,9 +108,9 @@ class StorageValue extends Data {
         const rate = $constructor.$parse(this, storageData)
         if (rate < 100) {
           parent.triggerLife('beforeInitStorage', parent)
-          for (const prop in storageData.data) {
+          for (const prop in storageData.value) {
             if (this.control[prop]) {
-              this.control[prop].init(storageData.data[prop])
+              this.control[prop].init(storageData.value[prop])
             }
           }
           this.sync(storageData)
