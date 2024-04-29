@@ -6,7 +6,7 @@ import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/Attrs
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 import { renderType } from "../type"
-import { GridValue, buildGridValue } from "../lib/GridParse"
+import { GridValue, createGridValue } from "../lib/GridParse"
 import WidthValue, { WidthValueInitOption } from "../lib/WidthValue"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,7 +47,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
     if (initOption.tip !== undefined) {
       this.$tip = new TipValue(initOption.tip)
     }
-    this.$grid = buildGridValue(initOption.grid)
+    this.$grid = createGridValue(initOption.grid)
     this.$width = new WidthValue(initOption.width)
     this.$local = createLocalValue(initOption.local)
     this.$reactives = initOption.reactives

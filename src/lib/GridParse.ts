@@ -19,7 +19,7 @@ export interface GridValue {
   push?: number // 栅格向右移动格数
 }
 
-export const buildGridValue = function(gridValue?: GridValue) {
+export const createGridValue = function(gridValue?: GridValue) {
   return gridValue
 }
 
@@ -29,7 +29,7 @@ class GridParse {
     line: 1,
     label: 8,
     content: 16
-  }
+  } as GridParseInitOption
   line: number
   label: number
   content: number

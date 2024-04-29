@@ -1,42 +1,34 @@
 import { getType, setProp } from 'complex-utils'
 
-export type InterfaceValueType<D> = undefined | D
+export interface InterfaceValueType<D> {
+  default: D
+  [prop: PropertyKey]: undefined | D
+}
 
-export type InterfaceValueInitOption<D> = D | Record<PropertyKey, InterfaceValueType<D>>
+export type InterfaceValueInitOption<D> = D | InterfaceValueType<D>
 
+// 警告：undefined作为无效值会影响判断逻辑，因此不能传递undefined
 class InterfaceValue<D> extends null {
   static $name = 'InterfaceValue'
-  init: boolean
-  value: Record<PropertyKey, InterfaceValueType<D>>
+  value: InterfaceValueType<D>
   constructor(initOption?: InterfaceValueInitOption<D>) {
-    if (initOption === undefined) {
-      this.init = false
+    if (getType(initOption) !== 'object') {
       this.value = {
-        default: undefined
+        default: initOption as D
       }
     } else {
-      this.init = true
-      if (getType(initOption) !== 'object') {
-        this.value = {
-          default: initOption as D
-        }
-      } else {
-        this.value = initOption as Record<PropertyKey, InterfaceValueType<D>>
-      }
+      this.value = initOption as InterfaceValueType<D>
     }
   }
   getData() {
     return this.value
-  }
-  isInit() {
-    return this.init
   }
   /**
    * 设置属性值
    * @param {string} prop 属性
    * @param {*} value 值
    */
-  setValue(prop: string, value: InterfaceValueType<D>, useSetData?: boolean) {
+  setValue(prop: string, value: D, useSetData?: boolean) {
     if (useSetData === true) {
       setProp(this.value, prop, value, useSetData)
     } else {
@@ -49,10 +41,10 @@ class InterfaceValue<D> extends null {
     }
     return this.value.default
   }
-  format(format: (value: Record<PropertyKey, InterfaceValueType<D>>) => void) {
+  format(format: (value: InterfaceValueType<D>) => void) {
     format(this.value)
   }
-  map(fn: (data: Record<PropertyKey, InterfaceValueType<D>>, prop: string) => void) {
+  map(fn: (data: InterfaceValueType<D>, prop: string) => void) {
     for (const prop in this.value) {
       fn(this.value, prop)
     }

@@ -1,15 +1,15 @@
 import config from "../../config"
 
-export interface WidthValueType {
-  main?: string
-  data?: string
-  [prop: string]: undefined | string
-}
-
 export interface WidthValueInitOption {
   main?: number | string
   data?: number | string
   [prop: string]: undefined | number | string
+}
+
+export interface WidthValueType {
+  main?: string
+  data?: string
+  [prop: string]: undefined | string
 }
 
 class WidthValue {
