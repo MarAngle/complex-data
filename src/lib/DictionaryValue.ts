@@ -37,20 +37,18 @@ export type payloadType = {
 export type functionType<R> = (data: unknown, payload: payloadType) => R
 
 interface functions {
-  format?: false | functionType<unknown> // 来源=>本地 格式化函数
-  parseData?: false | functionType<unknown> // 默认获取数据的函数
-  show?: false | functionType<unknown> // 数据=>展示 格式化
-  edit?: false | functionType<unknown> // 数据=>编辑 格式化
-  post?: false | functionType<unknown> // 编辑=>来源 格式化
+  assign?: false | functionType<unknown> // 来源=>本地 赋值函数
+  parse?: false | functionType<unknown> // 数据=>展示/编辑 解析函数
+  fetch?: false | functionType<unknown> // 编辑=>来源 获取函数
   check?: false | functionType<boolean> // 数据存在判断函数
 }
 
 export type funcKeys = keyof functions
 
-const parseData = function (this: DictionaryValue, data: unknown, { type }: payloadType) {
+const parse = function (this: DictionaryValue, data: unknown, { type }: payloadType) {
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
-    if (data !== undefined && typeof data === 'object' && data !== null) {
+    if (data !== undefined && data !== null && typeof data === 'object') {
       return getProp(data as Record<PropertyKey, unknown>, showProp)
     } else {
       return undefined
@@ -59,6 +57,7 @@ const parseData = function (this: DictionaryValue, data: unknown, { type }: payl
     return data
   }
 }
+
 const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
@@ -115,7 +114,7 @@ export type interfaceKeys = keyof DictionaryValue['$interface']
 
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
-  static _buildEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
+  static _initEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
     if (!editModInitOption.type || editModInitOption.type === 'input') {
       return new InputEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'inputNumber') {
@@ -150,7 +149,7 @@ class DictionaryValue extends DefaultData implements functions {
     if (editModInitOption instanceof SimpleEdit) {
       return editModInitOption
     } else {
-      return DictionaryValue._buildEditMod(editModInitOption, parent, modName)
+      return DictionaryValue._initEditMod(editModInitOption, parent, modName)
     }
   }
   static $initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
@@ -163,8 +162,7 @@ class DictionaryValue extends DefaultData implements functions {
     } else if ($format === 'info') {
       return new DefaultInfo(modInitOption as DefaultInfoInitOption, parent, modName)
     } else if ($format === 'edit' || $format === 'build' || $format === 'change' || $format === 'search') {
-      const editModInitOption = modInitOption as DictionaryEditModInitOption
-      return DictionaryValue._buildEditMod(editModInitOption, parent, modName)
+      return DictionaryValue._initEditMod(modInitOption as DictionaryEditModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
@@ -180,11 +178,9 @@ class DictionaryValue extends DefaultData implements functions {
     showProp: InterfaceValue<string>
     type: InterfaceValue<string>
   }
-  format?: false | functionType<unknown>
-  parseData?: false | functionType<unknown>
-  show?: false | functionType<unknown>
-  edit?: false | functionType<unknown>
-  post?: false | functionType<unknown>
+  assign?: false | functionType<unknown>
+  parse?: false | functionType<unknown>
+  fetch?: false | functionType<unknown>
   check?: false | functionType<boolean>
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
@@ -200,16 +196,14 @@ class DictionaryValue extends DefaultData implements functions {
       type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string')
     }
     // 加载基本自定义函数
-    this.parseData = initOption.parseData === undefined ? parseData.bind(this) : initOption.parseData
+    this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse
     if (!this.$simple.edit) {
       // 非简单编辑数据时
-      this.format = initOption.format
-      this.show = initOption.show === undefined ? this.parseData : initOption.show
-    } else if (initOption.format) {
-      this.$exportMsg('当前编辑为简单模式,不接受format函数!')
+      this.assign = initOption.assign
+    } else if (initOption.assign) {
+      this.$exportMsg('当前编辑为简单模式,不接受assign函数!')
     }
-    this.edit = initOption.edit === undefined ? this.parseData : initOption.edit
-    this.post = initOption.post
+    this.fetch = initOption.fetch
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
     this.$mod = {}
     if (initOption.mod) {
@@ -268,10 +262,10 @@ class DictionaryValue extends DefaultData implements functions {
     if (this.$isOriginFrom(originFrom)) {
       const originProp = this.$getInterfaceValue('originProp', originFrom)!
       const targetValue = getProp(originData, originProp)
-      if (!this.format) {
+      if (!this.assign) {
         setProp(targetData, this.$prop, targetValue, useSetData)
       } else {
-        this.$setTargetData(this.$prop, targetValue, 'format', {
+        this.$setTargetData(this.$prop, targetValue, 'assign', {
           targetData: targetData,
           originData: originData,
           type: originFrom
@@ -281,9 +275,9 @@ class DictionaryValue extends DefaultData implements functions {
   }
   $setEditValue (mod: EditData, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
-    // 存在源数据则获取属性值并调用主要模块的edit方法格式化，否则通过模块的getValueData方法获取初始值
+    // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
-      targetValue = this.$triggerFunc('edit', originData[this.$prop], {
+      targetValue = this.$triggerFunc('parse', originData[this.$prop], {
         type: type,
         targetData,
         originData,
@@ -292,9 +286,9 @@ class DictionaryValue extends DefaultData implements functions {
     } else if (mod.getValue) {
       targetValue = mod.getValue(from === 'reset' ? 'reset' : 'init')
     }
-    // 模块存在edit函数时将当前数据进行edit操作
-    if (mod.edit) {
-      targetValue = mod.edit(targetValue, {
+    // 模块存在parse函数时将当前数据进行parse操作
+    if (mod.parse) {
+      targetValue = mod.parse(targetValue, {
         type: type,
         targetData,
         originData,

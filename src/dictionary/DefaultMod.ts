@@ -1,6 +1,6 @@
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
 import { renderType } from "../type"
-import DictionaryValue from "../lib/DictionaryValue"
+import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import InterfaceValue from "../lib/InterfaceValue"
@@ -8,7 +8,6 @@ import { ArrayMapValueType } from "../lib/ArrayMap"
 import { GridValue, createGridValue } from "../lib/GridParse"
 import { observeType } from "./ObserveList"
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type reactiveFunction = (...args: any[]) => boolean
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
@@ -16,6 +15,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
   name?: string
+  parse?: false | functionType<any>
   tip?: TipValueInitOption
   grid?: GridValue
   width?: number | string
@@ -30,6 +30,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
   static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
   $prop: string
   $name: InterfaceValue<string>
+  parse?: false | functionType<any>
   $tip?: TipValue
   $grid?: GridValue
   $width?: number | string
@@ -43,6 +44,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.$name = (initOption.name !== undefined || !parent) ? new InterfaceValue(initOption.name) : parent.$getInterfaceData('name')
+    this.parse = initOption.parse
     if (initOption.tip !== undefined) {
       this.$tip = new TipValue(initOption.tip)
     }

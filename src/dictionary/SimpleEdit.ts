@@ -6,8 +6,7 @@ export interface SimpleEditInitOption extends DefaultModInitOption {
   colon?: boolean
   required?: InterfaceValueInitOption<boolean>
   disabled?: InterfaceValueInitOption<boolean>
-  edit?: false | functionType<any> // 数据=>编辑 格式化
-  post?: false | functionType<any> // 编辑=>来源 格式化
+  fetch?: false | functionType<any> // 编辑=>来源 格式化
   on?: Record<PropertyKey, (...args: any[]) => any>
 }
 
@@ -17,8 +16,7 @@ class SimpleEdit extends DefaultMod {
   colon: InterfaceValue<boolean>
   required: InterfaceValue<boolean>
   disabled: InterfaceValue<boolean>
-  edit?: false | functionType<any>
-  post?: false | functionType<any>
+  fetch?: false | functionType<any>
   $on: Record<PropertyKey, (...args: any[]) => any>
   constructor(initOption: SimpleEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
@@ -26,8 +24,7 @@ class SimpleEdit extends DefaultMod {
     this.required = new InterfaceValue(initOption.required || false)
     this.disabled = new InterfaceValue(initOption.disabled || false)
     // 组件事件监控
-    this.edit = initOption.edit
-    this.post = initOption.post
+    this.fetch = initOption.fetch
     this.$on = initOption.on || {}
   }
 }

@@ -11,6 +11,8 @@
 - 修正DefaultEdit在multiple时默认值为[]导致的引用问题
 - 布局通过解析器加值实现，基础布局通过解析器解析基础数据，个体设置通过值来解析，实现页面的整体和个体设置
 - 优化Edit的rule属性整体逻辑
+- 考虑Edit的通用设置项和个体设置项的混合实现，试验检索接口类数据
+- 优化DictionaryValue/DefaultMod，format=>assign,show/edit=>parse，post=>fetch
 
 ### 4.1.18
 - 修正$triggerMethodWithStatus无函数时的状态回滚
