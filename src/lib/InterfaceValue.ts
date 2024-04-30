@@ -41,12 +41,14 @@ class InterfaceValue<D> extends null {
     }
     return this.value.default
   }
-  format(format: (value: InterfaceValueType<D>) => void) {
-    format(this.value)
-  }
-  map(fn: (data: InterfaceValueType<D>, prop: string) => void) {
+  forEach(fn: (value: D, prop: string, data: InterfaceValueType<D>) => void) {
     for (const prop in this.value) {
-      fn(this.value, prop)
+      fn(this.value[prop]!, prop, this.value)
+    }
+  }
+  change(fn: (value: D, prop: string, data: InterfaceValueType<D>) => D) {
+    for (const prop in this.value) {
+      this.value[prop] = fn(this.value[prop]!, prop, this.value)
     }
   }
   toString() {

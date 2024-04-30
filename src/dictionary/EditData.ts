@@ -1,7 +1,20 @@
 import { hasProp } from "complex-utils"
-import DictionaryValue from "../lib/DictionaryValue"
-import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
+import { SimpleType } from "complex-utils/src/type/getType"
 import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
+import DictionaryValue from "../lib/DictionaryValue"
+import InterfaceValue, { InterfaceValueInitOption, InterfaceValueType } from "../lib/InterfaceValue"
+
+export interface ruleOption {
+  required?: boolean
+  message?: string
+  type?: SimpleType
+  max?: number
+  min?: number
+  pattern?: RegExp
+  trigger?: string[]
+  validator?: (value: any, rule: ruleOption) => boolean | Promise<any>
+}
+// 考虑自定义校验参数，并实时构建，统一判断逻辑，构建函数由静态参数设置
 
 export interface EditDataInitOption extends SimpleEditInitOption {
   editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
@@ -19,8 +32,7 @@ export interface EditDataInitOption extends SimpleEditInitOption {
     reset?: any
     [prop: PropertyKey]: any
   }
-  rules?: Record<PropertyKey, Record<PropertyKey, any>[]>
-  message?: InterfaceValueInitOption<string>
+  rules?: InterfaceValueType<ruleOption[]>
 }
 
 function defaultMultipleValue() {
@@ -36,11 +48,14 @@ class EditData extends SimpleEdit {
   }
   static $defaultTrim = false
   static $defaultPlaceholder = function (name: InterfaceValue<string>) {
-    const data: Record<PropertyKey, string> = {}
-    name.map((value, prop) => {
-      data[prop] = `请输入${value[prop]}`
+    const data = {} as InterfaceValueType<string>
+    name.forEach((value, prop) => {
+      data[prop] = `请输入${value}`
     })
     return data
+  }
+  static $parseRule = function<R = ruleOption>(rule: ruleOption): R {
+    return rule as R
   }
   $editable: boolean
   simple: {
@@ -51,8 +66,7 @@ class EditData extends SimpleEdit {
   trim: boolean
   multiple: boolean
   placeholder?: InterfaceValue<string>
-  $rules?: InterfaceValue<Record<PropertyKey, unknown>[]>
-  message?: InterfaceValue<string>
+  $rules?: InterfaceValue<ruleOption[]>
   $value: {
     default?: any
     init?: any
@@ -113,30 +127,29 @@ class EditData extends SimpleEdit {
       // rule
       if (initOption.rules) {
         this.$rules = new InterfaceValue(initOption.rules)
-      } else {
-        this.$rules = new InterfaceValue({
-          default: [{}]
-        })
       }
-      let message = new InterfaceValue(initOption.message)
-      if (!message.isInit() && this.placeholder) {
-        message = this.placeholder
-      }
-      this.message = message
-      this.$rules.map((rules, prop) => {
-        const ruleList = rules[prop]
-        if (ruleList) {
-          for (let n = 0; n < ruleList.length; n++) {
-            const rule = ruleList[n];
-            if (rule.required === undefined) {
-              rule.required = this.required.getValue(prop)
-            }
-            if (rule.message === undefined && this.message!.isInit()) {
-              rule.message = this.message!.getValue(prop)
-            }
+    }
+  }
+  getRuleList(prop: string): undefined | Record<PropertyKey, any>[] {
+    if (this.$rules) {
+      const ruleList = this.$rules.getValue(prop)
+      if (ruleList) {
+        const $constructor = (this.constructor as typeof EditData)
+        return ruleList.map(rule => {
+          const ruleValue = { ...rule }
+          if (ruleValue.required === undefined) {
+            ruleValue.required = this.required.getValue(prop)
           }
-        }
-      })
+          if (ruleValue.message === undefined && this.placeholder) {
+            ruleValue.message = this.placeholder.getValue(prop)
+          }
+          return $constructor.$parseRule(ruleValue)
+        })
+      } else {
+        return undefined
+      }
+    } else {
+      return undefined
     }
   }
   setValue(value: any, prop = 'default') {

@@ -21,6 +21,7 @@ import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
 import LoadEdit from '../dictionary/LoadEdit'
 import SimpleEdit from '../dictionary/SimpleEdit'
+import { ComplexType } from 'complex-utils/src/type/getComplexType'
 
 export type payloadType = {
   targetData: Record<PropertyKey, unknown>
@@ -106,8 +107,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   originProp?: InterfaceValueInitOption<string> // 来源属性
   label?: InterfaceValueInitOption<string> // 名称
   showProp?: InterfaceValueInitOption<string> // 展示的属性
-  type?: InterfaceValueInitOption<string> // 值类型
-  showType?: InterfaceValueInitOption<string> // 展示的类型
+  type?: InterfaceValueInitOption<ComplexType> // 值类型
   mod?: DictionaryModDataInitOption
 }
 
@@ -179,7 +179,6 @@ class DictionaryValue extends DefaultData implements functions {
     originProp: InterfaceValue<string>
     showProp: InterfaceValue<string>
     type: InterfaceValue<string>
-    showType: InterfaceValue<string>
   }
   format?: false | functionType<unknown>
   parseData?: false | functionType<unknown>
@@ -198,8 +197,7 @@ class DictionaryValue extends DefaultData implements functions {
       name: new InterfaceValue(initOption.name),
       originProp: new InterfaceValue(initOption.originProp || this.$prop),
       showProp: new InterfaceValue(initOption.showProp),
-      type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string'),
-      showType: new InterfaceValue(initOption.showType)
+      type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string')
     }
     // 加载基本自定义函数
     this.parseData = initOption.parseData === undefined ? parseData.bind(this) : initOption.parseData

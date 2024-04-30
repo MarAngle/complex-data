@@ -1,8 +1,8 @@
 import { Life, upperCaseFirstChar } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import { LifeDataInitOptionWithExtra } from 'complex-utils/src/class/LifeItem'
-import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import { BufferType } from './Data'
+import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 
 export interface DefaultDataInitOption extends SimpleDataInitOption {

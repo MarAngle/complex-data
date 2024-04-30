@@ -1,13 +1,13 @@
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
+import { renderType } from "../type"
 import DictionaryValue from "../lib/DictionaryValue"
-import { observeType } from "./ObserveList"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
-import { renderType } from "../type"
 import { GridValue, createGridValue } from "../lib/GridParse"
 import WidthValue, { WidthValueInitOption } from "../lib/WidthValue"
+import { observeType } from "./ObserveList"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type reactiveFunction = (...args: any[]) => boolean
