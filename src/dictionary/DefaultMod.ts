@@ -6,7 +6,6 @@ import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/Attrs
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayMapValueType } from "../lib/ArrayMap"
 import { GridValue, createGridValue } from "../lib/GridParse"
-import WidthValue, { WidthValueInitOption } from "../lib/WidthValue"
 import { observeType } from "./ObserveList"
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -19,7 +18,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   name?: string
   tip?: TipValueInitOption
   grid?: GridValue
-  width?: WidthValueInitOption
+  width?: number | string
   local?: LocalValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
   renders?: Record<string, undefined | renderType>
@@ -33,7 +32,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
   $name: InterfaceValue<string>
   $tip?: TipValue
   $grid?: GridValue
-  $width?: WidthValue
+  $width?: number | string
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
   $renders?: Record<string, undefined | renderType>
@@ -48,7 +47,7 @@ class DefaultMod extends SimpleData implements ArrayMapValueType {
       this.$tip = new TipValue(initOption.tip)
     }
     this.$grid = createGridValue(initOption.grid)
-    this.$width = new WidthValue(initOption.width)
+    this.$width = initOption.width
     this.$local = createLocalValue(initOption.local)
     this.$reactives = initOption.reactives
     this.$renders = initOption.renders

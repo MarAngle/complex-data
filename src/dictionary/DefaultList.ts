@@ -3,7 +3,6 @@ import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DefaultListInitOption extends DefaultModInitOption {
   align?: 'center' | 'left' | 'right'
-  width?: number | string
   ellipsis?: boolean
   auto?: boolean
   show?: DictionaryValue['show']
@@ -12,12 +11,10 @@ export interface DefaultListInitOption extends DefaultModInitOption {
 class DefaultList extends DefaultMod {
   static $name = 'DefaultList'
   static $option = {
-    width: 100,
     ellipsis: true,
     auto: true
   }
   align: 'center' | 'left' | 'right'
-  width?: number | string
   ellipsis: boolean
   auto: boolean
   show: DictionaryValue['show']
@@ -26,11 +23,11 @@ class DefaultList extends DefaultMod {
       initOption = {}
     }
     super(initOption, parent, modName)
+    const $constructor = (this.constructor as typeof DefaultList)
     this.show = initOption.show || (parent ? parent.show : undefined)
     this.align = initOption.align || 'center'
-    this.width = initOption.width === undefined ? DefaultList.$option.width : initOption.width
-    this.ellipsis = initOption.ellipsis === undefined ? DefaultList.$option.ellipsis : initOption.ellipsis
-    this.auto = initOption.auto === undefined ? DefaultList.$option.auto : initOption.auto
+    this.ellipsis = initOption.ellipsis === undefined ? $constructor.$option.ellipsis : initOption.ellipsis
+    this.auto = initOption.auto === undefined ? $constructor.$option.auto : initOption.auto
   }
 }
 
