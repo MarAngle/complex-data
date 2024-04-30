@@ -1,4 +1,4 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
 export type dateConfigValue = {
@@ -32,12 +32,12 @@ export interface PartialDateEditOption {
   disabledDate?: dateConfig | ((value: unknown) => boolean)
 }
 
-export interface DateEditInitOption extends EditDataInitOption {
+export interface DateEditInitOption extends DefaultEditInitOption {
   type: 'date'
   option?: PartialDateEditOption
 }
 
-class DateEdit extends EditData{
+class DateEdit extends DefaultEdit{
   static $name = 'DateEdit'
   static $edit: undefined | ((value: undefined | string, format: string) => undefined | unknown)
   static $post: undefined | ((value: undefined | unknown, format: string) => undefined | string)

@@ -1,4 +1,4 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface InputEditOption {
@@ -7,12 +7,12 @@ export interface InputEditOption {
   hideClear: boolean
 }
 
-export interface InputEditInitOption extends EditDataInitOption {
+export interface InputEditInitOption extends DefaultEditInitOption {
   type?: 'input'
   option?: Partial<InputEditOption>
 }
 
-class InputEdit extends EditData{
+class InputEdit extends DefaultEdit{
   static $name = 'InputEdit'
   static $defaultOption = {
     type: 'text',

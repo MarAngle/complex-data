@@ -1,4 +1,4 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface InputNumberEditOption {
@@ -8,12 +8,12 @@ export interface InputNumberEditOption {
   step: number
 }
 
-export interface InputNumberEditInitOption extends EditDataInitOption {
+export interface InputNumberEditInitOption extends DefaultEditInitOption {
   type: 'inputNumber'
   option?: Partial<InputNumberEditOption>
 }
 
-class InputNumberEdit extends EditData{
+class InputNumberEdit extends DefaultEdit{
   static $name = 'InputNumberEdit'
   type: 'inputNumber'
   $option: InputNumberEditOption

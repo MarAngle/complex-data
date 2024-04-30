@@ -1,6 +1,6 @@
 import { hasProp } from "complex-utils"
 import { SimpleType } from "complex-utils/src/type/getType"
-import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
+import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import InterfaceValue, { InterfaceValueInitOption, InterfaceValueType } from "../lib/InterfaceValue"
 
@@ -16,7 +16,7 @@ export interface ruleOption {
 }
 // 考虑自定义校验参数，并实时构建，统一判断逻辑，构建函数由静态参数设置
 
-export interface EditDataInitOption extends SimpleEditInitOption {
+export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
   editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
   simple?: { // 简单逻辑判断值
     value?: boolean // 值简单逻辑:即不加载
@@ -39,9 +39,9 @@ function defaultMultipleValue() {
   return [] as any[]
 }
 
-class EditData extends SimpleEdit {
-  static $name = 'EditData'
-  static $formatConfig = { name: 'EditData', level: 50, recommend: true }
+class DefaultEdit extends DefaultSimpleEdit {
+  static $name = 'DefaultEdit'
+  static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
   static $editable = true
   static $defaultValue = function(multiple: boolean) {
     return !multiple ? undefined : defaultMultipleValue
@@ -73,9 +73,9 @@ class EditData extends SimpleEdit {
     reset?: any
     [prop: PropertyKey]: any
   }
-  constructor(initOption: EditDataInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
-    const $constructor = (this.constructor as typeof EditData)
+    const $constructor = (this.constructor as typeof DefaultEdit)
     this.$editable = initOption.editable === undefined ? $constructor.$editable : initOption.editable
     this.simple = initOption.simple || {}
     if (!this.$editable) {
@@ -134,7 +134,7 @@ class EditData extends SimpleEdit {
     if (this.$rules) {
       const ruleList = this.$rules.getValue(prop)
       if (ruleList) {
-        const $constructor = (this.constructor as typeof EditData)
+        const $constructor = (this.constructor as typeof DefaultEdit)
         return ruleList.map(rule => {
           const ruleValue = { ...rule }
           if (ruleValue.required === undefined) {
@@ -165,4 +165,4 @@ class EditData extends SimpleEdit {
   }
 }
 
-export default EditData
+export default DefaultEdit

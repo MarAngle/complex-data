@@ -1,11 +1,11 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface SwitchEditInitOption extends EditDataInitOption {
+export interface SwitchEditInitOption extends DefaultEditInitOption {
   type: 'switch'
 }
 
-class SwitchEdit extends EditData{
+class SwitchEdit extends DefaultEdit{
   static $name = 'SwitchEdit'
   type: 'switch'
   constructor(initOption: SwitchEditInitOption, parent?: DictionaryValue, modName?: string) {

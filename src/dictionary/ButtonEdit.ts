@@ -1,4 +1,4 @@
-import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
+import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import ButtonValue, { ButtonValueInitOption } from "../lib/ButtonValue"
 
@@ -6,12 +6,12 @@ export type ButtonEditClickType = (payload: payloadType) => void | Promise<unkno
 
 export type ButtonEditOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
 
-export interface ButtonEditInitOption extends SimpleEditInitOption {
+export interface ButtonEditInitOption extends DefaultSimpleEditInitOption {
   type: 'button'
   option: ButtonEditOption
 }
 
-class ButtonEdit extends SimpleEdit{
+class ButtonEdit extends DefaultSimpleEdit{
   static $name = 'ButtonEdit'
   type: 'button'
   $option: ButtonValue<payloadType, [payloadType]>

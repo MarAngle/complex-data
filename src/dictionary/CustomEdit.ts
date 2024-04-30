@@ -1,13 +1,13 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface CustomEditInitOption extends EditDataInitOption {
+export interface CustomEditInitOption extends DefaultEditInitOption {
   type: 'custom'
   option?: Record<PropertyKey, unknown>
   custom?: Record<PropertyKey, unknown>
 }
 
-class CustomEdit extends EditData{
+class CustomEdit extends DefaultEdit{
   static $name = 'CustomEdit'
   type: 'custom'
   $option: Record<PropertyKey, unknown>

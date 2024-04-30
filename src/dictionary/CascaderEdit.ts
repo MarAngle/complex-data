@@ -1,4 +1,4 @@
-import LoadEdit, { LoadEditInitOption } from "./LoadEdit"
+import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface CascaderEditOption {
@@ -12,13 +12,13 @@ export interface CascaderEditOption {
   autoWidth: boolean
 }
 
-export interface CascaderEditInitOption extends LoadEditInitOption {
+export interface CascaderEditInitOption extends DefaultLoadEditInitOption {
   type: 'cascader'
   option?: Partial<CascaderEditOption>
 }
 
 // 后期考虑子数据的加载
-class CascaderEdit extends LoadEdit{
+class CascaderEdit extends DefaultLoadEdit{
   static $name = 'CascaderEdit'
   static $defaultOption = {
     optionValue: 'value',

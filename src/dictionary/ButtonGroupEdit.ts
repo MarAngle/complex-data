@@ -1,17 +1,17 @@
-import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
+import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
 import ButtonValue, { ButtonValueInitOption } from "../lib/ButtonValue"
 import config from "../../config"
 
 export type ButtonGroupEditOption<E = payloadType, A extends unknown[] = [payloadType]> = ButtonValueInitOption<E, A>
 
-export interface ButtonGroupEditInitOption extends SimpleEditInitOption {
+export interface ButtonGroupEditInitOption extends DefaultSimpleEditInitOption {
   type: 'buttonGroup'
   interval?: number | string
   list: ButtonGroupEditOption[]
 }
 
-class ButtonGroupEdit extends SimpleEdit{
+class ButtonGroupEdit extends DefaultSimpleEdit{
   static $name = 'ButtonGroupEdit'
   static $editable = false
   static $defaultOption = {

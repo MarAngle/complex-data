@@ -1,4 +1,4 @@
-import SimpleEdit, { SimpleEditInitOption } from "./SimpleEdit"
+import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface ContentEditOption {
@@ -6,12 +6,12 @@ export interface ContentEditOption {
   style?: Record<PropertyKey, unknown>
 }
 
-export interface ContentEditInitOption extends SimpleEditInitOption {
+export interface ContentEditInitOption extends DefaultSimpleEditInitOption {
   type: 'content'
   option?: Partial<ContentEditOption>
 }
 
-class ContentEdit extends SimpleEdit{
+class ContentEdit extends DefaultSimpleEdit{
   static $name = 'ContentEdit'
   static $editable = false
   type: 'content'

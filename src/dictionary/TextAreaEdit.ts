@@ -1,4 +1,4 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface TextAreaEditOption {
@@ -7,12 +7,12 @@ export interface TextAreaEditOption {
   hideClear: boolean
 }
 
-export interface TextAreaEditInitOption extends EditDataInitOption {
+export interface TextAreaEditInitOption extends DefaultEditInitOption {
   type: 'textArea'
   option?: Partial<TextAreaEditOption>
 }
 
-class TextAreaEdit extends EditData{
+class TextAreaEdit extends DefaultEdit{
   static $name = 'TextAreaEdit'
   static $defaultOption = {
     size: 2048,

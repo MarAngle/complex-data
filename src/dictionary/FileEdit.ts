@@ -1,15 +1,15 @@
-import EditData, { EditDataInitOption } from "./EditData"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { fileOption } from "../type"
 
 export interface FileEditOption extends fileOption {}
 
-export interface FileEditInitOption extends EditDataInitOption {
+export interface FileEditInitOption extends DefaultEditInitOption {
   type: 'file'
   option?: Partial<FileEditOption>
 }
 
-class FileEdit extends EditData{
+class FileEdit extends DefaultEdit{
   static $name = 'FileEdit'
   type: 'file'
   $option: FileEditOption

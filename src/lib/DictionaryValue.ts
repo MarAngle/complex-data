@@ -5,7 +5,7 @@ import InterfaceValue, { InterfaceValueInitOption } from './InterfaceValue'
 import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
-import EditData from '../dictionary/EditData'
+import DefaultEdit from '../dictionary/DefaultEdit'
 import InputEdit, { InputEditInitOption } from '../dictionary/InputEdit'
 import InputNumberEdit, { InputNumberEditInitOption } from '../dictionary/InputNumberEdit'
 import TextAreaEdit, { TextAreaEditInitOption } from '../dictionary/TextAreaEdit'
@@ -19,8 +19,8 @@ import ButtonEdit, { ButtonEditInitOption } from '../dictionary/ButtonEdit'
 import ButtonGroupEdit, { ButtonGroupEditInitOption } from '../dictionary/ButtonGroupEdit'
 import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
-import LoadEdit from '../dictionary/LoadEdit'
-import SimpleEdit from '../dictionary/SimpleEdit'
+import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
+import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 
 export type payloadType = {
@@ -146,7 +146,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
   }
   static $initEditMod = function(editModInitOption: DictionaryEditMod | DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
-    if (editModInitOption instanceof SimpleEdit) {
+    if (editModInitOption instanceof DefaultSimpleEdit) {
       return editModInitOption
     } else {
       return DictionaryValue._initEditMod(editModInitOption, parent, modName)
@@ -273,7 +273,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  $setEditValue (mod: EditData, { targetData, originData, type, from = 'init' }: payloadType) {
+  $setEditValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
@@ -307,9 +307,9 @@ class DictionaryValue extends DefaultData implements functions {
         resolve({ status: !code ? 'success' : code, code: code })
       }
       if (mod) {
-        if (mod instanceof EditData) {
+        if (mod instanceof DefaultEdit) {
           if (mod.$editable) {
-            if (mod instanceof LoadEdit) {
+            if (mod instanceof DefaultLoadEdit) {
               mod.loadData().finally(() => {
                 next(this.$setEditValue(mod, option), '')
               })
