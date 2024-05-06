@@ -4,7 +4,7 @@ import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import InterfaceValue from "../lib/InterfaceValue"
-import { ArrayMapValueType } from "../lib/ArrayMap"
+import { ArrayValueDataType } from "../lib/ArrayValue"
 import { GridValue, createGridValue } from "../lib/GridParse"
 import { observeType } from "./ObserveList"
 
@@ -25,7 +25,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   observe?: observeType
 }
 
-class DefaultMod extends SimpleData implements ArrayMapValueType {
+class DefaultMod extends SimpleData implements ArrayValueDataType {
   static $name = 'DefaultMod'
   static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
   $prop: string

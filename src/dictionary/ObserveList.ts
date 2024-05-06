@@ -1,10 +1,10 @@
 import { defineReactive } from "complex-utils"
-import ArrayMap from "../lib/ArrayMap"
+import ArrayValue from "../lib/ArrayValue"
 import DefaultMod from "./DefaultMod"
 
 export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from?: string) => unknown
 
-class ObserveList extends ArrayMap<DefaultMod> {
+class ObserveList extends ArrayValue<DefaultMod> {
   static $name = 'ObserveList'
   static $observe = function(form: Record<PropertyKey, any>, prop: PropertyKey, target: ObserveList) {
     defineReactive(form, prop, {
@@ -14,7 +14,7 @@ class ObserveList extends ArrayMap<DefaultMod> {
     })
   }
   $observe: Record<PropertyKey, undefined | boolean>
-  $form: null | Record<PropertyKey, unknown>
+  $form: null | Record<PropertyKey, any>
   $type: string
   constructor(list?: DefaultMod[]) {
     super(list)
@@ -51,7 +51,7 @@ class ObserveList extends ArrayMap<DefaultMod> {
       })
     }
   }
-  setForm(form: Record<PropertyKey, unknown>, type = '') {
+  setForm(form: Record<PropertyKey, any>, type = '') {
     this.$form = form
     this.$type = type
     this.$startObserve()
