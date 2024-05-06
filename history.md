@@ -1,8 +1,7 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
-- Observe添加额外逻辑，实现删除和恢复，隐藏仅隐藏参与逻辑判断，删除的则不会在最后参与构建
 - 考虑Edit的通用设置项和个体设置项的混合实现，试验检索接口类数据!
-- 优化ObserveList的响应式逻辑，仅监控需要的属性，且通过defineReactive实现而不是之前的observe实现，减少性能消耗[实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用]
+- 优化ObserveList通过defineReactive实现而不是之前的observe实现[实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用]
 
 ### 4.2.0
 - 优化函数名称，_为私有属性，理论上不对外使用，$为功能函数，理论上可对外使用，但可能存在更改逻辑的情况
@@ -13,6 +12,8 @@
 - 布局通过解析器加值实现，基础布局通过解析器解析基础数据，个体设置通过值来解析，实现页面的整体和个体设置
 - 优化Edit的rule属性整体逻辑
 - 优化DictionaryValue/DefaultMod，format=>assign,show/edit=>parse，post=>fetch
+- 优化ObserveList的响应式逻辑，仅监控需要的属性，减少性能消耗
+- Observe添加额外逻辑，实现冻结和解冻，隐藏参与逻辑判断，冻结的不进行逻辑判断，冻结的属性的响应式也不会被触发，由其他属性变更后解冻可触发
 
 ### 4.1.18
 - 修正$triggerMethodWithStatus无函数时的状态回滚

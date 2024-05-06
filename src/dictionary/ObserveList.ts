@@ -1,60 +1,86 @@
-import { defineReactive } from "complex-utils"
+import { Watcher, observe } from "complex-utils"
 import ArrayValue from "../lib/ArrayValue"
 import DefaultMod from "./DefaultMod"
 
-export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from?: string) => unknown
+export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from: 'set' | 'change') => unknown
 
 class ObserveList extends ArrayValue<DefaultMod> {
   static $name = 'ObserveList'
-  static $observe = function(form: Record<PropertyKey, any>, prop: PropertyKey, target: ObserveList) {
-    defineReactive(form, prop, {
-      set(val) {
-        target.$triggerObserve(prop, val, 'change')
-      }
-    })
-  }
-  $observe: Record<PropertyKey, undefined | boolean>
-  $form: null | Record<PropertyKey, any>
+  $data!: null | Record<PropertyKey, any>
+  $watch!: Map<PropertyKey, Watcher>
   $type: string
+  $deep: boolean
   constructor(list?: DefaultMod[]) {
     super(list)
-    this.$observe = {}
-    this.$form = null
+    // 不可枚举，不可配置
+    Object.defineProperty(this, '$data', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: null
+    })
+    Object.defineProperty(this, '$watch', {
+      enumerable: false,
+      configurable: false,
+      writable: true,
+      value: new Map()
+    })
     this.$type = ''
+    this.$deep = false
   }
-  $triggerObserve (prop: PropertyKey, val: unknown, from?: string) {
-    if (this.$observe[prop]) {
-      const item = this.get(prop)
-      if (item && item.$observe) {
-        item.$observe(this, prop, val, from)
-      }
-    }
-  }
-  pushObserve (item: DefaultMod) {
-    const $constructor = (this.constructor as typeof ObserveList)
-    $constructor.$observe(this.$form!, item.$prop, this)
-    this.$observe[item.$prop] = true
-    this.$triggerObserve(item.$prop, this.$form![item.$prop], 'init')
-  }
-  removeObserve(prop: PropertyKey) {
-    this.$observe[prop] = undefined
-  }
-  clearObserve() {
-    this.$observe = {}
+  startObserve(data: Record<PropertyKey, any>, type = '', deep = true) {
+    observe(data)
+    this.$data = data
+    this.$type = type
+    this.$deep = deep
+    this.$startObserve()
   }
   $startObserve () {
-    if (this.$form) {
-      this.$map.forEach((item) => {
+    this.clearWatcher()
+    if (this.$data) {
+      this.$map.forEach((item, prop) => {
         if (item.$observe) {
-          this.pushObserve(item)
+          this.setWatcher(prop, new Watcher(this.$data!, prop as string, {
+            deep: this.$deep,
+            handler: (val) => {
+              if (!this.isFrozen(prop)) {
+                // 未被冻结的属性则触发响应式
+                this.triggerObserve(prop, val, 'change')
+              }
+            }
+          }), false)
         }
       })
     }
   }
-  setForm(form: Record<PropertyKey, any>, type = '') {
-    this.$form = form
-    this.$type = type
-    this.$startObserve()
+  // 触发响应式
+  triggerObserve (prop: PropertyKey, val: any, from: 'set' | 'change') {
+    const item = this.get(prop)
+    if (item && item.$observe) {
+      item.$observe(this, prop, val, from)
+    }
+  }
+  // 设置观察者
+  setWatcher (prop: PropertyKey, watcher: Watcher, unTriggerObserve?: boolean) {
+    this.$watch.set(prop, watcher)
+    if (!unTriggerObserve) {
+      this.triggerObserve(prop, this.$data![prop], 'set')
+    }
+  }
+  // 移除观察者
+  removeWatcher (prop: PropertyKey) {
+    const watcher = this.$watch.get(prop)
+    if (watcher) {
+      watcher.stop()
+      this.$watch.delete(prop)
+    }
+  }
+  // 清空观察者
+  clearWatcher () {
+    this.$watch.forEach(function(watcher) {
+      watcher.stop()
+    })
+    this.$watch.clear()
   }
 }
 

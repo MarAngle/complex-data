@@ -34,10 +34,16 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     this.data.splice(preIndex + 1, 0, target)
     return preIndex + 1
   }
+  isHide(prop: PropertyKey) {
+    return this.$hidden.has(prop)
+  }
+  isFrozen(prop: PropertyKey) {
+    return this.$frozen.has(prop)
+  }
   getStatus(prop: PropertyKey) {
-    if (this.$hidden.has(prop)) {
+    if (this.isHide(prop)) {
       return 'hide'
-    } else if (this.$frozen.has(prop)) {
+    } else if (this.isFrozen(prop)) {
       return 'frozen'
     } else if (this.$map.has(prop)) {
       return 'show'
@@ -112,7 +118,7 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
   }
   // 显示
   show(prop: PropertyKey) {
-    if (this.getStatus(prop) === 'hide') {
+    if (this.isHide(prop)) {
       const value = this.$hidden.get(prop)
       if (value) {
         this.$hidden.delete(prop)
@@ -132,7 +138,7 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
   }
   // 解冻
   thaw(prop: PropertyKey) {
-    if (this.getStatus(prop) === 'frozen') {
+    if (this.isFrozen(prop)) {
       const value = this.$frozen.get(prop)
       if (value) {
         this.$frozen.delete(prop)
