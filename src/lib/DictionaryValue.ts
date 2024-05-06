@@ -11,7 +11,6 @@ import InputNumberEdit, { InputNumberEditInitOption } from '../dictionary/InputN
 import TextAreaEdit, { TextAreaEditInitOption } from '../dictionary/TextAreaEdit'
 import SelectEdit, { SelectEditInitOption } from '../dictionary/SelectEdit'
 import SwitchEdit, { SwitchEditInitOption } from '../dictionary/SwitchEdit'
-import CascaderEdit, { CascaderEditInitOption } from '../dictionary/CascaderEdit'
 import DateEdit, { DateEditInitOption } from '../dictionary/DateEdit'
 import DateRangeEdit, { DateRangeEditInitOption } from '../dictionary/DateRangeEdit'
 import FileEdit, { FileEditInitOption } from '../dictionary/FileEdit'
@@ -67,9 +66,9 @@ export interface formatDataOption {
   depth?: boolean
 }
 
-export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | CascaderEditInitOption | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption
+export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption
 
-export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | CascaderEdit | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
+export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -121,12 +120,10 @@ class DictionaryValue extends DefaultData implements functions {
       return new InputNumberEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'textArea') {
       return new TextAreaEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'select') {
+    } else if (editModInitOption.type === 'select' || editModInitOption.type === 'cascader') {
       return new SelectEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'switch') {
       return new SwitchEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'cascader') {
-      return new CascaderEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'date') {
       return new DateEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'dateRange') {

@@ -2,19 +2,19 @@ import { loadFunctionType } from "../data/BaseData"
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultDefaultLoadEditInitOption extends DefaultEditInitOption {
+export interface DefaultLoadEditInitOption extends DefaultEditInitOption {
   reload?: boolean
   getData?: loadFunctionType
 }
 
-class DefaultDefaultLoadEdit extends DefaultEdit{
-  static $name = 'DefaultDefaultLoadEdit'
+class DefaultLoadEdit extends DefaultEdit{
+  static $name = 'DefaultLoadEdit'
   $load?: {
     status: 'un' | 'ing' | 'success' | 'fail'
     reload?: boolean
   }
   $getData?: loadFunctionType
-  constructor(initOption: DefaultDefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: DefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     if (initOption.getData) {
       this.$getData = initOption.getData
@@ -49,4 +49,4 @@ class DefaultDefaultLoadEdit extends DefaultEdit{
   }
 }
 
-export default DefaultDefaultLoadEdit
+export default DefaultLoadEdit

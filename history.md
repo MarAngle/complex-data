@@ -14,6 +14,7 @@
 - 优化DictionaryValue/DefaultMod，format=>assign,show/edit=>parse，post=>fetch
 - 优化ObserveList的响应式逻辑，仅监控需要的属性，减少性能消耗
 - Observe添加额外逻辑，实现冻结和解冻，隐藏参与逻辑判断，冻结的不进行逻辑判断，冻结的属性的响应式也不会被触发，由其他属性变更后解冻可触发
+- 合并select/cascader
 
 ### 4.1.18
 - 修正$triggerMethodWithStatus无函数时的状态回滚
