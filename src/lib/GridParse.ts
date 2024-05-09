@@ -13,14 +13,15 @@ export interface GridValue {
 }
 
 export interface GridMainValue {
-  data: number
-  label: number
-  content: number
+  main: GridValue
+  label: GridValue
+  content: GridValue
 }
 
 export interface GridOption {
   line: number
-  custom?: (data: number, type: string) => GridValue
+  local?: GridValue
+  custom?: (data: GridValue, payload: any) => GridValue
 }
 
 export const createGridOption = function(gridValue?: number | GridOption) {
@@ -32,6 +33,12 @@ export const createGridOption = function(gridValue?: number | GridOption) {
     return gridValue
   }
 }
+
+const parseDict = {
+  main: '_getMain',
+  label: '_getLabel',
+  content: '_getContent',
+} as const
 
 class GridParse {
   static $name = 'GridParse'
@@ -53,26 +60,39 @@ class GridParse {
     this._offset = (24 - initOption.label - initOption.content) / initOption.line
     this.label = initOption.label / initOption.line
     this.content = 24 - this.label - this._offset
-    this._default = this._getData(this.line)
-  }
-  protected _getData(line: number) {
-    const label = this.label * line
-    const offset = this._offset * line
-    const content = 24 - label - offset
-    return {
-      data: 24 / line,
-      label,
-      content
+    this._default = {
+      main: {
+        span: this._getMain(this.line)
+      },
+      label: {
+        span: this._getLabel(this.line)
+      },
+      content: {
+        span: this._getContent(this.line)
+      },
     }
   }
-  parseData(gridValue?: GridOption) {
+  protected _getMain(line: number) {
+    return 24 / line
+  }
+  protected _getLabel(line: number) {
+    return this.label * line
+  }
+  protected _getContent(line: number) {
+    return 24 - this._getLabel(line) - this._offset * line
+  }
+  parseData(gridValue: undefined | GridOption, position: keyof GridMainValue, payload: any) {
     if (!gridValue) {
-      return this._default
+      return this._default[position]
     } else {
-      return {
-        ...this._getData(gridValue.line),
-        ...gridValue
+      let data = {
+        span: this[parseDict[position]](gridValue.line),
+        ...gridValue.local
       }
+      if (gridValue.custom) {
+        data = gridValue.custom(data, payload)
+      }
+      return data
     }
   }
 }
