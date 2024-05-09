@@ -3,7 +3,6 @@ import { renderType } from "../type"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
-import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayValueDataType } from "../lib/ArrayValue"
 import { GridOption, createGridOption } from "../lib/GridParse"
 import { observeType } from "./ObserveList"
@@ -29,7 +28,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   static $name = 'DefaultMod'
   static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
   $prop: string
-  $name: InterfaceValue<string>
+  $name: string
   parse?: false | functionType<any>
   $tip?: TipValue
   $grid?: GridOption
@@ -43,7 +42,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     super(initOption)
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
-    this.$name = (initOption.name !== undefined || !parent) ? new InterfaceValue(initOption.name) : parent.$getInterfaceData('name')
+    this.$name = initOption.name !== undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!
     this.parse = initOption.parse
     if (initOption.tip !== undefined) {
       this.$tip = new TipValue(initOption.tip)

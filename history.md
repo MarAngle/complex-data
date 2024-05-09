@@ -3,8 +3,10 @@
 - 优化ObserveList通过defineReactive实现而不是之前的observe实现[实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用]
 
 ### Doing
-- 准备DefaultMod的整体架构更改，构建时可接收一个默认值初始化参数，尽可能减少interface接口的调用，考虑$target和$option
-- 考虑Edit的通用设置项和个体设置项的混合实现，试验检索接口类数据!
+
+### 4.2.2
+- DefaultMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置
+- 
 
 ### 4.2.1
 - 修复index导出

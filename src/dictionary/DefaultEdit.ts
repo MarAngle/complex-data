@@ -2,7 +2,6 @@ import { hasProp } from "complex-utils"
 import { SimpleType } from "complex-utils/src/type/getType"
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import InterfaceValue, { InterfaceValueInitOption, InterfaceValueType } from "../lib/InterfaceValue"
 
 export interface ruleOption {
   required?: boolean
@@ -25,14 +24,14 @@ export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
   }
   trim?: boolean
   multiple?: boolean
-  placeholder?: false | InterfaceValueInitOption<string>
+  placeholder?: false | string
   value?: {
     default?: any
     init?: any
     reset?: any
     [prop: PropertyKey]: any
   }
-  rules?: InterfaceValueType<ruleOption[]>
+  rules?: ruleOption[]
 }
 
 function defaultMultipleValue() {
@@ -47,12 +46,8 @@ class DefaultEdit extends DefaultSimpleEdit {
     return !multiple ? undefined : defaultMultipleValue
   }
   static $defaultTrim = false
-  static $defaultPlaceholder = function (name: InterfaceValue<string>) {
-    const data = {} as InterfaceValueType<string>
-    name.forEach((value, prop) => {
-      data[prop] = `请输入${value}`
-    })
-    return data
+  static $defaultPlaceholder = function (name: string) {
+    return `请输入${name}`
   }
   static $parseRule = function<R = ruleOption>(rule: ruleOption): R {
     return rule as R
@@ -65,8 +60,8 @@ class DefaultEdit extends DefaultSimpleEdit {
   }
   trim: boolean
   multiple: boolean
-  placeholder?: InterfaceValue<string>
-  $rules?: InterfaceValue<ruleOption[]>
+  placeholder?: string
+  $rules?: ruleOption[]
   $value: {
     default?: any
     init?: any
@@ -90,9 +85,9 @@ class DefaultEdit extends DefaultSimpleEdit {
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (this.simple.placeholder !== true) {
       if (initOption.placeholder === undefined && parent) {
-        this.placeholder = new InterfaceValue($constructor.$defaultPlaceholder(parent.$getInterfaceData('name')))
+        this.placeholder = $constructor.$defaultPlaceholder(parent.$getInterfaceValue('name', modName)!)
       } else if (initOption.placeholder) {
-        this.placeholder = new InterfaceValue(initOption.placeholder)
+        this.placeholder = initOption.placeholder
       }
     }
     if (this.simple.value !== true) {
@@ -126,22 +121,22 @@ class DefaultEdit extends DefaultSimpleEdit {
     if (this.simple.rules !== true) {
       // rule
       if (initOption.rules) {
-        this.$rules = new InterfaceValue(initOption.rules)
+        this.$rules = initOption.rules
       }
     }
   }
   getRuleList(prop: string): undefined | Record<PropertyKey, any>[] {
     if (this.$rules) {
-      const ruleList = this.$rules.getValue(prop)
+      const ruleList = this.$rules
       if (ruleList) {
         const $constructor = (this.constructor as typeof DefaultEdit)
         return ruleList.map(rule => {
           const ruleValue = { ...rule }
           if (ruleValue.required === undefined) {
-            ruleValue.required = this.required.getValue(prop)
+            ruleValue.required = this.required
           }
           if (ruleValue.message === undefined && this.placeholder) {
-            ruleValue.message = this.placeholder.getValue(prop)
+            ruleValue.message = this.placeholder
           }
           return $constructor.$parseRule(ruleValue)
         })
