@@ -5,22 +5,32 @@ export interface GridParseInitOption {
   content: number
 }
 
-export interface GridParseValueType {
-  data: number
-  label: number
-  content: number
-}
-
 export interface GridValue {
-  line: number
-  customize?: boolean
+  span: number
   offset?: number // 栅格左侧的间隔格数，间隔内不可以有栅格
   pull?: number // 栅格向左移动格数
   push?: number // 栅格向右移动格数
 }
 
-export const createGridValue = function(gridValue?: GridValue) {
-  return gridValue
+export interface GridMainValue {
+  data: number
+  label: number
+  content: number
+}
+
+export interface GridOption {
+  line: number
+  custom?: (data: number, type: string) => GridValue
+}
+
+export const createGridOption = function(gridValue?: number | GridOption) {
+  if (typeof gridValue === 'number') {
+    return {
+      line: gridValue
+    }
+  } else {
+    return gridValue
+  }
 }
 
 class GridParse {
@@ -34,7 +44,7 @@ class GridParse {
   label: number
   content: number
   _offset: number
-  _default: GridParseValueType
+  _default: GridMainValue
   constructor(initOption?: GridParseInitOption) {
     if (!initOption) {
       initOption = (this.constructor as typeof GridParse).$defaultOption
@@ -55,7 +65,7 @@ class GridParse {
       content
     }
   }
-  parseData(gridValue?: GridValue) {
+  parseData(gridValue?: GridOption) {
     if (!gridValue) {
       return this._default
     } else {

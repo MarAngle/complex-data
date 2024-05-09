@@ -5,7 +5,7 @@ import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import InterfaceValue from "../lib/InterfaceValue"
 import { ArrayValueDataType } from "../lib/ArrayValue"
-import { GridValue, createGridValue } from "../lib/GridParse"
+import { GridOption, createGridOption } from "../lib/GridParse"
 import { observeType } from "./ObserveList"
 
 export type reactiveFunction = (...args: any[]) => boolean
@@ -17,7 +17,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   name?: string
   parse?: false | functionType<any>
   tip?: TipValueInitOption
-  grid?: GridValue
+  grid?: GridOption
   width?: number | string
   local?: LocalValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
@@ -32,7 +32,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $name: InterfaceValue<string>
   parse?: false | functionType<any>
   $tip?: TipValue
-  $grid?: GridValue
+  $grid?: GridOption
   $width?: number | string
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
@@ -48,7 +48,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     if (initOption.tip !== undefined) {
       this.$tip = new TipValue(initOption.tip)
     }
-    this.$grid = createGridValue(initOption.grid)
+    this.$grid = createGridOption(initOption.grid)
     this.$width = initOption.width
     this.$local = createLocalValue(initOption.local)
     this.$reactives = initOption.reactives
