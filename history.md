@@ -5,8 +5,9 @@
 
 ### Doing
 
-### 4.2.3
+### 4.2.3/4
 - 优化字典模块，DefaultSimpleMod => DefaultMod，简化DefaultSimpleMod
+- class extends null弃用
 
 ### 4.2.2
 - DefaultSimpleMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置

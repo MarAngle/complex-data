@@ -8,7 +8,7 @@ export interface InterfaceValueType<D> {
 export type InterfaceValueInitOption<D> = D | InterfaceValueType<D>
 
 // 警告：undefined作为无效值会影响判断逻辑，因此不能传递undefined
-class InterfaceValue<D> extends null {
+class InterfaceValue<D> {
   static $name = 'InterfaceValue'
   value: InterfaceValueType<D>
   constructor(initOption?: InterfaceValueInitOption<D>) {
