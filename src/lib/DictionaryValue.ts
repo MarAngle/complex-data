@@ -38,7 +38,7 @@ export type functionType<R> = (data: unknown, payload: payloadType) => R
 interface functions {
   assign?: false | functionType<unknown> // 来源=>本地 赋值函数
   parse?: false | functionType<unknown> // 数据=>展示/编辑 解析函数
-  fetch?: false | functionType<unknown> // 编辑=>来源 获取函数
+  collect?: false | functionType<unknown> // 编辑=>来源 获取函数
   check?: false | functionType<boolean> // 数据存在判断函数
 }
 
@@ -177,7 +177,7 @@ class DictionaryValue extends DefaultData implements functions {
   }
   assign?: false | functionType<unknown>
   parse?: false | functionType<unknown>
-  fetch?: false | functionType<unknown>
+  collect?: false | functionType<unknown>
   check?: false | functionType<boolean>
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
@@ -204,7 +204,7 @@ class DictionaryValue extends DefaultData implements functions {
     } else if (initOption.assign) {
       this.$exportMsg('当前编辑为简单模式,不接受assign函数!')
     }
-    this.fetch = initOption.fetch
+    this.collect = initOption.collect
     this.check = initOption.check === undefined ? defaultCheck : initOption.check
     this.$mod = {}
     if (initOption.mod) {
@@ -236,6 +236,9 @@ class DictionaryValue extends DefaultData implements functions {
     this.$interface[target]?.setValue(prop, data, useSetData)
     this._syncData(true, '$setInterfaceValue')
   }
+  $getOriginProp(originFrom: string) {
+    return this.$interface.originProp ? this.$interface.originProp.getValue(originFrom)! : this.$prop
+  }
   /**
    * 判断是否存在来源
    * @param {string} originFrom 来源
@@ -261,8 +264,7 @@ class DictionaryValue extends DefaultData implements functions {
   }
   $formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
-      const originProp = this.$getInterfaceValue('originProp', originFrom)!
-      const targetValue = getProp(originData, originProp)
+      const targetValue = getProp(originData, this.$getOriginProp(originFrom))
       if (!this.assign) {
         setProp(targetData, this.$prop, targetValue, useSetData)
       } else {

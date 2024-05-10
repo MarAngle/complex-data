@@ -12,6 +12,11 @@
 
 ### Doing
 
+### 4.2.7
+- DateRangeEdit添加endPlaceholder属性
+- 编辑数据的$defaultPlaceholder函数优化
+- 优化DictionaryValue属性originProp为可选不赋值
+- 优化DictionaryValue/DefaultSimpleMod，fetch=>collect
 
 ### 4.2.6
 - 合并Date/DateRange相关功能
@@ -36,7 +41,7 @@
 - 修正DefaultEdit在multiple时默认值为[]导致的引用问题
 - 布局通过解析器加值实现，基础布局通过解析器解析基础数据，个体设置通过值来解析，实现页面的整体和个体设置
 - 优化Edit的rule属性整体逻辑
-- 优化DictionaryValue/DefaultSimpleMod，format=>assign,show/edit=>parse，post=>fetch
+- 优化DictionaryValue/DefaultSimpleMod，format=>assign,show/edit=>parse，post=>collect
 - 优化ObserveList的响应式逻辑，仅监控需要的属性，减少性能消耗
 - Observe添加额外逻辑，实现冻结和解冻，隐藏参与逻辑判断，冻结的不进行逻辑判断，冻结的属性的响应式也不会被触发，由其他属性变更后解冻可触发
 - 合并select/cascader

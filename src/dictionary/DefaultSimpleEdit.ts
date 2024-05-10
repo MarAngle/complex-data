@@ -5,7 +5,7 @@ export interface DefaultSimpleEditInitOption extends DefaultModInitOption {
   colon?: boolean
   required?: boolean
   disabled?: boolean
-  fetch?: false | functionType<any> // 编辑=>来源 格式化
+  collect?: false | functionType<any> // 编辑=>来源 格式化
   on?: Record<PropertyKey, (...args: any[]) => any>
 }
 
@@ -15,7 +15,7 @@ class DefaultSimpleEdit extends DefaultMod {
   colon: boolean
   required: boolean
   disabled: boolean
-  fetch?: false | functionType<any>
+  collect?: false | functionType<any>
   $on: Record<PropertyKey, (...args: any[]) => any>
   constructor(initOption: DefaultSimpleEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
@@ -23,7 +23,7 @@ class DefaultSimpleEdit extends DefaultMod {
     this.required = initOption.required || false
     this.disabled = initOption.disabled || false
     // 组件事件监控
-    this.fetch = initOption.fetch
+    this.collect = initOption.collect
     this.$on = initOption.on || {}
   }
 }

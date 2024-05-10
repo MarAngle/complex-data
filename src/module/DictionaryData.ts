@@ -231,14 +231,14 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         if (mod.trim) {
           originValue = trimData(originValue)
         }
-        if (mod.fetch) {
-          originValue = mod.fetch(originValue, {
+        if (mod.collect) {
+          originValue = mod.collect(originValue, {
             targetData: postData,
             originData: formData,
             type: modName
           })
         }
-        dictionaryValue.$setTargetData(dictionaryValue.$getInterfaceValue('originProp', modName)!, originValue, 'fetch', {
+        dictionaryValue.$setTargetData(dictionaryValue.$getOriginProp(modName)!, originValue, 'collect', {
           targetData: postData,
           originData: formData,
           type: modName

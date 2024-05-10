@@ -57,20 +57,20 @@ const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string
   }
 }
 
-const defaultFetch = function(this: SimpleDateEdit<false>, value: any) {
+const defaultCollect = function(this: SimpleDateEdit<false>, value: any) {
   const $constructor = (this.constructor as typeof SimpleDateEdit<false>)
-  if ($constructor.$fetch) {
-    return $constructor.$fetch(value, this.$option.format)
+  if ($constructor.$collect) {
+    return $constructor.$collect(value, this.$option.format)
   } else {
     return value
   }
 }
 
-const defaultRangeFetch = function(this: SimpleDateEdit<true>, valueList: any[]) {
+const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[]) {
   const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
-  if ($constructor.$fetch) {
+  if ($constructor.$collect) {
     if (valueList) {
-      return valueList.map(value => $constructor.$fetch!(value, this.$option.format) as string)
+      return valueList.map(value => $constructor.$collect!(value, this.$option.format) as string)
     } else {
       return undefined
     }
@@ -85,7 +85,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     return `请选择${name}`
   }
   static $parse: undefined | ((value: undefined | string, format: string) => undefined | any)
-  static $fetch: undefined | ((value: undefined | any, format: string) => undefined | string)
+  static $collect: undefined | ((value: undefined | any, format: string) => undefined | string)
   static $parseDate = function(dateValue: dateConfigValue): any { return dateValue.value }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   static $compareDate = function(target: any, other: any): 'before' | 'same' | 'after' {
@@ -168,8 +168,8 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     if (this.parse === undefined) {
       this.parse = $constructor.$range ? defaultRangeParse as functionType<any> : defaultParse as functionType<any>
     }
-    if (this.fetch === undefined) {
-      this.fetch = $constructor.$range ? defaultRangeFetch as functionType<any> : defaultFetch as functionType<any>
+    if (this.collect === undefined) {
+      this.collect = $constructor.$range ? defaultRangeCollect as functionType<any> : defaultCollect as functionType<any>
     }
   }
 }
