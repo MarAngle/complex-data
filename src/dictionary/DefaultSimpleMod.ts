@@ -9,7 +9,7 @@ import { observeType } from "./ObserveList"
 
 export type reactiveFunction = (...args: any[]) => boolean
 
-export interface DefaultModInitOption extends SimpleDataInitOption {
+export interface DefaultSimpleModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型
   $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
   prop?: string
@@ -24,9 +24,9 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   observe?: observeType
 }
 
-class DefaultMod extends SimpleData implements ArrayValueDataType {
-  static $name = 'DefaultMod'
-  static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
+class DefaultSimpleMod extends SimpleData implements ArrayValueDataType {
+  static $name = 'DefaultSimpleMod'
+  static $formatConfig = { name: 'DefaultSimpleMod', level: 40, recommend: true }
   $prop: string
   $name: string
   parse?: false | functionType<any>
@@ -38,7 +38,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $renders?: Record<string, undefined | renderType>
   $observe?: observeType
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(initOption: DefaultModInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: DefaultSimpleModInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption)
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
@@ -56,4 +56,4 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   }
 }
 
-export default DefaultMod
+export default DefaultSimpleMod

@@ -1,11 +1,11 @@
-import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
+import DefaultSimpleMod ,{ DefaultSimpleModInitOption } from "./DefaultSimpleMod"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultInfoInitOption extends DefaultModInitOption {
+export interface DefaultInfoInitOption extends DefaultSimpleModInitOption {
   //
 }
 
-class DefaultInfo extends DefaultMod {
+class DefaultInfo extends DefaultSimpleMod {
   static $name = 'DefaultInfo'
   constructor(initOption: DefaultInfoInitOption | true, parent?: DictionaryValue, modName?: string) {
     if (initOption === true) {

@@ -1,16 +1,16 @@
 import { Watcher, observe } from "complex-utils"
 import ArrayValue from "../lib/ArrayValue"
-import DefaultMod from "./DefaultMod"
+import DefaultSimpleMod from "./DefaultSimpleMod"
 
 export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown, from: 'set' | 'change') => unknown
 
-class ObserveList extends ArrayValue<DefaultMod> {
+class ObserveList extends ArrayValue<DefaultSimpleMod> {
   static $name = 'ObserveList'
   $data!: null | Record<PropertyKey, any>
   $watch!: Map<PropertyKey, Watcher>
   $type: string
   $deep: boolean
-  constructor(list?: DefaultMod[]) {
+  constructor(list?: DefaultSimpleMod[]) {
     super(list)
     // 不可枚举，不可配置
     Object.defineProperty(this, '$data', {

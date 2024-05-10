@@ -1,13 +1,13 @@
-import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
+import DefaultSimpleMod, { DefaultSimpleModInitOption } from "./DefaultSimpleMod"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DefaultListInitOption extends DefaultModInitOption {
+export interface DefaultListInitOption extends DefaultSimpleModInitOption {
   align?: 'center' | 'left' | 'right'
   ellipsis?: boolean
   auto?: boolean
 }
 
-class DefaultList extends DefaultMod {
+class DefaultList extends DefaultSimpleMod {
   static $name = 'DefaultList'
   static $option = {
     ellipsis: true,

@@ -5,7 +5,7 @@
 ### Doing
 
 ### 4.2.2
-- DefaultMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置
+- DefaultSimpleMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置
 - GridParse输出值格式优化
 
 ### 4.2.1
@@ -19,7 +19,7 @@
 - 修正DefaultEdit在multiple时默认值为[]导致的引用问题
 - 布局通过解析器加值实现，基础布局通过解析器解析基础数据，个体设置通过值来解析，实现页面的整体和个体设置
 - 优化Edit的rule属性整体逻辑
-- 优化DictionaryValue/DefaultMod，format=>assign,show/edit=>parse，post=>fetch
+- 优化DictionaryValue/DefaultSimpleMod，format=>assign,show/edit=>parse，post=>fetch
 - 优化ObserveList的响应式逻辑，仅监控需要的属性，减少性能消耗
 - Observe添加额外逻辑，实现冻结和解冻，隐藏参与逻辑判断，冻结的不进行逻辑判断，冻结的属性的响应式也不会被触发，由其他属性变更后解冻可触发
 - 合并select/cascader
@@ -36,7 +36,7 @@
 
 ### 4.1.13/14
 - EditData添加simple设置项
-- DefaultMod基类由Data切换为SimpleData,实现extra
+- DefaultSimpleMod基类由Data切换为SimpleData,实现extra
 - 优化PureButtonValue类型
 - 修正错误icon
 
@@ -101,7 +101,7 @@
 - 升级依赖，适配formatConfig
 
 ### 4.0.12
-- BUG:修正DefaultMod相关类的初始化未正确传递parent的BUG
+- BUG:修正DefaultSimpleMod相关类的初始化未正确传递parent的BUG
 - BUG:修正SelectValue的初始化类型中dict错误的被标记为必填项的BUG
 
 ### 4.0.10/11

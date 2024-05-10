@@ -1,7 +1,7 @@
-import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
+import DefaultSimpleMod, { DefaultSimpleModInitOption } from "./DefaultSimpleMod"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
-export interface DefaultSimpleEditInitOption extends DefaultModInitOption {
+export interface DefaultSimpleEditInitOption extends DefaultSimpleModInitOption {
   colon?: boolean
   required?: boolean
   disabled?: boolean
@@ -9,7 +9,7 @@ export interface DefaultSimpleEditInitOption extends DefaultModInitOption {
   on?: Record<PropertyKey, (...args: any[]) => any>
 }
 
-class DefaultSimpleEdit extends DefaultMod {
+class DefaultSimpleEdit extends DefaultSimpleMod {
   static $name = 'DefaultSimpleEdit'
   static $formatConfig = { name: 'DefaultSimpleEdit', level: 50, recommend: true }
   colon: boolean

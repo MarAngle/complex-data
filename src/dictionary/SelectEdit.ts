@@ -11,6 +11,7 @@ export interface SelectEditOption<C extends( undefined | PropertyKey) = undefine
   hideArrow: boolean
   hideClear: boolean
   autoWidth: boolean
+  open?: boolean
 }
 
 export interface SelectEditInitOption<C extends( undefined | PropertyKey) = undefined> extends DefaultLoadEditInitOption {
@@ -47,6 +48,7 @@ class SelectEdit<C extends( undefined | PropertyKey) = undefined> extends Defaul
       hideArrow: option.hideArrow || $defaultOption.hideArrow,
       hideClear: option.hideClear || $defaultOption.hideClear,
       autoWidth: option.autoWidth || $defaultOption.autoWidth, // 宽度自适应
+      open: option.open,
     }
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
