@@ -1,8 +1,12 @@
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
 - 优化ObserveList通过defineReactive实现而不是之前的observe实现[实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用]
+- 考虑originProp跟随edit，尽可能的把字典数据与编辑数据解绑，包括编辑函数，考虑加载时把对应函数直接加载到编辑数据中，简化字典数据
 
 ### Doing
+
+### 4.2.3
+- 优化字典模块，DefaultSimpleMod => DefaultMod，简化DefaultSimpleMod
 
 ### 4.2.2
 - DefaultSimpleMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置
