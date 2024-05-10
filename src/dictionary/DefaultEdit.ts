@@ -84,8 +84,8 @@ class DefaultEdit extends DefaultSimpleEdit {
     this.multiple = !!initOption.multiple
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (this.simple.placeholder !== true) {
-      if (initOption.placeholder === undefined && parent) {
-        this.placeholder = $constructor.$defaultPlaceholder(parent.$getInterfaceValue('name', modName)!)
+      if (initOption.placeholder === undefined) {
+        this.placeholder = $constructor.$defaultPlaceholder(this.$name!)
       } else if (initOption.placeholder) {
         this.placeholder = initOption.placeholder
       }
@@ -125,24 +125,19 @@ class DefaultEdit extends DefaultSimpleEdit {
       }
     }
   }
-  getRuleList(prop: string): undefined | Record<PropertyKey, any>[] {
+  getRuleList(): undefined | Record<PropertyKey, any>[] {
     if (this.$rules) {
-      const ruleList = this.$rules
-      if (ruleList) {
-        const $constructor = (this.constructor as typeof DefaultEdit)
-        return ruleList.map(rule => {
-          const ruleValue = { ...rule }
-          if (ruleValue.required === undefined) {
-            ruleValue.required = this.required
-          }
-          if (ruleValue.message === undefined && this.placeholder) {
-            ruleValue.message = this.placeholder
-          }
-          return $constructor.$parseRule(ruleValue)
-        })
-      } else {
-        return undefined
-      }
+      const $constructor = (this.constructor as typeof DefaultEdit)
+      return this.$rules.map(rule => {
+        const ruleValue = { ...rule }
+        if (ruleValue.required === undefined) {
+          ruleValue.required = this.required
+        }
+        if (ruleValue.message === undefined && this.placeholder) {
+          ruleValue.message = this.placeholder
+        }
+        return $constructor.$parseRule(ruleValue)
+      })
     } else {
       return undefined
     }

@@ -171,7 +171,7 @@ class DictionaryValue extends DefaultData implements functions {
   } // 简单快速处理判断值
   $interface: {
     name: InterfaceValue<string>
-    originProp: InterfaceValue<string>
+    originProp?: InterfaceValue<string>
     showProp?: InterfaceValue<string>
     type: InterfaceValue<string>
   }
@@ -188,9 +188,13 @@ class DictionaryValue extends DefaultData implements functions {
     this.$simple = initOption.simple || {}
     this.$interface = {
       name: new InterfaceValue(initOption.name),
-      originProp: new InterfaceValue(initOption.originProp || this.$prop),
-      showProp: new InterfaceValue(initOption.showProp),
       type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string')
+    }
+    if (initOption.originProp) {
+      this.$interface.originProp = new InterfaceValue(initOption.originProp)
+    }
+    if (initOption.showProp) {
+      this.$interface.showProp = new InterfaceValue(initOption.showProp)
     }
     // 加载基本自定义函数
     this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse

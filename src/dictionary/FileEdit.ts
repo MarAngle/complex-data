@@ -11,6 +11,9 @@ export interface FileEditInitOption extends DefaultEditInitOption {
 
 class FileEdit extends DefaultEdit{
   static $name = 'FileEdit'
+  static $defaultPlaceholder = function (name: string) {
+    return `请上传${name}`
+  }
   type: 'file'
   $option: FileEditOption
   constructor(initOption: FileEditInitOption, parent?: DictionaryValue, modName?: string) {

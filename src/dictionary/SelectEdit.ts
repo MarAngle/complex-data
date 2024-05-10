@@ -22,6 +22,9 @@ export interface SelectEditInitOption<C extends( undefined | PropertyKey) = unde
 
 class SelectEdit<C extends( undefined | PropertyKey) = undefined> extends DefaultLoadEdit{
   static $name = 'SelectEdit'
+  static $defaultPlaceholder = function (name: string) {
+    return `请选择${name}`
+  }
   static $defaultOption = {
     optionValue: 'value',
     optionLabel: 'label',

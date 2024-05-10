@@ -1,9 +1,17 @@
+
+### Abandon
+- 优化ObserveList通过defineReactive实现而不是之前的observe实现
+- - 实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用
+- 考虑originProp跟随edit，尽可能的把字典数据与编辑数据解绑，包括编辑函数，考虑加载时把对应函数直接加载到编辑数据中，简化字典数据
+- - 理论上originProp是全局一致，跟随edit需要额外定义，实现逻辑更改为originProp与prop相同则不赋值
+
 ### ToDo
 - DictionaryData中添加菜单转DictionaryValue的函数
-- 优化ObserveList通过defineReactive实现而不是之前的observe实现[实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用]
-- 考虑originProp跟随edit，尽可能的把字典数据与编辑数据解绑，包括编辑函数，考虑加载时把对应函数直接加载到编辑数据中，简化字典数据
+- 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
+- - 如禁用启用，选择后自动打开，前置限制等等
 
 ### Doing
+
 
 ### 4.2.6
 - 合并Date/DateRange相关功能

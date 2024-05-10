@@ -81,6 +81,9 @@ const defaultRangeFetch = function(this: SimpleDateEdit<true>, valueList: any[])
 class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
   static $name = 'SimpleDateEdit'
   static $range = false
+  static $defaultPlaceholder = function (name: string) {
+    return `请选择${name}`
+  }
   static $parse: undefined | ((value: undefined | string, format: string) => undefined | any)
   static $fetch: undefined | ((value: undefined | any, format: string) => undefined | string)
   static $parseDate = function(dateValue: dateConfigValue): any { return dateValue.value }

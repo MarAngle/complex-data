@@ -3,15 +3,25 @@ import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DateRangeEditInitOption extends SimpleDateEditInitOption {
   type: 'dateRange'
+  endPlaceholder?: string
 }
 
-class DateRangeEdit extends SimpleDateEdit{
+class DateRangeEdit extends SimpleDateEdit<true>{
   static $name = 'DateRangeEdit'
   static $range = true
+  static $defaultPlaceholder = function (name: string) {
+    return `开始日期`
+  }
+  static $defaultEndPlaceholder = function (name: string) {
+    return `结束日期`
+  }
   type: 'dateRange'
+  endPlaceholder: string
   constructor(initOption: DateRangeEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
+    const $constructor = (this.constructor as typeof DateRangeEdit)
     this.type = initOption.type
+    this.endPlaceholder = initOption.endPlaceholder ? initOption.endPlaceholder : $constructor.$defaultEndPlaceholder(this.$name)
   }
 }
 
