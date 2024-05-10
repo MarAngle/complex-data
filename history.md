@@ -5,6 +5,9 @@
 
 ### Doing
 
+### 4.2.6
+- 合并Date/DateRange相关功能
+
 ### 4.2.3/4/5
 - 优化字典模块，DefaultSimpleMod => DefaultMod，简化DefaultSimpleMod
 - class extends null弃用

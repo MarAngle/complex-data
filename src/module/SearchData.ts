@@ -184,7 +184,7 @@ class SearchData extends DictionaryData {
     })
     search.form.clearValidate()
     if (this.$observe) {
-      search.observe.setForm(search.form.getData(), this.$prop)
+      search.observe.startObserve(search.form.getData(), this.$prop)
     }
     if (option.copy !== false) {
       this.syncFormData()
