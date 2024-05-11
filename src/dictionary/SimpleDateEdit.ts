@@ -20,6 +20,18 @@ export interface BaseSimpleDateEditOption {
   disabledDate?: (value: any) => boolean
 }
 
+export interface PartialBaseSimpleDateEditOption {
+  format?: string
+  showFormat?: string
+  hideClear?: boolean
+  time?: {
+    format?: string
+    showFormat?: string
+    defaultValue?: string
+  }
+  disabledDate?: dateConfig | ((value: any) => boolean)
+}
+
 export interface RangeSimpleDateEditOption {
   separator?: string
   time?: {
@@ -27,9 +39,9 @@ export interface RangeSimpleDateEditOption {
   }
 }
 
-export type SimpleDateEditOption<R extends Boolean = false> = BaseSimpleDateEditOption & (R extends true ? RangeSimpleDateEditOption : {});
+export type SimpleDateEditOption<R extends Boolean = false> = BaseSimpleDateEditOption & (R extends true ? RangeSimpleDateEditOption : {})
 
-export type PartialSimpleDateEditOption<R extends Boolean = false> = Partial<SimpleDateEditOption<R>>
+export type PartialSimpleDateEditOption<R extends Boolean = false> = PartialBaseSimpleDateEditOption & (R extends true ? RangeSimpleDateEditOption : {})
 
 export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption {
   option?: PartialSimpleDateEditOption<R>

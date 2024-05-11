@@ -12,8 +12,9 @@
 
 ### Doing
 
-### 4.2.8
+### 4.2.8/9
 - 删除MenuValue/ButtonValue，改为类型
+- 修正SimpleDateEdit的默认值问题
 
 ### 4.2.7
 - DateRangeEdit添加endPlaceholder属性
