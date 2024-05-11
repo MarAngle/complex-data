@@ -12,6 +12,9 @@
 
 ### Doing
 
+### 4.2.8
+- 删除MenuValue/ButtonValue，改为类型
+
 ### 4.2.7
 - DateRangeEdit添加endPlaceholder属性
 - 编辑数据的$defaultPlaceholder函数优化
