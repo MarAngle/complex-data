@@ -12,6 +12,9 @@
 
 ### Doing
 
+### 4.2.10
+- 删除DefaultInfo/DefaultSimpleMod => DefaultMod/DefaultMod=>DefaultInfo，优化编辑数据链，edit作为一个可编辑的info子类实现
+
 ### 4.2.8/9
 - 删除MenuValue/ButtonValue，改为类型
 - 修正SimpleDateEdit的默认值问题
@@ -62,7 +65,7 @@
 
 ### 4.1.13/14
 - EditData添加simple设置项
-- DefaultSimpleMod基类由Data切换为SimpleData,实现extra
+- DefaultMod基类由Data切换为SimpleData,实现extra
 - 优化PureButtonValue类型
 - 修正错误icon
 
@@ -127,7 +130,7 @@
 - 升级依赖，适配formatConfig
 
 ### 4.0.12
-- BUG:修正DefaultSimpleMod相关类的初始化未正确传递parent的BUG
+- BUG:修正DefaultMod相关类的初始化未正确传递parent的BUG
 - BUG:修正SelectValue的初始化类型中dict错误的被标记为必填项的BUG
 
 ### 4.0.10/11

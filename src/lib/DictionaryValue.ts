@@ -3,7 +3,7 @@ import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData from '../module/DictionaryData'
 import InterfaceValue, { InterfaceValueInitOption } from './InterfaceValue'
-import DefaultSimpleMod, { DefaultSimpleModInitOption } from '../dictionary/DefaultSimpleMod'
+import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
 import DefaultInfo, { DefaultInfoInitOption } from '../dictionary/DefaultInfo'
 import DefaultEdit from '../dictionary/DefaultEdit'
@@ -70,9 +70,9 @@ export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditI
 
 export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
 
-export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultSimpleModInitOption
+export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
-export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultSimpleMod
+export type DictionaryMod = DefaultList | DefaultInfo | DictionaryEditMod | DefaultMod
 
 export type DictionaryModDataInitOption = {
   list?: false | DefaultListInitOption
@@ -81,7 +81,7 @@ export type DictionaryModDataInitOption = {
   build?: false | DictionaryEditModInitOption
   change?: false | DictionaryEditModInitOption
   search?: false | DictionaryEditModInitOption
-  [prop: string]: undefined | false | DictionaryModInitOption | DefaultSimpleMod
+  [prop: string]: undefined | false | DictionaryModInitOption | DefaultMod
 }
 
 export type DictionaryModDataType = {
@@ -139,7 +139,7 @@ class DictionaryValue extends DefaultData implements functions {
     } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
       return new CustomEdit(editModInitOption, parent, modName)
     } else {
-      exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultSimpleMod实例！`)
+      exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
   }
   static $initEditMod = function(editModInitOption: DictionaryEditMod | DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
@@ -149,8 +149,8 @@ class DictionaryValue extends DefaultData implements functions {
       return DictionaryValue._initEditMod(editModInitOption, parent, modName)
     }
   }
-  static $initMod = function(modInitOption: DictionaryModInitOption | DefaultSimpleMod, parent?: DictionaryValue, modName?: string) {
-    if (modInitOption instanceof DefaultSimpleMod) {
+  static $initMod = function(modInitOption: DictionaryModInitOption | DefaultMod, parent?: DictionaryValue, modName?: string) {
+    if (modInitOption instanceof DefaultMod) {
       return modInitOption
     }
     const $format = modInitOption.$format || modName
@@ -161,7 +161,7 @@ class DictionaryValue extends DefaultData implements functions {
     } else if ($format === 'edit' || $format === 'build' || $format === 'change' || $format === 'search') {
       return DictionaryValue._initEditMod(modInitOption as DictionaryEditModInitOption, parent, modName)
     } else {
-      exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultSimpleMod实例！`)
+      exportMsg(`mod初始化错误，不存在${$format}的格式化类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
   }
   $originFrom: string[]
