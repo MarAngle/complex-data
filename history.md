@@ -12,6 +12,10 @@
 
 ### Doing
 
+### 4.2.11
+- SearchData添加Info详情按钮
+- ComplexData添加refreshData详情接口
+
 ### 4.2.10
 - 删除DefaultInfo/DefaultSimpleMod => DefaultMod/DefaultMod=>DefaultInfo，优化编辑数据链，edit作为一个可编辑的info子类实现
 

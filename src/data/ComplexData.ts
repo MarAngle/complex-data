@@ -10,6 +10,7 @@ import { DefaultBufferType } from "./DefaultData"
 export type buildDataType = (targetData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
 export type changeDataType = (targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
 export type deleteDataType = (targetData: Record<PropertyKey, unknown>, payload?: unknown) => Promise<unknown>
+export type refreshDataType = (targetData: Record<PropertyKey, unknown>) => Promise<unknown>
 export type multipleDeleteDataType = (choiceList: Record<PropertyKey, unknown>[], payload?: unknown) => Promise<unknown>
 export type exportDataType = loadFunctionType
 export type importDataType = (file: File, payload?: unknown) => Promise<unknown>
@@ -20,6 +21,7 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
   buildData?: buildDataType
   changeData?: changeDataType
   deleteData?: deleteDataType
+  refreshData?: refreshDataType
   multipleDeleteData?: multipleDeleteDataType
   exportData?: exportDataType
   importData?: importDataType
@@ -32,6 +34,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   $buildData?: buildDataType
   $changeData?: changeDataType
   $deleteData?: deleteDataType
+  $refreshData?: refreshDataType
   $multipleDeleteData?: multipleDeleteDataType
   $exportData?: exportDataType
   $importData?: importDataType
@@ -42,6 +45,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     this.$buildData = initOption.buildData
     this.$changeData = initOption.changeData
     this.$deleteData = initOption.deleteData
+    this.$refreshData = initOption.refreshData
     this.$multipleDeleteData = initOption.multipleDeleteData
     this.$exportData = initOption.exportData
     this.$importData = initOption.importData

@@ -71,6 +71,22 @@ class SearchData extends DictionaryData {
           }
         }
       }),
+      info: new ButtonEdit({
+        type: 'button',
+        prop: '$info',
+        option: {
+          type: 'primay',
+          name: '详情',
+          icon: 'info',
+          disabled(payload) {
+            if (payload.choice !== 1) {
+              return true
+            } else {
+              return false
+            }
+          }
+        }
+      }),
       import: new ButtonEdit({
         type: 'button',
         prop: '$import',
