@@ -1,6 +1,6 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { fileOption } from "../type"
+import { fileOption } from "../../type"
 
 export interface FileEditOption extends fileOption {}
 

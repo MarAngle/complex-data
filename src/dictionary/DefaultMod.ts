@@ -1,5 +1,5 @@
 import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
-import { renderType } from "../type"
+import { renderType } from "../../type"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"

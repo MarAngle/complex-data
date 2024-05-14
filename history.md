@@ -12,6 +12,11 @@
 
 ### Doing
 
+### 4.2.12
+- 优化type位置
+- 修正DictionaryData类型BUG
+- DictionaryData.createPostData适配ObserveList的冻结功能
+
 ### 4.2.11
 - SearchData添加Info详情按钮
 - ComplexData添加refreshData详情接口

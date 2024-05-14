@@ -127,7 +127,7 @@ class SearchData extends DictionaryData {
   $prop: string
   $search: {
     dictionary: DictionaryValue[]
-    observe: ObserveList
+    list: ObserveList
     form: FormValue
     data: Record<PropertyKey, unknown>
   }
@@ -149,7 +149,7 @@ class SearchData extends DictionaryData {
     const form = SearchData.$form
     this.$search = {
       dictionary: dictionaryList,
-      observe: observeList,
+      list: observeList,
       form: new form(),
       data: {}
     }
@@ -200,7 +200,7 @@ class SearchData extends DictionaryData {
     })
     search.form.clearValidate()
     if (this.$observe) {
-      search.observe.startObserve(search.form.getData(), this.$prop)
+      search.list.startObserve(search.form.getData(), this.$prop)
     }
     if (option.copy !== false) {
       this.syncFormData()

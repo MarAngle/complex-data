@@ -1,6 +1,6 @@
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue, { payloadType } from "../lib/DictionaryValue"
-import { ButtonValue } from "../type"
+import { ButtonValue } from "../../type"
 
 export type ButtonEditClickType = (payload: payloadType) => void | Promise<unknown>
 

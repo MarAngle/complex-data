@@ -5,6 +5,7 @@ import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/D
 import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import DefaultEdit from "../dictionary/DefaultEdit"
+import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
 
 type propDataValueType = {
@@ -183,7 +184,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     }
     const observeList = new ObserveList()
     for (let n = 0; n < dictionaryValueList.length; n++) {
-      observeList.push(this.$getPageItem(modName, dictionaryValueList[n]))
+      observeList.push(this.$getPageItem(modName, dictionaryValueList[n]) as DefaultInfo)
     }
     return observeList
   }
@@ -210,7 +211,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       })
     })
   }
-  createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string) {
+  createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
     const postData: Record<string, unknown> = {}
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
@@ -218,6 +219,9 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         if (!mod.$editable) {
           // 不可编辑的模块不参与最终的生成数据逻辑
           return
+        }
+        if (observeList && observeList.isFrozen(mod.$prop)) {
+          // 冻结的模块不参与最终的生成数据逻辑
         }
         if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', formData[dictionaryValue.$prop], {
           targetData: postData,
