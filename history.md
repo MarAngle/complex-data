@@ -12,6 +12,9 @@
 
 ### Doing
 
+### 4.2.13
+- ComplexData添加choice相关函数
+
 ### 4.2.12
 - 优化type位置
 - 修正DictionaryData类型BUG

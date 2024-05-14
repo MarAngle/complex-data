@@ -6,6 +6,7 @@ import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
 import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 import { DefaultBufferType } from "./DefaultData"
+import ChoiceData from "../module/ChoiceData"
 
 export type buildDataType = (targetData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
 export type changeDataType = (targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
@@ -111,10 +112,37 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     return this._triggerPromise('update', force.promise)
   }
   /* --- update end --- */
+  /* --- choice start --- */
+  getChoiceData(...args: Parameters<ChoiceData['getData']>) {
+    if (this.$module.choice) {
+      return this.$module.choice.getData(...args)
+    }
+  }
+  getChoiceId(...args: Parameters<ChoiceData['getId']>) {
+    if (this.$module.choice) {
+      return this.$module.choice.getId(...args)
+    }
+  }
+  getChoiceList(...args: Parameters<ChoiceData['getList']>) {
+    if (this.$module.choice) {
+      return this.$module.choice.getList(...args)
+    }
+  }
+  setChoice(...args: Parameters<ChoiceData['setData']>) {
+    if (this.$module.choice) {
+      return this.$module.choice.setData(...args)
+    }
+  }
+  resetChoice(...args: Parameters<ChoiceData['reset']>) {
+    if (this.$module.choice) {
+      return this.$module.choice.reset(...args)
+    }
+  }
+  /* --- choice end --- */
   /* --- pagination start --- */
   setPageCount(...args: Parameters<PaginationData['setCount']>) {
     if (this.$module.pagination) {
-      this.$module.pagination.setCount(...args)
+      return this.$module.pagination.setCount(...args)
     }
   }
   getPageCount(...args: Parameters<PaginationData['getCount']>) {
