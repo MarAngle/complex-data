@@ -12,6 +12,10 @@
 
 ### Doing
 
+### 4.2.15
+- BaseData的loadDepend整体逻辑优化，避免主数据先于依赖数据加载完成
+- RelationData类型修正
+
 ### 4.2.13/14
 - ComplexData添加choice相关函数
 - 依赖升级

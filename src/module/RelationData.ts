@@ -57,15 +57,15 @@ class RelationData {
       // 设置相同id,使用replace模式，需要注意的是当函数变化后开始的函数可能还未被触发
       self.onLife('actived', {
         id: depend._getId('BindLife' + upperCaseFirstChar(from)),
-        once: true,
         replace: true,
-        data: () => {
+        data: (lifeItem) => {
           bind(depend, self, success, life, unbind)
+          lifeItem.destroy()
         }
       })
     }
   }
-  static $bindDependByLife(self: BaseData, depend: BaseData, bind: dependBind, life: bindLife, lifeDict: Record<string, PropertyKey> = {}, {
+  static $bindDependByLife(self: BaseData, depend: BaseData, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
     active, // 是否只在激活状态下触发
   }: dependBindOption = {}) {
     if (active === undefined && self.$active.auto) {
@@ -86,12 +86,12 @@ class RelationData {
       data: () => {
         this.$bindDependByActive(self, depend, bind, successLifeName, true, life, unbind, active)
       }
-    }) as PropertyKey
+    })!
     lifeDict[failLifeName] = depend.onLife(failLifeName, {
       data: () => {
         this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
       }
-    }) as PropertyKey
+    })!
     if (currentStatus === 'success') {
       this.$bindDependByActive(self, depend, bind, successLifeName, true, life, unbind, active)
     } else if (currentStatus === 'fail') {
@@ -99,7 +99,7 @@ class RelationData {
     }
   }
   static $bindDepend(self: BaseData, depend: BaseData, bind: dependBind, option: dependBindOption = {}) {
-    const lifeDict: Record<string, PropertyKey> = {}
+    const lifeDict: Record<string, string> = {}
     this.$bindDependByLife(self, depend, bind, 'load', lifeDict, option)
     this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
   }

@@ -204,7 +204,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'loadData')
     }
-    const promise = this.triggerMethodWithOperate('$getData', args, 'load', false, (target, res) => {
+    return this.triggerMethodWithOperate('$getData', args, 'load', false, (target, res) => {
       if (target === 'start') {
         this.triggerLife('beforeLoad', this, ...args)
       } else if (target === 'success') {
@@ -219,10 +219,12 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
         })
       }
     })
+  }
+  $triggerLoadData(...args: any[]) {
     if (this.$relation) {
       return this._setPromise('load', new Promise((resolve, reject) => {
         this.$relation!.loadDepend().finally(() => {
-          promise.then(res => {
+          this._triggerLoadData(...args).then(res => {
             resolve(res)
           }).catch(err => {
             reject(err)
@@ -230,22 +232,22 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
         })
       }))
     } else {
-      return this._setPromise('load', promise)
+      return this._setPromise('load', this._triggerLoadData(...args))
     }
   }
   loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
     const loadStatus = this.getStatus('load')
     if (['un', 'fail'].indexOf(loadStatus) > -1) {
-      this._triggerLoadData(...args)
+      this.$triggerLoadData(...args)
     } else if (loadStatus === 'ing') {
       // 直接then
       if (force.data && force.ing) {
-        this._triggerLoadData(...args)
+        this.$triggerLoadData(...args)
       }
     } else if (loadStatus === 'success') {
       if (force.data) {
-        this._triggerLoadData(...args)
+        this.$triggerLoadData(...args)
       }
     }
     const emptyMsg = this._createMsg(`promise模块无load数据(load状态:${loadStatus})`)
