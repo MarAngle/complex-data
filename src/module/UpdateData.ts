@@ -68,11 +68,11 @@ class UpdateData extends DefaultData {
   }
   /**
    * 检查下一步是否继续，next判断
-   * @param {number} index 当前次数
+   * @param {number} _index 当前次数
    * @returns {boolean}
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected check(index: number): boolean | Promise<unknown> {
+  protected check(_index: number): boolean | Promise<unknown> {
     return true
   }
   /**

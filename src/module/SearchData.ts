@@ -42,7 +42,7 @@ class SearchData extends DictionaryData {
         prop: '$reset',
         option: {
           type: 'primary',
-          name: '查询',
+          name: '重置',
           icon: 'refresh'
         }
       }),

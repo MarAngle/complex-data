@@ -49,7 +49,7 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
     return this._buffer.parent
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _syncData(self: boolean, act: string, ...args: unknown[]) {
+  _syncData(_self: boolean, _act: string, ..._args: unknown[]) {
     // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
   }
   _getId(prop = ''): string {
@@ -59,11 +59,11 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
     return `${super._getName()}-${this._getId()}`
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _install(target: BaseData, from?: string) {
+  _install(_target: BaseData, _from?: string) {
     //
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _uninstall(target: BaseData, from?: string) {
+  _uninstall(_target: BaseData, _from?: string) {
     this.$setParent()
   }
 }

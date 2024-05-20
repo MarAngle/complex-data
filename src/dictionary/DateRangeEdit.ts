@@ -9,10 +9,10 @@ export interface DateRangeEditInitOption extends SimpleDateEditInitOption {
 class DateRangeEdit extends SimpleDateEdit<true>{
   static $name = 'DateRangeEdit'
   static $range = true
-  static $defaultPlaceholder = function (name: string) {
+  static $defaultPlaceholder = function (_name: string) {
     return `开始日期`
   }
-  static $defaultEndPlaceholder = function (name: string) {
+  static $defaultEndPlaceholder = function (_name: string) {
     return `结束日期`
   }
   type: 'dateRange'

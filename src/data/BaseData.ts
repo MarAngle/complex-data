@@ -196,7 +196,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   triggerMethodWithOperate(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType, operateStrict?: boolean, OperateTriggerCallBack?: StatusTriggerCallBackType) {
     return this.triggerMethod('$triggerMethodWithStatus', [method, args, statusProp, strict, triggerCallBack] as Parameters<BaseData['$triggerMethodWithStatus']>, operateStrict, OperateTriggerCallBack)
   }
-  $getData(...args: any[]): Promise<any> {
+  $getData(..._args: any[]): Promise<any> {
     return Promise.reject({ status: 'fail', code: '$getData absent', msg: '$getData函数未定义' })
   }
   protected _triggerLoadData(...args: any[]) {
