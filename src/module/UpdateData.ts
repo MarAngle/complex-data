@@ -51,11 +51,11 @@ class UpdateData extends DefaultData {
   /**
    * 获取间隔
    * @param {number} offset 间隔
-   * @param {number} index 当前次数
+   * @param {number} _index 当前次数
    * @returns {number}
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  protected getOffset(offset: number, index: number): number {
+  protected getOffset(offset: number, _index: number): number {
     return offset
   }
   /**
