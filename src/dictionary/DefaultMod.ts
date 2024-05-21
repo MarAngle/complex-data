@@ -34,6 +34,10 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(initOption: DefaultModInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption)
+    const $constructor = (this.constructor as typeof DefaultMod)
+    if ($constructor.$formatInitOption) {
+      initOption = $constructor.$formatInitOption(initOption, parent, modName)
+    }
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.$name = initOption.name !== undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!

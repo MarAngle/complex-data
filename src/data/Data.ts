@@ -12,9 +12,12 @@ export interface BufferType {
   parent?: Data<any>
 }
 
+export type formatInitOptionType<D> = (initOption: D, ...args: any[]) => D
+
 class Data<Buffer extends BufferType = BufferType> extends _Data {
   static $name = 'Data'
   static $formatConfig = { name: 'Data', level: 20, recommend: false }
+  static $formatInitOption = undefined as undefined | formatInitOptionType<any>
   readonly _id!: string
   _buffer!: Buffer
   constructor() {

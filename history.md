@@ -4,13 +4,20 @@
 - - 实际上此实现可能会导致form在重复生成响应式时导致过多的set重写问题，暂时弃用
 - 考虑originProp跟随edit，尽可能的把字典数据与编辑数据解绑，包括编辑函数，考虑加载时把对应函数直接加载到编辑数据中，简化字典数据
 - - 理论上originProp是全局一致，跟随edit需要额外定义，实现逻辑更改为originProp与prop相同则不赋值
+- DictionaryData中添加菜单转DictionaryValue的函数
+- - 通过尽可能减少DictionaryData与DictionaryValue的关联，后期主要通过DictionaryValue实现功能逻辑，转换功能放弃
 
 ### ToDo
-- DictionaryData中添加菜单转DictionaryValue的函数
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
-- - 如禁用启用，选择后自动打开，前置限制等等
+- - 如禁用启用，选择后自动打开，前置限制等等：等待解释
 
 ### Doing
+
+### 4.2.18
+- SearchData的getData默认深拷贝，避免在获取数据后改变数据导致问题
+- 修正SelectData未正确触发创建生命周期的BUG
+- 优化SelectData的storage的加载
+- Data添加静态函数$formatInitOption格式化加载参数
 
 ### 4.2.15/16/17
 - BaseData的loadDepend整体逻辑优化，避免主数据先于依赖数据加载完成

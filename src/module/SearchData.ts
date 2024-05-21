@@ -1,4 +1,4 @@
-import { getType } from "complex-utils"
+import { deepCloneData, getType } from "complex-utils"
 import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
@@ -207,8 +207,12 @@ class SearchData extends DictionaryData {
     }
     this._syncData(true, '$resetFormData', from)
   }
-  getData() {
-    return this.$search.data
+  getData(unClone?: boolean) {
+    if (unClone) {
+      return this.$search.data
+    } else {
+      return deepCloneData(this.$search.data)
+    }
   }
   setForm(data: Record<PropertyKey, unknown>, { sync, force }: { sync?: boolean, force?: boolean } = {}) {
     const form = this.$search.form.getData()

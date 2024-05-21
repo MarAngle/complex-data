@@ -34,6 +34,8 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
     }
+    this.$reload = initOption.reload === undefined ? !!this.$pagination : initOption.reload
+    this.$getData = initOption.getData
     if (initOption.storage) {
       this.$storage = new StorageValue(initOption.storage, this._getConstructorName())
       this.$storage.push('list', {
@@ -44,12 +46,6 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
         },
         save: () => {
           return this.list
-        }
-      })
-      // 创建完成时触发本地化加载
-      this.onLife('created', {
-        data: () => {
-          this.$storage!.init(this)
         }
       })
       // 数据加载完成时，触发保存到本地
@@ -72,9 +68,10 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
           this.loadData({ ing: false })
         }
       })
+      // 创建完成时触发本地化加载
+      this.$storage.init(this)
     }
-    this.$reload = initOption.reload === undefined ? !!this.$pagination : initOption.reload
-    this.$getData = initOption.getData
+    this.triggerLife('created', this, initOption)
   }
   /* --- status start --- */
   $getLoad() {

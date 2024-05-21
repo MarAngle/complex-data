@@ -182,6 +182,10 @@ class DictionaryValue extends DefaultData implements functions {
   $mod: DictionaryModDataType
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
+    const $constructor = (this.constructor as typeof DefaultMod)
+    if ($constructor.$formatInitOption) {
+      initOption = $constructor.$formatInitOption(initOption, parent)
+    }
     this._triggerCreateLife('DictionaryValue', false, initOption)
     this.$setParent(parent)
     this.$originFrom = initOption.originFrom === undefined ? ['list'] : typeof initOption.originFrom === 'string' ? [initOption.originFrom] : initOption.originFrom
