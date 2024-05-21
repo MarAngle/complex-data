@@ -12,7 +12,8 @@ export interface DefaultSelectValueType<V = any> extends SelectValueType {
   label: string
   value: V
   disabled?: boolean
-  $filter?: filterType[]
+  color?: string
+  filter?: filterType[]
 }
 
 export type CascadeValueType<C extends PropertyKey = 'children'> = SelectValueType & {
@@ -26,16 +27,8 @@ export type DefaultCascadeValueType<C extends PropertyKey = 'children', V = any>
 export interface SelectValueInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> {
   cascade: C
   list?: D[]
-  dict?: {
-    value?: string
-    label?: string
-    disabled?: string
-    filter?: string
-  }
   hidden?: string
-  option?: {
-    equal?: boolean
-  }
+  equal?: boolean
   miss?: D
 }
 
@@ -73,38 +66,24 @@ function getFilter<D extends SelectValueType>(filter: undefined | checkItem<D> |
 class SelectValue<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends Data {
   static $name = 'SelectValue'
   static $formatConfig = { name: 'SelectValue', level: 50, recommend: true }
-  static dictValue = 'value'
-  static dictLabel = 'label'
-  static dictDisabled = 'disabled'
-  static dictFilter = '$filter'
   cascade: C
   list: D[]
-  $dict: {
-    value: string
-    label: string
-    disabled: string
-    filter: string
-  }
   hidden?: string
-  $option: {
-    equal?: boolean
-  }
+  equal?: boolean
   miss?: D
   constructor(initOption: SelectValueInitOption<C, D>) {
     super()
     this.cascade = initOption.cascade
     this.list = initOption.list || []
-    const dict = initOption.dict || {}
-    const $constructor = (this.constructor as typeof SelectValue)
-    this.$dict = {
-      value: dict.value || $constructor.dictValue,
-      label: dict.label || $constructor.dictLabel,
-      disabled: dict.disabled || $constructor.dictDisabled,
-      filter: dict.filter || $constructor.dictFilter
+    if (this.equal) {
+      this.equal = initOption.equal
     }
-    this.$option = initOption.option || {}
-    this.hidden = initOption.hidden
-    this.miss = initOption.miss
+    if (this.hidden) {
+      this.hidden = initOption.hidden
+    }
+    if (this.miss) {
+      this.miss = initOption.miss
+    }
   }
   protected _getItem (list: D[], value: any, prop: keyof D, cascade?: boolean): undefined | D {
     for (let n = 0; n < list.length; n++) {
@@ -157,7 +136,7 @@ class SelectValue<C extends PropertyKey | undefined = undefined, D extends (C ex
     if (!filter && (!this.hidden || hidden)) {
       return [...this.list]
     } else {
-      const mainFilter = getFilter(filter, this.$dict.filter, hidden, this.hidden)!
+      const mainFilter = getFilter(filter, 'filter', hidden, this.hidden)!
       const list: D[] = []
       this.list.forEach(item => {
         if (mainFilter(item)) {
@@ -170,33 +149,33 @@ class SelectValue<C extends PropertyKey | undefined = undefined, D extends (C ex
   // 获取匹配数据，cascade为真则说明检索子类
   getItem(value: any, prop?: keyof D, cascade?: boolean) {
     if (!prop) {
-      prop = this.$dict.value
+      prop = 'value'
     }
     return this._getItem(this.list, value, prop, cascade) || this.miss
   }
   // 获取匹配数据且检索子类
   getCascadeItem(value: any, prop?: keyof D) {
     if (!prop) {
-      prop = this.$dict.value
+      prop = 'value'
     }
     return this._getItem(this.list, value, prop, true) || this.miss
   }
   // 根据值数组获取匹配数组
   getCascadeItemList(valueList: any[], prop?: keyof D) {
     if (!prop) {
-      prop = this.$dict.value
+      prop = 'value'
     }
     return this._getCascadeItemList(this.list, valueList, prop, [])
   }
   // 根据值获取匹配相关数组
   getCascadeList(value: any, prop?: keyof D) {
     if (!prop) {
-      prop = this.$dict.value
+      prop = 'value'
     }
     return this._getCascadeList(this.list, value, prop)
   }
   check(value: any, itemValue: any) {
-    if (!this.$option.equal) {
+    if (!this.equal) {
       // eslint-disable-next-line eqeqeq
       return value == itemValue
     } else {

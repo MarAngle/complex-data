@@ -13,6 +13,9 @@
 
 ### Doing
 
+### 4.2.19
+- 简化SelectValue设置项，删除dict相关参数直接使用默认值，特殊项目可单独生成SelectValue类适配，减少内存占用
+
 ### 4.2.18
 - SearchData的getData默认深拷贝，避免在获取数据后改变数据导致问题
 - 修正SelectData未正确触发创建生命周期的BUG
