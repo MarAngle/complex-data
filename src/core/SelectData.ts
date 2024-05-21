@@ -2,12 +2,12 @@ import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import { StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
-import SelectValue, { CascadeValueType, DefaultCascadeValueType, DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
+import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<C, D> {
+export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectValueType> extends SelectValueInitOption<D> {
   reload?: boolean
   life?: LifeInitOption
   storage?: StorageValueInitOption
@@ -15,14 +15,14 @@ export interface SelectDataInitOption<C extends PropertyKey | undefined = undefi
   getData: getDataType<D>
 }
 
-class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<C, D> implements DataWithLife, DataWithStorage {
+class SelectData<D extends SelectValueType = DefaultSelectValueType> extends SelectValue<D> implements DataWithLife, DataWithStorage {
   $load: StatusItem
   $reload: boolean
   $life!: Life
   $storage?: StorageValue
   $pagination?: PaginationData
   $getData: getDataType<D>
-  constructor(initOption: SelectDataInitOption<C, D>) {
+  constructor(initOption: SelectDataInitOption<D>) {
     super(initOption)
     this.$load = new StatusItem('load')
     Object.defineProperty(this, '$life', {

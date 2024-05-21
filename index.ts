@@ -10,6 +10,7 @@ import ComplexData from './src/data/ComplexData'
 
 import ArrayValue from './src/lib/ArrayValue'
 import AttrsValue from './src/lib/AttrsValue'
+import CascadeValue from './src/lib/CascadeValue'
 import DictionaryValue from './src/lib/DictionaryValue'
 import FormValue from './src/lib/FormValue'
 import InterfaceValue from './src/lib/InterfaceValue'
@@ -55,6 +56,7 @@ export {
 
   ArrayValue,
   AttrsValue,
+  CascadeValue,
   DictionaryValue,
   FormValue,
   InterfaceValue,
