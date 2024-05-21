@@ -1,64 +1,64 @@
 import PaginationData, { PaginationDataInitOption } from "../module/PaginationData"
 import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
+import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
+import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
 
-export interface SelectEditOption<C extends( undefined | PropertyKey) = undefined> {
-  list: Record<PropertyKey, any>[]
-  cascader: C
-  optionValue: string
-  optionLabel: string
-  optionDisabled: string
-  hideArrow: boolean
-  hideClear: boolean
-  autoWidth: boolean
+export interface SelectEditOption {
+  hideArrow?: boolean
+  hideClear?: boolean
+  autoWidth?: boolean
   open?: boolean
 }
 
-export interface SelectEditInitOption<C extends( undefined | PropertyKey) = undefined> extends DefaultLoadEditInitOption {
-  type: C extends PropertyKey ? 'cascader' : 'select'
-  option?: Partial<SelectEditOption<C>>
+export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends DefaultLoadEditInitOption {
+  type: C extends undefined ? 'select' : 'cascader'
+  cascader: C
+  select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascadeValueInitOption<C, D> | CascadeValue<C, D>)
+  option?: Partial<SelectEditOption>
   pagination?: PaginationDataInitOption
 }
 
-class SelectEdit<C extends( undefined | PropertyKey) = undefined> extends DefaultLoadEdit{
+class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit{
   static $name = 'SelectEdit'
   static $defaultPlaceholder = function (name: string) {
     return `请选择${name}`
   }
   static $defaultOption = {
-    optionValue: 'value',
-    optionLabel: 'label',
-    optionDisabled: 'disabled',
-    cascader: 'children',
     hideArrow: false,
     hideClear: false,
     autoWidth: false
   }
-  type: C extends PropertyKey ? 'cascader' : 'select'
-  $option: SelectEditOption<C>
+  type: C extends undefined ? 'select' : 'cascader'
+  cascader: C
+  $select: C extends undefined ? SelectValue<D> : CascadeValue<C, D>
+  $option: SelectEditOption
   $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
+    this.cascader = initOption.cascader
+    if (this.cascader === undefined) {
+      this.$select = (initOption.select ? (initOption.select instanceof SelectValue ? initOption.select : new SelectValue(initOption.select)) : new SelectValue({}))as unknown as (C extends undefined ? SelectValue<D> : CascadeValue<C, D>)
+    } else {
+      this.$select = (initOption.select ? (initOption.select instanceof CascadeValue ? initOption.select : new CascadeValue(initOption.select as CascadeValueInitOption<C>)) : new CascadeValue({
+        cascade: this.cascader
+      }))as unknown as (C extends undefined ? SelectValue<D> : CascadeValue<C, D>)
+    }
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof SelectEdit).$defaultOption
     this.$option = {
-      list: option.list || [],
-      cascader: option.cascader || $defaultOption.cascader as C,
-      optionValue: option.optionValue || $defaultOption.optionValue,
-      optionLabel: option.optionLabel || $defaultOption.optionLabel,
-      optionDisabled: option.optionDisabled || $defaultOption.optionDisabled,
       hideArrow: option.hideArrow || $defaultOption.hideArrow,
       hideClear: option.hideClear || $defaultOption.hideClear,
       autoWidth: option.autoWidth || $defaultOption.autoWidth, // 宽度自适应
-      open: option.open,
+      open: option.open
     }
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
     }
   }
   protected _clearData() {
-    this.$option.list = []
+    this.$select.setList([])
     if (this.$pagination) {
       this.$pagination.reset(true)
     }

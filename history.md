@@ -17,6 +17,7 @@
 - 简化SelectValue设置项，删除dict相关参数直接使用默认值，特殊项目可单独生成SelectValue类适配，减少内存占用
 - 拆分CascadeValue和SelectValue
 - SelectData=>CascadeData
+- SelectEdit初始化接收SelectValue参数，删除dict相关字段，如需额外操作则提前格式化或者由模板处理
 
 ### 4.2.18
 - SearchData的getData默认深拷贝，避免在获取数据后改变数据导致问题

@@ -120,7 +120,9 @@ class DictionaryValue extends DefaultData implements functions {
       return new InputNumberEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'textArea') {
       return new TextAreaEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'select' || editModInitOption.type === 'cascader') {
+    } else if (editModInitOption.type === 'select') {
+      return new SelectEdit(editModInitOption, parent, modName)
+    } else if (editModInitOption.type === 'cascader') {
       return new SelectEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'switch') {
       return new SwitchEdit(editModInitOption, parent, modName)
