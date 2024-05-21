@@ -8,11 +8,11 @@ export type DefaultCascadeValueType<C extends PropertyKey = 'children', V = any>
   [prop in C]?: DefaultCascadeValueType<C, V>[]
 }
 
-export interface CascadeValueInitOption<C extends PropertyKey = 'children', D extends CascadeValueType<C> = DefaultCascadeValueType<C>> extends SelectValueInitOption<D> {
+export interface CascadeValueInitOption<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<D> {
   cascade: C
 }
 
-class CascadeValue<C extends PropertyKey = 'children', D extends CascadeValueType<C> = DefaultCascadeValueType<C>> extends SelectValue<D> {
+class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<D> {
   static $name = 'CascadeValue'
   static $formatConfig = { name: 'CascadeValue', level: 50, recommend: true }
   cascade: C
@@ -25,8 +25,8 @@ class CascadeValue<C extends PropertyKey = 'children', D extends CascadeValueTyp
       const item = list[n]
       if (this.check(value, item[prop])) {
         return item
-      } else if (item[this.cascade]) {
-        const child = this._findItem(item[this.cascade] as D[], value, prop)
+      } else if (item[this.cascade!]) {
+        const child = this._findItem(item[this.cascade!] as D[], value, prop)
         if (child) {
           return child
         }
@@ -40,8 +40,8 @@ class CascadeValue<C extends PropertyKey = 'children', D extends CascadeValueTyp
       const item = this._getItem(list, currentValue, prop)
       if (item) {
         result.push(item)
-        if (item[this.cascade]) {
-          this._findItemList(item[this.cascade] as D[], valueList, prop, result, deep + 1)
+        if (item[this.cascade!]) {
+          this._findItemList(item[this.cascade!] as D[], valueList, prop, result, deep + 1)
         }
       }
     }
@@ -53,8 +53,8 @@ class CascadeValue<C extends PropertyKey = 'children', D extends CascadeValueTyp
       const item = list[n]
       if (this.check(currentValue, item[prop])) {
         result.push(item)
-        if (item[this.cascade] && index < value.length - 1) {
-          this._findList(item[this.cascade] as D[], value, prop, index + 1, result)
+        if (item[this.cascade!] && index < value.length - 1) {
+          this._findList(item[this.cascade!] as D[], value, prop, index + 1, result)
         }
         break
       }
@@ -63,17 +63,19 @@ class CascadeValue<C extends PropertyKey = 'children', D extends CascadeValueTyp
   }
   protected _filterCascadeList(filter: checkItem<D>, list: D[]) {
     const currentList: D[] = []
-    list.forEach(item => {
-      if (filter(item)) {
-        const children = item[this.cascade]
-        if (children && children.length > 0) {
-          const currentItem = { ...item }
-          currentItem[this.cascade] = this._filterCascadeList(filter, children as D[]) as unknown as D[C]
-        } else {
-          currentList.push(item)
+    if (this.cascade) {
+      list.forEach(item => {
+        if (filter(item)) {
+          const children = item[this.cascade!] as undefined | D[]
+          if (children && children.length > 0) {
+            const currentItem = { ...item } as CascadeValueType<NonNullable<C>>
+            currentItem[this.cascade as NonNullable<C>] = this._filterCascadeList(filter, children as D[]) as CascadeValueType<NonNullable<C>>[]
+          } else {
+            currentList.push(item)
+          }
         }
-      }
-    })
+      })
+    }
     return currentList
   }
   getCascadeList(filter?: checkItem<D> | filterType, hidden?: boolean) {

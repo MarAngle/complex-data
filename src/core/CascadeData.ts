@@ -2,12 +2,13 @@ import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import { StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
-import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
+import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
+import { DefaultSelectValueType, SelectValueType } from '../lib/SelectValue'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectValueType> extends SelectValueInitOption<D> {
+export interface CascadeDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValueInitOption<C, D> {
   reload?: boolean
   life?: LifeInitOption
   storage?: StorageValueInitOption
@@ -15,14 +16,14 @@ export interface SelectDataInitOption<D extends SelectValueType = DefaultSelectV
   getData: getDataType<D>
 }
 
-class SelectData<D extends SelectValueType = DefaultSelectValueType> extends SelectValue<D> implements DataWithLife, DataWithStorage {
+class CascadeData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage {
   $load: StatusItem
   $reload: boolean
   $life!: Life
   $storage?: StorageValue
   $pagination?: PaginationData
   $getData: getDataType<D>
-  constructor(initOption: SelectDataInitOption<D>) {
+  constructor(initOption: CascadeDataInitOption<C, D>) {
     super(initOption)
     this.$load = new StatusItem('load')
     Object.defineProperty(this, '$life', {
@@ -156,4 +157,4 @@ class SelectData<D extends SelectValueType = DefaultSelectValueType> extends Sel
   }
 }
 
-export default SelectData
+export default CascadeData
