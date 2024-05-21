@@ -356,7 +356,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (parseResetOption(destroyOption, 'status') !== false) {
       this.$status.destroy()
     }
-    if (parseResetOption(destroyOption, 'promise') === true) {
+    if (parseResetOption(destroyOption, 'promise') !== false) {
       this.$promise.destroy()
     }
     if (parseResetOption(destroyOption, 'life') === true) {
@@ -365,10 +365,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (parseResetOption(destroyOption, 'depend') === true && this.$relation) {
       this.$relation.destroy(true)
     }
-    // 额外数据不存在destroy，因此不做销毁
-    // if (parseResetOption(destroyOption, 'extra') === true) {
-    //   this.clearExtra()
-    // }
+    // 额外数据不存在destroy，因此不做销毁,在reset中可能存在清空操作
     if (this.$module) {
       this.$module.destroy(destroyOption, ...args)
     }

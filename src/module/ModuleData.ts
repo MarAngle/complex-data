@@ -110,7 +110,7 @@ class ModuleData extends Data {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
       if (resetOption[modName] !== false) {
-        if (modData && modData.$reset) {
+        if (modData && modData.reset) {
           modData.reset(resetOption[modName], ...args)
         }
       }
@@ -122,7 +122,7 @@ class ModuleData extends Data {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
       if (destroyOption[modName] !== false) {
-        if (modData && modData.$destroy) {
+        if (modData && modData.destroy) {
           modData.destroy(destroyOption[modName], ...args)
         }
       }

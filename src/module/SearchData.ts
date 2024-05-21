@@ -226,7 +226,20 @@ class SearchData extends DictionaryData {
         return this.$syncFormData()
       }
     }
-  } 
+  }
+  reset(option?: boolean) {
+    if (option !== false) {
+      this.$resetFormData('init')
+    }
+  }
+  destroy(option?: boolean) {
+    if (option !== false) {
+      this.reset(option)
+      if (this.$observe) {
+        this.$search.list.clearWatcher()
+      }
+    }
+  }
   _install(target: BaseData) {
     super._install(target)
     // 监听事件

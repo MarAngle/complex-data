@@ -10,8 +10,14 @@
 ### ToDo
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等等：等待解释
+- 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
+
 
 ### Doing
+
+### 4.2.21
+- 修正ModuleData的reset/destory
+- 优化SearchData的reset/destory
 
 ### 4.2.20
 - CascadeData=>SelectData
