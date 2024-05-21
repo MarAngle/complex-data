@@ -13,6 +13,9 @@
 
 ### Doing
 
+### 4.2.20
+- CascadeData=>SelectData
+
 ### 4.2.19
 - 简化SelectValue设置项，删除dict相关参数直接使用默认值，特殊项目可单独生成SelectValue类适配，减少内存占用
 - 拆分CascadeValue和SelectValue

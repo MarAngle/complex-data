@@ -8,7 +8,7 @@ import { DefaultSelectValueType, SelectValueType } from '../lib/SelectValue'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface CascadeDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValueInitOption<C, D> {
+export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValueInitOption<C, D> {
   reload?: boolean
   life?: LifeInitOption
   storage?: StorageValueInitOption
@@ -16,14 +16,15 @@ export interface CascadeDataInitOption<C extends PropertyKey | undefined = undef
   getData: getDataType<D>
 }
 
-class CascadeData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage {
+class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage {
+  static $name = 'SelectData'
   $load: StatusItem
   $reload: boolean
   $life!: Life
   $storage?: StorageValue
   $pagination?: PaginationData
   $getData: getDataType<D>
-  constructor(initOption: CascadeDataInitOption<C, D>) {
+  constructor(initOption: SelectDataInitOption<C, D>) {
     super(initOption)
     this.$load = new StatusItem('load')
     Object.defineProperty(this, '$life', {
@@ -157,4 +158,4 @@ class CascadeData<C extends PropertyKey | undefined = undefined, D extends (C ex
   }
 }
 
-export default CascadeData
+export default SelectData

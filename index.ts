@@ -1,6 +1,6 @@
 import ComplexInfo from './src/core/ComplexInfo'
 import ComplexList from './src/core/ComplexList'
-import CascadeData from './src/core/CascadeData'
+import SelectData from './src/core/SelectData'
 
 import Data from './src/data/Data'
 import SimpleData from './src/data/SimpleData'
@@ -46,7 +46,7 @@ import CustomEdit from './src/dictionary/CustomEdit'
 export {
   ComplexInfo,
   ComplexList,
-  CascadeData,
+  SelectData,
 
   Data,
   SimpleData,
