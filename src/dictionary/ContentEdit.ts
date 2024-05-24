@@ -3,7 +3,7 @@ import DictionaryValue from "../lib/DictionaryValue"
 
 export interface ContentEditOption {
   data?: string
-  style?: Record<PropertyKey, unknown>
+  style?: Record<PropertyKey, any>
 }
 
 export interface ContentEditInitOption extends DefaultSimpleEditInitOption {

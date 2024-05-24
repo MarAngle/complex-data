@@ -23,14 +23,14 @@ import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 
 export type payloadType = {
-  targetData: Record<PropertyKey, unknown>
-  originData?: Record<PropertyKey, unknown>
+  targetData: Record<PropertyKey, any>
+  originData?: Record<PropertyKey, any>
   type: string
   from?: string
   depth?: number
   index?: number
   choice?: number
-  payload?: Record<PropertyKey, unknown>
+  payload?: Record<PropertyKey, any>
 }
 
 export type functionType<R> = (data: unknown, payload: payloadType) => R
@@ -48,7 +48,7 @@ const parse = function (this: DictionaryValue, data: unknown, { type }: payloadT
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
     if (data !== undefined && data !== null && typeof data === 'object') {
-      return getProp(data as Record<PropertyKey, unknown>, showProp)
+      return getProp(data as Record<PropertyKey, any>, showProp)
     } else {
       return undefined
     }
@@ -268,7 +268,7 @@ class DictionaryValue extends DefaultData implements functions {
     const targetValue = this.$triggerFunc(funcName, originValue, option)
     setProp(option.targetData, prop, targetValue, useSetData)
   }
-  $formatData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData?: boolean) {
+  $formatData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
       const targetValue = getProp(originData, this.$getOriginProp(originFrom))
       if (!this.assign) {

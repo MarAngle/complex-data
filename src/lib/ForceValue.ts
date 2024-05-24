@@ -7,7 +7,7 @@ export interface ForceValueInitOption {
   sync?: boolean
   promise?: PromiseOptionType
   module?: {
-    [prop: string]: undefined | boolean | Record<string, unknown>
+    [prop: string]: undefined | boolean | Record<string, any>
   }
 }
 
@@ -19,7 +19,7 @@ class ForceValue {
   module!: {
     pagination?: boolean | { data: number, prop: 'page' | 'size', untriggerLife?: boolean } | { data: { page: number, size: number }, prop: 'pageAndSize', untriggerLife?: boolean }
     choice?: boolean | string | resetFromOption
-    [prop: string]: undefined | boolean | string | Record<string, unknown>
+    [prop: string]: undefined | boolean | string | Record<string, any>
   }
   constructor(initOption?: boolean | ForceValueInitOption | ForceValue) {
     if (!initOption || initOption === true) {

@@ -129,7 +129,7 @@ class SearchData extends DictionaryData {
     dictionary: DictionaryValue[]
     list: ObserveList
     form: FormValue
-    data: Record<PropertyKey, unknown>
+    data: Record<PropertyKey, any>
   }
   $menu: {
     list: (string | DictionaryEditMod)[]
@@ -214,7 +214,7 @@ class SearchData extends DictionaryData {
       return deepCloneData(this.$search.data)
     }
   }
-  setForm(data: Record<PropertyKey, unknown>, { sync, force }: { sync?: boolean, force?: boolean } = {}) {
+  setForm(data: Record<PropertyKey, any>, { sync, force }: { sync?: boolean, force?: boolean } = {}) {
     const form = this.$search.form.getData()
     for (const prop in data) {
       form[prop] = data[prop]

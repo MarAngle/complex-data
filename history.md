@@ -6,6 +6,8 @@
 - - 理论上originProp是全局一致，跟随edit需要额外定义，实现逻辑更改为originProp与prop相同则不赋值
 - DictionaryData中添加菜单转DictionaryValue的函数
 - - 通过尽可能减少DictionaryData与DictionaryValue的关联，后期主要通过DictionaryValue实现功能逻辑，转换功能放弃
+- 重新instanceof判断static [Symbol.hasInstance](instance: any) { return instance.constructor.$name === this.$name }
+- - 实际调用发现，最终的判断都会到Data中去判断与Data的关系而不是与DefaultData的关系，猜测每个类单独重写此方法可能回有效，但是可能存在重写疏漏导致的错误问题，此功能放弃，特殊项目需要可以单独实现
 
 ### ToDo
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
@@ -14,6 +16,11 @@
 
 
 ### Doing
+
+### 4.2.23
+- 依赖升级
+- 添加DataWithSimpleLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型
+- 减少unknow 类型
 
 ### 4.2.22
 - 添加DataWithLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型

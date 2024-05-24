@@ -8,11 +8,11 @@ import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 import { DefaultBufferType } from "./DefaultData"
 import ChoiceData from "../module/ChoiceData"
 
-export type buildDataType = (targetData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
-export type changeDataType = (targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, type?: string, payload?: unknown) => Promise<unknown>
-export type deleteDataType = (targetData: Record<PropertyKey, unknown>, payload?: unknown) => Promise<unknown>
-export type refreshDataType = (targetData: Record<PropertyKey, unknown>) => Promise<unknown>
-export type multipleDeleteDataType = (choiceList: Record<PropertyKey, unknown>[], payload?: unknown) => Promise<unknown>
+export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, payload?: unknown) => Promise<unknown>
+export type changeDataType = (targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type?: string, payload?: unknown) => Promise<unknown>
+export type deleteDataType = (targetData: Record<PropertyKey, any>, payload?: unknown) => Promise<unknown>
+export type refreshDataType = (targetData: Record<PropertyKey, any>) => Promise<unknown>
+export type multipleDeleteDataType = (choiceList: Record<PropertyKey, any>[], payload?: unknown) => Promise<unknown>
 export type exportDataType = loadFunctionType
 export type importDataType = (file: File, payload?: unknown) => Promise<unknown>
 

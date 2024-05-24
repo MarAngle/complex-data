@@ -41,7 +41,7 @@ class AttrsValue {
     }
     return false
   }
-  protected _appendData(data: undefined | Record<PropertyKey, unknown>, prop: 'style' | 'attrs' | 'props') {
+  protected _appendData(data: undefined | Record<PropertyKey, any>, prop: 'style' | 'attrs' | 'props') {
     if (data) {
       for (const key in data) {
         this[prop][key] = data[key]
@@ -62,13 +62,13 @@ class AttrsValue {
   removeClass(value: string) {
     return this._removeData(value, 'class')
   }
-  pushStyle(style?: Record<PropertyKey, unknown>) {
+  pushStyle(style?: Record<PropertyKey, any>) {
     return this._appendData(style, 'style')
   }
-  pushAttrs(attrs?: Record<PropertyKey, unknown>) {
+  pushAttrs(attrs?: Record<PropertyKey, any>) {
     return this._appendData(attrs, 'attrs')
   }
-  pushProps(props?: Record<PropertyKey, unknown>) {
+  pushProps(props?: Record<PropertyKey, any>) {
     return this._appendData(props, 'props')
   }
   pushEvent(prop: string, event?: (...args: unknown[]) => unknown, type: 'before' | 'after' = 'after') {

@@ -19,7 +19,7 @@ export type resetFromOption = {
 
 export type ChoiceDataData = {
   id: PropertyKey[]
-  list: Record<PropertyKey, unknown>[]
+  list: Record<PropertyKey, any>[]
 }
 
 export interface ChoiceDataInitOption {
@@ -85,7 +85,7 @@ class ChoiceData extends Data {
   getList() {
     return this.data.list
   }
-  pushData(idList: PropertyKey[], list: Record<PropertyKey, unknown>[]) {
+  pushData(idList: PropertyKey[], list: Record<PropertyKey, any>[]) {
     for (let i = 0; i < idList.length; i++) {
       const id = idList[i]
       if (this.data.id.indexOf(id) === -1) {
@@ -99,7 +99,7 @@ class ChoiceData extends Data {
    * @param {string[]} idList ID列表
    * @param {object[]} list ITEM列表
    */
-  setData(idList: PropertyKey[], list: Record<PropertyKey, unknown>[]) {
+  setData(idList: PropertyKey[], list: Record<PropertyKey, any>[]) {
     this.data.id = idList
     this.data.list = list
   }

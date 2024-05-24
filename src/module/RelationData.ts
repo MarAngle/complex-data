@@ -75,7 +75,7 @@ class RelationData {
   static $bindDependByLife(self: BaseData, depend: dependDataType, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
     active, // 是否只在激活状态下触发
   }: dependBindOption = {}) {
-    const simple = (!!(depend as DataWithSimpleLoad).$load) as boolean
+    const simple = '$load' in depend
     if (simple && life === 'update') {
       return
     }
@@ -85,7 +85,7 @@ class RelationData {
     }
     const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
     const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    const currentStatus = simple ? (depend as DataWithSimpleLoad).getLoad() : (depend as DataWithLoad).getStatus(life)
+    const currentStatus = simple ? depend.getLoad() : depend.getStatus(life)
     const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
         if (lifeList === undefined || lifeList.indexOf(lifeName) > -1) {

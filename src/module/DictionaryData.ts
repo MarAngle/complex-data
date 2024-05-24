@@ -51,7 +51,7 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
 }
 
 export interface createEditOption {
-  target?: Record<PropertyKey, unknown>
+  target?: Record<PropertyKey, any>
   from?: string
   limit?: Limit | LimitInitOption
 }
@@ -73,7 +73,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
   static $empty = true
   static $depth = Symbol('depth')
-  static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom: string, useSetData: boolean) {
+  static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of dictionary.$data.values()) {
       dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
     }
@@ -139,7 +139,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     }
     this.triggerLife('updated', this, dictionaryInitOptionList, option)
   }
-  createList(originList: Record<PropertyKey, unknown>[] = [], originFrom = 'list', useSetData?: boolean) {
+  createList(originList: Record<PropertyKey, any>[] = [], originFrom = 'list', useSetData?: boolean) {
     const targetList = []
     for (let i = 0; i < originList.length; i++) {
       targetList.push(this.createData(originList[i], originFrom, useSetData))
@@ -147,10 +147,10 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return targetList
   }
   // 格式化函数
-  createData(originData: Record<PropertyKey, unknown>, originFrom = 'list', useSetData = false) {
+  createData(originData: Record<PropertyKey, any>, originFrom = 'list', useSetData = false) {
     return DictionaryData.$formatData(this, {}, originData, originFrom, useSetData)
   }
-  updateData(targetData: Record<PropertyKey, unknown>, originData: Record<PropertyKey, unknown>, originFrom = 'info', useSetData = true) {
+  updateData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom = 'info', useSetData = true) {
     return DictionaryData.$formatData(this, targetData, originData, originFrom, useSetData)
   }
   $getPageItem(modName: string, ditem: DictionaryValue) {
@@ -188,7 +188,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     }
     return observeList
   }
-  createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, unknown>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, unknown> }> {
+  createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, any>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
     return new Promise((resolve) => {
       const targetData = option.target || {}
       const from = option.from
@@ -211,8 +211,8 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       })
     })
   }
-  createPostData(formData: Record<PropertyKey, unknown>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
-    const postData: Record<string, unknown> = {}
+  createPostData(formData: Record<PropertyKey, any>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
+    const postData: Record<string, any> = {}
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
       if (mod && mod instanceof DefaultEdit) {
