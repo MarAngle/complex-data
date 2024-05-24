@@ -34,6 +34,23 @@ export type StatusItemInitOptionObject = {
 
 export type StatusItemInitOption = 'load' | 'operate' | StatusItemInitOptionObject
 
+export interface DataWithSimpleLoad {
+  $load: StatusItem
+  $reload?: boolean
+  getLoad: (...args: Parameters<StatusItem['getCurrent']>) => StatusDataLoadValueType
+  setLoad: (...args: Parameters<StatusItem['setCurrent']>) => void
+  loadData: (force?: any, ...args: any[]) => Promise<any>
+  $getData?: (...args: any[]) => Promise<any>
+}
+
+export interface DataWithLoad {
+  $status: StatusData
+  getStatus: (target?: any) => StatusDataValueType
+  setStatus: (...args: Parameters<StatusData['setData']>) => void
+  loadData: (force?: any, ...args: any[]) => Promise<any>
+  $getData: (...args: any[]) => Promise<any>
+}
+
 export class StatusItem extends Data {
   static $name = 'StatusItem'
   static $formatConfig = { name: 'StatusItem', level: 50, recommend: true }

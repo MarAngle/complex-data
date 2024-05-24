@@ -1,11 +1,10 @@
 import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
-import { StatusItem, StatusValue } from '../module/StatusData'
+import { DataWithSimpleLoad, StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
 import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 import { DefaultSelectValueType, SelectValueType } from '../lib/SelectValue'
-import { DataWithLoad } from '../data/BaseData'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
@@ -17,9 +16,9 @@ export interface SelectDataInitOption<C extends PropertyKey | undefined = undefi
   getData: getDataType<D>
 }
 
-class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage, DataWithLoad {
+class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage, DataWithSimpleLoad {
   static $name = 'SelectData'
-  $status: StatusItem
+  $load: StatusItem
   $reload: boolean
   $life!: Life
   $storage?: StorageValue
@@ -27,7 +26,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
   $getData: getDataType<D>
   constructor(initOption: SelectDataInitOption<C, D>) {
     super(initOption)
-    this.$status = new StatusItem('load')
+    this.$load = new StatusItem('load')
     Object.defineProperty(this, '$life', {
       enumerable: false,
       configurable: false,
@@ -62,7 +61,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       // 本地化加载完成：本地化加载完成不触发loaded事件！
       this.onLife('initStoraged', {
         data: () => {
-          this.setStatus(StatusValue.success)
+          this.setLoad(StatusValue.success)
         }
       })
       // reloadStorage触发本地加载
@@ -77,11 +76,11 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     this.triggerLife('created', this, initOption)
   }
   /* --- status start --- */
-  getStatus() {
-    return this.$status.getCurrent()
+  getLoad() {
+    return this.$load.getCurrent()
   }
-  setStatus(...args: Parameters<StatusItem['setCurrent']>) {
-    return this.$status.setCurrent(...args)
+  setLoad(...args: Parameters<StatusItem['setCurrent']>) {
+    return this.$load.setCurrent(...args)
   }
   /* --- status end --- */
   /* --- life start --- */
@@ -115,7 +114,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
   }
   /* --- life end --- */
   loadData(force?: { ing?: boolean }, ...args: unknown[]) {
-    const loadStatus = this.getStatus()
+    const loadStatus = this.getLoad()
     let getData = !!force || this.$reload
     // 强制加载或者需要reload的情况下，getData为真
     if (!force) {
@@ -131,18 +130,18 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     }
     if (getData) {
       return new Promise((resolve, reject) => {
-        this.setStatus(StatusValue.ing)
+        this.setLoad(StatusValue.ing)
         this.triggerLife('beforeLoad', this, ...args)
         this.$getData(...args).then((res: unknown) => {
           // 触发生命周期重载完成事件
-          this.setStatus(StatusValue.success)
+          this.setLoad(StatusValue.success)
           this.triggerLife('loaded', this, {
             res: res,
             args: args
           })
           resolve(res)
         }).catch(err => {
-          this.setStatus(StatusValue.fail)
+          this.setLoad(StatusValue.fail)
           // eslint-disable-next-line no-console
           console.error(err)
           // 触发生命周期重载失败事件

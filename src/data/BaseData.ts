@@ -1,6 +1,6 @@
 import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusItem, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
+import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusItem, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
@@ -30,14 +30,6 @@ export interface resetOptionType {
 
 export const parseResetOption = function(resetOption: resetOptionType, prop: string) {
   return getProp(resetOption, prop)
-}
-
-export interface DataWithLoad {
-  $status: StatusData | StatusItem
-  getStatus: (...args: any[]) => StatusDataValueType
-  setStatus: (data: StatusDataValueType, ...args: any[]) => void
-  loadData: (force?: any, ...args: any[]) => Promise<any>
-  $getData: (...args: any[]) => Promise<any>
 }
 
 class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> implements DataWithLoad {
@@ -120,9 +112,9 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   }
   getStatus(target: 'load' | 'update'): StatusDataLoadValueType
   getStatus(target: 'operate'): StatusDataOperateValueType
-  getStatus(target: string): StatusDataValueType
-  getStatus(...args: Parameters<StatusData['getCurrent']>) {
-    return this.$status.getCurrent(...args)
+  getStatus(target?: string): StatusDataValueType
+  getStatus(target?: string) {
+    return this.$status.getCurrent(target)
   }
   resetStatus() {
     this.$status.reset()

@@ -1,15 +1,15 @@
 import { upperCaseFirstChar } from "complex-utils"
 import { DataWithLife } from "complex-utils/src/class/Life"
-import BaseData, { DataWithLoad, loadFunctionType } from "../data/BaseData"
+import BaseData, { loadFunctionType } from "../data/BaseData"
 import SelectData from "../core/SelectData"
 import Data from "../data/Data"
-import { StatusValue } from "./StatusData"
+import { DataWithLoad, DataWithSimpleLoad, StatusValue } from "./StatusData"
 
 export type bindLife = 'load' | 'update'
 
 export type dependUnbind = (life?: string[]) => void
 
-export type dependDataType = Data & DataWithLoad & DataWithLife
+export type dependDataType = Data & (DataWithLoad | DataWithSimpleLoad) & DataWithLife
 
 export type dependBind = (depend: dependDataType, self: BaseData, success: boolean, life: bindLife, unbind: dependUnbind) => void
 
@@ -22,14 +22,14 @@ export interface dependBindType extends dependBindOption {
   data: dependBind
 }
 
-export type dependValueInitType<D extends dependDataType = SelectData> = D | {
+export type dependValueInitType<D extends dependDataType = dependDataType> = D | {
   data: D
   name?: keyof D
   args?: unknown[]
   bind?: dependBindType
 }
 
-export interface dependValueType<D extends dependDataType = SelectData> {
+export interface dependValueType<D extends dependDataType = dependDataType> {
   data: D
   name: keyof D
   args: unknown[]
@@ -75,13 +75,17 @@ class RelationData {
   static $bindDependByLife(self: BaseData, depend: dependDataType, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
     active, // 是否只在激活状态下触发
   }: dependBindOption = {}) {
+    const simple = (!!(depend as DataWithSimpleLoad).$load) as boolean
+    if (simple && life === 'update') {
+      return
+    }
     if (active === undefined && self.$active.auto) {
       // 自动激活模式下，默认进行激活的判断
       active = true
     }
     const failLifeName = life === 'load' ? 'loadFail' : 'updateFail'
     const successLifeName = life === 'load' ? 'loaded' : 'updated'
-    const currentStatus = depend.getStatus(life)
+    const currentStatus = simple ? (depend as DataWithSimpleLoad).getLoad() : (depend as DataWithLoad).getStatus(life)
     const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
         if (lifeList === undefined || lifeList.indexOf(lifeName) > -1) {
@@ -108,9 +112,7 @@ class RelationData {
   static $bindDepend(self: BaseData, depend: dependDataType, bind: dependBind, option: dependBindOption = {}) {
     const lifeDict: Record<string, string> = {}
     this.$bindDependByLife(self, depend, bind, 'load', lifeDict, option)
-    if (depend.$status instanceof SelectData) {
-      this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
-    }
+    this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
   }
   static $loadDepend(item: dependValueType) {
     return (item.data[item.name] as loadFunctionType)(...item.args)
