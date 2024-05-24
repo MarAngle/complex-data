@@ -1,11 +1,15 @@
 import { upperCaseFirstChar } from "complex-utils"
-import BaseData, { loadFunctionType } from "../data/BaseData"
+import BaseData, { DataWithLoad, loadFunctionType } from "../data/BaseData"
+import SelectData from "../core/SelectData"
+import Data from "../data/Data"
 
 export type bindLife = 'load' | 'update'
 
 export type dependUnbind = (life?: string[]) => void
 
-export type dependBind = (depend: BaseData, self: BaseData, success: boolean, life: bindLife, unbind: dependUnbind) => void
+export type dependDataType = Data & DataWithLoad
+
+export type dependBind = (depend: dependDataType, self: BaseData, success: boolean, life: bindLife, unbind: dependUnbind) => void
 
 export interface dependBindOption {
   life?: bindLife
@@ -16,14 +20,14 @@ export interface dependBindType extends dependBindOption {
   data: dependBind
 }
 
-export type dependValueInitType<D extends BaseData = BaseData> = D | {
+export type dependValueInitType<D extends dependDataType = SelectData> = D | {
   data: D
   name?: keyof D
   args?: unknown[]
   bind?: dependBindType
 }
 
-export interface dependValueType<D extends BaseData = BaseData> {
+export interface dependValueType<D extends dependDataType = SelectData> {
   data: D
   name: keyof D
   args: unknown[]
@@ -44,7 +48,7 @@ export interface RelationDataInitOption {
 class RelationData {
   static $name = 'RelationData'
   static $formatConfig = { name: 'RelationData', level: 10, recommend: false }
-  static $bindDependByActive(self: BaseData, depend: BaseData, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
+  static $bindDependByActive(self: BaseData, depend: dependDataType, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
     let sync = true
     if (active && !self.isActive()) {
       // 需要判断激活状态且当前状态为未激活时不同步触发
@@ -65,7 +69,8 @@ class RelationData {
       })
     }
   }
-  static $bindDependByLife(self: BaseData, depend: BaseData, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
+  // 根据生命周期将依赖通过bing函数绑定到self上
+  static $bindDependByLife(self: BaseData, depend: dependDataType, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
     active, // 是否只在激活状态下触发
   }: dependBindOption = {}) {
     if (active === undefined && self.$active.auto) {
@@ -98,10 +103,12 @@ class RelationData {
       this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
     }
   }
-  static $bindDepend(self: BaseData, depend: BaseData, bind: dependBind, option: dependBindOption = {}) {
+  static $bindDepend(self: BaseData, depend: dependDataType, bind: dependBind, option: dependBindOption = {}) {
     const lifeDict: Record<string, string> = {}
     this.$bindDependByLife(self, depend, bind, 'load', lifeDict, option)
-    this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
+    if (depend instanceof BaseData) {
+      this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
+    }
   }
   static $loadDepend(item: dependValueType) {
     return (item.data[item.name] as loadFunctionType)(...item.args)
@@ -123,7 +130,7 @@ class RelationData {
     }
   }
   protected _build(item: dependValueInitType, self: BaseData): dependValueType {
-    if (item instanceof BaseData) {
+    if (item instanceof Data) {
       return {
         data: item,
         name: 'loadData',

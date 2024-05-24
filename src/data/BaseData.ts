@@ -5,6 +5,7 @@ import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
+import { DataWithLife } from 'complex-utils/src/class/Life'
 
 export type BaseDataActive = 'actived' | 'inactived'
 
@@ -32,7 +33,14 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
   return getProp(resetOption, prop)
 }
 
-class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
+export interface DataWithLoad extends DataWithLife {
+  getStatus: (...args: any[]) => StatusDataValueType
+  setStatus: (data: StatusDataValueType, ...args: any[]) => void
+  loadData: (force?: any, ...args: any[]) => Promise<any>
+  $getData: (...args: any[]) => Promise<any>
+}
+
+class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> implements DataWithLoad {
   static $name = 'BaseData'
   static $formatConfig = { name: 'BaseData', level: 80, recommend: true }
   static $active = {
