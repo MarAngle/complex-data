@@ -1,47 +1,52 @@
-import { loadFunctionType } from "../data/BaseData"
+import { DataWithLoad, loadFunctionType } from "../data/BaseData"
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
+import { StatusItem, StatusValue } from "../module/StatusData"
 
 export interface DefaultLoadEditInitOption extends DefaultEditInitOption {
   reload?: boolean
   getData?: loadFunctionType
 }
 
-class DefaultLoadEdit extends DefaultEdit{
+class DefaultLoadEdit extends DefaultEdit implements Partial<DataWithLoad>{
   static $name = 'DefaultLoadEdit'
-  $load?: {
-    status: 'un' | 'ing' | 'success' | 'fail'
-    reload?: boolean
-  }
+  $status?: StatusItem
+  $reload?: boolean
   $getData?: loadFunctionType
   constructor(initOption: DefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     if (initOption.getData) {
+      this.$status = new StatusItem('load')
+      this.$reload = initOption.reload
       this.$getData = initOption.getData
-      this.$load = {
-        status: 'un',
-        reload: initOption.reload
-      }
     }
   }
+  /* --- status start --- */
+  getStatus() {
+    return this.$status!.getCurrent()
+  }
+  setStatus(...args: Parameters<StatusItem['setCurrent']>) {
+    return this.$status!.setCurrent(...args)
+  }
+  /* --- status end --- */
   loadData(force?: boolean, ...args: unknown[]) {
     if (this.$getData) {
       if (force === undefined) {
-        force = this.$load!.reload
+        force = this.$reload
       }
-      if (this.$load!.status !== 'success' || force) {
+      if (this.getStatus() !== StatusValue.success || force) {
         return new Promise((resolve, reject) => {
-          this.$load!.status = 'ing'
+          this.setStatus(StatusValue.ing)
           this.$getData!(...args).then(res => {
-            this.$load!.status = 'success'
+            this.setStatus(StatusValue.success)
             resolve(res)
           }).catch(err => {
-            this.$load!.status = 'fail'
+            this.setStatus(StatusValue.fail)
             reject(err)
           })
         })
       } else {
-        return Promise.resolve({ status: this.$load!.status })
+        return Promise.resolve({ status: this.getStatus() })
       }
     } else {
       return Promise.resolve({ status: 'success' })

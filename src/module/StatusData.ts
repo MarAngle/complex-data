@@ -165,7 +165,7 @@ export class StatusItem extends Data {
   protected _triggerTarget (value: StatusDataValueType) {
     let fg = true
     if (this.count !== undefined) {
-      if (value === 'ing') {
+      if (value === StatusValue.ing) {
         this.count++
       } else {
         this.count--

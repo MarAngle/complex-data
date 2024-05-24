@@ -1,11 +1,10 @@
 import { getProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType } from '../module/StatusData'
+import StatusData, { StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusItem, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
-import { DataWithLife } from 'complex-utils/src/class/Life'
 
 export type BaseDataActive = 'actived' | 'inactived'
 
@@ -33,7 +32,8 @@ export const parseResetOption = function(resetOption: resetOptionType, prop: str
   return getProp(resetOption, prop)
 }
 
-export interface DataWithLoad extends DataWithLife {
+export interface DataWithLoad {
+  $status: StatusData | StatusItem
   getStatus: (...args: any[]) => StatusDataValueType
   setStatus: (data: StatusDataValueType, ...args: any[]) => void
   loadData: (force?: any, ...args: any[]) => Promise<any>
@@ -246,14 +246,14 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
     const loadStatus = this.getStatus('load')
-    if (['un', 'fail'].indexOf(loadStatus) > -1) {
+    if ([StatusValue.un, StatusValue.fail].indexOf(loadStatus) > -1) {
       this.$triggerLoadData(...args)
-    } else if (loadStatus === 'ing') {
+    } else if (loadStatus === StatusValue.ing) {
       // 直接then
       if (force.data && force.ing) {
         this.$triggerLoadData(...args)
       }
-    } else if (loadStatus === 'success') {
+    } else if (loadStatus === StatusValue.success) {
       if (force.data) {
         this.$triggerLoadData(...args)
       }

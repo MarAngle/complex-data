@@ -15,6 +15,10 @@
 
 ### Doing
 
+### 4.2.22
+- 添加DataWithLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型
+- 优化RelationData的数据类型要求，扩展适配性
+
 ### 4.2.21
 - 修正ModuleData的reset/destory
 - 优化SearchData的reset/destory

@@ -1,13 +1,15 @@
 import { upperCaseFirstChar } from "complex-utils"
+import { DataWithLife } from "complex-utils/src/class/Life"
 import BaseData, { DataWithLoad, loadFunctionType } from "../data/BaseData"
 import SelectData from "../core/SelectData"
 import Data from "../data/Data"
+import { StatusValue } from "./StatusData"
 
 export type bindLife = 'load' | 'update'
 
 export type dependUnbind = (life?: string[]) => void
 
-export type dependDataType = Data & DataWithLoad
+export type dependDataType = Data & DataWithLoad & DataWithLife
 
 export type dependBind = (depend: dependDataType, self: BaseData, success: boolean, life: bindLife, unbind: dependUnbind) => void
 
@@ -97,16 +99,16 @@ class RelationData {
         this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
       }
     })!
-    if (currentStatus === 'success') {
+    if (currentStatus === StatusValue.success) {
       this.$bindDependByActive(self, depend, bind, successLifeName, true, life, unbind, active)
-    } else if (currentStatus === 'fail') {
+    } else if (currentStatus === StatusValue.fail) {
       this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
     }
   }
   static $bindDepend(self: BaseData, depend: dependDataType, bind: dependBind, option: dependBindOption = {}) {
     const lifeDict: Record<string, string> = {}
     this.$bindDependByLife(self, depend, bind, 'load', lifeDict, option)
-    if (depend instanceof BaseData) {
+    if (depend.$status instanceof SelectData) {
       this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
     }
   }
