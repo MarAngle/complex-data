@@ -138,8 +138,13 @@ class SearchData extends DictionaryData {
   $resetOption?: resetOption
   constructor(initOption: SearchDataInitOption) {
     if (initOption.simple === undefined) {
-      initOption.simple = true
+      initOption.simple = {
+        prop: true
+      }
+    } else if (initOption.simple.prop === undefined) {
+      initOption.simple.prop = true
     }
+    // SearchData的simple.prop默认为真
     super(initOption)
     const prop = initOption.prop || 'search'
     this._triggerCreateLife('SearchData', false, initOption)

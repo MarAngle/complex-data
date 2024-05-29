@@ -61,7 +61,10 @@ export interface DictionaryDataOption {
 }
 
 export interface DictionaryDataInitOption extends DefaultDataInitOption {
-  simple?: boolean
+  simple?: {
+    prop?: boolean // 是否加载prop数据
+    assign?: boolean | 'self' // 是否进行简单赋值, 当assign为self时，格式化函数直接对源数据进行改造:警告，此逻辑仅列表创建时有效，对于update类相关调用依然通过源数据对目标数据进行赋值
+  }
   list?: DictionaryValueInitOption[]
   propData?: Partial<propDataType<string | propDataValueType>>
   layout?: LayoutParseInitOption
@@ -73,13 +76,16 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
   static $empty = true
   static $depth = Symbol('depth')
-  static $formatData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
+  static $assignData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of dictionary.$data.values()) {
-      dictionaryValue.$formatData(targetData, originData, originFrom, useSetData)
+      dictionaryValue.$assignData(targetData, originData, originFrom, useSetData)
     }
     return targetData
   }
-  $simple?: boolean
+  $simple: {
+    prop?: boolean
+    assign?: boolean | 'self'
+  }
   $data: Map<string, DictionaryValue>
   $propData?: propDataType<propDataValueType>
   $layout: LayoutParse
@@ -87,9 +93,9 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryData', false, initOption)
-    this.$simple = initOption.simple
+    this.$simple = initOption.simple || {}
     this.$data = new Map()
-    if (!this.$simple) {
+    if (!this.$simple.prop) {
       // 简单模式下不加载propData
       this.$propData = {
         parentId: initPropData('parentId', initOption.propData),
@@ -148,10 +154,10 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   }
   // 格式化函数
   createData(originData: Record<PropertyKey, any>, originFrom = 'list', useSetData = false) {
-    return DictionaryData.$formatData(this, {}, originData, originFrom, useSetData)
+    return DictionaryData.$assignData(this, {}, originData, originFrom, useSetData)
   }
   updateData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom = 'info', useSetData = true) {
-    return DictionaryData.$formatData(this, targetData, originData, originFrom, useSetData)
+    return DictionaryData.$assignData(this, targetData, originData, originFrom, useSetData)
   }
   $getPageItem(modName: string, ditem: DictionaryValue) {
     return ditem.$getMod(modName)!

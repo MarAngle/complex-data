@@ -61,11 +61,6 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
-export interface formatDataOption {
-  format?: boolean
-  depth?: boolean
-}
-
 export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption
 
 export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
@@ -256,6 +251,7 @@ class DictionaryValue extends DefaultData implements functions {
   $getMod (modName: string) {
     return this.$mod[modName]
   }
+  // 触发相关的格式化函数
   $triggerFunc (funcName: funcKeys, originData: unknown, payload: payloadType) {
     const itemFunc = this[funcName]
     if (itemFunc) {
@@ -264,21 +260,18 @@ class DictionaryValue extends DefaultData implements functions {
       return originData
     }
   }
-  $setTargetData(prop: string, originValue: unknown, funcName: funcKeys, option: payloadType, useSetData?: boolean ) {
-    const targetValue = this.$triggerFunc(funcName, originValue, option)
-    setProp(option.targetData, prop, targetValue, useSetData)
-  }
-  $formatData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
+  // 赋值
+  $assignData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
       const targetValue = getProp(originData, this.$getOriginProp(originFrom))
       if (!this.assign) {
         setProp(targetData, this.$prop, targetValue, useSetData)
       } else {
-        this.$setTargetData(this.$prop, targetValue, 'assign', {
+        setProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
           targetData: targetData,
           originData: originData,
           type: originFrom
-        }, useSetData)
+        }), useSetData)
       }
     }
   }

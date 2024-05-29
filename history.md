@@ -19,6 +19,8 @@
 
 ### 4.2.24-ing
 - 优化DictionaryData的createPostData函数的格式化顺序
+- DictionaryData扩展simple属性，实现格式化本身逻辑
+- DictionaryValue删除$setTargetData函数，改为各个调用单独调用并优化，$formatData=>$assignData
 
 ### 4.2.23
 - 依赖升级
