@@ -1,4 +1,4 @@
-import { getProp, setProp, isExist, exportMsg } from 'complex-utils'
+import { getProp, setProp, isExist, exportMsg, setComplexProp, getComplexProp } from 'complex-utils'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData from '../module/DictionaryData'
@@ -94,9 +94,11 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   name: InterfaceValueInitOption<string>
   originFrom?: string | string[]
   simple?: {
-    format?: boolean
     edit?: boolean
   } // 简单快速处理判断值
+  complex?: {
+    assign?: boolean
+  }
   originProp?: InterfaceValueInitOption<string> // 来源属性
   label?: InterfaceValueInitOption<string> // 名称
   showProp?: InterfaceValueInitOption<string> // 展示的属性
@@ -163,8 +165,10 @@ class DictionaryValue extends DefaultData implements functions {
   }
   $originFrom: string[]
   $simple: {
-    format?: boolean
     edit?: boolean
+  } // 简单快速处理判断值
+  $complex: {
+    assign?: boolean
   } // 简单快速处理判断值
   $interface: {
     name: InterfaceValue<string>
@@ -187,6 +191,7 @@ class DictionaryValue extends DefaultData implements functions {
     this.$setParent(parent)
     this.$originFrom = initOption.originFrom === undefined ? ['list'] : typeof initOption.originFrom === 'string' ? [initOption.originFrom] : initOption.originFrom
     this.$simple = initOption.simple || {}
+    this.$complex = initOption.complex || {}
     this.$interface = {
       name: new InterfaceValue(initOption.name),
       type: new InterfaceValue(initOption.type ? initOption.type : initOption.showProp ? 'object' : 'string')
@@ -263,15 +268,28 @@ class DictionaryValue extends DefaultData implements functions {
   // 赋值
   $assignData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
-      const targetValue = getProp(originData, this.$getOriginProp(originFrom))
-      if (!this.assign) {
-        setProp(targetData, this.$prop, targetValue, useSetData)
+      if (!this.$complex.assign) {
+        const targetValue = originData[this.$getOriginProp(originFrom)]
+        if (!this.assign) {
+          setProp(targetData, this.$prop, targetValue, useSetData)
+        } else {
+          setProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
+            targetData: targetData,
+            originData: originData,
+            type: originFrom
+          }), useSetData)
+        }
       } else {
-        setProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
-          targetData: targetData,
-          originData: originData,
-          type: originFrom
-        }), useSetData)
+        const targetValue = getComplexProp(originData, this.$getOriginProp(originFrom))
+        if (!this.assign) {
+          setComplexProp(targetData, this.$prop, targetValue, useSetData)
+        } else {
+          setComplexProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
+            targetData: targetData,
+            originData: originData,
+            type: originFrom
+          }), useSetData)
+        }
       }
     }
   }

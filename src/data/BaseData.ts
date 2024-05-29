@@ -1,4 +1,4 @@
-import { getProp, isPromise } from 'complex-utils'
+import { getComplexProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
 import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusItem, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
@@ -29,7 +29,7 @@ export interface resetOptionType {
 }
 
 export const parseResetOption = function(resetOption: resetOptionType, prop: string) {
-  return getProp(resetOption, prop)
+  return getComplexProp(resetOption, prop)
 }
 
 class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> implements DataWithLoad {
