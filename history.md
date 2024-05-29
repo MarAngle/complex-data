@@ -17,6 +17,9 @@
 
 ### Doing
 
+### 4.2.24-ing
+- 优化DictionaryData的createPostData函数的格式化顺序
+
 ### 4.2.23
 - 依赖升级
 - 添加DataWithSimpleLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型

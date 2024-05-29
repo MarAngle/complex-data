@@ -1,4 +1,4 @@
-import { Limit, trimData } from "complex-utils"
+import { Limit, setProp, trimData } from "complex-utils"
 import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/DefaultData"
@@ -223,30 +223,24 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         if (observeList && observeList.isFrozen(mod.$prop)) {
           // 冻结的模块不参与最终的生成数据逻辑
         }
-        if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', formData[dictionaryValue.$prop], {
-          targetData: postData,
-          originData: formData,
-          type: modName
-        })) {
-          // 空值不上传且值不存在时
-          return
-        }
         let originValue = formData[dictionaryValue.$prop]
         if (mod.trim) {
           originValue = trimData(originValue)
         }
-        if (mod.collect) {
-          originValue = mod.collect(originValue, {
-            targetData: postData,
-            originData: formData,
-            type: modName
-          })
-        }
-        dictionaryValue.$setTargetData(dictionaryValue.$getOriginProp(modName)!, originValue, 'collect', {
+        const payload = {
           targetData: postData,
           originData: formData,
           type: modName
-        })
+        }
+        if (mod.collect) {
+          originValue = mod.collect(originValue, payload)
+        }
+        originValue = dictionaryValue.$triggerFunc('collect', originValue, payload)
+        if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', originValue, payload)) {
+          // 空值不上传且值不存在时
+          return
+        }
+        postData[dictionaryValue.$getOriginProp(modName)!] = originValue
       }
     })
     return postData
