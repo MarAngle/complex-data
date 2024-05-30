@@ -7,7 +7,7 @@ import BaseData from "./../data/BaseData"
 import ButtonEdit from "../dictionary/ButtonEdit"
 
 export interface resetOption {
-  copy?: boolean
+  sync?: boolean
   limit?: parseDataOption['limit']
 }
 
@@ -174,7 +174,7 @@ class SearchData extends DictionaryData {
     if (this.$observe) {
       observeList.startObserve(form.getData(), this.$prop)
     }
-    this.syncFormData()
+    this.syncData(true)
     // 完成初始化form
     this._triggerCreateLife('SearchData', true)
   }
@@ -187,21 +187,25 @@ class SearchData extends DictionaryData {
       })
     })
   }
-  $syncFormData() {
+  // 验证并同步值
+  validateAndSyncData() {
     return new Promise((resolve, reject) => {
       this.$validate().then((res) => {
-        this.syncFormData()
+        this.syncData()
         resolve(res)
       }).catch(err => {
         reject(err)
       })
     })
   }
-  syncFormData() {
+  // 同步值
+  syncData(unTriggerSync?: boolean) {
     this.$search.data = this.collectData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
-    this._syncData(true, 'syncFormData')
+    if (!unTriggerSync) {
+      this._syncData(true, 'syncData')
+    }
   }
-  resetFormData(from = '' , option?: resetOption) {
+  resetForm(from = '' , option?: resetOption) {
     if (!option) {
       option = this.$resetOption || {}
     }
@@ -212,10 +216,10 @@ class SearchData extends DictionaryData {
       limit: option.limit
     })
     search.form.clearValidate()
-    if (option.copy !== false) {
-      this.syncFormData()
+    if (option.sync !== false) {
+      this.syncData()
     }
-    this._syncData(true, 'resetFormData', from)
+    this._syncData(true, 'resetForm', from)
   }
   getData(unClone?: boolean) {
     if (unClone) {
@@ -224,22 +228,22 @@ class SearchData extends DictionaryData {
       return deepCloneData(this.$search.data)
     }
   }
-  setForm(data: Record<PropertyKey, any>, { sync, force }: { sync?: boolean, force?: boolean } = {}) {
+  assignData(data: Record<PropertyKey, any>, { assign, force }: { assign?: boolean, force?: boolean } = {}) {
     const form = this.$search.form.getData()
     for (const prop in data) {
       form[prop] = data[prop]
     }
-    if (sync === undefined || sync) {
+    if (assign === undefined || assign) {
       if (force) {
-        this.syncFormData()
+        this.syncData()
       } else {
-        return this.$syncFormData()
+        return this.validateAndSyncData()
       }
     }
   }
   reset(option?: boolean) {
     if (option !== false) {
-      this.resetFormData('reset')
+      this.resetForm('reset')
     }
   }
   destroy(option?: boolean) {

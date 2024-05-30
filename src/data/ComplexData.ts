@@ -240,8 +240,8 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   /* --- dictionary end --- */
   /* --- search start --- */
-  setSearchForm(...args: Parameters<SearchData['setForm']>) {
-    return this.$module.search!.setForm(...args)
+  assignSearch(...args: Parameters<SearchData['assignData']>) {
+    return this.$module.search!.assignData(...args)
   }
   getSearch(...args: Parameters<SearchData['getData']>) {
     if (this.$module.search) {
@@ -253,7 +253,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   setSearch(from = 'set') {
     return new Promise((resolve, reject) => {
       this.triggerLife('beforeSearch', this, from)
-      this.$module.search!.$syncFormData().then(() => {
+      this.$module.search!.validateAndSyncData().then(() => {
         this.reloadData({
           data: true,
           ing: true,
@@ -279,7 +279,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   resetSearch(option?: resetOption) {
     return new Promise((resolve, reject) => {
-      this.$module.search!.$resetFormData('reset', option)
+      this.$module.search!.resetForm('reset', option)
       this.setSearch('reset').then(res => {
         resolve(res)
       }).catch(err => {

@@ -15,10 +15,9 @@
 - - 如禁用启用，选择后自动打开，前置限制等等：等待解释
 - 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 
-
 ### Doing
 
-### 4.2.24-ing
+### 4.3.1
 - 重点非兼容性更新
 - 依赖升级，优化setProp/getProp相关逻辑
 - 添加Symbol('empty')值和nonEmptySetProp/nonEmptySetComplexProp函数，实现当值为Symbol('empty')时不进行赋值和传递
@@ -39,6 +38,11 @@
 - - createPostData => collectData
 - SearchData
 - - $resetFormData => resetFormData,删除observe重新构建逻辑
+- - $syncFormData => validateAndSyncData
+- - syncFormData => syncData
+- - resetFormData => resetForm
+- - - resetOption.copy = > resetOption.sync
+- - setForm => assignData
 - ComplexData
 - - createEditDataByDictionary => parseDataByDictionary
 - - createPostDataByDictionary => collectDataByDictionary
