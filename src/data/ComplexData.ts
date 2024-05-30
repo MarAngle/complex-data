@@ -232,11 +232,11 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   buildDictionaryObserveList (...args: Parameters<DictionaryData['buildObserveList']>) {
     return this.$module.dictionary!.buildObserveList(...args)
   }
-  createEditDataByDictionary (...args: Parameters<DictionaryData['createEditData']>) {
-    return this.$module.dictionary!.createEditData(...args)
+  parseDataByDictionary (...args: Parameters<DictionaryData['parseData']>) {
+    return this.$module.dictionary!.parseData(...args)
   }
-  createPostDataByDictionary (...args: Parameters<DictionaryData['createPostData']>) {
-    return this.$module.dictionary!.createPostData(...args)
+  collectDataByDictionary (...args: Parameters<DictionaryData['collectData']>) {
+    return this.$module.dictionary!.collectData(...args)
   }
   /* --- dictionary end --- */
   /* --- search start --- */

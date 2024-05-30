@@ -1,5 +1,5 @@
 import { deepCloneData, getType } from "complex-utils"
-import DictionaryData, { DictionaryDataInitOption, createEditOption } from "./DictionaryData"
+import DictionaryData, { DictionaryDataInitOption, parseDataOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
@@ -8,7 +8,7 @@ import ButtonEdit from "../dictionary/ButtonEdit"
 
 export interface resetOption {
   copy?: boolean
-  limit?: createEditOption['limit']
+  limit?: parseDataOption['limit']
 }
 
 export type menuInitType = {
@@ -190,7 +190,7 @@ class SearchData extends DictionaryData {
     })
   }
   syncFormData() {
-    this.$search.data = this.createPostData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
+    this.$search.data = this.collectData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
     this._syncData(true, 'syncFormData')
   }
   $resetFormData(from = '' , option?: resetOption) {
@@ -198,7 +198,7 @@ class SearchData extends DictionaryData {
       option = this.$resetOption || {}
     }
     const search = this.$search
-    this.createEditData(search.dictionary, this.$prop, undefined, {
+    this.parseData(search.dictionary, this.$prop, undefined, {
       target: search.form.getData(),
       from: from,
       limit: option.limit

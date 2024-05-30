@@ -50,7 +50,7 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
   return structData
 }
 
-export interface createEditOption {
+export interface parseDataOption {
   target?: Record<PropertyKey, any>
   from?: string
   limit?: Limit | LimitInitOption
@@ -206,7 +206,8 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     }
     return observeList
   }
-  createEditData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, any>, option: createEditOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
+  // 异步解析数据准备编辑
+  parseData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
     return new Promise((resolve) => {
       const targetData = option.target || {}
       const from = option.from
@@ -216,7 +217,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       for (let n = 0; n < size; n++) {
         const dictionaryValue = dictionaryValueList[n]
         if (!limit.getLimit(dictionaryValue.$prop)) {
-          promiseList.push(dictionaryValue.$createEditValue({
+          promiseList.push(dictionaryValue.$parseValue({
             targetData: targetData,
             originData: originData,
             type: modName,
@@ -229,7 +230,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       })
     })
   }
-  createPostData(formData: Record<PropertyKey, any>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
+  collectData(formData: Record<PropertyKey, any>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
     const postData: Record<string, any> = {}
     dictionaryValueList.forEach(dictionaryValue => {
       const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod

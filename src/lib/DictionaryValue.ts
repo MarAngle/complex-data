@@ -328,7 +328,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  $setEditValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
+  parseValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
     if (originData) {
@@ -352,7 +352,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
     return targetValue
   }
-  $createEditValue (option: payloadType) {
+  $parseValue (option: payloadType) {
     return new Promise((resolve) => {
       const mod = this.$getMod(option.type)
       const next = (targetValue: unknown, code: string, unSet?: boolean) => {
@@ -366,10 +366,10 @@ class DictionaryValue extends DefaultData implements functions {
           if (mod.$editable) {
             if (mod instanceof DefaultLoadEdit) {
               mod.loadData().finally(() => {
-                next(this.$setEditValue(mod, option), '')
+                next(this.parseValue(mod, option), '')
               })
             } else {
-              next(this.$setEditValue(mod, option), '')
+              next(this.parseValue(mod, option), '')
             }
           } else {
             next(undefined, 'not editable', true)
