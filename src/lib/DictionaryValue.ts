@@ -22,6 +22,7 @@ import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
+import config from '../../config'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>
@@ -274,7 +275,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (!this.$complex.assignProp) {
         const originProp = this.$getOriginProp(originFrom)
         if (this.assign) {
-          setProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
+          config.nonEmptySetProp(targetData, this.$prop, this.$triggerFunc('assign', targetData[originProp], {
             targetData: targetData,
             originData: targetData,
             type: originFrom
@@ -282,12 +283,12 @@ class DictionaryValue extends DefaultData implements functions {
         } else if (originProp !== this.$prop) {
           // 不存在赋值函数则在prop不同时重新赋值
           // 不应对原字段进行操作，原因如标题处
-          setProp(targetData, this.$prop, targetData[originProp], useSetData)
+          config.nonEmptySetProp(targetData, this.$prop, targetData[originProp], useSetData)
         }
       } else {
         const originProp = this.$getOriginProp(originFrom)
         if (this.assign) {
-          setComplexProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
+          config.nonEmptySetComplexProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
             targetData: targetData,
             originData: targetData,
             type: originFrom
@@ -295,7 +296,7 @@ class DictionaryValue extends DefaultData implements functions {
         } else if (originProp !== this.$prop) {
           // 不存在赋值函数则在prop不同时重新赋值
           // 不应对原字段进行操作，原因如标题处
-          setComplexProp(targetData, this.$prop, targetData[originProp], useSetData)
+          config.nonEmptySetComplexProp(targetData, this.$prop, targetData[originProp], useSetData)
         }
       }
     }
@@ -305,27 +306,25 @@ class DictionaryValue extends DefaultData implements functions {
     if (this.$isOriginFrom(originFrom)) {
       const originProp = this.$getOriginProp(originFrom)
       if (!this.$complex.assignProp) {
-        const targetValue = originData[originProp]
-        if (!this.assign) {
-          setProp(targetData, this.$prop, targetValue, useSetData)
-        } else {
-          setProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
+        let targetValue = originData[originProp]
+        if (this.assign) {
+          targetValue = this.$triggerFunc('assign', targetValue, {
             targetData: targetData,
             originData: originData,
             type: originFrom
-          }), useSetData)
+          })
         }
+        config.nonEmptySetProp(targetData, this.$prop, targetValue, useSetData)
       } else {
-        const targetValue = getComplexProp(originData, originProp)
-        if (!this.assign) {
-          setComplexProp(targetData, this.$prop, targetValue, useSetData)
-        } else {
-          setComplexProp(targetData, this.$prop, this.$triggerFunc('assign', targetValue, {
+        let targetValue = getComplexProp(originData, originProp)
+        if (this.assign) {
+          targetValue = this.$triggerFunc('assign', targetValue, {
             targetData: targetData,
             originData: originData,
             type: originFrom
-          }), useSetData)
+          })
         }
+        config.nonEmptySetComplexProp(targetData, this.$prop, targetValue, useSetData)
       }
     }
   }
@@ -352,10 +351,10 @@ class DictionaryValue extends DefaultData implements functions {
       if (this.modIsEditable(mod)) {
         if (mod instanceof DefaultLoadEdit) {
           mod.loadData().finally(() => {
-            setProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
+            config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
           })
         } else {
-          setProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
+          config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
         }
       } else {
         resolve({ status: 'success', code: 'not edit' })
@@ -381,7 +380,7 @@ class DictionaryValue extends DefaultData implements functions {
         // 空值不上传且值不存在时
         return
       }
-      payload.targetData[this.$getOriginProp(payload.type)] = originValue
+      config.nonEmptySetProp(payload.targetData, this.$getOriginProp(payload.type), originValue)
     }
   }
 }
