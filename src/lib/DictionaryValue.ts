@@ -335,7 +335,7 @@ class DictionaryValue extends DefaultData implements functions {
     if (payload.originData) {
       targetValue = this.$triggerFunc('parse', payload.originData[this.$prop], payload)
     } else if (mod.getValue) {
-      targetValue = mod.getValue(payload.from === 'reset' ? 'reset' : 'init')
+      targetValue = mod.getValue(payload.from === 'reset' ? 'reset' : 'default')
     }
     // 模块存在parse函数时将当前数据进行parse操作
     if (mod.parse) {

@@ -27,7 +27,6 @@ export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
   placeholder?: false | string
   value?: {
     default?: any
-    init?: any
     reset?: any
     [prop: PropertyKey]: any
   }
@@ -64,7 +63,6 @@ class DefaultEdit extends DefaultSimpleEdit {
   $rules?: ruleOption[]
   $value: {
     default?: any
-    init?: any
     reset?: any
     [prop: PropertyKey]: any
   }
@@ -93,15 +91,11 @@ class DefaultEdit extends DefaultSimpleEdit {
     if (this.simple.value !== true) {
       const initOptionValue = initOption.value || {}
       const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
-      const initValue = hasProp(initOptionValue, 'init') ? initOptionValue.init : defaultValue
       const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
-      if (defaultValue || initValue || resetValue) {
+      if (defaultValue || resetValue) {
         const valuePropList = [] as string[]
         if (defaultValue !== null && typeof defaultValue === 'object') {
           valuePropList.push('default')
-        }
-        if (initValue !== null && typeof initValue === 'object') {
-          valuePropList.push('init')
         }
         if (resetValue !== null && typeof resetValue === 'object') {
           valuePropList.push('reset')
@@ -112,7 +106,6 @@ class DefaultEdit extends DefaultSimpleEdit {
       }
       this.$value = {
         default: defaultValue,
-        init: initValue,
         reset: resetValue
       }
     } else {

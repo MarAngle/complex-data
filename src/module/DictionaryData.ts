@@ -64,7 +64,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
   simple?: {
     prop?: boolean // 是否加载prop数据
   }
-  complex: {
+  complex?: {
     assign?: boolean // 是否进行复杂赋值,格式化函数直接对源数据进行改造:警告，此逻辑仅列表创建时有效，对于update类相关调用依然通过源数据对目标数据进行赋值
   } // 简单快速处理判断值
   list?: DictionaryValueInitOption[]

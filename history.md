@@ -21,11 +21,17 @@
 - 重点非兼容性更新
 - 依赖升级，优化setProp/getProp相关逻辑
 - 优化字典赋值格式化相关逻辑
+- 更改整体逻辑，由之前基于源数据生成新数据后保存更改为源数据直接进行格式化处理后保存，减少添加非展示性字段的对接工作以及忘记对接后的排查工作
+- 删除DefaultList.auto
+- 删除DefaultEdit.value.init
+- DictionaryValue赋值默认直接使用setProp赋值，不考虑级联属性a.b的赋值逻辑，减少性能消耗
 - DictionaryValue
+- - 添加complex.assignProp设置项
 - - 删除$setTargetData函数
 - - 添加$assignData函数，基于原$formatData函数，实现赋值相关逻辑
 - - 更改$formatData函数，由原来的赋值逻辑更改为格式化逻辑
 - DictionaryData
+- - 添加complex.assign设置项
 - - createEditData => parseData
 - - createPostData => collectData
 - ComplexData
