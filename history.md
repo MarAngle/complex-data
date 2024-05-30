@@ -26,6 +26,7 @@
 - 更改整体逻辑，由之前基于源数据生成新数据后保存更改为源数据直接进行格式化处理后保存，减少添加非展示性字段的对接工作以及忘记对接后的排查工作
 - 删除DefaultList.auto
 - 删除DefaultEdit.value.init
+- 删除SearchData.$form
 - DictionaryValue赋值默认直接使用setProp赋值，不考虑级联属性a.b的赋值逻辑，减少性能消耗
 - DictionaryValue
 - - 添加complex.assignProp设置项
@@ -36,6 +37,8 @@
 - - 添加complex.assign设置项
 - - createEditData => parseData
 - - createPostData => collectData
+- SearchData
+- - $resetFormData => resetFormData,删除observe重新构建逻辑
 - ComplexData
 - - createEditDataByDictionary => parseDataByDictionary
 - - createPostDataByDictionary => collectDataByDictionary

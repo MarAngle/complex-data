@@ -1,10 +1,9 @@
-import { Limit, setProp, trimData } from "complex-utils"
+import { Limit } from "complex-utils"
 import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/DefaultData"
-import DictionaryValue, { DictionaryEditMod, DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
+import DictionaryValue, { DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
-import DefaultEdit from "../dictionary/DefaultEdit"
 import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
 

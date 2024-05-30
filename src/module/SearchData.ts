@@ -115,7 +115,6 @@ class SearchData extends DictionaryData {
       [prop: string]: undefined | DictionaryEditMod
     }
   }
-  static $form = FormValue
   static $getMenu = function(menuName: string) {
     const menuOption = SearchData.$menu.data[menuName]
     if (menuOption) {
@@ -137,6 +136,7 @@ class SearchData extends DictionaryData {
   $observe?: boolean
   $resetOption?: resetOption
   constructor(initOption: SearchDataInitOption) {
+    // SearchData的simple.prop默认为真
     if (initOption.simple === undefined) {
       initOption.simple = {
         prop: true
@@ -144,18 +144,17 @@ class SearchData extends DictionaryData {
     } else if (initOption.simple.prop === undefined) {
       initOption.simple.prop = true
     }
-    // SearchData的simple.prop默认为真
     super(initOption)
     const prop = initOption.prop || 'search'
     this._triggerCreateLife('SearchData', false, initOption)
     this.$prop = prop
     const dictionaryList = this.getList(prop)
     const observeList = this.buildObserveList(prop, dictionaryList)
-    const form = SearchData.$form
+    const form = new FormValue()
     this.$search = {
       dictionary: dictionaryList,
       list: observeList,
-      form: new form(),
+      form: form,
       data: {}
     }
     const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
@@ -167,7 +166,16 @@ class SearchData extends DictionaryData {
     }
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
-    this.$resetFormData('init')
+    // 初始化form
+    this.parseData(dictionaryList, this.$prop, undefined, {
+      target: form.getData(),
+      from: 'init'
+    })
+    if (this.$observe) {
+      observeList.startObserve(form.getData(), this.$prop)
+    }
+    this.syncFormData()
+    // 完成初始化form
     this._triggerCreateLife('SearchData', true)
   }
   $validate(): Promise<{ status: string }> {
@@ -193,7 +201,7 @@ class SearchData extends DictionaryData {
     this.$search.data = this.collectData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
     this._syncData(true, 'syncFormData')
   }
-  $resetFormData(from = '' , option?: resetOption) {
+  resetFormData(from = '' , option?: resetOption) {
     if (!option) {
       option = this.$resetOption || {}
     }
@@ -204,13 +212,10 @@ class SearchData extends DictionaryData {
       limit: option.limit
     })
     search.form.clearValidate()
-    if (this.$observe) {
-      search.list.startObserve(search.form.getData(), this.$prop)
-    }
     if (option.copy !== false) {
       this.syncFormData()
     }
-    this._syncData(true, '$resetFormData', from)
+    this._syncData(true, 'resetFormData', from)
   }
   getData(unClone?: boolean) {
     if (unClone) {
@@ -234,7 +239,7 @@ class SearchData extends DictionaryData {
   }
   reset(option?: boolean) {
     if (option !== false) {
-      this.$resetFormData('init')
+      this.resetFormData('reset')
     }
   }
   destroy(option?: boolean) {
