@@ -1,4 +1,4 @@
-import { getProp, setProp, isExist, exportMsg, setComplexProp, getComplexProp, trimData } from 'complex-utils'
+import { isExist, exportMsg, getComplexProp, trimData } from 'complex-utils'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData from '../module/DictionaryData'
@@ -46,11 +46,11 @@ interface functions {
 
 export type funcKeys = keyof functions
 
-const parse = function (this: DictionaryValue, data: unknown, { type }: payloadType) {
+const parse = function (this: DictionaryValue, data: any, { type }: payloadType) {
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
     if (data !== undefined && data !== null && typeof data === 'object') {
-      return getProp(data as Record<PropertyKey, any>, showProp)
+      return data[showProp]
     } else {
       return undefined
     }
@@ -352,9 +352,11 @@ class DictionaryValue extends DefaultData implements functions {
         if (mod instanceof DefaultLoadEdit) {
           mod.loadData().finally(() => {
             config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
+            resolve({ status: 'success' })
           })
         } else {
           config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
+          resolve({ status: 'success' })
         }
       } else {
         resolve({ status: 'success', code: 'not edit' })

@@ -17,6 +17,10 @@
 
 ### Doing
 
+### 4.3.2
+- 修正DictionaryValue错误引用
+- 修正DictionaryValue.parseValue未正确resolve的BUG
+
 ### 4.3.1
 - 重点非兼容性更新
 - 依赖升级，优化setProp/getProp相关逻辑
