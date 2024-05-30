@@ -19,8 +19,8 @@
 
 ### 4.2.24-ing
 - 升级依赖优化setProp/getProp相关逻辑
+- 重大非兼容变更：DictionaryValue/DictionaryData优化simple设置项，添加complex设置项，默认通过格式化函数格式化源数据本身，可通过complex.assign以源数据为准生产新数据
 - 优化DictionaryData的createPostData函数的格式化顺序
-- DictionaryData扩展simple属性，实现格式化本身逻辑
 - DictionaryValue删除$setTargetData函数，改为各个调用单独调用并优化，$formatData=>$assignData
 
 ### 4.2.23

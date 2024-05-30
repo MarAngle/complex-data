@@ -97,7 +97,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
     edit?: boolean
   } // 简单快速处理判断值
   complex?: {
-    assign?: boolean
+    assignProp?: boolean
   }
   originProp?: InterfaceValueInitOption<string> // 来源属性
   label?: InterfaceValueInitOption<string> // 名称
@@ -166,10 +166,10 @@ class DictionaryValue extends DefaultData implements functions {
   $originFrom: string[]
   $simple: {
     edit?: boolean
-  } // 简单快速处理判断值
+  } // 简单处理判断值
   $complex: {
-    assign?: boolean
-  } // 简单快速处理判断值
+    assignProp?: boolean
+  } // 复杂处理判断值
   $interface: {
     name: InterfaceValue<string>
     originProp?: InterfaceValue<string>
@@ -265,11 +265,46 @@ class DictionaryValue extends DefaultData implements functions {
       return originData
     }
   }
+  // 格式化数据
+  // 警告：不对原字段进行操作，因为原字段会作为originData对其他字段进行依赖，在complex.assign赋值模式下，原字段也不会做删除处理，保证了2种模式下的取值逻辑相同
+  $formatData(targetData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
+    if (this.$isOriginFrom(originFrom)) {
+      // 仅存在assign函数或者originProp !== this.$prop需要进行格式化操作
+      if (!this.$complex.assignProp) {
+        const originProp = this.$getOriginProp(originFrom)
+        if (this.assign) {
+          setProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
+            targetData: targetData,
+            originData: targetData,
+            type: originFrom
+          }), useSetData)
+        } else if (originProp !== this.$prop) {
+          // 不存在赋值函数则在prop不同时重新赋值
+          // 不应对原字段进行操作，原因如标题处
+          setProp(targetData, this.$prop, targetData[originProp], useSetData)
+        }
+      } else {
+        const originProp = this.$getOriginProp(originFrom)
+        if (this.assign) {
+          setComplexProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
+            targetData: targetData,
+            originData: targetData,
+            type: originFrom
+          }), useSetData)
+        } else if (originProp !== this.$prop) {
+          // 不存在赋值函数则在prop不同时重新赋值
+          // 不应对原字段进行操作，原因如标题处
+          setComplexProp(targetData, this.$prop, targetData[originProp], useSetData)
+        }
+      }
+    }
+  }
   // 赋值
   $assignData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
     if (this.$isOriginFrom(originFrom)) {
-      if (!this.$complex.assign) {
-        const targetValue = originData[this.$getOriginProp(originFrom)]
+      const originProp = this.$getOriginProp(originFrom)
+      if (!this.$complex.assignProp) {
+        const targetValue = originData[originProp]
         if (!this.assign) {
           setProp(targetData, this.$prop, targetValue, useSetData)
         } else {
@@ -280,7 +315,7 @@ class DictionaryValue extends DefaultData implements functions {
           }), useSetData)
         }
       } else {
-        const targetValue = getComplexProp(originData, this.$getOriginProp(originFrom))
+        const targetValue = getComplexProp(originData, originProp)
         if (!this.assign) {
           setComplexProp(targetData, this.$prop, targetValue, useSetData)
         } else {

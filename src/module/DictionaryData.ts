@@ -63,8 +63,10 @@ export interface DictionaryDataOption {
 export interface DictionaryDataInitOption extends DefaultDataInitOption {
   simple?: {
     prop?: boolean // 是否加载prop数据
-    assign?: boolean | 'self' // 是否进行简单赋值, 当assign为self时，格式化函数直接对源数据进行改造:警告，此逻辑仅列表创建时有效，对于update类相关调用依然通过源数据对目标数据进行赋值
   }
+  complex: {
+    assign?: boolean // 是否进行复杂赋值,格式化函数直接对源数据进行改造:警告，此逻辑仅列表创建时有效，对于update类相关调用依然通过源数据对目标数据进行赋值
+  } // 简单快速处理判断值
   list?: DictionaryValueInitOption[]
   propData?: Partial<propDataType<string | propDataValueType>>
   layout?: LayoutParseInitOption
@@ -76,15 +78,23 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
   static $empty = true
   static $depth = Symbol('depth')
-  static $assignData = function(dictionary: DictionaryData ,targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
+  static $assignData = function(dictionary: DictionaryData, targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of dictionary.$data.values()) {
       dictionaryValue.$assignData(targetData, originData, originFrom, useSetData)
     }
     return targetData
   }
+  static $formatData = function(dictionary: DictionaryData, targetData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
+    for (const dictionaryValue of dictionary.$data.values()) {
+      dictionaryValue.$formatData(targetData, originFrom, useSetData)
+    }
+    return targetData
+  }
   $simple: {
     prop?: boolean
-    assign?: boolean | 'self'
+  }
+  $complex: {
+    assign?: boolean
   }
   $data: Map<string, DictionaryValue>
   $propData?: propDataType<propDataValueType>
@@ -94,6 +104,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     super(initOption)
     this._triggerCreateLife('DictionaryData', false, initOption)
     this.$simple = initOption.simple || {}
+    this.$complex = initOption.complex || {}
     this.$data = new Map()
     if (!this.$simple.prop) {
       // 简单模式下不加载propData
@@ -154,7 +165,8 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   }
   // 格式化函数
   createData(originData: Record<PropertyKey, any>, originFrom = 'list', useSetData = false) {
-    return DictionaryData.$assignData(this, {}, originData, originFrom, useSetData)
+    // --------
+    return !this.$complex.assign ? DictionaryData.$formatData(this, originData, originFrom, useSetData) : DictionaryData.$assignData(this, {}, originData, originFrom, useSetData)
   }
   updateData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom = 'info', useSetData = true) {
     return DictionaryData.$assignData(this, targetData, originData, originFrom, useSetData)
