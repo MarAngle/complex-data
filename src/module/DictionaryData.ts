@@ -217,7 +217,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       for (let n = 0; n < size; n++) {
         const dictionaryValue = dictionaryValueList[n]
         if (!limit.getLimit(dictionaryValue.$prop)) {
-          promiseList.push(dictionaryValue.$parseValue({
+          promiseList.push(dictionaryValue.parseValue({
             targetData: targetData,
             originData: originData,
             type: modName,
@@ -233,38 +233,14 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   collectData(formData: Record<PropertyKey, any>, dictionaryValueList: DictionaryValue[], modName: string, observeList?: ObserveList) {
     const postData: Record<string, any> = {}
     dictionaryValueList.forEach(dictionaryValue => {
-      const mod = dictionaryValue.$getMod(modName) as DictionaryEditMod
-      if (mod && mod instanceof DefaultEdit) {
-        if (!mod.$editable) {
-          // 不可编辑的模块不参与最终的生成数据逻辑
-          return
-        }
-        if (observeList && observeList.isFrozen(mod.$prop)) {
-          // 冻结的模块不参与最终的生成数据逻辑
-        }
-        let originValue = formData[dictionaryValue.$prop]
-        if (mod.trim) {
-          originValue = trimData(originValue)
-        }
-        const payload = {
-          targetData: postData,
-          originData: formData,
-          type: modName
-        }
-        if (mod.collect) {
-          originValue = mod.collect(originValue, payload)
-        }
-        originValue = dictionaryValue.$triggerFunc('collect', originValue, payload)
-        if (!this.$option.empty && !dictionaryValue.$triggerFunc('check', originValue, payload)) {
-          // 空值不上传且值不存在时
-          return
-        }
-        postData[dictionaryValue.$getOriginProp(modName)!] = originValue
-      }
+      dictionaryValue.collectValue({
+        targetData: postData,
+        originData: formData,
+        type: modName
+      }, this.$option.empty, observeList)
     })
     return postData
   }
-
   // SearchData重写加载/卸载
   _install(target: BaseData) {
     super._install(target)

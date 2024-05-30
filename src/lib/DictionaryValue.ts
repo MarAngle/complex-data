@@ -1,4 +1,4 @@
-import { getProp, setProp, isExist, exportMsg, setComplexProp, getComplexProp } from 'complex-utils'
+import { getProp, setProp, isExist, exportMsg, setComplexProp, getComplexProp, trimData } from 'complex-utils'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData from '../module/DictionaryData'
@@ -21,6 +21,7 @@ import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
+import ObserveList from '../dictionary/ObserveList'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>
@@ -328,59 +329,60 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
-  parseValue (mod: DefaultEdit, { targetData, originData, type, from = 'init' }: payloadType) {
+  $parseValue (mod: DefaultEdit, payload: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
-    if (originData) {
-      targetValue = this.$triggerFunc('parse', originData[this.$prop], {
-        type: type,
-        targetData,
-        originData,
-        from: from
-      })
+    if (payload.originData) {
+      targetValue = this.$triggerFunc('parse', payload.originData[this.$prop], payload)
     } else if (mod.getValue) {
-      targetValue = mod.getValue(from === 'reset' ? 'reset' : 'init')
+      targetValue = mod.getValue(payload.from === 'reset' ? 'reset' : 'init')
     }
     // 模块存在parse函数时将当前数据进行parse操作
     if (mod.parse) {
-      targetValue = mod.parse(targetValue, {
-        type: type,
-        targetData,
-        originData,
-        from: from
-      })
+      targetValue = mod.parse(targetValue, payload)
     }
     return targetValue
   }
-  $parseValue (option: payloadType) {
+  modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
+    return !!mod && mod instanceof DefaultEdit && mod.$editable
+  }
+  parseValue (payload: payloadType) {
     return new Promise((resolve) => {
-      const mod = this.$getMod(option.type)
-      const next = (targetValue: unknown, code: string, unSet?: boolean) => {
-        if (!unSet) {
-          setProp(option.targetData, this.$prop, targetValue, true)
-        }
-        resolve({ status: !code ? 'success' : code, code: code })
-      }
-      if (mod) {
-        if (mod instanceof DefaultEdit) {
-          if (mod.$editable) {
-            if (mod instanceof DefaultLoadEdit) {
-              mod.loadData().finally(() => {
-                next(this.parseValue(mod, option), '')
-              })
-            } else {
-              next(this.parseValue(mod, option), '')
-            }
-          } else {
-            next(undefined, 'not editable', true)
-          }
+      const mod = this.$getMod(payload.type)
+      if (this.modIsEditable(mod)) {
+        if (mod instanceof DefaultLoadEdit) {
+          mod.loadData().finally(() => {
+            setProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
+          })
         } else {
-          next(undefined, 'not edit', true)
+          setProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
         }
       } else {
-        next(undefined, 'not exist', true)
+        resolve({ status: 'success', code: 'not edit' })
       }
     })
+  }
+  collectValue (payload: payloadType, empty?: boolean, observeList?: ObserveList) {
+    const mod = this.$getMod(payload.type)
+    if (this.modIsEditable(mod)) {
+      if (observeList && observeList.isFrozen(mod.$prop)) {
+        // 冻结的模块不参与最终的生成数据逻辑
+        return
+      }
+      let originValue = payload.originData![this.$prop]
+      if (mod.trim) {
+        originValue = trimData(originValue)
+      }
+      if (mod.collect) {
+        originValue = mod.collect(originValue, payload)
+      }
+      originValue = this.$triggerFunc('collect', originValue, payload)
+      if (!empty && !this.$triggerFunc('check', originValue, payload)) {
+        // 空值不上传且值不存在时
+        return
+      }
+      payload.targetData[this.$getOriginProp(payload.type)] = originValue
+    }
   }
 }
 
