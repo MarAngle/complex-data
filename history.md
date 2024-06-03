@@ -16,6 +16,13 @@
 - 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 
 ### Doing
+- 通过ObserveList实现级联表单
+- 添加防抖和节流
+- - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
+
+### 4.3.3-ing
+- 添加FormEdit
+- DictionaryValue接收添加dictionary(DictionaryData)
 
 ### 4.3.2
 - 修正DictionaryValue错误引用

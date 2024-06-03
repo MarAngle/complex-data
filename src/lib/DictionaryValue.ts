@@ -1,7 +1,7 @@
 import { isExist, exportMsg, getComplexProp, trimData } from 'complex-utils'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
-import DictionaryData from '../module/DictionaryData'
+import DictionaryData, { DictionaryDataInitOption } from '../module/DictionaryData'
 import InterfaceValue, { InterfaceValueInitOption } from './InterfaceValue'
 import DefaultMod, { DefaultModInitOption } from '../dictionary/DefaultMod'
 import DefaultList, { DefaultListInitOption } from '../dictionary/DefaultList'
@@ -19,6 +19,7 @@ import ButtonEdit, { ButtonEditInitOption } from '../dictionary/ButtonEdit'
 import ButtonGroupEdit, { ButtonGroupEditInitOption } from '../dictionary/ButtonGroupEdit'
 import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
+import FormEdit, { FormEditInitOption } from '../dictionary/FormEdit'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
@@ -63,9 +64,9 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
-export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption
+export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption | FormEditInitOption
 
-export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit
+export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit | FormEdit
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -106,6 +107,7 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<ComplexType> // 值类型
   mod?: DictionaryModDataInitOption
+  dictionray?: DictionaryDataInitOption | DictionaryData
 }
 
 export type interfaceKeys = keyof DictionaryValue['$interface']
@@ -137,8 +139,10 @@ class DictionaryValue extends DefaultData implements functions {
       return new ButtonGroupEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'content') {
       return new ContentEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'custom' || editModInitOption.type === 'slot') {
+    } else if (editModInitOption.type === 'custom') {
       return new CustomEdit(editModInitOption, parent, modName)
+    } else if (editModInitOption.type === 'form') {
+      return new FormEdit(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
@@ -183,6 +187,7 @@ class DictionaryValue extends DefaultData implements functions {
   collect?: false | functionType<unknown>
   check?: false | functionType<boolean>
   $mod: DictionaryModDataType
+  dictionary?: DictionaryData
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
     const $constructor = (this.constructor as typeof DefaultMod)
@@ -231,6 +236,9 @@ class DictionaryValue extends DefaultData implements functions {
       for (const modName in redirect) {
         this.$mod[modName] = this.$mod[redirect[modName]]
       }
+    }
+    if (initOption.dictionray) {
+      this.dictionary = initOption.dictionray instanceof DictionaryData ? initOption.dictionray : new DictionaryData(initOption.dictionray)
     }
     this._triggerCreateLife('DictionaryValue', true, initOption)
   }

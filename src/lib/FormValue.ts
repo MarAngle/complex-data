@@ -7,6 +7,7 @@ class FormValue {
   }
   ref: any
   data: Record<PropertyKey, any>
+  children?: Record<PropertyKey, FormValue>
   constructor() {
     this.ref = null
     this.data = {}
@@ -23,11 +24,42 @@ class FormValue {
   getData() {
     return this.data
   }
+  pushChild(prop: PropertyKey, form: FormValue) {
+    if (!this.children) {
+      this.children = {}
+    }
+    this.children[prop] = form
+  }
   clearValidate(...args: any[]): void {
-    return (this.constructor as typeof FormValue).clearValidate(this, ...args)
+    const $constructor = (this.constructor as typeof FormValue)
+    if (this.children) {
+      for (const prop in this.children) {
+        return $constructor.clearValidate(this.children[prop], ...args)
+      }
+    }
+    return $constructor.clearValidate(this, ...args)
   }
   validate(...args: any[]): Promise<any> {
-    return (this.constructor as typeof FormValue).validate(this, ...args)
+    const $constructor = (this.constructor as typeof FormValue)
+    if (this.children) {
+      const promiseList: Promise<any>[] = []
+      for (const prop in this.children) {
+        promiseList.push($constructor.validate(this.children[prop], ...args))
+      }
+      return new Promise((resolve, reject) => {
+        Promise.all(promiseList).then(() => {
+          $constructor.validate(this, ...args).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          })
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    } else {
+      return $constructor.validate(this, ...args)
+    }
   }
 }
 
