@@ -20,7 +20,7 @@
 - 添加防抖和节流
 - - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
 
-### 4.3.3-ing
+### 4.3.3
 - 添加FormEdit
 - DictionaryValue接收添加dictionary(DictionaryData)
 
