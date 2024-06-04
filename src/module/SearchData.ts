@@ -1,5 +1,5 @@
 import { deepCloneData, getType } from "complex-utils"
-import DictionaryData, { DictionaryDataInitOption, parseDataOption } from "./DictionaryData"
+import DictionaryData, { DictionaryDataInitOption } from "./DictionaryData"
 import DictionaryValue, { DictionaryEditMod } from "../lib/DictionaryValue"
 import ObserveList from "../dictionary/ObserveList"
 import FormValue from "../lib/FormValue"
@@ -8,7 +8,6 @@ import ButtonEdit from "../dictionary/ButtonEdit"
 
 export interface resetOption {
   sync?: boolean
-  limit?: parseDataOption['limit']
 }
 
 export type menuInitType = {
@@ -149,7 +148,7 @@ class SearchData extends DictionaryData {
     this._triggerCreateLife('SearchData', false, initOption)
     this.$prop = prop
     const dictionaryList = this.getList(prop)
-    const observeList = this.buildObserveList(prop, dictionaryList)
+    const observeList = this.getObserveList(prop, dictionaryList)
     const form = new FormValue()
     this.$search = {
       dictionary: dictionaryList,
@@ -167,9 +166,7 @@ class SearchData extends DictionaryData {
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
     // 初始化form
-    this.parseData(dictionaryList, form, this.$prop, undefined, {
-      from: 'init'
-    })
+    this.parseData(dictionaryList, form, this.$prop, undefined, 'init')
     if (this.$observe) {
       observeList.startObserve(form.getData(), this.$prop)
     }
@@ -209,10 +206,7 @@ class SearchData extends DictionaryData {
       option = this.$resetOption || {}
     }
     const search = this.$search
-    this.parseData(search.dictionary, search.form, this.$prop, undefined, {
-      from: from,
-      limit: option.limit
-    })
+    this.parseData(search.dictionary, search.form, this.$prop, undefined, from)
     search.form.clearValidate()
     if (option.sync !== false) {
       this.syncData()

@@ -50,11 +50,6 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
   return structData
 }
 
-export interface parseDataOption {
-  from?: string
-  limit?: Limit | LimitInitOption
-}
-
 export interface DictionaryDataOption {
   empty: boolean
 }
@@ -171,7 +166,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return DictionaryData.$assignData(this, targetData, originData, originFrom, useSetData)
   }
   $getPageItem(modName: string, ditem: DictionaryValue) {
-    return ditem.$getMod(modName)!
+    return ditem.$getMod(modName)
   }
   getList(modName: string) {
     const list: DictionaryValue[] = []
@@ -184,58 +179,52 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return list
   }
   // 获取模块列表
-  getPageList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+  getPageList(modName: string, dictionaryValueList: DictionaryValue[]) {
     if (!dictionaryValueList) {
       dictionaryValueList = this.getList(modName)
     }
     const pageList: DictionaryMod[] = []
     for (let n = 0; n < dictionaryValueList.length; n++) {
-      pageList.push(this.$getPageItem(modName, dictionaryValueList[n]))
+      pageList.push(this.$getPageItem(modName, dictionaryValueList[n])!)
     }
     return pageList
   }
   // 获取响应式模块列表
-  buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[], cascadeOption?: { observe: boolean }) {
-    if (!dictionaryValueList) {
-      dictionaryValueList = this.getList(modName)
-    }
+  getObserveList(modName: string, dictionaryValueList: DictionaryValue[], observe?: boolean ) {
     const observeList = new ObserveList()
     for (let n = 0; n < dictionaryValueList.length; n++) {
       const dictionaryValue = dictionaryValueList[n]
       const mod = this.$getPageItem(modName, dictionaryValue) as DefaultInfo
       observeList.push(mod)
-      if (cascadeOption && dictionaryValue.modIsCascade(mod)) {
+      if (dictionaryValue.modIsCascade(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
+        const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
         mod.$run = {
           gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
           dictionaryList: dictionaryList,
-          observeList: dictionaryValue.dictionary!.buildObserveList(modName, dictionaryList, cascadeOption),
+          observeList: observeList,
           type: modName,
           form: new FormValue(),
-          observe: cascadeOption.observe
+          observe: observe
         }
       }
     }
     return observeList
   }
   // 异步解析数据准备编辑
-  parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
+  parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, from?: string): Promise<{ status: string, data: Record<PropertyKey, any> }> {
     return new Promise((resolve) => {
       const targetData = formValue.getData()
-      const from = option.from
-      const limit = !option.limit ? undefined : new Limit(option.limit)
       const size = dictionaryValueList.length
       const promiseList = []
       for (let n = 0; n < size; n++) {
         const dictionaryValue = dictionaryValueList[n]
-        if (!limit || !limit.getLimit(dictionaryValue.$prop)) {
-          promiseList.push(dictionaryValue.parseValue({
-            targetData: targetData,
-            originData: defaultData,
-            type: modName,
-            from: from
-          }))
-        }
+        promiseList.push(dictionaryValue.parseValue({
+          targetData: targetData,
+          originData: defaultData,
+          type: modName,
+          from: from
+        }))
       }
       Promise.allSettled(promiseList).then(() => {
         resolve({ status: 'success', data: targetData })
