@@ -363,9 +363,10 @@ class DictionaryValue extends DefaultData implements functions {
       if (this.modIsEditable(mod)) {
         if (this.modIsCascade(mod)) {
           // 级联表单
-          const currentFormValue = new FormValue()
-          formValue.pushChild(mod.$prop, currentFormValue)
-          this.dictionary!.parseData(mod.$run.dictionaryList!, currentFormValue, payload.type).then(res => {
+          this.dictionary!.parseData(mod.$run.dictionaryList!, mod.$run.form!, payload.type).then(res => {
+            if (mod.$run.observe) {
+              mod.$run.observeList!.startObserve(mod.$run.form!.getData(), mod.$run.type)
+            }
             config.nonEmptySetProp(payload.targetData, this.$prop, res.data, true)
             resolve({ status: 'success' })
           })
