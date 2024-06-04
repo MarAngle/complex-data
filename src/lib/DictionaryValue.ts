@@ -357,27 +357,44 @@ class DictionaryValue extends DefaultData implements functions {
     }
     return targetValue
   }
-  parseValue (payload: payloadType, formValue: FormValue) {
-    return new Promise((resolve) => {
+  _parseValue(mod: DefaultEdit, payload: payloadType) {
+    const targetValue = this.$parseValue(mod, payload)
+    if (!this.modIsCascade(mod)) {
+      config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+      return Promise.resolve({ status: 'success' })
+    } else {
+      return new Promise((resolve, reject) => {
+        // 级联表单
+        this.dictionary!.parseData(mod.$run.dictionaryList!, mod.$run.form!, payload.type, targetValue).then(res => {
+          if (mod.$run.observe) {
+            mod.$run.observeList!.startObserve(mod.$run.form!.getData(), mod.$run.type)
+          }
+          config.nonEmptySetProp(payload.targetData, mod.$prop, res.data, true)
+          resolve({ status: 'success' })
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    }
+  }
+  parseValue (payload: payloadType) {
+    return new Promise((resolve, reject) => {
       const mod = this.$getMod(payload.type)
       if (this.modIsEditable(mod)) {
-        if (this.modIsCascade(mod)) {
-          // 级联表单
-          this.dictionary!.parseData(mod.$run.dictionaryList!, mod.$run.form!, payload.type).then(res => {
-            if (mod.$run.observe) {
-              mod.$run.observeList!.startObserve(mod.$run.form!.getData(), mod.$run.type)
-            }
-            config.nonEmptySetProp(payload.targetData, this.$prop, res.data, true)
-            resolve({ status: 'success' })
-          })
-        } else if (mod instanceof DefaultLoadEdit) {
+        if (mod instanceof DefaultLoadEdit) {
           mod.loadData().finally(() => {
-            config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
-            resolve({ status: 'success' })
+            this._parseValue(mod, payload).then(res => {
+              resolve(res)
+            }).catch(err => {
+              reject(err)
+            })
           })
         } else {
-          config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
-          resolve({ status: 'success' })
+          this._parseValue(mod, payload).then(res => {
+            resolve(res)
+          }).catch(err => {
+            reject(err)
+          })
         }
       } else {
         resolve({ status: 'success', code: 'not edit' })
@@ -391,7 +408,7 @@ class DictionaryValue extends DefaultData implements functions {
         // 冻结的模块不参与最终的生成数据逻辑
         return
       }
-      let originValue = payload.originData![this.$prop]
+      let originValue = payload.originData![mod.$prop]
       if (mod.trim) {
         originValue = trimData(originValue)
       }

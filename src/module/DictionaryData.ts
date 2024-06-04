@@ -219,7 +219,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return observeList
   }
   // 异步解析数据准备编辑
-  parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any>, form: FormValue }> {
+  parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
     return new Promise((resolve) => {
       const targetData = formValue.getData()
       const from = option.from
@@ -234,11 +234,11 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
             originData: defaultData,
             type: modName,
             from: from
-          }, formValue))
+          }))
         }
       }
       Promise.allSettled(promiseList).then(() => {
-        resolve({ status: 'success', data: targetData, form: formValue })
+        resolve({ status: 'success', data: targetData })
       })
     })
   }
