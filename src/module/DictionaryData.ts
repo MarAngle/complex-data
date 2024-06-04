@@ -6,6 +6,7 @@ import DictionaryValue, { DictionaryMod, DictionaryValueInitOption } from "../li
 import ObserveList from "../dictionary/ObserveList"
 import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
+import FormValue from "../lib/FormValue"
 
 type propDataValueType = {
   prop: string
@@ -50,7 +51,6 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
 }
 
 export interface parseDataOption {
-  target?: Record<PropertyKey, any>
   from?: string
   limit?: Limit | LimitInitOption
 }
@@ -195,37 +195,48 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return pageList
   }
   // 获取响应式模块列表
-  buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[]) {
+  buildObserveList(modName: string, dictionaryValueList?: DictionaryValue[], cascadeOption?: { observe: boolean }) {
     if (!dictionaryValueList) {
       dictionaryValueList = this.getList(modName)
     }
     const observeList = new ObserveList()
     for (let n = 0; n < dictionaryValueList.length; n++) {
-      observeList.push(this.$getPageItem(modName, dictionaryValueList[n]) as DefaultInfo)
+      const dictionaryValue = dictionaryValueList[n]
+      const mod = this.$getPageItem(modName, dictionaryValue) as DefaultInfo
+      observeList.push(mod)
+      if (cascadeOption && dictionaryValue.modIsCascade(mod)) {
+        const dictionaryList = dictionaryValue.dictionary!.getList(modName)
+        mod.$run = {
+          dictionaryList: dictionaryList,
+          observeList: dictionaryValue.dictionary!.buildObserveList(modName, dictionaryList, cascadeOption),
+          type: modName,
+          observe: cascadeOption.observe
+        }
+      }
     }
     return observeList
   }
   // 异步解析数据准备编辑
-  parseData(dictionaryValueList: DictionaryValue[], modName: string, originData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any> }> {
+  parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, option: parseDataOption = {}): Promise<{ status:string, data: Record<PropertyKey, any>, form: FormValue }> {
     return new Promise((resolve) => {
-      const targetData = option.target || {}
+      const targetData = formValue.getData()
       const from = option.from
-      const limit = new Limit(option.limit)
+      const limit = !option.limit ? undefined : new Limit(option.limit)
       const size = dictionaryValueList.length
       const promiseList = []
       for (let n = 0; n < size; n++) {
         const dictionaryValue = dictionaryValueList[n]
-        if (!limit.getLimit(dictionaryValue.$prop)) {
+        if (!limit || !limit.getLimit(dictionaryValue.$prop)) {
           promiseList.push(dictionaryValue.parseValue({
             targetData: targetData,
-            originData: originData,
+            originData: defaultData,
             type: modName,
             from: from
-          }))
+          }, formValue))
         }
       }
       Promise.allSettled(promiseList).then(() => {
-        resolve({ status: 'success', data: targetData })
+        resolve({ status: 'success', data: targetData, form: formValue })
       })
     })
   }

@@ -7,10 +7,11 @@ class FormValue {
   }
   ref: any
   data: Record<PropertyKey, any>
-  children?: Record<PropertyKey, FormValue>
+  children: Record<PropertyKey, FormValue>
   constructor() {
     this.ref = null
     this.data = {}
+    this.children = {}
   }
   setRef(ref: any) {
     this.ref = ref
@@ -25,9 +26,6 @@ class FormValue {
     return this.data
   }
   pushChild(prop: PropertyKey, form: FormValue) {
-    if (!this.children) {
-      this.children = {}
-    }
     this.children[prop] = form
   }
   clearValidate(...args: any[]): void {

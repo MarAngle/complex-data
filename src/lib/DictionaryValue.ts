@@ -24,6 +24,7 @@ import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
 import config from '../../config'
+import FormValue from './FormValue'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>
@@ -336,6 +337,12 @@ class DictionaryValue extends DefaultData implements functions {
       }
     }
   }
+  modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
+    return !!mod && mod instanceof DefaultEdit && mod.$editable
+  }
+  modIsCascade(mod?: DictionaryMod): mod is FormEdit {
+    return !!mod && !!this.dictionary && mod instanceof FormEdit
+  }
   $parseValue (mod: DefaultEdit, payload: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
@@ -350,14 +357,19 @@ class DictionaryValue extends DefaultData implements functions {
     }
     return targetValue
   }
-  modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
-    return !!mod && mod instanceof DefaultEdit && mod.$editable
-  }
-  parseValue (payload: payloadType) {
+  parseValue (payload: payloadType, formValue: FormValue) {
     return new Promise((resolve) => {
       const mod = this.$getMod(payload.type)
       if (this.modIsEditable(mod)) {
-        if (mod instanceof DefaultLoadEdit) {
+        if (this.modIsCascade(mod)) {
+          // 级联表单
+          const currentFormValue = new FormValue()
+          formValue.pushChild(mod.$prop, currentFormValue)
+          this.dictionary!.parseData(mod.$run.dictionaryList!, currentFormValue, payload.type).then(res => {
+            config.nonEmptySetProp(payload.targetData, this.$prop, res.data, true)
+            resolve({ status: 'success' })
+          })
+        } else if (mod instanceof DefaultLoadEdit) {
           mod.loadData().finally(() => {
             config.nonEmptySetProp(payload.targetData, this.$prop, this.$parseValue(mod, payload), true)
             resolve({ status: 'success' })
@@ -371,7 +383,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     })
   }
-  collectValue (payload: payloadType, empty?: boolean, observeList?: ObserveList) {
+  collectValue (payload: payloadType, empty?: undefined | boolean, observeList?: ObserveList) {
     const mod = this.$getMod(payload.type)
     if (this.modIsEditable(mod)) {
       if (observeList && observeList.isFrozen(mod.$prop)) {
@@ -381,6 +393,9 @@ class DictionaryValue extends DefaultData implements functions {
       let originValue = payload.originData![this.$prop]
       if (mod.trim) {
         originValue = trimData(originValue)
+      }
+      if (this.modIsCascade(mod)) {
+        originValue = this.dictionary!.collectData(originValue, mod.$run.dictionaryList!, payload.type, mod.$run.observeList)
       }
       if (mod.collect) {
         originValue = mod.collect(originValue, payload)

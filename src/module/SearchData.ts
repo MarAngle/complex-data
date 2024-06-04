@@ -167,8 +167,7 @@ class SearchData extends DictionaryData {
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
     // 初始化form
-    this.parseData(dictionaryList, this.$prop, undefined, {
-      target: form.getData(),
+    this.parseData(dictionaryList, form, this.$prop, undefined, {
       from: 'init'
     })
     if (this.$observe) {
@@ -210,8 +209,7 @@ class SearchData extends DictionaryData {
       option = this.$resetOption || {}
     }
     const search = this.$search
-    this.parseData(search.dictionary, this.$prop, undefined, {
-      target: search.form.getData(),
+    this.parseData(search.dictionary, search.form, this.$prop, undefined, {
       from: from,
       limit: option.limit
     })
