@@ -180,9 +180,6 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   }
   // 获取模块列表
   getPageList(modName: string, dictionaryValueList: DictionaryValue[]) {
-    if (!dictionaryValueList) {
-      dictionaryValueList = this.getList(modName)
-    }
     const pageList: DictionaryMod[] = []
     for (let n = 0; n < dictionaryValueList.length; n++) {
       pageList.push(this.$getPageItem(modName, dictionaryValueList[n])!)

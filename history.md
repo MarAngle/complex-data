@@ -19,9 +19,10 @@
 - 添加防抖和节流
 - - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
 
-### 4.3.7
+### 4.3.7/8
 - ObserveList添加reset
 - 优化整体逻辑，DictionaryValue.parseValue解析DefaultInfo模块
+- 修正GridParse整体逻辑
 
 ### 4.3.4/5/6
 - 级联表单适配完成，准备测试

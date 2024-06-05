@@ -229,8 +229,8 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   getDictionaryPageList (...args: Parameters<DictionaryData['getPageList']>) {
     return this.$module.dictionary!.getPageList(...args)
   }
-  buildDictionaryObserveList (...args: Parameters<DictionaryData['buildObserveList']>) {
-    return this.$module.dictionary!.buildObserveList(...args)
+  getDictionaryObserveList (...args: Parameters<DictionaryData['getObserveList']>) {
+    return this.$module.dictionary!.getObserveList(...args)
   }
   parseDataByDictionary (...args: Parameters<DictionaryData['parseData']>) {
     return this.$module.dictionary!.parseData(...args)

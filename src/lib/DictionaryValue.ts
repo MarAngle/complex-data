@@ -207,11 +207,13 @@ class DictionaryValue extends DefaultData implements functions {
     if (initOption.originProp) {
       this.$interface.originProp = new InterfaceValue(initOption.originProp)
     }
+    // 加载showProp和基本自定义函数
     if (initOption.showProp) {
       this.$interface.showProp = new InterfaceValue(initOption.showProp)
+      this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse
+    } else if (this.parse) {
+      this.parse = initOption.parse
     }
-    // 加载基本自定义函数
-    this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse
     if (!this.$simple.edit) {
       // 非简单编辑数据时
       this.assign = initOption.assign

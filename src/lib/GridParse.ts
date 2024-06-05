@@ -20,8 +20,8 @@ export interface GridMainValue {
 
 export interface GridOption {
   line: number
-  local?: GridValue
-  custom?: (data: GridValue, payload: any) => GridValue
+  local?: Partial<GridMainValue>
+  custom?: (data: GridValue, position: keyof GridMainValue, gridParse: GridParse, payload: any) => GridValue
 }
 
 export const createGridOption = function(gridValue?: number | GridOption) {
@@ -69,7 +69,7 @@ class GridParse {
       },
       content: {
         span: this._getContent(this.line)
-      },
+      }
     }
   }
   protected _getMain(line: number) {
@@ -85,12 +85,14 @@ class GridParse {
     if (!gridValue) {
       return this._default[position]
     } else {
-      let data = {
+      let data = !gridValue.local ? {
+        span: this[parseDict[position]](gridValue.line)
+      } : {
         span: this[parseDict[position]](gridValue.line),
-        ...gridValue.local
+        ...gridValue.local[position]
       }
       if (gridValue.custom) {
-        data = gridValue.custom(data, payload)
+        data = gridValue.custom(data, position, this, payload)
       }
       return data
     }
