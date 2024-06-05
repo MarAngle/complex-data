@@ -340,15 +340,15 @@ class DictionaryValue extends DefaultData implements functions {
   modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
     return !!mod && mod instanceof DefaultEdit && mod.$editable
   }
-  modIsCascade(mod?: DictionaryMod): mod is FormEdit {
-    return !!mod && !!this.dictionary && mod instanceof FormEdit
+  modIsCascade(mod: DictionaryMod): mod is FormEdit {
+    return !!this.dictionary && mod instanceof FormEdit
   }
-  $parseValue (mod: DefaultEdit, payload: payloadType) {
+  $parseValue (mod: DefaultInfo | DefaultEdit, payload: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
     if (payload.originData) {
       targetValue = this.$triggerFunc('parse', payload.originData[this.$prop], payload)
-    } else if (mod.getValue) {
+    } else if (mod instanceof DefaultEdit) {
       targetValue = mod.getValue(payload.from === 'reset' ? 'reset' : 'default')
     }
     // 模块存在parse函数时将当前数据进行parse操作
@@ -380,30 +380,38 @@ class DictionaryValue extends DefaultData implements functions {
   parseValue (payload: payloadType) {
     return new Promise((resolve, reject) => {
       const mod = this.$getMod(payload.type)
-      if (this.modIsEditable(mod)) {
-        if (mod instanceof DefaultLoadEdit) {
-          mod.loadData().finally(() => {
+      if (mod && mod instanceof DefaultInfo) {
+        // 解析数据解析DefaultInfo或者DefaultEdit.editable = true的数据
+        if (this.modIsEditable(mod)) {
+          if (mod instanceof DefaultLoadEdit) {
+            mod.loadData().finally(() => {
+              this._setParseValue(mod, payload).then(res => {
+                resolve(res)
+              }).catch(err => {
+                reject(err)
+              })
+            })
+          } else {
             this._setParseValue(mod, payload).then(res => {
               resolve(res)
             }).catch(err => {
               reject(err)
             })
-          })
+          }
         } else {
-          this._setParseValue(mod, payload).then(res => {
-            resolve(res)
-          }).catch(err => {
-            reject(err)
-          })
+          const targetValue = this.$parseValue(mod, payload)
+          config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+          resolve({ status: 'success', code: 'not edit' })
         }
       } else {
-        resolve({ status: 'success', code: 'not edit' })
+        resolve({ status: 'success' })
       }
     })
   }
   collectValue (payload: payloadType, empty?: undefined | boolean, observeList?: ObserveList) {
     const mod = this.$getMod(payload.type)
     if (this.modIsEditable(mod)) {
+      // 收集数据仅限editable模块
       if (observeList && observeList.isFrozen(mod.$prop)) {
         // 冻结的模块不参与最终的生成数据逻辑
         return

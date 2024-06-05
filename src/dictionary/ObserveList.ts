@@ -82,6 +82,17 @@ class ObserveList extends ArrayValue<DefaultInfo> {
     })
     this.$watch.clear()
   }
+  reset() {
+    this.clearWatcher()
+    this.$map.clear()
+    this.$hidden.clear()
+    this.$frozen.clear()
+    this.data = []
+    this.$prop = []
+    this.$data = null
+    this.$type = ''
+    this.$deep = false
+  }
 }
 
 export default ObserveList
