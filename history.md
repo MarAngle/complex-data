@@ -19,7 +19,7 @@
 - 添加防抖和节流
 - - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
 
-### 4.3.7/8
+### 4.3.7/8/9
 - ObserveList添加reset
 - 优化整体逻辑，DictionaryValue.parseValue解析DefaultInfo模块
 - 修正GridParse整体逻辑

@@ -35,9 +35,9 @@ export const createGridOption = function(gridValue?: number | GridOption) {
 }
 
 const parseDict = {
-  main: '_getMain',
-  label: '_getLabel',
-  content: '_getContent',
+  main: 'getMain',
+  label: 'getLabel',
+  content: 'getContent',
 } as const
 
 class GridParse {
@@ -62,24 +62,24 @@ class GridParse {
     this.content = 24 - this.label - this._offset
     this._default = {
       main: {
-        span: this._getMain(this.line)
+        span: this.getMain(this.line)
       },
       label: {
-        span: this._getLabel(this.line)
+        span: this.getLabel(this.line)
       },
       content: {
-        span: this._getContent(this.line)
+        span: this.getContent(this.line)
       }
     }
   }
-  protected _getMain(line: number) {
+  getMain(line: number) {
     return 24 / line
   }
-  protected _getLabel(line: number) {
+  getLabel(line: number) {
     return this.label * line
   }
-  protected _getContent(line: number) {
-    return 24 - this._getLabel(line) - this._offset * line
+  getContent(line: number) {
+    return 24 - this.getLabel(line) - this._offset * line
   }
   parseData(gridValue: undefined | GridOption, position: keyof GridMainValue, payload: any) {
     if (!gridValue) {
