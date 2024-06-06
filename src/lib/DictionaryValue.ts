@@ -211,7 +211,7 @@ class DictionaryValue extends DefaultData implements functions {
     if (initOption.showProp) {
       this.$interface.showProp = new InterfaceValue(initOption.showProp)
       this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse
-    } else if (this.parse) {
+    } else if (initOption.parse) {
       this.parse = initOption.parse
     }
     if (!this.$simple.edit) {
