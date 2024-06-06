@@ -2,10 +2,10 @@
 import InterfaceData from "./src/lib/InterfaceData"
 
 export interface DictType {
-  default: any,
-  width?: string,
-  option?: Record<PropertyKey, any>,
-  placeholder?: (label: InterfaceData<string>) => Record<PropertyKey, string>,
+  default: any
+  width?: string
+  option?: Record<PropertyKey, any>
+  placeholder?: (label: InterfaceData<string>) => Record<PropertyKey, string>
   message?: (label: InterfaceData<string>) => Record<PropertyKey, string>
 }
 
@@ -199,7 +199,7 @@ const config = {
           }
         },
         $dateRange: {
-          default: [],
+          default: () => [],
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           placeholder: function (label: InterfaceData<string>) {
             const data = {
