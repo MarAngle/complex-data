@@ -16,7 +16,7 @@ export type menuInitType = {
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
-  prop?: string
+  type?: string
   menu?: menuInitType['default'] | menuInitType
   observe?: boolean
   resetOption?: resetOption
@@ -122,13 +122,13 @@ class SearchData extends DictionaryData {
       console.error(`${menuName}对应的menu类型未在config中配置，菜单生成失败！`)
     }
   }
-  $prop: string
-  $search: {
+  $type: string
+  $runtime: {
     dictionary: DictionaryValue[]
     list: ObserveList
     form: FormValue
-    data: Record<PropertyKey, any>
   }
+  $current: Record<PropertyKey, any>
   $menu: {
     list: (string | DictionaryEditMod)[]
   }
@@ -144,18 +144,17 @@ class SearchData extends DictionaryData {
       initOption.simple.prop = true
     }
     super(initOption)
-    const prop = initOption.prop || 'search'
     this._triggerCreateLife('SearchData', false, initOption)
-    this.$prop = prop
-    const dictionaryList = this.getList(prop)
-    const observeList = this.getObserveList(prop, dictionaryList)
+    this.$type = initOption.type || 'search'
+    const dictionaryList = this.getList(this.$type)
+    const observeList = this.getObserveList(this.$type, dictionaryList)
     const form = new FormValue()
-    this.$search = {
+    this.$runtime = {
       dictionary: dictionaryList,
       list: observeList,
-      form: form,
-      data: {}
+      form: form
     }
+    this.$current = {}
     const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
       default: initOption.menu as menuInitType['default']
     }
@@ -166,9 +165,9 @@ class SearchData extends DictionaryData {
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
     // 初始化form
-    this.parseData(dictionaryList, form, this.$prop, undefined, 'init')
+    this.parseData(dictionaryList, form, this.$type, undefined, 'init')
     if (this.$observe) {
-      observeList.startObserve(form.getData(), this.$prop)
+      observeList.startObserve(form.getData(), this.$type)
     }
     this.syncData(true)
     // 完成初始化form
@@ -176,7 +175,7 @@ class SearchData extends DictionaryData {
   }
   $validate(): Promise<{ status: string }> {
     return new Promise((resolve, reject) => {
-      this.$search.form.validate().then(() => {
+      this.$runtime.form.validate().then(() => {
         resolve({ status: 'success' })
       }).catch(err => {
         reject(err)
@@ -196,7 +195,7 @@ class SearchData extends DictionaryData {
   }
   // 同步值
   syncData(unTriggerSync?: boolean) {
-    this.$search.data = this.collectData(this.$search.form.getData(), this.$search.dictionary, this.$prop)
+    this.$current = this.collectData(this.$runtime.form.getData(), this.$runtime.dictionary, this.$type)
     if (!unTriggerSync) {
       this._syncData(true, 'syncData')
     }
@@ -205,9 +204,9 @@ class SearchData extends DictionaryData {
     if (!option) {
       option = this.$resetOption || {}
     }
-    const search = this.$search
-    this.parseData(search.dictionary, search.form, this.$prop, undefined, from)
-    search.form.clearValidate()
+    const runtime = this.$runtime
+    this.parseData(runtime.dictionary, runtime.form, this.$type, undefined, from)
+    runtime.form.clearValidate()
     if (option.sync !== false) {
       this.syncData()
     }
@@ -215,13 +214,13 @@ class SearchData extends DictionaryData {
   }
   getData(unClone?: boolean) {
     if (unClone) {
-      return this.$search.data
+      return this.$current
     } else {
-      return deepCloneData(this.$search.data)
+      return deepCloneData(this.$current)
     }
   }
   assignData(data: Record<PropertyKey, any>, { assign, force }: { assign?: boolean, force?: boolean } = {}) {
-    const form = this.$search.form.getData()
+    const form = this.$runtime.form.getData()
     for (const prop in data) {
       form[prop] = data[prop]
     }
@@ -242,7 +241,7 @@ class SearchData extends DictionaryData {
     if (option !== false) {
       this.reset(option)
       if (this.$observe) {
-        this.$search.list.clearWatcher()
+        this.$runtime.list.clearWatcher()
       }
     }
   }

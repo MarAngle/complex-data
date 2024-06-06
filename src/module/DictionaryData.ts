@@ -196,7 +196,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       if (dictionaryValue.modIsCascade(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
         const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
-        mod.$run = {
+        mod.$runtime = {
           gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
           dictionaryList: dictionaryList,
           observeList: observeList,

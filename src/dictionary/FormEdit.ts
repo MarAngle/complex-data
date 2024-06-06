@@ -18,20 +18,19 @@ export interface FormEditInitOption extends DefaultEditInitOption {
 class FormEdit extends DefaultEdit{
   static $name = 'FormEdit'
   type: 'form'
-  $run: {
+  $runtime: {
     gridParse?: GridParse
     dictionaryList?: DictionaryValue[]
     observeList?: ObserveList
     form?: FormValue
     type?: string
     observe?: boolean
-    [prop: string]: any
   }
   $option: Partial<FormEditOption>
   constructor(initOption: FormEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
-    this.$run = {}
+    this.$runtime = {}
     this.$option = initOption.option || {}
   }
 }

@@ -134,7 +134,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   /* --- promise end --- */
 
   /* --- load start --- */
-  protected _triggerMethod(method: string, args: any[]) {
+  protected _runMethod(method: string, args: any[]) {
     if (typeof method === 'string') {
       if (typeof ((this as unknown as any)[method]) === 'function') {
         const promise = (this as unknown as any)[method](...args)
@@ -170,7 +170,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (statusItem) {
       if (statusItem.triggerChange('start', [], strict, triggerCallBack)) {
         return new Promise((resolve, reject) => {
-          this._triggerMethod(method, args)!.then((res: any) => {
+          this._runMethod(method, args)!.then((res: any) => {
             statusItem.triggerChange('success', [res], strict, triggerCallBack)
             resolve(res)
           }).catch(err => {

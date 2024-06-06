@@ -367,9 +367,9 @@ class DictionaryValue extends DefaultData implements functions {
     } else {
       return new Promise((resolve, reject) => {
         // 级联表单
-        this.dictionary!.parseData(mod.$run.dictionaryList!, mod.$run.form!, payload.type, targetValue, payload.from).then(res => {
-          if (mod.$run.observe) {
-            mod.$run.observeList!.startObserve(mod.$run.form!.getData(), mod.$run.type)
+        this.dictionary!.parseData(mod.$runtime.dictionaryList!, mod.$runtime.form!, payload.type, targetValue, payload.from).then(res => {
+          if (mod.$runtime.observe) {
+            mod.$runtime.observeList!.startObserve(mod.$runtime.form!.getData(), mod.$runtime.type)
           }
           config.nonEmptySetProp(payload.targetData, mod.$prop, res.data, true)
           resolve({ status: 'success' })
@@ -423,7 +423,7 @@ class DictionaryValue extends DefaultData implements functions {
         originValue = trimData(originValue)
       }
       if (this.modIsCascade(mod)) {
-        originValue = this.dictionary!.collectData(originValue, mod.$run.dictionaryList!, payload.type, mod.$run.observeList)
+        originValue = this.dictionary!.collectData(originValue, mod.$runtime.dictionaryList!, payload.type, mod.$runtime.observeList)
       }
       if (mod.collect) {
         originValue = mod.collect(originValue, payload)

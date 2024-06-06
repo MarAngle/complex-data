@@ -9,15 +9,20 @@
 - 重新instanceof判断static [Symbol.hasInstance](instance: any) { return instance.constructor.$name === this.$name }
 - - 实际调用发现，最终的判断都会到Data中去判断与Data的关系而不是与DefaultData的关系，猜测每个类单独重写此方法可能回有效，但是可能存在重写疏漏导致的错误问题，此功能放弃，特殊项目需要可以单独实现
 
+### TIPS
+- 删除属性测试结果，delete时间长但是后期内存占用小，设置undefined速度快但是有小内存占用
+
 ### ToDo
-- 删除属性经测试，delete时间长但是后期内存占用小，设置undefined速度快但是有小内存占用
-- 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
-- - 如禁用启用，选择后自动打开，前置限制等等：等待解释
-- 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 
 ### Doing
 - 添加防抖和节流
 - - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
+- 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
+- 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
+- - 如禁用启用，选择后自动打开，前置限制等等：等待解释
+
+### 4.3.10
+- 优化SearchData/FormEdit
 
 ### 4.3.7/8/9
 - ObserveList添加reset
