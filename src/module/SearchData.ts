@@ -33,7 +33,8 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '查询',
-          icon: 'search'
+          icon: 'search',
+          debounce: 100
         }
       }),
       reset: new ButtonEdit({
@@ -42,7 +43,8 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '重置',
-          icon: 'refresh'
+          icon: 'refresh',
+          debounce: 100
         }
       }),
       build: new ButtonEdit({
@@ -51,7 +53,8 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '新增',
-          icon: 'plus'
+          icon: 'plus',
+          debounce: 100
         }
       }),
       delete: new ButtonEdit({
@@ -61,6 +64,7 @@ class SearchData extends DictionaryData {
           type: 'danger',
           name: '删除',
           icon: 'delete',
+          debounce: 200,
           disabled(payload) {
             if (!payload.choice) {
               return true
@@ -77,6 +81,7 @@ class SearchData extends DictionaryData {
           type: 'primay',
           name: '详情',
           icon: 'info',
+          debounce: 100,
           disabled(payload) {
             if (payload.choice !== 1) {
               return true
@@ -92,7 +97,8 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导入',
-          icon: 'upload'
+          icon: 'upload',
+          debounce: 100
         }
       }),
       export: new ButtonEdit({
@@ -101,7 +107,8 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导出',
-          icon: 'download'
+          icon: 'download',
+          debounce: 200
         }
       })
     } as {
