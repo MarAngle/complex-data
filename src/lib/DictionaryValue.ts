@@ -342,7 +342,7 @@ class DictionaryValue extends DefaultData implements functions {
   modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
     return !!mod && mod instanceof DefaultEdit && mod.$editable
   }
-  modIsCascade(mod: DictionaryMod): mod is FormEdit {
+  modIsCascader(mod: DictionaryMod): mod is FormEdit {
     return !!this.dictionary && mod instanceof FormEdit
   }
   $parseValue (mod: DefaultInfo | DefaultEdit, payload: payloadType) {
@@ -361,7 +361,7 @@ class DictionaryValue extends DefaultData implements functions {
   }
   protected _setParseValue(mod: DefaultEdit, payload: payloadType) {
     const targetValue = this.$parseValue(mod, payload)
-    if (!this.modIsCascade(mod)) {
+    if (!this.modIsCascader(mod)) {
       config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
       return Promise.resolve({ status: 'success' })
     } else {
@@ -422,7 +422,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (mod.trim) {
         originValue = trimData(originValue)
       }
-      if (this.modIsCascade(mod)) {
+      if (this.modIsCascader(mod)) {
         originValue = this.dictionary!.collectData(originValue, mod.$runtime.dictionaryList!, payload.type, mod.$runtime.observeList)
       }
       if (mod.collect) {

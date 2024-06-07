@@ -2,13 +2,13 @@ import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
 import { DataWithSimpleLoad, StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
-import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
+import CascaderValue, { CascaderValueInitOption, CascaderValueType, DefaultCascaderValueType } from "../lib/CascaderValue"
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
 import { DefaultSelectValueType, SelectValueType } from '../lib/SelectValue'
 
 export type getDataType<D extends SelectValueType = DefaultSelectValueType> = (...args: unknown[]) => Promise<{ status: string, list: D[] }>
 
-export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValueInitOption<C, D> {
+export interface SelectDataInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends CascaderValueInitOption<C, D> {
   reload?: boolean
   life?: LifeInitOption
   storage?: StorageValueInitOption
@@ -16,7 +16,7 @@ export interface SelectDataInitOption<C extends PropertyKey | undefined = undefi
   getData: getDataType<D>
 }
 
-class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends CascadeValue<C, D> implements DataWithLife, DataWithStorage, DataWithSimpleLoad {
+class SelectData<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends CascaderValue<C, D> implements DataWithLife, DataWithStorage, DataWithSimpleLoad {
   static $name = 'SelectData'
   $load: StatusItem
   $reload: boolean

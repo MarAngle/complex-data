@@ -193,7 +193,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       const dictionaryValue = dictionaryValueList[n]
       const mod = this.$getPageItem(modName, dictionaryValue) as DefaultInfo
       observeList.push(mod)
-      if (dictionaryValue.modIsCascade(mod)) {
+      if (dictionaryValue.modIsCascader(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
         const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
         mod.$runtime = {

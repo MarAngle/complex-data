@@ -21,6 +21,9 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等等：等待解释
 
+### 4.3.15
+- 统一Cascader名称
+
 ### 4.3.12/13/14
 - 优化SelectEdit对SelectData的适配
 - MenuValue实现防抖参数添加
@@ -88,12 +91,12 @@
 - 优化SearchData的reset/destory
 
 ### 4.2.20
-- CascadeData=>SelectData
+- CascaderData=>SelectData
 
 ### 4.2.19
 - 简化SelectValue设置项，删除dict相关参数直接使用默认值，特殊项目可单独生成SelectValue类适配，减少内存占用
-- 拆分CascadeValue和SelectValue
-- SelectData=>CascadeData
+- 拆分CascaderValue和SelectValue
+- SelectData=>CascaderData
 - SelectEdit初始化接收SelectValue参数，删除dict相关字段，如需额外操作则提前格式化或者由模板处理
 
 ### 4.2.18

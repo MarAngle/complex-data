@@ -103,7 +103,7 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       return this._filterList(getFilter(filter, 'filter', hidden, this.hidden)!, this.list)
     }
   }
-  // 获取匹配数据，cascade为真则说明检索子类
+  // 获取匹配数据，cascader为真则说明检索子类
   getItem(value: any, prop?: keyof D) {
     if (!prop) {
       prop = 'value'

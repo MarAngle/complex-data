@@ -2,7 +2,7 @@ import PaginationData, { PaginationDataInitOption } from "../module/PaginationDa
 import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
-import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
+import CascaderValue, { CascaderValueInitOption, CascaderValueType, DefaultCascaderValueType } from "../lib/CascaderValue"
 import SelectData from "../core/SelectData"
 
 export interface SelectEditOption {
@@ -12,15 +12,15 @@ export interface SelectEditOption {
   open?: boolean
 }
 
-export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends DefaultLoadEditInitOption {
+export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEditInitOption {
   type: C extends undefined ? 'select' : 'cascader'
   cascader: C
-  select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascadeValueInitOption<C, D> | CascadeValue<C, D>)
+  select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascaderValueInitOption<C, D> | CascaderValue<C, D>)
   option?: Partial<SelectEditOption>
   pagination?: PaginationDataInitOption | PaginationData
 }
 
-class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit{
+class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit{
   static $name = 'SelectEdit'
   static $defaultPlaceholder = function (name: string) {
     return `请选择${name}`
@@ -32,7 +32,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   }
   type: C extends undefined ? 'select' : 'cascader'
   cascader: C
-  $select: C extends undefined ? SelectValue<D> : CascadeValue<C, D>
+  $select: C extends undefined ? SelectValue<D> : CascaderValue<C, D>
   $option: SelectEditOption
   $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
@@ -54,11 +54,11 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
     this.type = initOption.type
     this.cascader = initOption.cascader
     if (this.cascader === undefined) {
-      this.$select = (initOption.select ? (initOption.select instanceof SelectValue ? initOption.select : new SelectValue(initOption.select)) : new SelectValue({}))as unknown as (C extends undefined ? SelectValue<D> : CascadeValue<C, D>)
+      this.$select = (initOption.select ? (initOption.select instanceof SelectValue ? initOption.select : new SelectValue(initOption.select)) : new SelectValue({}))as unknown as (C extends undefined ? SelectValue<D> : CascaderValue<C, D>)
     } else {
-      this.$select = (initOption.select ? (initOption.select instanceof CascadeValue ? initOption.select : new CascadeValue(initOption.select as CascadeValueInitOption<C>)) : new CascadeValue({
-        cascade: this.cascader
-      }))as unknown as (C extends undefined ? SelectValue<D> : CascadeValue<C, D>)
+      this.$select = (initOption.select ? (initOption.select instanceof CascaderValue ? initOption.select : new CascaderValue(initOption.select as CascaderValueInitOption<C>)) : new CascaderValue({
+        cascader: this.cascader
+      }))as unknown as (C extends undefined ? SelectValue<D> : CascaderValue<C, D>)
     }
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof SelectEdit).$defaultOption

@@ -1,32 +1,32 @@
 import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType, checkItem, filterType, getFilter } from "./SelectValue"
 
-export type CascadeValueType<C extends PropertyKey = 'children'> = SelectValueType & {
-  [prop in C]?: CascadeValueType<C>[]
+export type CascaderValueType<C extends PropertyKey = 'children'> = SelectValueType & {
+  [prop in C]?: CascaderValueType<C>[]
 }
 
-export type DefaultCascadeValueType<C extends PropertyKey = 'children', V = any> = DefaultSelectValueType<V> & {
-  [prop in C]?: DefaultCascadeValueType<C, V>[]
+export type DefaultCascaderValueType<C extends PropertyKey = 'children', V = any> = DefaultSelectValueType<V> & {
+  [prop in C]?: DefaultCascaderValueType<C, V>[]
 }
 
-export interface CascadeValueInitOption<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<D> {
-  cascade: C
+export interface CascaderValueInitOption<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<D> {
+  cascader: C
 }
 
-class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends SelectValue<D> {
-  static $name = 'CascadeValue'
-  static $formatConfig = { name: 'CascadeValue', level: 50, recommend: true }
-  cascade: C
-  constructor(initOption: CascadeValueInitOption<C, D>) {
+class CascaderValue<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends SelectValue<D> {
+  static $name = 'CascaderValue'
+  static $formatConfig = { name: 'CascaderValue', level: 50, recommend: true }
+  cascader: C
+  constructor(initOption: CascaderValueInitOption<C, D>) {
     super(initOption)
-    this.cascade = initOption.cascade
+    this.cascader = initOption.cascader
   }
   protected _findItem (list: D[], value: any, prop: keyof D): undefined | D {
     for (let n = 0; n < list.length; n++) {
       const item = list[n]
       if (this.check(value, item[prop])) {
         return item
-      } else if (item[this.cascade!]) {
-        const child = this._findItem(item[this.cascade!] as D[], value, prop)
+      } else if (item[this.cascader!]) {
+        const child = this._findItem(item[this.cascader!] as D[], value, prop)
         if (child) {
           return child
         }
@@ -40,8 +40,8 @@ class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C 
       const item = this._getItem(list, currentValue, prop)
       if (item) {
         result.push(item)
-        if (item[this.cascade!]) {
-          this._findItemList(item[this.cascade!] as D[], valueList, prop, result, deep + 1)
+        if (item[this.cascader!]) {
+          this._findItemList(item[this.cascader!] as D[], valueList, prop, result, deep + 1)
         }
       }
     }
@@ -53,23 +53,23 @@ class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C 
       const item = list[n]
       if (this.check(currentValue, item[prop])) {
         result.push(item)
-        if (item[this.cascade!] && index < value.length - 1) {
-          this._findList(item[this.cascade!] as D[], value, prop, index + 1, result)
+        if (item[this.cascader!] && index < value.length - 1) {
+          this._findList(item[this.cascader!] as D[], value, prop, index + 1, result)
         }
         break
       }
     }
     return result
   }
-  protected _filterCascadeList(filter: checkItem<D>, list: D[]) {
+  protected _filterCascaderList(filter: checkItem<D>, list: D[]) {
     const currentList: D[] = []
-    if (this.cascade) {
+    if (this.cascader) {
       list.forEach(item => {
         if (filter(item)) {
-          const children = item[this.cascade!] as undefined | D[]
+          const children = item[this.cascader!] as undefined | D[]
           if (children && children.length > 0) {
-            const currentItem = { ...item } as CascadeValueType<NonNullable<C>>
-            currentItem[this.cascade as NonNullable<C>] = this._filterCascadeList(filter, children as D[]) as CascadeValueType<NonNullable<C>>[]
+            const currentItem = { ...item } as CascaderValueType<NonNullable<C>>
+            currentItem[this.cascader as NonNullable<C>] = this._filterCascaderList(filter, children as D[]) as CascaderValueType<NonNullable<C>>[]
           } else {
             currentList.push(item)
           }
@@ -78,11 +78,11 @@ class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C 
     }
     return currentList
   }
-  getCascadeList(filter?: checkItem<D> | filterType, hidden?: boolean) {
+  getCascaderList(filter?: checkItem<D> | filterType, hidden?: boolean) {
     if (!filter && (!this.hidden || hidden)) {
       return [...this.list]
     } else {
-      return this._filterCascadeList(getFilter(filter, 'filter', hidden, this.hidden)!, this.list)
+      return this._filterCascaderList(getFilter(filter, 'filter', hidden, this.hidden)!, this.list)
     }
   }
   // 获取匹配数据且检索子类
@@ -108,4 +108,4 @@ class CascadeValue<C extends PropertyKey | undefined = 'children', D extends (C 
   }
 }
 
-export default CascadeValue
+export default CascaderValue
