@@ -32,6 +32,7 @@ export interface MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   prop?: string
   type?: string
   icon?: menuIcon
+  debounce?: number // 函数防抖，事件触发结束后的N秒才可继续触发
   loading?: boolean | ((...args: A) => boolean)
   disabled?: boolean | ((...args: A) => boolean)
   click?: (e: E) => void | Promise<unknown> // 返回Promise则根据状态切换loading
