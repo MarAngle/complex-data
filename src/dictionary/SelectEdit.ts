@@ -3,6 +3,7 @@ import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
 import CascadeValue, { CascadeValueInitOption, CascadeValueType, DefaultCascadeValueType } from "../lib/CascadeValue"
+import SelectData from "../core/SelectData"
 
 export interface SelectEditOption {
   hideArrow?: boolean
@@ -16,7 +17,7 @@ export interface SelectEditInitOption<C extends PropertyKey | undefined = undefi
   cascader: C
   select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascadeValueInitOption<C, D> | CascadeValue<C, D>)
   option?: Partial<SelectEditOption>
-  pagination?: PaginationDataInitOption
+  pagination?: PaginationDataInitOption | PaginationData
 }
 
 class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascadeValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascadeValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit{
@@ -35,6 +36,20 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   $option: SelectEditOption
   $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
+    if (initOption.select && initOption.select instanceof SelectData) {
+      // 当select为SelectData时，额外初始化
+      if (initOption.reload === undefined) {
+        initOption.reload = initOption.select.$reload
+      }
+      if (initOption.pagination === undefined && initOption.select.$pagination) {
+        initOption.pagination = initOption.select.$pagination
+      }
+      if (initOption.getData === undefined) {
+        initOption.getData = function(...args) {
+          return (initOption.select as unknown as SelectData).loadData(...args)
+        }
+      }
+    }
     super(initOption, parent, modName)
     this.type = initOption.type
     this.cascader = initOption.cascader
@@ -54,7 +69,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
       open: option.open
     }
     if (initOption.pagination) {
-      this.$pagination = new PaginationData(initOption.pagination)
+      this.$pagination = initOption.pagination instanceof PaginationData ? initOption.pagination : new PaginationData(initOption.pagination)
     }
   }
   protected _clearData() {
