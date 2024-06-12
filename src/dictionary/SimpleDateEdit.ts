@@ -35,6 +35,8 @@ export interface PartialBaseSimpleDateEditOption {
 
 export interface RangeSimpleDateEditOption {
   separator?: string
+  rangeLimit?: number // 时间范围限制时间字段，仅range模式下生效
+  endProp?: string // 结束时间字段，存在则将数组解析，仅range模式下生效
   time?: {
     defaultEndValue?: string
   }
@@ -46,8 +48,6 @@ export type PartialSimpleDateEditOption<R extends Boolean = false> = PartialBase
 
 export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption {
   option?: PartialSimpleDateEditOption<R>
-  endProp?: string // 结束时间字段，存在则将数组解析，仅range模式下生效
-  rangeLimit?: number // 时间范围限制时间字段，仅range模式下生效
 }
 
 const defaultParse = function(this: SimpleDateEdit<false>, value: string) {
@@ -87,8 +87,8 @@ const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[
   if ($constructor.$collect) {
     valueList = valueList.map(value => $constructor.$collect!(value, this.$option.format) as string)
   }
-  if (this.endProp) {
-    payload.targetData[this.endProp] = valueList[1]
+  if (this.$option.endProp) {
+    payload.targetData[this.$option.endProp] = valueList[1]
     return valueList[0]
   } else {
     return valueList
@@ -105,12 +105,14 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
   static $collect: undefined | ((value: undefined | any, format: string) => undefined | string)
   static $parseDate = function(dateValue: dateConfigValue): any { return dateValue.value }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  static $compareDate = function(target: any, other: any): 'before' | 'same' | 'after' {
+  /**
+   * @returns offset > 0 则other在target之后
+   */
+  static $compareDate = function(target: any, other: any): number {
     // 判断other相对于target的状态
     const targetTime = (target as Date).getTime()
     const otherTime = (other as Date).getTime()
-    const offset = otherTime - targetTime
-    return offset > 0 ? 'after' : offset === 0 ? 'same' : 'before'
+    return otherTime - targetTime
   }
   static $disabledDate = function(option: dateConfig) {
     const start = option.start
@@ -118,20 +120,20 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     return function(value: unknown) {
       let disable = false
       if (start) {
-        const startCompare = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(start), value)
-        if (startCompare === 'before') {
+        const startOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(start), value)
+        if (startOffset < 0) {
           // 当前时间在开始时间之前则禁用
           disable = true
-        } else if (startCompare === 'same' && !start.eq) {
+        } else if (startOffset === 0 && !start.eq) {
           disable = true
         }
       }
       if (!disable && end) {
-        const endCompare = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(end), value)
-        if (endCompare === 'after') {
+        const endOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(end), value)
+        if (endOffset > 0) {
           // 当前时间在结束时间之后则禁用
           disable = true
-        } else if (endCompare === 'same' && !end.eq) {
+        } else if (endOffset === 0 && !end.eq) {
           disable = true
         }
       }
@@ -149,7 +151,6 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
       defaultEndValue: '23:59:59'
     }
   }
-  endProp?: string
   $option: SimpleDateEditOption<R>
   constructor(initOption: SimpleDateEditInitOption<R>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
@@ -157,9 +158,6 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     const $constructor = (this.constructor as typeof SimpleDateEdit)
     const $defaultOption = $constructor.$defaultOption
     const format = option.format || option.time ? $defaultOption.formatWithTime : $defaultOption.format
-    if (initOption.endProp) {
-      this.endProp = initOption.endProp
-    }
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
@@ -167,6 +165,12 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     }
     if ($constructor.$range) {
       (this.$option as SimpleDateEditOption<true>).separator = (option as Partial<SimpleDateEditOption<true>>).separator || $defaultOption.separator
+      if ((option as Partial<SimpleDateEditOption<true>>).rangeLimit) {
+        (this.$option as SimpleDateEditOption<true>).rangeLimit = (option as Partial<SimpleDateEditOption<true>>).rangeLimit
+      }
+      if ((option as Partial<SimpleDateEditOption<true>>).endProp) {
+        (this.$option as SimpleDateEditOption<true>).endProp = (option as Partial<SimpleDateEditOption<true>>).endProp
+      }
     }
     if (option.time) {
       const timeFormat = option.time.format || $defaultOption.time.format
