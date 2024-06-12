@@ -12,7 +12,7 @@ export interface fileDataType {
 export interface fileOption {
   accept?: string
   size?: number
-  upload?: (file: File | File[]) => Promise<{ file: fileDataType | fileDataType[] }>
+  upload?: ((file: File) => Promise<{ file: fileDataType }>) | ((file: File[]) => Promise<{ file: fileDataType[] }>)
   layout?: string
   complex?: boolean
   multiple?: {

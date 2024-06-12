@@ -1,3 +1,4 @@
+import { payloadType } from './../lib/DictionaryValue';
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
@@ -45,6 +46,7 @@ export type PartialSimpleDateEditOption<R extends Boolean = false> = PartialBase
 
 export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption {
   option?: PartialSimpleDateEditOption<R>
+  endProp?: string
 }
 
 const defaultParse = function(this: SimpleDateEdit<false>, value: string) {
@@ -53,19 +55,6 @@ const defaultParse = function(this: SimpleDateEdit<false>, value: string) {
     return $constructor.$parse(value, this.$option.format) as string
   } else {
     return value
-  }
-}
-
-const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string[]) {
-  const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
-  if ($constructor.$parse) {
-    if (valueList) {
-      return valueList.map(value => $constructor.$parse!(value, this.$option.format) as string)
-    } else {
-      return undefined
-    }
-  } else {
-    return valueList
   }
 }
 
@@ -78,18 +67,33 @@ const defaultCollect = function(this: SimpleDateEdit<false>, value: any) {
   }
 }
 
-const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[]) {
+const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string[]) {
+  if (!valueList) {
+    return undefined
+  }
+  const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
+  if ($constructor.$parse) {
+    valueList = valueList.map(value => $constructor.$parse!(value, this.$option.format) as string)
+  }
+  return valueList
+}
+
+const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[], payload: payloadType) {
+  if (!valueList) {
+    return undefined
+  }
   const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
   if ($constructor.$collect) {
-    if (valueList) {
-      return valueList.map(value => $constructor.$collect!(value, this.$option.format) as string)
-    } else {
-      return undefined
-    }
+    valueList = valueList.map(value => $constructor.$collect!(value, this.$option.format) as string)
+  }
+  if (this.endProp) {
+    payload.targetData[this.endProp] = valueList[1]
+    return valueList[0]
   } else {
     return valueList
   }
-}
+} as functionType<string | string[]>
+
 class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
   static $name = 'SimpleDateEdit'
   static $range = false
@@ -144,6 +148,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
       defaultEndValue: '23:59:59'
     }
   }
+  endProp?: string
   $option: SimpleDateEditOption<R>
   constructor(initOption: SimpleDateEditInitOption<R>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
@@ -151,6 +156,9 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     const $constructor = (this.constructor as typeof SimpleDateEdit)
     const $defaultOption = $constructor.$defaultOption
     const format = option.format || option.time ? $defaultOption.formatWithTime : $defaultOption.format
+    if (initOption.endProp) {
+      this.endProp = initOption.endProp
+    }
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
