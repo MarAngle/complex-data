@@ -46,7 +46,8 @@ export type PartialSimpleDateEditOption<R extends Boolean = false> = PartialBase
 
 export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption {
   option?: PartialSimpleDateEditOption<R>
-  endProp?: string
+  endProp?: string // 结束时间字段，存在则将数组解析，仅range模式下生效
+  rangeLimit?: number // 时间范围限制时间字段，仅range模式下生效
 }
 
 const defaultParse = function(this: SimpleDateEdit<false>, value: string) {
