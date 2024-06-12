@@ -71,7 +71,7 @@ class AttrsValue {
   pushProps(props?: Record<PropertyKey, any>) {
     return this._appendData(props, 'props')
   }
-  pushEvent(prop: string, event?: (...args: unknown[]) => unknown, type: 'before' | 'after' = 'after') {
+  pushEvent(prop: string, event?: (...args: any[]) => any, type: 'before' | 'after' = 'after') {
     if (event) {
       if (this.on[prop]) {
         const lastEvent = this.on[prop]!
