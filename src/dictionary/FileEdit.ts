@@ -2,11 +2,11 @@ import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { fileOption } from "../../type"
 
-export interface FileEditOption extends fileOption {}
+export interface FileEditOption<M extends boolean = false> extends fileOption<M> {}
 
 export interface FileEditInitOption extends DefaultEditInitOption {
   type: 'file'
-  option?: Partial<FileEditOption>
+  option?: Partial<FileEditOption<boolean>>
 }
 
 class FileEdit extends DefaultEdit{
@@ -15,7 +15,7 @@ class FileEdit extends DefaultEdit{
     return `请上传${name}`
   }
   type: 'file'
-  $option: FileEditOption
+  $option: FileEditOption<boolean>
   constructor(initOption: FileEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type

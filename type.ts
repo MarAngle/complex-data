@@ -9,17 +9,17 @@ export interface fileDataType {
   url?: string
 }
 
-export interface fileOption {
+export interface fileOption<M extends boolean = false> {
   accept?: string
   size?: number
-  upload?: ((file: File) => Promise<{ file: fileDataType }>) | ((file: File[]) => Promise<{ file: fileDataType[] }>)
+  upload?: M extends true ? ((file: File[]) => Promise<{ file: fileDataType[] }>) : ((file: File) => Promise<{ file: fileDataType }>)
   layout?: string
   complex?: boolean
-  multiple?: {
+  multiple?: M extends true ? {
     min?: number
     max?: number
     append?: boolean
-  }
+  } : undefined
   button?: {
     name?: string
     type?: string
@@ -41,5 +41,5 @@ export interface MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
 
 export interface ButtonValue<E = MouseEvent, A extends unknown[] = unknown[]> extends MenuValue<E, A> {
   upload?: (file: File) => Promise<unknown>
-  fileOption?: Partial<fileOption>
+  fileOption?: Partial<fileOption<boolean>>
 }
