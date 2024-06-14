@@ -22,11 +22,11 @@ export interface defaultFileOption {
 }
 
 export interface singleFileOption extends defaultFileOption {
-  upload: (file: File) => Promise<{ file: fileDataType }>
+  upload?: (file: File) => Promise<{ file: fileDataType }>
 }
 
 export interface multipleFileOption extends defaultFileOption {
-  upload: (file: File[]) => Promise<{ file: fileDataType[] }>
+  upload?: (file: File[]) => Promise<{ file: fileDataType[] }>
   multiple: {
     min?: number
     max?: number
