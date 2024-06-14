@@ -4,28 +4,37 @@ export type renderType<ARGS extends any[] = any[], RES = any> = (...args: ARGS) 
 export type menuIcon = string | (() => any)
 
 export interface fileDataType {
-  data: string
+  data: string | File | Record<PropertyKey, any>
   name: string
   url?: string
 }
 
-export interface fileOption<M extends boolean = false> {
+export interface defaultFileOption {
   accept?: string
   size?: number
-  upload?: M extends true ? ((file: File[]) => Promise<{ file: fileDataType[] }>) : ((file: File) => Promise<{ file: fileDataType }>)
   layout?: string
   complex?: boolean
-  multiple?: M extends true ? {
-    min?: number
-    max?: number
-    append?: boolean
-  } : undefined
   button?: {
     name?: string
     type?: string
     icon?: menuIcon
   }
 }
+
+export interface singleFileOption extends defaultFileOption {
+  upload: (file: File) => Promise<{ file: fileDataType }>
+}
+
+export interface multipleFileOption extends defaultFileOption {
+  upload: (file: File[]) => Promise<{ file: fileDataType[] }>
+  multiple: {
+    min?: number
+    max?: number
+    append?: boolean
+  }
+}
+
+export type fileOption<M extends boolean = false> = M extends true ? multipleFileOption : singleFileOption
 
 export interface MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   name: string

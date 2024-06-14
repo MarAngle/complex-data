@@ -37,7 +37,7 @@ function defaultMultipleValue() {
   return [] as any[]
 }
 
-class DefaultEdit extends DefaultSimpleEdit {
+class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
   static $name = 'DefaultEdit'
   static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
   static $editable = true
@@ -58,7 +58,7 @@ class DefaultEdit extends DefaultSimpleEdit {
     rules?: boolean
   }
   trim: boolean
-  multiple: boolean
+  multiple: M
   placeholder?: string
   $rules?: ruleOption[]
   $value: {
@@ -79,7 +79,7 @@ class DefaultEdit extends DefaultSimpleEdit {
         this.simple.rules = true
       }
     }
-    this.multiple = !!initOption.multiple
+    this.multiple = !!initOption.multiple as M
     this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
     if (this.simple.placeholder !== true) {
       if (initOption.placeholder === undefined) {
