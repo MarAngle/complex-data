@@ -4,9 +4,9 @@ import { fileDataType } from "../../type"
 export type fileValueType = string | File | fileDataType
 
 export class FileValue {
-  name?: string
-  value?: fileValueType
-  url?: string
+  value?: fileDataType['value']
+  name?: fileDataType['name']
+  url?: fileDataType['url']
   constructor(file?: fileValueType) {
     this.assign(file)
   }
@@ -33,7 +33,7 @@ export class FileValue {
   }
 }
 
-export class FileMutipleValue {
+export class FileMultipleValue {
   value: FileValue[]
   map: Map<FileValue['value'], FileValue>
   constructor(value?: FileValue[]) {
@@ -47,7 +47,7 @@ export class FileMutipleValue {
       this.value = []
     }
   }
-  assign(target: FileMutipleValue) {
+  assign(target: FileMultipleValue) {
     this.value = target.value
     this.map = target.map
   }

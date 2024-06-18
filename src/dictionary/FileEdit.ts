@@ -1,6 +1,6 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { fileOption } from "../../type"
+import { fileOption, multipleFileOption } from "../../type"
 
 export type FileEditOption<M extends boolean = false> = fileOption<M>
 
@@ -20,6 +20,9 @@ class FileEdit<M extends boolean = false> extends DefaultEdit<M> {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}
+    if (this.multiple && !(option as multipleFileOption).multiple) {
+      (option as multipleFileOption).multiple = {}
+    }
     this.$option = option as FileEditOption<M>
   }
 }
