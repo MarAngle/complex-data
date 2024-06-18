@@ -1,11 +1,12 @@
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type renderType<ARGS extends any[] = any[], RES = any> = (...args: ARGS) => RES
 
 export type menuIcon = string | (() => any)
 
-export interface fileDataType {
-  data: string | File | Record<PropertyKey, any>
+export type fileDataType = {
   name: string
+  value: any
   url?: string
 }
 
