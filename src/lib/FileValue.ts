@@ -4,14 +4,24 @@ import { fileDataType } from "../../type"
 export type fileValueType = string | File | fileDataType
 
 export class FileValue {
-  value?: fileDataType['value']
-  name?: fileDataType['name']
+  value: fileDataType['value']
+  name: fileDataType['name']
   url?: fileDataType['url']
-  constructor(file?: fileValueType) {
-    this.assign(file)
+  constructor(file: fileValueType) {
+    if (typeof file === 'string') {
+      this.value = file
+      this.name = file
+    } else if (isFile(file)) {
+      this.value = file
+      this.name = file.name
+    } else {
+      this.value = file.value
+      this.name = file.name
+      this.url = file.url
+    }
   }
-  assign(file?: fileValueType) {
-    if (!file || typeof file === 'string') {
+  assign(file: fileValueType) {
+    if (typeof file === 'string') {
       this.value = file as string
       this.name = file as string
       this.url = undefined
@@ -25,11 +35,6 @@ export class FileValue {
       this.name = file.name
       this.url = file.url
     }
-  }
-  reset() {
-    this.value = undefined
-    this.name = undefined
-    this.url = undefined
   }
 }
 
