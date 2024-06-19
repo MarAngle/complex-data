@@ -22,11 +22,11 @@ export interface defaultFileOption {
   }
 }
 
-export interface singleFileOption extends defaultFileOption {
+export interface singleFileOption {
   upload?: (file: File) => Promise<{ file: fileDataType }>
 }
 
-export interface multipleFileOption extends defaultFileOption {
+export interface multipleFileOption {
   upload?: (file: File[]) => Promise<{ file: fileDataType[] }>
   multiple: {
     min?: number
@@ -35,7 +35,7 @@ export interface multipleFileOption extends defaultFileOption {
   }
 }
 
-export type fileOption<M extends boolean = false> = M extends true ? multipleFileOption : singleFileOption
+export type fileOption<M extends boolean = false> = M extends true ? defaultFileOption & multipleFileOption : defaultFileOption & singleFileOption
 
 export interface MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   name: string
