@@ -62,6 +62,9 @@ export class FileMultipleValue {
       this.value.push(value)
     }
   }
+  has(key: FileValue['value']) {
+    return this.map.has(key)
+  }
   delete(key: FileValue['value']) {
     const item = this.map.get(key)
     if (item) {
