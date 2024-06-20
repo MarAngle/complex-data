@@ -44,7 +44,7 @@ class UpdateData extends DefaultData {
     if (initOption.check) {
       this.check = initOption.check
     }
-    this.offset = initOption.offset === undefined ? UpdateData.$offset : initOption.offset
+    this.offset = initOption.offset == undefined ? UpdateData.$offset : initOption.offset
     this.next = this.next.bind(this as UpdateData)
     this._triggerCreateLife('UpdateData', true)
   }
@@ -104,7 +104,7 @@ class UpdateData extends DefaultData {
       // this.clear(true)
       // 在$start阶段会再次调用此函数，此处无需重复调用
     }
-    if (offset === undefined) {
+    if (offset == undefined) {
       offset = this.offset
     }
     // 设置更新状态为更新中
@@ -146,7 +146,7 @@ class UpdateData extends DefaultData {
   $start(offset?: number) {
     this.clear(true)
     this.load.immerdiate = false
-    if (offset === undefined) {
+    if (offset == undefined) {
       offset = this.offset
     }
     this.timer = setTimeout(() => {
@@ -167,7 +167,7 @@ class UpdateData extends DefaultData {
     if (this.load.update && !this.load.immerdiate) {
       if (offset !== false) {
         const checkRes = this.check(this.getIndex())
-        if (offset === undefined) {
+        if (offset == undefined) {
           offset = this.offset
         }
         if (isPromise(checkRes)) {

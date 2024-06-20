@@ -60,7 +60,7 @@ class PromiseData extends Data {
    */
   triggerData(prop: PropertyKey, option: PromiseOptionType = {}) {
     return new Promise((resolve, reject) => {
-      if (option.correct === undefined) {
+      if (option.correct == undefined) {
         option.correct = 'reload' // '' 不做判断 'reload' 以新Promise为基准重新触发 'reject' 走失败逻辑
       }
       const data = this.getData(prop)

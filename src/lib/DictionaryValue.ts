@@ -50,7 +50,7 @@ export type funcKeys = keyof functions
 const parse = function (this: DictionaryValue, data: any, { type }: payloadType) {
   const showProp = this.$getInterfaceValue('showProp', type)
   if (showProp) {
-    if (data !== undefined && data !== null && typeof data === 'object') {
+    if (data != undefined && typeof data === 'object') {
       return data[showProp]
     } else {
       return undefined
@@ -196,7 +196,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
     this._triggerCreateLife('DictionaryValue', false, initOption)
     this.$setParent(parent)
-    this.$originFrom = initOption.originFrom === undefined ? ['list'] : typeof initOption.originFrom === 'string' ? [initOption.originFrom] : initOption.originFrom
+    this.$originFrom = initOption.originFrom == undefined ? ['list'] : typeof initOption.originFrom === 'string' ? [initOption.originFrom] : initOption.originFrom
     this.$simple = initOption.simple || {}
     this.$complex = initOption.complex || {}
     this.$interface = {
@@ -209,7 +209,7 @@ class DictionaryValue extends DefaultData implements functions {
     // 加载showProp和基本自定义函数
     if (initOption.showProp) {
       this.$interface.showProp = new InterfaceValue(initOption.showProp)
-      this.parse = initOption.parse === undefined ? parse.bind(this) : initOption.parse
+      this.parse = initOption.parse == undefined ? parse.bind(this) : initOption.parse
     } else if (initOption.parse) {
       this.parse = initOption.parse
     }
@@ -220,7 +220,7 @@ class DictionaryValue extends DefaultData implements functions {
       this.$exportMsg('当前编辑为简单模式,不接受assign函数!')
     }
     this.collect = initOption.collect
-    this.check = initOption.check === undefined ? defaultCheck : initOption.check
+    this.check = initOption.check == undefined ? defaultCheck : initOption.check
     this.$mod = {}
     if (initOption.mod) {
       const mod = initOption.mod
@@ -409,7 +409,7 @@ class DictionaryValue extends DefaultData implements functions {
       }
     })
   }
-  collectValue (payload: payloadType, empty?: undefined | boolean, observeList?: ObserveList) {
+  collectValue (payload: payloadType, option: DictionaryData['$option'], observeList?: ObserveList) {
     const mod = this.$getMod(payload.type)
     if (this.modIsEditable(mod)) {
       // 收集数据仅限editable模块
@@ -428,9 +428,17 @@ class DictionaryValue extends DefaultData implements functions {
         originValue = mod.collect(originValue, payload)
       }
       originValue = this.$triggerFunc('collect', originValue, payload)
-      if (!empty && !this.$triggerFunc('check', originValue, payload)) {
-        // 空值不上传且值不存在时
-        return
+      if (!this.$triggerFunc('check', originValue, payload)) {
+        if (option.empty) {
+          if (originValue === undefined && option.transformUndefined !== undefined) {
+            // 对于undefined的数据，默认更改赋值为null，避免JSON.stringify数据丢失的问题
+            // 理论上对于数据库也不存在undefined，因此系统需要对null视同undefined
+            originValue = option.transformUndefined
+          }
+        } else {
+          // 空值不上传且值不存在时
+          return
+        }
       }
       config.nonEmptySetProp(payload.targetData, this.$getOriginProp(payload.type), originValue)
     }

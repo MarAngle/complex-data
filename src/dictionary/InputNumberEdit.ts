@@ -22,10 +22,10 @@ class InputNumberEdit extends DefaultEdit{
     this.type = initOption.type
     const option = initOption.option || {}
     this.$option = {
-      max: option.max === undefined ? Infinity : option.max,
-      min: option.min === undefined ? -Infinity : option.min,
-      precision: option.precision === undefined ? 0 : option.precision, // 精确到几位小数，接受非负整数
-      step: option.step === undefined ? 1 : option.step, // 点击步进
+      max: option.max == undefined ? Infinity : option.max,
+      min: option.min == undefined ? -Infinity : option.min,
+      precision: option.precision == undefined ? 0 : option.precision, // 精确到几位小数，接受非负整数
+      step: option.step == undefined ? 1 : option.step, // 点击步进
     }
   }
 }

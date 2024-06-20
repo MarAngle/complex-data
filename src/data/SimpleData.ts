@@ -18,7 +18,7 @@ class SimpleData<Buffer extends BufferType = BufferType> extends Data<Buffer> {
       writable: true,
       value: extraType === 'object' ? initOption.extra : {}
     })
-    if (extraType !== 'object' && initOption.extra !== undefined) {
+    if (extraType !== 'object' && initOption.extra != undefined) {
       this.$exportMsg('初始化额外数据出错，额外数据初始化参数必须为对象！')
     }
   }

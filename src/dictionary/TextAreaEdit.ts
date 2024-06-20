@@ -28,8 +28,8 @@ class TextAreaEdit extends DefaultEdit{
     const $defaultOption = (this.constructor as typeof TextAreaEdit).$defaultOption
     this.$option = {
       size: option.size || $defaultOption.size,
-      autoSize: option.autoSize === undefined ? $defaultOption.autoSize : option.autoSize,
-      hideClear: option.hideClear === undefined ? $defaultOption.hideClear : option.hideClear
+      autoSize: option.autoSize == undefined ? $defaultOption.autoSize : option.autoSize,
+      hideClear: option.hideClear == undefined ? $defaultOption.hideClear : option.hideClear
     }
   }
 }

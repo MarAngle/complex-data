@@ -31,7 +31,7 @@ class DefaultLoadEdit extends DefaultEdit implements Partial<DataWithSimpleLoad>
   /* --- status end --- */
   loadData(force?: boolean, ...args: unknown[]) {
     if (this.$getData) {
-      if (force === undefined) {
+      if (force == undefined) {
         force = this.$reload
       }
       if (this.getLoad() !== StatusValue.success || force) {

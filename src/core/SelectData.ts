@@ -36,7 +36,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
     }
-    this.$reload = initOption.reload === undefined ? !!this.$pagination : initOption.reload
+    this.$reload = initOption.reload == undefined ? !!this.$pagination : initOption.reload
     this.$getData = initOption.getData
     if (initOption.storage) {
       this.$storage = new StorageValue(initOption.storage, this._getConstructorName())

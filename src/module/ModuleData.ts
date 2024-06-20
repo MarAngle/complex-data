@@ -48,7 +48,7 @@ class ModuleData extends Data {
   protected _buildModuleData(modName: moduleKeys, modData?: boolean | Record<PropertyKey, any>) {
     const ModuleClass = ModuleMap[modName]
     if (ModuleClass && modData !== false && !(modData instanceof ModuleClass)) {
-      if (modData === undefined || modData === true) {
+      if (modData == undefined || modData === true) {
         modData = {}
       }
       return new ModuleClass(modData)

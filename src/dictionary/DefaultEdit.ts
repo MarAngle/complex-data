@@ -69,20 +69,20 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
   constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultEdit)
-    this.$editable = initOption.editable === undefined ? $constructor.$editable : initOption.editable
+    this.$editable = initOption.editable == undefined ? $constructor.$editable : initOption.editable
     this.simple = initOption.simple || {}
     if (!this.$editable) {
-      if (this.simple.value === undefined) {
+      if (this.simple.value == undefined) {
         this.simple.value = true
       }
-      if (this.simple.rules === undefined) {
+      if (this.simple.rules == undefined) {
         this.simple.rules = true
       }
     }
     this.multiple = !!initOption.multiple as M
-    this.trim = initOption.trim === undefined ? $constructor.$defaultTrim : initOption.trim
+    this.trim = initOption.trim == undefined ? $constructor.$defaultTrim : initOption.trim
     if (this.simple.placeholder !== true) {
-      if (initOption.placeholder === undefined) {
+      if (initOption.placeholder == undefined) {
         this.placeholder = $constructor.$defaultPlaceholder(this.$name!)
       } else if (initOption.placeholder) {
         this.placeholder = initOption.placeholder
@@ -123,10 +123,10 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
       const $constructor = (this.constructor as typeof DefaultEdit)
       return this.$rules.map(rule => {
         const ruleValue = { ...rule }
-        if (ruleValue.required === undefined) {
+        if (ruleValue.required == undefined) {
           ruleValue.required = this.required
         }
-        if (ruleValue.message === undefined && this.placeholder) {
+        if (ruleValue.message == undefined && this.placeholder) {
           ruleValue.message = this.placeholder
         }
         return $constructor.$parseRule(ruleValue)

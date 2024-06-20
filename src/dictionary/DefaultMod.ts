@@ -40,9 +40,9 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     }
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
-    this.$name = initOption.name !== undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!
+    this.$name = initOption.name != undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!
     this.parse = initOption.parse
-    if (initOption.tip !== undefined) {
+    if (initOption.tip != undefined) {
       this.$tip = new TipValue(initOption.tip)
     }
     this.$width = initOption.width

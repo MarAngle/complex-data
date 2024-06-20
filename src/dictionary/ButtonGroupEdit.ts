@@ -22,7 +22,7 @@ class ButtonGroupEdit extends DefaultSimpleEdit{
     super(initOption, parent, modName)
     this.type = initOption.type
     const $defaultOption = (this.constructor as typeof ButtonGroupEdit).$defaultOption
-    const interval = initOption.interval === undefined ? $defaultOption.interval : initOption.interval
+    const interval = initOption.interval == undefined ? $defaultOption.interval : initOption.interval
     this.interval = typeof interval === 'number' ? config.formatPixel(interval) : interval
     this.$list = initOption.list
   }

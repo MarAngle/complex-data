@@ -143,11 +143,11 @@ class SearchData extends DictionaryData {
   $resetOption?: resetOption
   constructor(initOption: SearchDataInitOption) {
     // SearchData的simple.prop默认为真
-    if (initOption.simple === undefined) {
+    if (initOption.simple == undefined) {
       initOption.simple = {
         prop: true
       }
-    } else if (initOption.simple.prop === undefined) {
+    } else if (initOption.simple.prop == undefined) {
       initOption.simple.prop = true
     }
     super(initOption)
@@ -231,7 +231,7 @@ class SearchData extends DictionaryData {
     for (const prop in data) {
       form[prop] = data[prop]
     }
-    if (assign === undefined || assign) {
+    if (assign == undefined || assign) {
       if (force) {
         this.syncData()
       } else {

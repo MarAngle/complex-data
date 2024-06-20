@@ -106,7 +106,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       force.promise = {
         emptyMsg: emptyMsg
       }
-    } else if (force.promise.emptyMsg === undefined) {
+    } else if (force.promise.emptyMsg == undefined) {
       force.promise.emptyMsg = emptyMsg
     }
     return this._triggerPromise('update', force.promise)

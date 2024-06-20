@@ -79,7 +79,7 @@ class RelationData {
     if (simple && life === 'update') {
       return
     }
-    if (active === undefined && self.$active.auto) {
+    if (active == undefined && self.$active.auto) {
       // 自动激活模式下，默认进行激活的判断
       active = true
     }
@@ -88,7 +88,7 @@ class RelationData {
     const currentStatus = simple ? depend.getLoad() : depend.getStatus(life)
     const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
-        if (lifeList === undefined || lifeList.indexOf(lifeName) > -1) {
+        if (lifeList == undefined || lifeList.indexOf(lifeName) > -1) {
           depend.offLife(lifeName, lifeDict[lifeName])
         }
       }

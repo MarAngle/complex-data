@@ -20,7 +20,7 @@ class DefaultList extends DefaultMod {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultList)
     this.align = initOption.align || 'center'
-    this.ellipsis = initOption.ellipsis === undefined ? $constructor.$option.ellipsis : initOption.ellipsis
+    this.ellipsis = initOption.ellipsis == undefined ? $constructor.$option.ellipsis : initOption.ellipsis
   }
 }
 

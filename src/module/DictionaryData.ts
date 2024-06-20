@@ -1,5 +1,3 @@
-import { Limit } from "complex-utils"
-import { LimitInitOption } from "complex-utils/src/class/Limit"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
@@ -24,7 +22,7 @@ type propDataKeys = keyof propDataType<unknown>
 function initPropData(defaultProp: propDataKeys, propData?: Partial<propDataType<string | propDataValueType>>): propDataValueType {
   if (propData) {
     const data = propData[defaultProp]
-    if (data !== undefined) {
+    if (data != undefined) {
       if (typeof data === 'object') {
         return data
       } else {
@@ -52,6 +50,7 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
 
 export interface DictionaryDataOption {
   empty: boolean
+  transformUndefined: undefined | null | string | number | boolean
 }
 
 export interface DictionaryDataInitOption extends DefaultDataInitOption {
@@ -70,7 +69,10 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
 class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
   static $name = 'DictionaryData'
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
-  static $empty = true
+  static $option: DictionaryDataOption = {
+    empty: true,
+    transformUndefined: null
+  }
   static $depth = Symbol('depth')
   static $assignData = function(dictionary: DictionaryData, targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean) {
     for (const dictionaryValue of dictionary.$data.values()) {
@@ -115,7 +117,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       }
     }
     this.$layout = new LayoutParse(initOption.layout)
-    this.$option = createOption({ empty: DictionaryData.$empty }, initOption.option)
+    this.$option = createOption({ empty: DictionaryData.$option.empty, transformUndefined: DictionaryData.$option.transformUndefined }, initOption.option)
     this._triggerCreateLife('DictionaryData', true, initOption)
   }
   setProp(value: string, prop: propDataKeys = 'id') {
@@ -235,7 +237,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         targetData: postData,
         originData: formData,
         type: modName
-      }, this.$option.empty, observeList)
+      }, this.$option, observeList)
     })
     return postData
   }

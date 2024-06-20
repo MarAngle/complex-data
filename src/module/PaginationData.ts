@@ -52,7 +52,7 @@ class PaginationData extends DefaultData {
       total: 1
     }
     this.count = 0
-    if (initOption.size === undefined) {
+    if (initOption.size == undefined) {
       this.size = {
         show: PaginationData.$option.size.show,
         data: PaginationData.$option.size.data,
@@ -226,7 +226,7 @@ class PaginationData extends DefaultData {
               untriggerLife: true
             }
           }
-          if (pageResetOption.untriggerLife === undefined) {
+          if (pageResetOption.untriggerLife == undefined) {
             pageResetOption.untriggerLife = true
           }
           if (pageResetOption.prop === 'page') {

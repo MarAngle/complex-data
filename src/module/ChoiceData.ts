@@ -126,11 +126,11 @@ class ChoiceData extends Data {
   }
   protected _parseFrom(from: string, act?: string) {
     const targetOption = this.$resetOption[from]
-    if (targetOption !== undefined) {
+    if (targetOption != undefined) {
       if (typeof targetOption === 'object') {
         if (!act) {
           this.$exportMsg(`$resetByFrom函数中对应的from:${from}未定义act,可定义:${Object.keys(targetOption)}`)
-        } else if (targetOption[act] !== undefined) {
+        } else if (targetOption[act] != undefined) {
           return targetOption[act]
         } else {
           this.$exportMsg(`$resetByFrom函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(targetOption)}`)

@@ -38,13 +38,13 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
     if (initOption.select && initOption.select instanceof SelectData) {
       // 当select为SelectData时，额外初始化
-      if (initOption.reload === undefined) {
+      if (initOption.reload == undefined) {
         initOption.reload = initOption.select.$reload
       }
-      if (initOption.pagination === undefined && initOption.select.$pagination) {
+      if (initOption.pagination == undefined && initOption.select.$pagination) {
         initOption.pagination = initOption.select.$pagination
       }
-      if (initOption.getData === undefined) {
+      if (initOption.getData == undefined) {
         initOption.getData = function(...args) {
           return (initOption.select as unknown as SelectData).loadData(...args)
         }
@@ -53,7 +53,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
     super(initOption, parent, modName)
     this.type = initOption.type
     this.cascader = initOption.cascader
-    if (this.cascader === undefined) {
+    if (this.cascader == undefined) {
       this.$select = (initOption.select ? (initOption.select instanceof SelectValue ? initOption.select : new SelectValue(initOption.select)) : new SelectValue({}))as unknown as (C extends undefined ? SelectValue<D> : CascaderValue<C, D>)
     } else {
       this.$select = (initOption.select ? (initOption.select instanceof CascaderValue ? initOption.select : new CascaderValue(initOption.select as CascaderValueInitOption<C>)) : new CascaderValue({

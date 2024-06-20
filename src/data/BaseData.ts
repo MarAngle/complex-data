@@ -66,7 +66,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (initOption.active) {
       this.$active = {
         data: initOption.active.data || BaseData.$active.data,
-        auto: initOption.active.auto === undefined ? BaseData.$active.auto : initOption.active.auto
+        auto: initOption.active.auto == undefined ? BaseData.$active.auto : initOption.active.auto
       }
     } else {
       this.$active = {
@@ -255,7 +255,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       force.promise = {
         emptyMsg: emptyMsg
       }
-    } else if (force.promise.emptyMsg === undefined) {
+    } else if (force.promise.emptyMsg == undefined) {
       force.promise.emptyMsg = emptyMsg
     }
     return this._triggerPromise('load', force.promise)

@@ -16,7 +16,7 @@ class TipValue {
   location: locationType
   $attrs?: AttrsValue
   constructor(initOption?: TipValueInitOption) {
-    if (initOption === undefined || typeof initOption === 'string') {
+    if (initOption == undefined || typeof initOption === 'string') {
       this.data = initOption
       this.location = 'top'
     } else {

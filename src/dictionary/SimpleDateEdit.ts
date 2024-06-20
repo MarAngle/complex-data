@@ -161,7 +161,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
-      hideClear: option.hideClear === undefined ? $defaultOption.hideClear : option.hideClear
+      hideClear: option.hideClear == undefined ? $defaultOption.hideClear : option.hideClear
     }
     if ($constructor.$range) {
       (this.$option as SimpleDateEditOption<true>).separator = (option as Partial<SimpleDateEditOption<true>>).separator || $defaultOption.separator
@@ -190,10 +190,10 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
         this.$option.disabledDate = option.disabledDate
       }
     }
-    if (this.parse === undefined) {
+    if (this.parse == undefined) {
       this.parse = $constructor.$range ? defaultRangeParse as functionType<any> : defaultParse as functionType<any>
     }
-    if (this.collect === undefined) {
+    if (this.collect == undefined) {
       this.collect = $constructor.$range ? defaultRangeCollect as functionType<any> : defaultCollect as functionType<any>
     }
   }
