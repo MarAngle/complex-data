@@ -5,7 +5,7 @@ export interface CustomEditInitOption extends DefaultEditInitOption {
   type: 'custom'
   model?: {
     init?: PropertyKey
-    change?: 'input' | 'select' | 'change' | ((...args: any[]) => void)
+    change?: 'input' | 'select' | 'change'
   }
   option?: Record<PropertyKey, any>
   custom?: Record<PropertyKey, any>
@@ -16,7 +16,7 @@ class CustomEdit extends DefaultEdit{
   type: 'custom'
   $model: {
     init?: PropertyKey
-    change?: 'input' | 'select' | 'change' | ((...args: any[]) => void)
+    change?: 'input' | 'select' | 'change'
   }
   $option: Record<PropertyKey, any>
   $custom: Record<PropertyKey, any>
