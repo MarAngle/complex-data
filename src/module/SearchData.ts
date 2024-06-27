@@ -43,6 +43,16 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '重置',
+          icon: 'reset',
+          debounce: 100
+        }
+      }),
+      refresh: new ButtonEdit({
+        type: 'button',
+        prop: '$refresh',
+        option: {
+          type: 'primary',
+          name: '刷新',
           icon: 'refresh',
           debounce: 100
         }
@@ -114,6 +124,7 @@ class SearchData extends DictionaryData {
     } as {
       search: ButtonEdit
       reset: ButtonEdit
+      refresh: ButtonEdit
       build: ButtonEdit
       delete: ButtonEdit
       import: ButtonEdit
