@@ -48,8 +48,8 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
   static $defaultPlaceholder = function (name: string) {
     return `请输入${name}`
   }
-  static $parseRule = function<R = ruleOption>(rule: ruleOption): R {
-    return rule as R
+  static $parseRule = function<R = ruleOption>(ruleValue: ruleOption, form: Record<PropertyKey, any>): R {
+    return ruleValue as R
   }
   $editable: boolean
   simple: {
@@ -118,7 +118,7 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
       }
     }
   }
-  getRuleList(): undefined | Record<PropertyKey, any>[] {
+  getRuleList(form: Record<PropertyKey, any>): undefined | Record<PropertyKey, any>[] {
     if (this.$rules) {
       const $constructor = (this.constructor as typeof DefaultEdit)
       return this.$rules.map(rule => {
@@ -129,7 +129,7 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
         if (ruleValue.message == undefined && this.placeholder) {
           ruleValue.message = this.placeholder
         }
-        return $constructor.$parseRule(ruleValue)
+        return $constructor.$parseRule(ruleValue, form)
       })
     } else {
       return undefined
