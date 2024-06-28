@@ -5,14 +5,14 @@ import { DataWithSimpleLoad, StatusItem, StatusValue } from "../module/StatusDat
 
 export interface DefaultLoadEditInitOption extends DefaultEditInitOption {
   reload?: boolean
-  getData?: loadFunctionType
+  getData?: loadFunctionType<DefaultLoadEdit>
 }
 
 class DefaultLoadEdit extends DefaultEdit implements Partial<DataWithSimpleLoad>{
   static $name = 'DefaultLoadEdit'
   $load?: StatusItem
   $reload?: boolean
-  $getData?: loadFunctionType
+  $getData?: loadFunctionType<DefaultLoadEdit>
   constructor(initOption: DefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     if (initOption.getData) {

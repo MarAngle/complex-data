@@ -13,7 +13,7 @@ export interface BaseDataActiveType {
   auto: boolean
 }
 
-export type loadFunctionType = (...args: any[]) => Promise<any>
+export type loadFunctionType<T = BaseData> = (this: T, ...args: any[]) => Promise<any>
 
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption

@@ -8,19 +8,22 @@ import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 import { DefaultBufferType } from "./DefaultData"
 import ChoiceData from "../module/ChoiceData"
 
-export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, payload?: unknown) => Promise<unknown>
-export type changeDataType = (targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type?: string, payload?: unknown) => Promise<unknown>
-export type deleteDataType = (targetData: Record<PropertyKey, any>, payload?: unknown) => Promise<unknown>
-export type refreshDataType = (targetData: Record<PropertyKey, any>) => Promise<unknown>
-export type multipleDeleteDataType = (choiceList: Record<PropertyKey, any>[], payload?: unknown) => Promise<unknown>
-export type exportDataType = loadFunctionType
-export type importDataType = (file: File, payload?: unknown) => Promise<unknown>
+export type updateDataType = loadFunctionType<ComplexData>
+export type buildDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<unknown>
+export type changeDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]) => Promise<unknown>
+export type editDataType = changeDataType
+export type deleteDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
+export type refreshDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
+export type multipleDeleteDataType = (this: ComplexData, choiceList: Record<PropertyKey, any>[], ...args: unknown[]) => Promise<unknown>
+export type exportDataType = loadFunctionType<ComplexData>
+export type importDataType = (this: ComplexData, file: File, ...args: unknown[]) => Promise<unknown>
 
 export interface ComplexDataInitOption extends BaseDataInitOption {
   module: ModuleDataInitOption
-  updateData?: loadFunctionType
+  updateData?: updateDataType
   buildData?: buildDataType
   changeData?: changeDataType
+  editData?: editDataType
   deleteData?: deleteDataType
   refreshData?: refreshDataType
   multipleDeleteData?: multipleDeleteDataType
@@ -31,9 +34,10 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
 class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> {
   static $name = 'ComplexData'
   declare $module: ModuleData
-  $updateData?: loadFunctionType
+  $updateData?: updateDataType
   $buildData?: buildDataType
   $changeData?: changeDataType
+  $editData?: editDataType
   $deleteData?: deleteDataType
   $refreshData?: refreshDataType
   $multipleDeleteData?: multipleDeleteDataType
@@ -42,14 +46,33 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', false, initOption)
-    this.$updateData = initOption.updateData
-    this.$buildData = initOption.buildData
-    this.$changeData = initOption.changeData
-    this.$deleteData = initOption.deleteData
-    this.$refreshData = initOption.refreshData
-    this.$multipleDeleteData = initOption.multipleDeleteData
-    this.$exportData = initOption.exportData
-    this.$importData = initOption.importData
+    if (initOption.updateData) {
+      this.$updateData = initOption.updateData
+    }
+    if (initOption.buildData) {
+      this.$buildData = initOption.buildData
+    }
+    if (initOption.changeData) {
+      this.$changeData = initOption.changeData
+    }
+    if (initOption.editData) {
+      this.$editData = initOption.editData
+    }
+    if (initOption.deleteData) {
+      this.$deleteData = initOption.deleteData
+    }
+    if (initOption.refreshData) {
+      this.$refreshData = initOption.refreshData
+    }
+    if (initOption.multipleDeleteData) {
+      this.$multipleDeleteData = initOption.multipleDeleteData
+    }
+    if (initOption.exportData) {
+      this.$exportData = initOption.exportData
+    }
+    if (initOption.importData) {
+      this.$importData = initOption.importData
+    }
     this._triggerCreateLife('ComplexData', true, initOption)
   }
   /* --- update start --- */

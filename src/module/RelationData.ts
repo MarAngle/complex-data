@@ -1,7 +1,6 @@
 import { upperCaseFirstChar } from "complex-utils"
 import { DataWithLife } from "complex-utils/src/class/Life"
 import BaseData, { loadFunctionType } from "../data/BaseData"
-import SelectData from "../core/SelectData"
 import Data from "../data/Data"
 import { DataWithLoad, DataWithSimpleLoad, StatusValue } from "./StatusData"
 
@@ -115,7 +114,7 @@ class RelationData {
     this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
   }
   static $loadDepend(item: dependValueType) {
-    return (item.data[item.name] as loadFunctionType)(...item.args)
+    return (item.data[item.name] as loadFunctionType<any>)(...item.args)
   }
   parent?: unknown
   depend?: {
