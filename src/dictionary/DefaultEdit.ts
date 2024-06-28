@@ -11,7 +11,7 @@ export interface ruleOption {
   min?: number
   pattern?: RegExp
   trigger?: string[]
-  validator?: (value: any, rule: ruleOption) => boolean | Promise<any>
+  validator?: (value: any, form: Record<PropertyKey, any>, ...args: any[]) => boolean | Promise<any>
 }
 // 考虑自定义校验参数，并实时构建，统一判断逻辑，构建函数由静态参数设置
 
