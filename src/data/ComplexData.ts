@@ -8,15 +8,15 @@ import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 import { DefaultBufferType } from "./DefaultData"
 import ChoiceData from "../module/ChoiceData"
 
-export type updateDataType = loadFunctionType<ComplexData>
-export type buildDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<unknown>
-export type changeDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]) => Promise<unknown>
+export type updateDataType = loadFunctionType
+export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<unknown>
+export type changeDataType = (targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]) => Promise<unknown>
 export type editDataType = changeDataType
-export type deleteDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
-export type refreshDataType = (this: ComplexData, targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
-export type multipleDeleteDataType = (this: ComplexData, choiceList: Record<PropertyKey, any>[], ...args: unknown[]) => Promise<unknown>
-export type exportDataType = loadFunctionType<ComplexData>
-export type importDataType = (this: ComplexData, file: File, ...args: unknown[]) => Promise<unknown>
+export type deleteDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
+export type refreshDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
+export type multipleDeleteDataType = (choiceList: Record<PropertyKey, any>[], ...args: unknown[]) => Promise<unknown>
+export type exportDataType = loadFunctionType
+export type importDataType = (file: File, ...args: unknown[]) => Promise<unknown>
 
 export interface ComplexDataInitOption extends BaseDataInitOption {
   module: ModuleDataInitOption

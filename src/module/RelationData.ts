@@ -114,7 +114,7 @@ class RelationData {
     this.$bindDependByLife(self, depend, bind, 'update', lifeDict, option)
   }
   static $loadDepend(item: dependValueType) {
-    return (item.data[item.name] as loadFunctionType<any>)(...item.args)
+    return (item.data[item.name] as loadFunctionType)(...item.args)
   }
   parent?: unknown
   depend?: {
