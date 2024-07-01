@@ -1,6 +1,6 @@
 import { getComplexProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusItem, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
+import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'

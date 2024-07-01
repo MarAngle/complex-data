@@ -48,7 +48,7 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
   static $defaultPlaceholder = function (name: string) {
     return `请输入${name}`
   }
-  static $parseRule = function<R = ruleOption>(ruleValue: ruleOption, form: Record<PropertyKey, any>): R {
+  static $parseRule = function<R = ruleOption>(ruleValue: ruleOption, _form: Record<PropertyKey, any>): R {
     return ruleValue as R
   }
   $editable: boolean
