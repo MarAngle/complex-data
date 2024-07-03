@@ -9,7 +9,14 @@ export interface SelectEditOption {
   hideArrow?: boolean
   hideClear?: boolean
   autoWidth?: boolean
-  open?: boolean
+  notFoundContent?: string // 无检索数据的展示逻辑
+  search?: {
+    reload?: boolean // 上次检索完成后再次打开时按照上次检索条件展示还是按照无数据重新检索展示
+    limit?: number // 限制几个字段开始检索，根据插件实现
+    limitContent?: string // 限制情况下的内容展示
+    debounce?: number // 防抖
+  }
+  open?: boolean // 主动这是选择模板是否展示
 }
 
 export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEditInitOption {
@@ -34,6 +41,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   cascader: C
   $select: C extends undefined ? SelectValue<D> : CascaderValue<C, D>
   $option: SelectEditOption
+  $searchValue?: string
   $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
     if (initOption.select && initOption.select instanceof SelectData) {
@@ -58,7 +66,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
     } else {
       this.$select = (initOption.select ? (initOption.select instanceof CascaderValue ? initOption.select : new CascaderValue(initOption.select as CascaderValueInitOption<C>)) : new CascaderValue({
         cascader: this.cascader
-      }))as unknown as (C extends undefined ? SelectValue<D> : CascaderValue<C, D>)
+      })) as unknown as (C extends undefined ? SelectValue<D> : CascaderValue<C, D>)
     }
     const option = initOption.option || {}
     const $defaultOption = (this.constructor as typeof SelectEdit).$defaultOption
@@ -66,6 +74,8 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
       hideArrow: option.hideArrow || $defaultOption.hideArrow,
       hideClear: option.hideClear || $defaultOption.hideClear,
       autoWidth: option.autoWidth || $defaultOption.autoWidth, // 宽度自适应
+      notFoundContent: option.notFoundContent,
+      search: option.search,
       open: option.open
     }
     if (initOption.pagination) {
