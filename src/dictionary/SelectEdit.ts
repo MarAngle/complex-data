@@ -10,13 +10,18 @@ export interface SelectEditOption {
   hideClear?: boolean
   autoWidth?: boolean
   notFoundContent?: string // 无检索数据的展示逻辑
-  search?: {
-    reload?: boolean // 上次检索完成后再次打开时按照上次检索条件展示还是按照无数据重新检索展示
-    limit?: number // 限制几个字段开始检索，根据插件实现
-    limitContent?: string // 限制情况下的内容展示
-    debounce?: number // 防抖
-  }
-  open?: boolean // 主动这是选择模板是否展示
+}
+
+export interface searchInitOption {
+  reload?: boolean // 上次检索完成后再次打开时按照上次检索条件展示还是按照无数据重新检索展示
+  limit?: number // 限制几个字段开始检索，根据插件实现
+  limitContent?: string // 限制情况下的内容展示
+  debounce?: number // 防抖
+}
+
+export interface searchOption extends searchInitOption {
+  operate: boolean
+  value: undefined | string
 }
 
 export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEditInitOption {
@@ -24,6 +29,7 @@ export interface SelectEditInitOption<C extends PropertyKey | undefined = undefi
   cascader: C
   select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascaderValueInitOption<C, D> | CascaderValue<C, D>)
   option?: Partial<SelectEditOption>
+  search?: searchInitOption
   pagination?: PaginationDataInitOption | PaginationData
 }
 
@@ -41,7 +47,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   cascader: C
   $select: C extends undefined ? SelectValue<D> : CascaderValue<C, D>
   $option: SelectEditOption
-  $searchValue?: string
+  $search?: searchOption
   $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
     if (initOption.select && initOption.select instanceof SelectData) {
@@ -74,15 +80,41 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
       hideArrow: option.hideArrow || $defaultOption.hideArrow,
       hideClear: option.hideClear || $defaultOption.hideClear,
       autoWidth: option.autoWidth || $defaultOption.autoWidth, // 宽度自适应
-      notFoundContent: option.notFoundContent,
-      search: option.search,
-      open: option.open
+      notFoundContent: option.notFoundContent
+    }
+    if (initOption.search) {
+      this.$search = {
+        operate: false,
+        value: undefined,
+        ...initOption.search
+      }
     }
     if (initOption.pagination) {
       this.$pagination = initOption.pagination instanceof PaginationData ? initOption.pagination : new PaginationData(initOption.pagination)
     }
   }
-  protected _clearData() {
+  $searchData(value?: string) {
+      return new Promise((resolve, reject) => {
+      if (this.$search) {
+        if (this.$search.limit && (!value || value.length < this.$search.limit)) {
+          reject({ status: 'fail', code: 'limit' })
+        } else {
+          this.$search.value = value
+          this.$search.operate = true
+          this.loadData(true).then(res => {
+            this.$search!.operate = false
+            resolve(res)
+          }).catch((err) => {
+            this.$search!.operate = false
+            reject(err)
+          })
+        }
+      } else {
+        reject({ status: 'fail', msg: '当前选择器不是检索选择器，无法调用$searchData函数！' })
+      }
+    })
+  }
+  $clearData() {
     this.$select.setList([])
     if (this.$pagination) {
       this.$pagination.reset(true)
