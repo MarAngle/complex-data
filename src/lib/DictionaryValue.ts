@@ -39,10 +39,10 @@ export type payloadType = {
 export type functionType<R> = (data: unknown, payload: payloadType) => R
 
 interface functions {
-  assign?: false | functionType<unknown> // 来源=>本地 赋值函数
-  parse?: false | functionType<unknown> // 数据=>展示/编辑 解析函数
-  collect?: false | functionType<unknown> // 编辑=>来源 获取函数
-  check?: false | functionType<boolean> // 数据存在判断函数
+  assign?: functionType<unknown> // 来源=>本地 赋值函数
+  parse?: functionType<unknown> // 数据=>展示/编辑 解析函数
+  collect?: functionType<unknown> // 编辑=>来源 获取函数
+  check?: functionType<boolean> // 数据存在判断函数
 }
 
 export type funcKeys = keyof functions
@@ -182,10 +182,10 @@ class DictionaryValue extends DefaultData implements functions {
     showProp?: InterfaceValue<string>
     type: InterfaceValue<string>
   }
-  assign?: false | functionType<unknown>
-  parse?: false | functionType<unknown>
-  collect?: false | functionType<unknown>
-  check?: false | functionType<boolean>
+  assign?: functionType<unknown>
+  parse?: functionType<unknown>
+  collect?: functionType<unknown>
+  check?: functionType<boolean>
   $mod: DictionaryModDataType
   dictionary?: DictionaryData
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
@@ -219,7 +219,9 @@ class DictionaryValue extends DefaultData implements functions {
     } else if (initOption.assign) {
       this.$exportMsg('当前编辑为简单模式,不接受assign函数!')
     }
-    this.collect = initOption.collect
+    if (initOption.collect) {
+      this.collect = initOption.collect
+    }
     this.check = initOption.check == undefined ? defaultCheck : initOption.check
     this.$mod = {}
     if (initOption.mod) {

@@ -4,8 +4,10 @@ import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import { ArrayValueDataType } from "../lib/ArrayValue"
+import { collapseType } from "../module/DictionaryData"
 
 export type reactiveFunction = (...args: any[]) => boolean
+
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型
@@ -15,6 +17,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   parse?: false | functionType<any>
   tip?: TipValueInitOption
   width?: number | string
+  collapse?: collapseType
   local?: LocalValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
   renders?: Record<string, undefined | renderType>
@@ -27,6 +30,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $name: string
   parse?: false | functionType<any>
   $tip?: TipValue
+  $collapse?: collapseType
   $width?: number | string
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
@@ -41,14 +45,25 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
     this.$name = initOption.name != undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!
-    this.parse = initOption.parse
+    if (initOption.parse !== undefined) {
+      this.parse = initOption.parse
+    }
     if (initOption.tip != undefined) {
       this.$tip = new TipValue(initOption.tip)
     }
-    this.$width = initOption.width
+    if (initOption.collapse !== undefined) {
+      this.$collapse = initOption.collapse
+    }
+    if (initOption.width !== undefined) {
+      this.$width = initOption.width
+    }
     this.$local = createLocalValue(initOption.local)
-    this.$reactives = initOption.reactives
-    this.$renders = initOption.renders
+    if (initOption.reactives !== undefined) {
+      this.$reactives = initOption.reactives
+    }
+    if (initOption.renders !== undefined) {
+      this.$renders = initOption.renders
+    }
   }
 }
 
