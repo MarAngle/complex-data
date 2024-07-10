@@ -4,10 +4,10 @@ import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import { ArrayValueDataType } from "../lib/ArrayValue"
-import { collapseType } from "../module/DictionaryData"
 
 export type reactiveFunction = (...args: any[]) => boolean
 
+export type collapseType = 0 | 1 | 2 // 折叠判断值,默认 0 不展示 1 推荐展示 2必须展示
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型

@@ -48,8 +48,6 @@ export const createOption = function<D>(structData: D, initData?: Partial<D>) {
   return structData
 }
 
-export type collapseType = undefined | 0 | 1 | 2 // 折叠判断值,默认 undefined | 0 不展示 1 推荐展示 2必须展示
-
 export interface DictionaryDataOption {
   empty: boolean
   transformUndefined: undefined | null | string | number | boolean
@@ -66,7 +64,7 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
   propData?: Partial<propDataType<string | propDataValueType>>
   layout?: LayoutParseInitOption
   option?: Partial<DictionaryDataOption>
-  collapse?: collapseType
+  collapse?: boolean
 }
 
 class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
@@ -99,7 +97,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   $propData?: propDataType<propDataValueType>
   $layout: LayoutParse
   $option: DictionaryDataOption
-  $collapse?: collapseType
+  $collapse?: boolean
   constructor(initOption: DictionaryDataInitOption) {
     super(initOption)
     this._triggerCreateLife('DictionaryData', false, initOption)
