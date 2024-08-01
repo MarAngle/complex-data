@@ -3,7 +3,7 @@ import ComplexData, { ComplexDataInitOption } from "./../data/ComplexData"
 
 export interface ComplexListInitOption extends ComplexDataInitOption {}
 
-class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>, O extends Record<PropertyKey, any> = Record<PropertyKey, any>, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
+class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>, O extends Record<PropertyKey, any> = D, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
   static $name = 'ComplexList'
   $list: D[]
   constructor(initOption: ComplexListInitOption) {

@@ -281,7 +281,7 @@ class DictionaryValue extends DefaultData implements functions {
   }
   // 格式化数据
   // 警告：不对原字段进行操作，因为原字段会作为originData对其他字段进行依赖，在complex.assign赋值模式下，原字段也不会做删除处理，保证了2种模式下的取值逻辑相同
-  $formatData(targetData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
+  $formatData(targetData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean, depth = 0) {
     if (this.$isOriginFrom(originFrom)) {
       // 仅存在assign函数或者originProp !== this.$prop需要进行格式化操作
       if (!this.$complex.assignProp) {
@@ -290,7 +290,8 @@ class DictionaryValue extends DefaultData implements functions {
           config.nonEmptySetProp(targetData, this.$prop, this.$triggerFunc('assign', targetData[originProp], {
             targetData: targetData,
             originData: targetData,
-            type: originFrom
+            type: originFrom,
+            depth
           }), useSetData)
         } else if (originProp !== this.$prop) {
           // 不存在赋值函数则在prop不同时重新赋值
@@ -303,7 +304,8 @@ class DictionaryValue extends DefaultData implements functions {
           config.nonEmptySetComplexProp(targetData, this.$prop, this.$triggerFunc('assign', getComplexProp(targetData, originProp), {
             targetData: targetData,
             originData: targetData,
-            type: originFrom
+            type: originFrom,
+            depth
           }), useSetData)
         } else if (originProp !== this.$prop) {
           // 不存在赋值函数则在prop不同时重新赋值
@@ -314,7 +316,7 @@ class DictionaryValue extends DefaultData implements functions {
     }
   }
   // 赋值
-  $assignData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean) {
+  $assignData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, originFrom: string, useSetData?: boolean, depth = 0) {
     if (this.$isOriginFrom(originFrom)) {
       const originProp = this.$getOriginProp(originFrom)
       if (!this.$complex.assignProp) {
@@ -323,7 +325,8 @@ class DictionaryValue extends DefaultData implements functions {
           targetValue = this.$triggerFunc('assign', targetValue, {
             targetData: targetData,
             originData: originData,
-            type: originFrom
+            type: originFrom,
+            depth
           })
         }
         config.nonEmptySetProp(targetData, this.$prop, targetValue, useSetData)
@@ -333,7 +336,8 @@ class DictionaryValue extends DefaultData implements functions {
           targetValue = this.$triggerFunc('assign', targetValue, {
             targetData: targetData,
             originData: originData,
-            type: originFrom
+            type: originFrom,
+            depth
           })
         }
         config.nonEmptySetComplexProp(targetData, this.$prop, targetValue, useSetData)
