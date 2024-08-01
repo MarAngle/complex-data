@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "4.3.41-ing",
+  "version": "4.3.41",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {

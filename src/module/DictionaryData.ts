@@ -79,11 +79,29 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     for (const dictionaryValue of dictionary.$data.values()) {
       dictionaryValue.$assignData(targetData, originData, originFrom, useSetData, depth)
     }
+    // 当不为初级深度时保存深度信息
+    if (depth > 0) {
+      Object.defineProperty(targetData, DictionaryData.$depth, {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: depth
+      })
+    }
     return targetData
   }
   static $formatData = function(dictionary: DictionaryData, targetData: Record<PropertyKey, any>, originFrom: string, useSetData: boolean, depth: number) {
     for (const dictionaryValue of dictionary.$data.values()) {
       dictionaryValue.$formatData(targetData, originFrom, useSetData, depth)
+    }
+    // 当不为初级深度时保存深度信息
+    if (depth > 0) {
+      Object.defineProperty(targetData, DictionaryData.$depth, {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: depth
+      })
     }
     return targetData
   }

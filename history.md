@@ -8,6 +8,7 @@
 - - 通过尽可能减少DictionaryData与DictionaryValue的关联，后期主要通过DictionaryValue实现功能逻辑，转换功能放弃
 - 重新instanceof判断static [Symbol.hasInstance](instance: any) { return instance.constructor.$name === this.$name }
 - - 实际调用发现，最终的判断都会到Data中去判断与Data的关系而不是与DefaultData的关系，猜测每个类单独重写此方法可能回有效，但是可能存在重写疏漏导致的错误问题，此功能放弃，特殊项目需要可以单独实现
+- 放弃级联数据的关联，级联数据需要可通过基础函数实现，仅添加depth作为可能存在的深度的额外判断条件
 
 ### TIPS
 - 删除属性测试结果，delete时间长但是后期内存占用小，设置undefined速度快但是有小内存占用
@@ -21,8 +22,8 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等等：等待解释
 
-### 4.3.41-ing
-- 基础的级联复杂数据占位
+### 4.3.41
+- 添加depth作为可能存在的深度的额外判断条件
 
 ### 4.3.39/40
 - DictionaryData/DefaultMod添加collapse折叠判断值
