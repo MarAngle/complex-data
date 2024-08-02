@@ -96,19 +96,23 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'updateData')
     }
-    const promise = this.triggerMethodWithOperate('$updateData', args, 'update', false, (target, res) => {
-      if (target === 'start') {
-        this.triggerLife('beforeUpdate', this, ...args)
-      } else if (target === 'success') {
-        this.triggerLife('updated', this, {
-          res: res,
-          args: args
-        })
-      } else {
-        this.triggerLife('updateFail', this, {
-          res: res,
-          args: args
-        })
+    const promise = this.triggerMethodWithOperateAndStatus('$updateData', args, {
+      status: 'update',
+      strict: false,
+      trigger: (target, res) => {
+        if (target === 'start') {
+          this.triggerLife('beforeUpdate', this, ...args)
+        } else if (target === 'success') {
+          this.triggerLife('updated', this, {
+            res: res,
+            args: args
+          })
+        } else {
+          this.triggerLife('updateFail', this, {
+            res: res,
+            args: args
+          })
+        }
       }
     })
     return this._setPromise('update', promise)

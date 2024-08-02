@@ -1,10 +1,14 @@
 import { getComplexProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType, StatusValue } from '../module/StatusData'
+import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType, StatusValue, triggerChangeOption } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
+
+export interface triggerMethodWithStatusOption extends triggerChangeOption {
+  status: string
+}
 
 export type BaseDataActive = 'actived' | 'inactived'
 
@@ -165,36 +169,37 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
    * @param triggerCallBack 状态变化的回调函数，可在此处进行状态切换的回调
    * @returns 
    */
-  $triggerMethodWithStatus(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
-    const statusItem = this.getStatusValue(statusProp)
+  $triggerMethodWithStatus(method: string, args: any[] = [], option: triggerMethodWithStatusOption) {
+    const statusItem = this.getStatusValue(option.status)
     if (statusItem) {
-      if (statusItem.triggerChange('start', [], strict, triggerCallBack)) {
+      if (statusItem.triggerChange('start', [], option)) {
         return new Promise((resolve, reject) => {
           this._runMethod(method, args)!.then((res: any) => {
-            statusItem.triggerChange('success', [res], strict, triggerCallBack)
+            statusItem.triggerChange('success', [res], option)
             resolve(res)
           }).catch(err => {
-            statusItem.triggerChange('fail', [err], strict, triggerCallBack)
+            statusItem.triggerChange('fail', [err], option)
             reject(err)
           })
         })
       } else {
-        statusItem.triggerChange('fail', [], strict, triggerCallBack)
-        this.$exportMsg(`当前${statusProp}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
+        statusItem.triggerChange('fail', [], option)
+        this.$exportMsg(`当前${option.status}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
         return Promise.reject({ status: 'fail', code: 'status clash' })
       }
     } else {
-      this.$exportMsg(`${statusProp}状态不存在，$triggerMethodWithStatus函数失败！`)
+      this.$exportMsg(`${option.status}状态不存在，$triggerMethodWithStatus函数失败！`)
       return Promise.reject({ status: 'fail', code: 'status empty' })
     }
   }
   // 触发函数联动operate
-  triggerMethod(method: string, args: any[] = [], strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
-    return this.$triggerMethodWithStatus(method, args, 'operate', strict, triggerCallBack)
+  triggerMethod(method: string, args: any[] = [], option: triggerChangeOption = {}) {
+    (option as triggerMethodWithStatusOption).status = 'operate'
+    return this.$triggerMethodWithStatus(method, args, option as triggerMethodWithStatusOption)
   }
   // 触发函数并联动目标status，再联动operate
-  triggerMethodWithOperate(method: string, args: any[] = [], statusProp: string, strict?: boolean, triggerCallBack?: StatusTriggerCallBackType, operateStrict?: boolean, OperateTriggerCallBack?: StatusTriggerCallBackType) {
-    return this.triggerMethod('$triggerMethodWithStatus', [method, args, statusProp, strict, triggerCallBack] as Parameters<BaseData['$triggerMethodWithStatus']>, operateStrict, OperateTriggerCallBack)
+  triggerMethodWithOperateAndStatus(method: string, args: any[] = [], option: triggerMethodWithStatusOption, operateOption: triggerChangeOption = {}) {
+    return this.triggerMethod('$triggerMethodWithStatus', [method, args, option] as Parameters<BaseData['$triggerMethodWithStatus']>, operateOption)
   }
   $getData(..._args: any[]): Promise<any> {
     return Promise.reject({ status: 'fail', code: '$getData absent', msg: '$getData函数未定义' })
@@ -204,19 +209,23 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       // 自动激活模式下主动触发激活操作
       this.changeActive('actived', 'loadData')
     }
-    return this.triggerMethodWithOperate('$getData', args, 'load', false, (target, res) => {
-      if (target === 'start') {
-        this.triggerLife('beforeLoad', this, ...args)
-      } else if (target === 'success') {
-        this.triggerLife('loaded', this, {
-          res: res,
-          args: args
-        })
-      } else {
-        this.triggerLife('loadFail', this, {
-          res: res,
-          args: args
-        })
+    return this.triggerMethodWithOperateAndStatus('$getData', args, {
+      status: 'load',
+      strict: false,
+      trigger: (target, res) => {
+        if (target === 'start') {
+          this.triggerLife('beforeLoad', this, ...args)
+        } else if (target === 'success') {
+          this.triggerLife('loaded', this, {
+            res: res,
+            args: args
+          })
+        } else {
+          this.triggerLife('loadFail', this, {
+            res: res,
+            args: args
+          })
+        }
       }
     })
   }

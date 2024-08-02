@@ -32,6 +32,11 @@ export type StatusItemInitOptionObject = {
   type?: 'count'
 }
 
+export interface triggerChangeOption {
+  strict?: boolean
+  trigger?: StatusTriggerCallBackType
+}
+
 export type StatusItemInitOption = 'load' | 'operate' | StatusItemInitOptionObject
 
 export interface DataWithSimpleLoad {
@@ -150,18 +155,18 @@ export class StatusItem extends Data {
       }
     }
   }
-  triggerChange(target: keyof StatusTriggerType, args: unknown[] = [], strict?: boolean, triggerCallBack?: StatusTriggerCallBackType) {
+  triggerChange(target: keyof StatusTriggerType, args: unknown[] = [], option: triggerChangeOption = {}) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
-    if (strict) {
+    if (option.strict) {
       // 当前状态不在目标周期的来源时，严格校验失败打断
       if (triggerDict.from.indexOf(current) === -1) {
         return false
       }
     }
     this.setCurrent(triggerDict.to)
-    if (triggerCallBack) {
-      triggerCallBack(target, ...args)
+    if (option.trigger) {
+      option.trigger(target, ...args)
     }
     return true
   }
