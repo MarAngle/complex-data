@@ -1,12 +1,33 @@
 import { getComplexProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
-import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusTriggerCallBackType, StatusValue, triggerChangeOption } from '../module/StatusData'
+import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusValue, triggerChangeOption } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
 import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 
-export interface triggerMethodWithStatusOption extends triggerChangeOption {
+export interface triggerMethodOption extends triggerChangeOption {
+  throttle?: {
+    value: number // 节流时间：毫秒
+    fail?: boolean // 失败是否节流（失败仅指调用函数的失败，校验失败可能不做处理）
+    start?: boolean // 节流时间从开始计算
+  }
+}
+
+function getThrottleOffset(throttle: NonNullable<triggerMethodOption['throttle']>, startTime: number) {
+  if (throttle.start) {
+    // 从开始计时则计算开始到现在的插值
+    let offset = throttle.value - (Date.now() - startTime)
+    if (offset < 0) {
+      offset = 0
+    }
+    return offset
+  } else {
+    return throttle.value
+  }
+}
+
+export interface triggerMethodWithStatusOption extends triggerMethodOption {
   status: string
 }
 
@@ -174,12 +195,30 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (statusItem) {
       if (statusItem.triggerChange('start', [], option)) {
         return new Promise((resolve, reject) => {
+          const throttle = option.throttle
+          const startTime = Date.now()
           this._runMethod(method, args)!.then((res: any) => {
-            statusItem.triggerChange('success', [res], option)
-            resolve(res)
+            if (!throttle) {
+              // 不存在节流直接成功
+              statusItem.triggerChange('success', [res], option)
+              resolve(res)
+            } else {
+              setTimeout(() => {
+                statusItem.triggerChange('success', [res], option)
+                resolve(res)
+              }, getThrottleOffset(throttle, startTime))
+            }
           }).catch(err => {
-            statusItem.triggerChange('fail', [err], option)
-            reject(err)
+            if (!throttle || !throttle.fail) {
+              // 不存在节流或者存在节流但是失败不节流则直接失败
+              statusItem.triggerChange('fail', [err], option)
+              reject(err)
+            } else {
+              setTimeout(() => {
+                statusItem.triggerChange('fail', [err], option)
+                reject(err)
+              }, getThrottleOffset(throttle, startTime))
+            }
           })
         })
       } else {
@@ -193,12 +232,12 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     }
   }
   // 触发函数联动operate
-  triggerMethod(method: string, args: any[] = [], option: triggerChangeOption = {}) {
+  triggerMethod(method: string, args: any[] = [], option: triggerMethodOption = {}) {
     (option as triggerMethodWithStatusOption).status = 'operate'
     return this.$triggerMethodWithStatus(method, args, option as triggerMethodWithStatusOption)
   }
   // 触发函数并联动目标status，再联动operate
-  triggerMethodWithOperateAndStatus(method: string, args: any[] = [], option: triggerMethodWithStatusOption, operateOption: triggerChangeOption = {}) {
+  triggerMethodWithOperateAndStatus(method: string, args: any[] = [], option: triggerMethodWithStatusOption, operateOption: triggerMethodOption = {}) {
     return this.triggerMethod('$triggerMethodWithStatus', [method, args, option] as Parameters<BaseData['$triggerMethodWithStatus']>, operateOption)
   }
   $getData(..._args: any[]): Promise<any> {
