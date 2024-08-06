@@ -174,7 +174,7 @@ class ChoiceData extends Data {
       }
       target.onLife('beforeReload', {
         id: this._getId('BeforeReload'),
-        data: (_lifeItem, _instantiater, force: ForceValue) => {
+        handler: (_lifeValue, _instantiater, force: ForceValue) => {
           this.$resetByFrom(force.module.choice, 'reload')
         }
       })

@@ -12,7 +12,7 @@ class ComplexInfo<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
     this.$info = {}
     this.onLife('reseted', {
       id: 'AutoComplexInfoReseted',
-      data: (_lifeItem, resetOption) => {
+      handler: (_lifeValue, resetOption) => {
         if (resetOption.info !== false) {
           this.$info = {}
         }

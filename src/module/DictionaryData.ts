@@ -270,7 +270,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     // 监听事件
     this.onLife('updated', {
       id: target._getId('dictionaryUpdated'),
-      data: (...args) => {
+      handler: (...args) => {
         target.triggerLife('dictionaryUpdated', ...args)
       }
     })

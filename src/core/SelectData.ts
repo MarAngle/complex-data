@@ -52,7 +52,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       })
       // 数据加载完成时，触发保存到本地
       this.onLife('loaded', {
-        data: () => {
+        handler: () => {
           // 数据加载完成后自动取消可能存在的数据更新逻辑
           this.$storage!.stop()
           this.saveStorage()
@@ -60,13 +60,13 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       })
       // 本地化加载完成：本地化加载完成不触发loaded事件！
       this.onLife('initStoraged', {
-        data: () => {
+        handler: () => {
           this.setLoad(StatusValue.success)
         }
       })
       // reloadStorage触发本地加载
       this.onLife('reloadStorage', {
-        data: () => {
+        handler: () => {
           this.loadData({ ing: false })
         }
       })

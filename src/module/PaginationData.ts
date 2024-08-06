@@ -216,7 +216,7 @@ class PaginationData extends DefaultData {
     super._install(target)
     target.onLife('beforeReload', {
       id: this._getId('BeforeReload'),
-      data: (_lifeItem, _instantiater, force: ForceValue) => {
+      handler: (_lifeValue, _instantiater, force: ForceValue) => {
         let pageResetOption = force.module.pagination
         if (pageResetOption) {
           if (pageResetOption === true) {
@@ -241,7 +241,7 @@ class PaginationData extends DefaultData {
     })
     // target.onLife('reseted', {
     //   id: this._getId('Reseted'),
-    //   data: (life, instantiater, resetOption) => {
+    //   handler: (life, instantiater, resetOption) => {
     //     if (target.$parseResetOption(resetOption, 'pagination') !== false) {
     //       this.reset()
     //     }
@@ -249,7 +249,7 @@ class PaginationData extends DefaultData {
     // })
     this.onLife('change', {
       id: target._getId('PaginationChange'),
-      data: (_lifeItem, instantiater, prop, current) => {
+      handler: (_lifeValue, instantiater, prop, current) => {
         target.triggerLife('paginationChange', instantiater, prop, current)
       }
     })

@@ -12,7 +12,7 @@ class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
     this.$list = []
     this.onLife('reseted', {
       id: 'AutoComplexListReseted',
-      data: (_lifeItem, resetOption) => {
+      handler: (_lifeValue, resetOption) => {
         if (resetOption.list !== false) {
           this.$list = []
         }

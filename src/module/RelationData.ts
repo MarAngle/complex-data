@@ -63,9 +63,9 @@ class RelationData {
       self.onLife('actived', {
         id: depend._getId('BindLife' + upperCaseFirstChar(from)),
         replace: true,
-        data: (lifeItem) => {
+        handler: (lifeValue) => {
           bind(depend, self, success, life, unbind)
-          lifeItem.destroy()
+          lifeValue.destroy()
         }
       })
     }
@@ -93,12 +93,12 @@ class RelationData {
       }
     }
     lifeDict[successLifeName] = depend.onLife(successLifeName, {
-      data: () => {
+      handler: () => {
         this.$bindDependByActive(self, depend, bind, successLifeName, true, life, unbind, active)
       }
     })!
     lifeDict[failLifeName] = depend.onLife(failLifeName, {
-      data: () => {
+      handler: () => {
         this.$bindDependByActive(self, depend, bind, failLifeName, false, life, unbind, active)
       }
     })!
@@ -187,7 +187,7 @@ class RelationData {
       self.$setParent(parent.data)
     }
     self.onLife('parentChange', {
-      data: (current: unknown) => {
+      handler: (current: unknown) => {
         this.parent = current
         self.reloadData({ data: true, ing: true, sync: true, module: { pagination: true, choice: true } })
       }

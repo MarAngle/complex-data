@@ -268,7 +268,7 @@ class SearchData extends DictionaryData {
     // 监听事件
     this.onLife('updated', {
       id: target._getId('searchUpdated'),
-      data: (...args) => {
+      handler: (...args) => {
         target.triggerLife('searchUpdated', ...args)
       }
     })

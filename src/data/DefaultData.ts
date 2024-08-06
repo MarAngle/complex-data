@@ -1,6 +1,6 @@
 import { Life, upperCaseFirstChar } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
-import { LifeDataInitOptionWithExtra } from 'complex-utils/src/class/LifeItem'
+import { LifeValueInitOptionWithExtra } from 'complex-utils/src/class/LifeData'
 import { BufferType } from './Data'
 import SimpleData, { SimpleDataInitOption } from './SimpleData'
 import StorageValue, { DataWithStorage, StorageValueInitOption } from '../lib/StorageValue'
@@ -47,7 +47,7 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
         }
       })
       this.onLife('created', {
-        data: () => {
+        handler: () => {
           this.$storage!.init(this)
         }
       })
@@ -76,8 +76,8 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     this.triggerLife(lifeNameWithData, this, ...args)
     this._buffer.create[lifeNameWithData] = isCreate
   }
-  $onCreatedLife(createdLifeName: string, data: LifeDataInitOptionWithExtra['data']) {
-    return this.$life.on(createdLifeName, { data: data, immediate: this._buffer.create[createdLifeName] })
+  $onCreatedLife(createdLifeName: string, handler: LifeValueInitOptionWithExtra['handler']) {
+    return this.$life.on(createdLifeName, { handler: handler, immediate: this._buffer.create[createdLifeName] })
   }
   /**
    * 设置生命周期回调函数
