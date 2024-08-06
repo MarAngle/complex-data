@@ -13,13 +13,12 @@
 
 ### TIPS
 - 删除属性测试结果，delete时间长但是后期内存占用小，设置undefined速度快但是有小内存占用
+- 数据保存，array/object/map测试结果，内存占用array[593M]/object[882M]/map[982M]，保存速度array[958ms]/object[5084ms]/map[5161ms]，读取速度array[基于index速度最快基于循环查找超大数据量下内存溢出]/object[1872ms]/map[268ms]
 
 ### ToDo
 - 排序和筛选数据的逻辑实现
 
 ### Doing
-- 添加防抖和节流
-- - 考虑模板添加/函数赋值时设置/triggerMethod函数添加额外参数三种实现逻辑中的至少1种
 - 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
