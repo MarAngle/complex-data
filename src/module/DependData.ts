@@ -28,7 +28,7 @@ export type DependValueInitOption<D extends dependDataType = dependDataType> = D
   bind?: dependBindType
 }
 
-class DependValue<D extends dependDataType = dependDataType> {
+export class DependValue<D extends dependDataType = dependDataType> {
   static $name = 'DependValue'
   static $formatConfig = { name: 'DependValue', level: 10, recommend: false }
   data: D
@@ -61,6 +61,7 @@ export interface DependDataInitOption {
 class DependData {
   static $name = 'DependData'
   static $formatConfig = { name: 'DependData', level: 10, recommend: false }
+  // 基于激活状态绑定依赖
   static $bindDependByActive(self: BaseData, depend: dependDataType, bind: dependBind, from: string, success: boolean, life: bindLife, unbind: () => void, active?: boolean) {
     let sync = true
     if (active && !self.isActive()) {
@@ -82,7 +83,7 @@ class DependData {
       })
     }
   }
-  // 根据生命周期将依赖通过bing函数绑定到self上
+  // 根据生命周期将依赖通过bind函数绑定到self上
   static $bindDependByLife(self: BaseData, depend: dependDataType, bind: dependBind, life: bindLife, lifeDict: Record<string, string> = {}, {
     active, // 是否只在激活状态下触发
   }: dependBindOption = {}) {

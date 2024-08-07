@@ -2,9 +2,10 @@ import { getComplexProp, isPromise } from 'complex-utils'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
 import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusValue, triggerChangeOption } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
-import RelationData, { RelationDataInitOption, bindParentOption } from '../module/RelationData'
+import DependData, { DependDataInitOption } from '../module/DependData'
 import ModuleData, { ModuleDataInitOption } from '../module/ModuleData'
 import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
+import Data from './Data'
 
 export interface triggerMethodOption extends triggerChangeOption {
   throttle?: {
@@ -43,7 +44,7 @@ export type loadFunctionType = (...args: any[]) => Promise<any>
 export interface BaseDataInitOption extends DefaultDataInitOption {
   status?: StatusDataInitOption
   promise?: PromiseDataInitData
-  relation?: RelationDataInitOption
+  depend?: DependDataInitOption
   module?: ModuleDataInitOption
   active?: BaseDataActiveType
   getData?: loadFunctionType
@@ -66,7 +67,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   }
   $status: StatusData
   $promise: PromiseData
-  $relation?: RelationData
+  $depend?: DependData
   $module?: ModuleData
   $active: BaseDataActiveType
   constructor(initOption: BaseDataInitOption) {
@@ -74,12 +75,12 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     this._triggerCreateLife('BaseData', false, initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
-    if (initOption.relation) {
-      Object.defineProperty(this, '$relation', {
+    if (initOption.depend) {
+      Object.defineProperty(this, '$depend', {
         enumerable: false,
         configurable: false,
         writable: true,
-        value: new RelationData(initOption.relation, this)
+        value: new DependData(initOption.depend, this)
       })
     }
     if (initOption.module) {
@@ -100,6 +101,11 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       }
     }
     this._triggerCreateLife('BaseData', true, initOption)
+  }
+
+  $setParent(parent?: Data) {
+    super.$setParent(parent)
+    this.triggerLife('parentChange', this, parent)
   }
 
   /* --- active start --- */
@@ -269,8 +275,8 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     })
   }
   $triggerLoadData(...args: any[]) {
-    return this._setPromise('load', !this.$relation ? this._triggerLoadData(...args) : new Promise((resolve, reject) => {
-      this.$relation!.loadDepend().finally(() => {
+    return this._setPromise('load', !this.$depend ? this._triggerLoadData(...args) : new Promise((resolve, reject) => {
+      this.$depend!.loadDepend().finally(() => {
         this._triggerLoadData(...args).then(res => {
           resolve(res)
         }).catch(err => {
@@ -349,23 +355,6 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   }
   /* --- load end --- */
   
-  /* --- relation start --- */
-  bindParent(parent: bindParentOption) {
-    if (!this.$relation) {
-      Object.defineProperty(this, '$relation', {
-        enumerable: false,
-        configurable: false,
-        writable: true,
-        value: new RelationData({
-          parent: parent
-        }, this)
-      })
-    } else {
-      this.$relation.bindParent(parent, this)
-    }
-  }
-  /* --- relation end --- */
-  
   /* --- reset start --- */
   /**
    * 重置回调操作=>不清除额外数据以及生命周期函数
@@ -406,8 +395,8 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     if (parseResetOption(destroyOption, 'life') === true) {
       this.destroyLife()
     }
-    if (parseResetOption(destroyOption, 'depend') === true && this.$relation) {
-      this.$relation.destroy(true)
+    if (parseResetOption(destroyOption, 'depend') === true && this.$depend) {
+      this.$depend.destroy(true)
     }
     // 额外数据不存在destroy，因此不做销毁,在reset中可能存在清空操作
     if (this.$module) {
