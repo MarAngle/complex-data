@@ -17,6 +17,7 @@
 
 ### ToDo
 - 排序和筛选数据的逻辑实现
+- search的加载在Complex的依赖加载完成后触发
 
 ### Doing
 - 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据

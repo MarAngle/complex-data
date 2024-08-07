@@ -269,19 +269,15 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     })
   }
   $triggerLoadData(...args: any[]) {
-    if (this.$relation) {
-      return this._setPromise('load', new Promise((resolve, reject) => {
-        this.$relation!.loadDepend().finally(() => {
-          this._triggerLoadData(...args).then(res => {
-            resolve(res)
-          }).catch(err => {
-            reject(err)
-          })
+    return this._setPromise('load', !this.$relation ? this._triggerLoadData(...args) : new Promise((resolve, reject) => {
+      this.$relation!.loadDepend().finally(() => {
+        this._triggerLoadData(...args).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
         })
-      }))
-    } else {
-      return this._setPromise('load', this._triggerLoadData(...args))
-    }
+      })
+    }))
   }
   loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
     const force = new ForceValue(forceInitOption)
