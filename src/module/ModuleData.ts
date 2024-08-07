@@ -45,7 +45,7 @@ class ModuleData extends Data {
     }
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected _buildModuleData(modName: moduleKeys, modData?: boolean | Record<PropertyKey, any>) {
+  protected _buildModuleData(modName: moduleKeys, modData?: boolean | Record<PropertyKey, any>, _parent?: BaseData) {
     const ModuleClass = ModuleMap[modName]
     if (ModuleClass && modData !== false && !(modData instanceof ModuleClass)) {
       if (modData == undefined || modData === true) {
@@ -66,10 +66,11 @@ class ModuleData extends Data {
     if (from !== 'init') {
       this.uninstallData(modName, 'install:' + from, unTriggerSync)
     }
-    modData = this._buildModuleData(modName, modData)
+    const parent = this.$getParent() as BaseData
+    modData = this._buildModuleData(modName, modData, parent)
     this[modName] = modData
     if (modData && modData._install) {
-      modData._install(this.$getParent(), from)
+      modData._install(parent, from)
     }
     if (!unTriggerSync) {
       this._syncData(true, 'installData')

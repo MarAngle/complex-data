@@ -141,7 +141,7 @@ class SearchData extends DictionaryData {
     }
   }
   $type: string
-  $runtime: {
+  $runtime?: {
     dictionary: DictionaryValue[]
     list: ObserveList
     form: FormValue
@@ -164,14 +164,6 @@ class SearchData extends DictionaryData {
     super(initOption)
     this._triggerCreateLife('SearchData', false, initOption)
     this.$type = initOption.type || 'search'
-    const dictionaryList = this.getList(this.$type)
-    const observeList = this.getObserveList(this.$type, dictionaryList)
-    const form = new FormValue()
-    this.$runtime = {
-      dictionary: dictionaryList,
-      list: observeList,
-      form: form
-    }
     this.$current = {}
     const menu = getType(initOption.menu) === 'object' ? initOption.menu as menuInitType : {
       default: initOption.menu as menuInitType['default']
@@ -182,22 +174,36 @@ class SearchData extends DictionaryData {
     }
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
+    // 完成初始化form
+    this._triggerCreateLife('SearchData', true)
+  }
+  init() {
+    const dictionaryList = this.getList(this.$type)
+    const observeList = this.getObserveList(this.$type, dictionaryList)
+    const form = new FormValue()
+    this.$runtime = {
+      dictionary: dictionaryList,
+      list: observeList,
+      form: form
+    }
     // 初始化form
     this.parseData(dictionaryList, form, this.$type, undefined, 'init')
     if (this.$observe) {
       observeList.startObserve(form.getData(), this.$type)
     }
     this.syncData(true)
-    // 完成初始化form
-    this._triggerCreateLife('SearchData', true)
   }
   $validate(): Promise<{ status: string }> {
     return new Promise((resolve, reject) => {
-      this.$runtime.form.validate().then(() => {
-        resolve({ status: 'success' })
-      }).catch(err => {
-        reject(err)
-      })
+      if (this.$runtime) {
+        this.$runtime.form.validate().then(() => {
+          resolve({ status: 'success' })
+        }).catch(err => {
+          reject(err)
+        })
+      } else {
+        reject({ status: 'fail', code: 'not init' })
+      }
     })
   }
   // 验证并同步值
@@ -213,22 +219,26 @@ class SearchData extends DictionaryData {
   }
   // 同步值
   syncData(unTriggerSync?: boolean) {
-    this.$current = this.collectData(this.$runtime.form.getData(), this.$runtime.dictionary, this.$type)
-    if (!unTriggerSync) {
-      this._syncData(true, 'syncData')
+    if (this.$runtime) {
+      this.$current = this.collectData(this.$runtime.form.getData(), this.$runtime.dictionary, this.$type)
+      if (!unTriggerSync) {
+        this._syncData(true, 'syncData')
+      }
     }
   }
   resetForm(from = '' , option?: resetOption) {
-    if (!option) {
-      option = this.$resetOption || {}
-    }
     const runtime = this.$runtime
-    this.parseData(runtime.dictionary, runtime.form, this.$type, undefined, from)
-    runtime.form.clearValidate()
-    if (option.sync !== false) {
-      this.syncData()
+    if (runtime) {
+      if (!option) {
+        option = this.$resetOption || {}
+      }
+      this.parseData(runtime.dictionary, runtime.form, this.$type, undefined, from)
+      runtime.form.clearValidate()
+      if (option.sync !== false) {
+        this.syncData()
+      }
+      this._syncData(true, 'resetForm', from)
     }
-    this._syncData(true, 'resetForm', from)
   }
   getData(unClone?: boolean) {
     if (unClone) {
@@ -238,15 +248,17 @@ class SearchData extends DictionaryData {
     }
   }
   assignData(data: Record<PropertyKey, any>, { assign, force }: { assign?: boolean, force?: boolean } = {}) {
-    const form = this.$runtime.form.getData()
-    for (const prop in data) {
-      form[prop] = data[prop]
-    }
-    if (assign == undefined || assign) {
-      if (force) {
-        this.syncData()
-      } else {
-        return this.validateAndSyncData()
+    if (this.$runtime) {
+      const form = this.$runtime.form.getData()
+      for (const prop in data) {
+        form[prop] = data[prop]
+      }
+      if (assign == undefined || assign) {
+        if (force) {
+          this.syncData()
+        } else {
+          return this.validateAndSyncData()
+        }
       }
     }
   }
@@ -258,14 +270,17 @@ class SearchData extends DictionaryData {
   destroy(option?: boolean) {
     if (option !== false) {
       this.reset(option)
-      if (this.$observe) {
+      if (this.$observe && this.$runtime) {
         this.$runtime.list.clearWatcher()
       }
     }
   }
   _install(target: BaseData) {
     super._install(target)
-    // 监听事件
+    // 主数据依赖加载完成后再自动进行初始化
+    target.$onDependLoaded(() => {
+      this.init()
+    })
     this.onLife('updated', {
       id: target._getId('searchUpdated'),
       handler: (...args) => {

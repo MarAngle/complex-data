@@ -75,13 +75,23 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     this._triggerCreateLife('BaseData', false, initOption)
     this.$status = new StatusData(initOption.status)
     this.$promise = new PromiseData(initOption.promise)
-    if (initOption.depend) {
+    const dependInitOption = initOption.depend
+    if (dependInitOption) {
+      // 存在依赖则加载依赖
       Object.defineProperty(this, '$depend', {
         enumerable: false,
         configurable: false,
         writable: true,
-        value: new DependData(initOption.depend, this)
+        value: new DependData(dependInitOption, this)
       })
+      // // 添加依赖状态，因依赖的加载理论上是成功一次即可，避免重复触发，暂不加载状态
+      // this.$status.addData('depend', 'operate')
+      if (dependInitOption.created === true || (dependInitOption.created === undefined && DependData.$created)) {
+        this.$onCreatedLife('created', (lifeValue) => {
+          this.$loadDepend()
+          lifeValue.destroy()
+        })
+      }
     }
     if (initOption.module) {
       this.$module = new ModuleData(initOption.module, this)
@@ -274,9 +284,29 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       }
     })
   }
+  // 依赖加完成触发，因依赖不一定存在，因此需要特殊处理
+  $onDependLoaded(next: () => void) {
+    if (!this.$depend) {
+      next()
+    } else {
+      this.onLife('dependLoaded', {
+        handler: next
+      })
+    }
+  }
+  $loadDepend() {
+    const depend = this.$depend!
+    const promise = depend.loadDepend()
+    if (!depend.$init) {
+      promise.finally(() => {
+        this.triggerLife('dependLoaded', this)
+      })
+    }
+    return promise
+  }
   $triggerLoadData(...args: any[]) {
     return this._setPromise('load', !this.$depend ? this._triggerLoadData(...args) : new Promise((resolve, reject) => {
-      this.$depend!.loadDepend().finally(() => {
+      this.$loadDepend().finally(() => {
         this._triggerLoadData(...args).then(res => {
           resolve(res)
         }).catch(err => {
