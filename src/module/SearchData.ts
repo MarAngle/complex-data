@@ -16,6 +16,7 @@ export type menuInitType = {
 }
 
 export interface SearchDataInitOption extends DictionaryDataInitOption {
+  init?: boolean
   type?: string
   menu?: menuInitType['default'] | menuInitType
   observe?: boolean
@@ -174,24 +175,29 @@ class SearchData extends DictionaryData {
     }
     this.$observe = initOption.observe
     this.$resetOption = initOption.resetOption
+    if (initOption.init) {
+      this.init()
+    }
     // 完成初始化form
     this._triggerCreateLife('SearchData', true)
   }
-  init() {
-    const dictionaryList = this.getList(this.$type)
-    const observeList = this.getObserveList(this.$type, dictionaryList)
-    const form = new FormValue()
-    this.$runtime = {
-      dictionary: dictionaryList,
-      list: observeList,
-      form: form
+  init(force?: boolean) {
+    if (!this.$runtime || force) {
+      const dictionaryList = this.getList(this.$type)
+      const observeList = this.getObserveList(this.$type, dictionaryList)
+      const form = new FormValue()
+      this.$runtime = {
+        dictionary: dictionaryList,
+        list: observeList,
+        form: form
+      }
+      // 初始化form,因数据为空所以不需要关注结果？
+      this.parseData(dictionaryList, form, this.$type, undefined, 'init')
+      if (this.$observe) {
+        observeList.startObserve(form.getData(), this.$type)
+      }
+      this.syncData(true)
     }
-    // 初始化form
-    this.parseData(dictionaryList, form, this.$type, undefined, 'init')
-    if (this.$observe) {
-      observeList.startObserve(form.getData(), this.$type)
-    }
-    this.syncData(true)
   }
   $validate(): Promise<{ status: string }> {
     return new Promise((resolve, reject) => {
