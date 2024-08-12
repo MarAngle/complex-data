@@ -82,6 +82,15 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       }
     }
   }
+  protected _getIndex (list: D[], value: any, prop: keyof D): number {
+    for (let n = 0; n < list.length; n++) {
+      const item = list[n]
+      if (this.check(value, item[prop])) {
+        return n
+      }
+    }
+    return -1
+  }
   protected _filterList(filter: checkItem<D>, list: D[]) {
     const currentList: D[] = []
     list.forEach(item => {
@@ -109,6 +118,18 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
       prop = 'value'
     }
     return this._getItem(this.list, value, prop) || this.miss
+  }
+  getIndex(value: any, prop?: keyof D) {
+    if (!prop) {
+      prop = 'value'
+    }
+    return this._getIndex(this.list, value, prop)
+  }
+  getItemByIndex(index: number): undefined | D {
+    return this.list[index]
+  }
+  getItemByOffset(value: any, offset = 1, prop?: keyof D) {
+    return this.getItemByIndex(this.getIndex(value, prop) + offset)
   }
   check(value: any, itemValue: any) {
     if (!this.equal) {
