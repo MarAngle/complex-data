@@ -23,7 +23,7 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
-### 4.4.4-ing
+### 4.4.4
 - SelectValue添加getIndex/getItemByIndex/getItemByOffset函数，实现快速获取相关联数据逻辑
 - 修正DictionaryValue调用$formatInitOption的类型标注错误
 
