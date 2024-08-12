@@ -190,7 +190,7 @@ class DictionaryValue extends DefaultData implements functions {
   dictionary?: DictionaryData
   constructor(initOption: DictionaryValueInitOption, parent?: DictionaryData) {
     super(initOption)
-    const $constructor = (this.constructor as typeof DefaultMod)
+    const $constructor = (this.constructor as typeof DictionaryValue)
     if ($constructor.$formatInitOption) {
       initOption = $constructor.$formatInitOption(initOption, parent)
     }

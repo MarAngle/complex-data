@@ -25,6 +25,7 @@
 
 ### 4.4.4-ing
 - SelectValue添加getIndex/getItemByIndex/getItemByOffset函数，实现快速获取相关联数据逻辑
+- 修正DictionaryValue调用$formatInitOption的类型标注错误
 
 ### 4.4.2/3
 - 优化依赖相关功能，依赖实现创建时加载和数据加载前加载
