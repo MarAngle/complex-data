@@ -23,6 +23,10 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.4.6
+- DefaultMod添加排序参数
+- DictionaryData添加排序静态函数，getPageList/getObserveList时基于DefaultMod.$sort进行额外排序
+
 ### 4.4.5
 - utils依赖升级
 - SearchData在reset时重置formData

@@ -5,6 +5,7 @@ import ObserveList from "../dictionary/ObserveList"
 import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
 import FormValue from "../lib/FormValue"
+import { DefaultModAfterSort, DefaultModBeforeSort, DefaultModOffsetSort, DefaultModSort } from "../dictionary/DefaultMod"
 
 type propDataValueType = {
   prop: string
@@ -67,6 +68,11 @@ export interface DictionaryDataInitOption extends DefaultDataInitOption {
   collapse?: boolean
 }
 
+export type DictionarySortOption = {
+  prop: string
+  option: DefaultModSort
+}
+
 class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> extends DefaultData<Buffer> {
   static $name = 'DictionaryData'
   static $formatConfig = { name: 'DictionaryData', level: 50, recommend: true }
@@ -104,6 +110,69 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       })
     }
     return targetData
+  }
+  static orderPageList(pageList: DictionaryMod[], orderList: string[]) {
+    pageList.sort((a, b) => {
+      return orderList.indexOf(a.$prop) - orderList.indexOf(b.$prop)
+    })
+  }
+  static sortPageList(pageList: DictionaryMod[], sortList: DictionarySortOption[]) {
+    sortList.forEach(sortValue => {
+      const index = pageList.findIndex((value) => value.$prop === sortValue.prop)
+      if (index > -1) {
+        const [targetValue] = pageList.splice(index, 1)
+        if ((sortValue.option as DefaultModOffsetSort).offset) {
+          pageList.splice(index + (sortValue.option as DefaultModOffsetSort).offset, 0, targetValue)
+        } else if ((sortValue.option as DefaultModBeforeSort).before) {
+          const beforeIndex = pageList.findIndex((value) => value.$prop === (sortValue.option as DefaultModBeforeSort).before)
+          if (beforeIndex > -1) {
+            pageList.splice(beforeIndex, 0, targetValue)
+          } else {
+            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModBeforeSort).before}失败！`)
+          }
+        } else if ((sortValue.option as DefaultModAfterSort).after) {
+          const afterIndex = pageList.findIndex((value) => value.$prop === (sortValue.option as DefaultModAfterSort).after)
+          if (afterIndex > -1) {
+            pageList.splice(afterIndex + 1, 0, targetValue)
+          } else {
+            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModAfterSort).after}失败！`)
+          }
+        } else {
+          console.warn(`${sortValue.prop}排序未指定变化参数！`)
+        }
+      } else {
+        console.warn(`${sortValue.prop}在PageList中不存在！`)
+      }
+    })
+  }
+  static sortObserveList(observeList: ObserveList, sortList: DictionarySortOption[]) {
+    sortList.forEach(sortValue => {
+      const index = observeList.getIndex(sortValue.prop)
+      if (index > -1) {
+        const targetValue = observeList.delete(sortValue.prop)!
+        if ((sortValue.option as DefaultModOffsetSort).offset) {
+          observeList.pushByIndex(targetValue, index + (sortValue.option as DefaultModOffsetSort).offset)
+        } else if ((sortValue.option as DefaultModBeforeSort).before) {
+          const beforeIndex = observeList.getIndex((sortValue.option as DefaultModBeforeSort).before)
+          if (beforeIndex > -1) {
+            observeList.pushByIndex(targetValue, beforeIndex)
+          } else {
+            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModBeforeSort).before}失败！`)
+          }
+        } else if ((sortValue.option as DefaultModAfterSort).after) {
+          const afterIndex = observeList.getIndex((sortValue.option as DefaultModAfterSort).after)
+          if (afterIndex > -1) {
+            observeList.pushByIndex(targetValue, afterIndex + 1)
+          } else {
+            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModAfterSort).after}失败！`)
+          }
+        } else {
+          console.warn(`${sortValue.prop}排序未指定变化参数！`)
+        }
+      } else {
+        console.warn(`${sortValue.prop}在ObserveList中不存在！`)
+      }
+    })
   }
   $simple: {
     prop?: boolean
@@ -206,17 +275,35 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   // 获取模块列表
   getPageList(modName: string, dictionaryValueList: DictionaryValue[]) {
     const pageList: DictionaryMod[] = []
+    const sortList: DictionarySortOption[] = []
     for (let n = 0; n < dictionaryValueList.length; n++) {
-      pageList.push(this.$getPageItem(modName, dictionaryValueList[n])!)
+      const mod = this.$getPageItem(modName, dictionaryValueList[n])!
+      if (mod.$sort) {
+        sortList.push({
+          prop: mod.$prop,
+          option: mod.$sort
+        })
+      }
+      pageList.push(mod)
+    }
+    if (sortList.length > 0) {
+      DictionaryData.sortPageList(pageList, sortList)
     }
     return pageList
   }
   // 获取响应式模块列表
-  getObserveList(modName: string, dictionaryValueList: DictionaryValue[], observe?: boolean ) {
+  getObserveList(modName: string, dictionaryValueList: DictionaryValue[], observe?: boolean) {
     const observeList = new ObserveList()
+    const sortList: DictionarySortOption[] = []
     for (let n = 0; n < dictionaryValueList.length; n++) {
       const dictionaryValue = dictionaryValueList[n]
       const mod = this.$getPageItem(modName, dictionaryValue) as DefaultInfo
+      if (mod.$sort) {
+        sortList.push({
+          prop: mod.$prop,
+          option: mod.$sort
+        })
+      }
       observeList.push(mod)
       if (dictionaryValue.modIsCascader(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
@@ -230,6 +317,9 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
           observe: observe
         }
       }
+    }
+    if (sortList.length > 0) {
+      DictionaryData.sortObserveList(observeList, sortList)
     }
     return observeList
   }

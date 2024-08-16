@@ -9,6 +9,20 @@ export type reactiveFunction = (...args: any[]) => boolean
 
 export type collapseType = 0 | 1 | 2 // 折叠判断值,默认 0 不展示 1 推荐展示 2必须展示
 
+export interface DefaultModOffsetSort {
+  offset: number
+}
+
+export interface DefaultModBeforeSort {
+  before: string
+}
+
+export interface DefaultModAfterSort {
+  after: string
+}
+
+export type DefaultModSort = DefaultModOffsetSort | DefaultModBeforeSort | DefaultModAfterSort
+
 export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型
   $redirect?: string // 快捷格式化目标，内存指针指向对应的mod
@@ -21,6 +35,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   local?: LocalValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
   renders?: Record<string, undefined | renderType>
+  sort?: DefaultModSort
 }
 
 class DefaultMod extends SimpleData implements ArrayValueDataType {
@@ -35,6 +50,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
   $renders?: Record<string, undefined | renderType>
+  $sort?: DefaultModSort
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(initOption: DefaultModInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption)
@@ -63,6 +79,9 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     }
     if (initOption.renders !== undefined) {
       this.$renders = initOption.renders
+    }
+    if (initOption.sort) {
+      this.$sort = initOption.sort
     }
   }
 }

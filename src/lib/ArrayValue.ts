@@ -96,6 +96,7 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
         this.data.splice(dataIndex, 1)
       }
     }
+    return value
   }
   // 基于实际index插入
   pushByIndex(value: D, index: number) {
