@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "4.4.4",
+  "version": "4.4.5",
   "description": "a complex data",
   "main": "index.ts",
   "repository": {
@@ -12,7 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "complex-utils": "2.3.2 - 2.3.99"
+    "complex-utils": "2.3.4 - 2.3.99"
   },
   "devDependencies": {
     "typescript": "^5.2.2"

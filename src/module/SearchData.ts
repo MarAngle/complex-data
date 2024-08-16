@@ -238,6 +238,7 @@ class SearchData extends DictionaryData {
       if (!option) {
         option = this.$resetOption || {}
       }
+      runtime.form.setData({})
       this.parseData(runtime.dictionary, runtime.form, this.$type, undefined, from)
       runtime.form.clearValidate()
       if (option.sync !== false) {
