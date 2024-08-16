@@ -98,6 +98,7 @@ class SearchData extends BaseData {
     const list = targetData.list.data.map(item => {
       return item.$parent!
     })
+    targetData.form.setData({})
     this.$module.dictionary!.$buildFormData(list, modName, undefined, {
       form: targetData.form.getData(),
       from: from,
