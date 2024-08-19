@@ -21,7 +21,7 @@ export interface DefaultModAfterSort {
   after: string
 }
 
-export type DefaultModSort = DefaultModOffsetSort | DefaultModBeforeSort | DefaultModAfterSort
+export type DefaultModSort = DefaultModBeforeSort | DefaultModAfterSort
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型

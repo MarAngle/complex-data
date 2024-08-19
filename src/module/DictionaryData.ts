@@ -1,3 +1,4 @@
+import { Life } from "complex-utils"
 import BaseData from "../data/BaseData"
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryValue, { DictionaryMod, DictionaryValueInitOption } from "../lib/DictionaryValue"
@@ -5,7 +6,7 @@ import ObserveList from "../dictionary/ObserveList"
 import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
 import FormValue from "../lib/FormValue"
-import { DefaultModAfterSort, DefaultModBeforeSort, DefaultModOffsetSort, DefaultModSort } from "../dictionary/DefaultMod"
+import { DefaultModAfterSort, DefaultModBeforeSort, DefaultModSort } from "../dictionary/DefaultMod"
 
 type propDataValueType = {
   prop: string
@@ -117,25 +118,42 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     })
   }
   static sortPageList(pageList: DictionaryMod[], sortList: DictionarySortOption[]) {
+    const life = new Life()
     sortList.forEach(sortValue => {
       const index = pageList.findIndex((value) => value.$prop === sortValue.prop)
       if (index > -1) {
         const [targetValue] = pageList.splice(index, 1)
-        if ((sortValue.option as DefaultModOffsetSort).offset) {
-          pageList.splice(index + (sortValue.option as DefaultModOffsetSort).offset, 0, targetValue)
-        } else if ((sortValue.option as DefaultModBeforeSort).before) {
-          const beforeIndex = pageList.findIndex((value) => value.$prop === (sortValue.option as DefaultModBeforeSort).before)
+        if ((sortValue.option as DefaultModBeforeSort).before) {
+          const beforeProp = (sortValue.option as DefaultModBeforeSort).before
+          const beforeIndex = pageList.findIndex(value => value.$prop === beforeProp)
           if (beforeIndex > -1) {
+            // 监控需要对标的数据，对标数据变更后触发移动操作（触发时需要继续触发自身的移动事件）
+            life.on(beforeProp, {
+              handler(_lifeValue, beforeIndex: number) {
+                life.trigger(sortValue.prop, beforeIndex)
+                pageList.splice(beforeIndex, 0, targetValue)
+              }
+            })
+            life.trigger(sortValue.prop, beforeIndex)
             pageList.splice(beforeIndex, 0, targetValue)
           } else {
-            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModBeforeSort).before}失败！`)
+            console.warn(`${sortValue.prop}在排序中查找对标${beforeProp}失败！`)
           }
         } else if ((sortValue.option as DefaultModAfterSort).after) {
-          const afterIndex = pageList.findIndex((value) => value.$prop === (sortValue.option as DefaultModAfterSort).after)
+          const afterProp = (sortValue.option as DefaultModAfterSort).after
+          const afterIndex = pageList.findIndex(value => value.$prop === afterProp)
           if (afterIndex > -1) {
+            // 监控需要对标的数据，对标数据变更后触发移动操作（触发时需要继续触发自身的移动事件）
+            life.on(afterProp, {
+              handler(_lifeValue, afterIndex: number) {
+                life.trigger(sortValue.prop, afterIndex + 1)
+                pageList.splice(afterIndex + 1, 0, targetValue)
+              }
+            })
+            life.trigger(sortValue.prop, afterIndex + 1)
             pageList.splice(afterIndex + 1, 0, targetValue)
           } else {
-            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModAfterSort).after}失败！`)
+            console.warn(`${sortValue.prop}在排序中查找对标${afterProp}失败！`)
           }
         } else {
           console.warn(`${sortValue.prop}排序未指定变化参数！`)
@@ -144,27 +162,50 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         console.warn(`${sortValue.prop}在PageList中不存在！`)
       }
     })
+    life.destroy()
   }
   static sortObserveList(observeList: ObserveList, sortList: DictionarySortOption[]) {
+    const life = new Life()
     sortList.forEach(sortValue => {
       const index = observeList.getIndex(sortValue.prop)
       if (index > -1) {
-        const targetValue = observeList.delete(sortValue.prop)!
-        if ((sortValue.option as DefaultModOffsetSort).offset) {
-          observeList.pushByIndex(targetValue, index + (sortValue.option as DefaultModOffsetSort).offset)
-        } else if ((sortValue.option as DefaultModBeforeSort).before) {
-          const beforeIndex = observeList.getIndex((sortValue.option as DefaultModBeforeSort).before)
+        if ((sortValue.option as DefaultModBeforeSort).before) {
+          const beforeProp = (sortValue.option as DefaultModBeforeSort).before
+          const beforeIndex = observeList.getIndex(beforeProp)
           if (beforeIndex > -1) {
+            const targetValue = observeList.delete(sortValue.prop)!
+            life.on(beforeProp, {
+              handler(_lifeValue, beforeIndex: number) {
+                // 对标移动后的处理，先删除自身，因为删除后的index会有变化，此处不从事件取值
+                observeList.delete(sortValue.prop)!
+                beforeIndex = observeList.getIndex(beforeProp)
+                life.trigger(sortValue.prop, beforeIndex)
+                observeList.pushByIndex(targetValue, beforeIndex)
+              }
+            })
+            life.trigger(sortValue.prop, beforeIndex)
             observeList.pushByIndex(targetValue, beforeIndex)
           } else {
-            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModBeforeSort).before}失败！`)
+            console.warn(`${sortValue.prop}在排序中查找对标${beforeProp}失败！`)
           }
         } else if ((sortValue.option as DefaultModAfterSort).after) {
-          const afterIndex = observeList.getIndex((sortValue.option as DefaultModAfterSort).after)
+          const afterProp = (sortValue.option as DefaultModAfterSort).after
+          const afterIndex = observeList.getIndex(afterProp)
           if (afterIndex > -1) {
+            const targetValue = observeList.delete(sortValue.prop)!
+            life.on(afterProp, {
+              handler(_lifeValue, afterIndex: number) {
+                // 对标移动后的处理，先删除自身，因为删除后的index会有变化，此处不从事件取值
+                observeList.delete(sortValue.prop)!
+                afterIndex = observeList.getIndex(afterProp)
+                life.trigger(sortValue.prop, afterIndex + 1)
+                observeList.pushByIndex(targetValue, afterIndex + 1)
+              }
+            })
+            life.trigger(sortValue.prop, afterIndex + 1)
             observeList.pushByIndex(targetValue, afterIndex + 1)
           } else {
-            console.warn(`${sortValue.prop}在排序中查找对标${(sortValue.option as DefaultModAfterSort).after}失败！`)
+            console.warn(`${sortValue.prop}在排序中查找对标${afterProp}失败！`)
           }
         } else {
           console.warn(`${sortValue.prop}排序未指定变化参数！`)
@@ -173,6 +214,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         console.warn(`${sortValue.prop}在ObserveList中不存在！`)
       }
     })
+    life.destroy()
   }
   $simple: {
     prop?: boolean
