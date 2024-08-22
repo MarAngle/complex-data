@@ -24,6 +24,7 @@ import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
 import config from '../../config'
+import ListEdit, { ListEditInitOption } from '../dictionary/ListEdit'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>
@@ -64,9 +65,9 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
-export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption | FormEditInitOption
+export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption | FormEditInitOption | ListEditInitOption
 
-export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit<boolean> | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit | FormEdit
+export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit<boolean> | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit | FormEdit | ListEdit
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -143,6 +144,8 @@ class DictionaryValue extends DefaultData implements functions {
       return new CustomEdit(editModInitOption, parent, modName)
     } else if (editModInitOption.type === 'form') {
       return new FormEdit(editModInitOption, parent, modName)
+    }  else if (editModInitOption.type === 'list') {
+      return new ListEdit(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
