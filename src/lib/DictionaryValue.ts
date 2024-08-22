@@ -1,4 +1,4 @@
-import { isExist, exportMsg, getComplexProp, trimData } from 'complex-utils'
+import { isExist, exportMsg, getComplexProp, trimData, isArray } from 'complex-utils'
 import { ComplexType } from 'complex-utils/src/type/getComplexType'
 import DefaultData, { DefaultDataInitOption } from "../data/DefaultData"
 import DictionaryData, { DictionaryDataInitOption } from '../module/DictionaryData'
@@ -23,8 +23,10 @@ import FormEdit, { FormEditInitOption } from '../dictionary/FormEdit'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
-import config from '../../config'
 import ListEdit, { ListEditInitOption } from '../dictionary/ListEdit'
+import CascaderEdit from '../dictionary/CascaderEdit'
+import FormValue from './FormValue'
+import config from '../../config'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>
@@ -350,8 +352,8 @@ class DictionaryValue extends DefaultData implements functions {
   modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
     return !!mod && mod instanceof DefaultEdit && mod.$editable
   }
-  modIsCascader(mod: DictionaryMod): mod is FormEdit {
-    return !!this.dictionary && mod instanceof FormEdit
+  modIsCascader(mod: DictionaryMod): mod is CascaderEdit {
+    return !!this.dictionary && mod instanceof CascaderEdit
   }
   $parseValue (mod: DefaultInfo | DefaultEdit, payload: payloadType) {
     let targetValue
@@ -372,7 +374,7 @@ class DictionaryValue extends DefaultData implements functions {
     if (!this.modIsCascader(mod)) {
       config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
       return Promise.resolve({ status: 'success' })
-    } else {
+    } else if (mod instanceof FormEdit) {
       return new Promise((resolve, reject) => {
         // 级联表单
         this.dictionary!.parseData(mod.$runtime.dictionaryList!, mod.$runtime.form!, payload.type, targetValue, payload.from).then(res => {
@@ -385,6 +387,26 @@ class DictionaryValue extends DefaultData implements functions {
           reject(err)
         })
       })
+    } else {
+      // ListEdit
+      if (targetValue && isArray(targetValue)) {
+        if (!isArray(payload.targetData[mod.$prop])) {
+          payload.targetData[mod.$prop] = []
+        }
+        return Promise.allSettled((targetValue as Record<PropertyKey, any>[]).map((targetItemValue, index) => {
+          return new Promise((resolve, reject) => {
+            this.dictionary!.parseData(mod.$runtime.dictionaryList!, new FormValue(), payload.type, targetItemValue, payload.from).then(res => {
+              config.nonEmptySetProp(payload.targetData[mod.$prop], index as unknown as string, res.data, true)
+              resolve({ status: 'success' })
+            }).catch(err => {
+              reject(err)
+            })
+          })
+        }))
+      } else {
+        config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+        return Promise.resolve({ status: 'success' })
+      }
     }
   }
   parseValue (payload: payloadType) {
@@ -430,7 +452,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (mod.trim) {
         originValue = trimData(originValue)
       }
-      if (this.modIsCascader(mod)) {
+      if (this.modIsCascader(mod) && mod instanceof FormEdit) {
         originValue = this.dictionary!.collectData(originValue, mod.$runtime.dictionaryList!, payload.type, mod.$runtime.observeList)
       }
       if (mod.collect) {

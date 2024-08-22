@@ -7,6 +7,8 @@ import DefaultInfo from "../dictionary/DefaultInfo"
 import LayoutParse, { LayoutParseInitOption } from "../lib/LayoutParse"
 import FormValue from "../lib/FormValue"
 import { DefaultModAfterSort, DefaultModBeforeSort, DefaultModSort } from "../dictionary/DefaultMod"
+import FormEdit from "../dictionary/FormEdit"
+import ListEdit from "../dictionary/ListEdit"
 
 type propDataValueType = {
   prop: string
@@ -350,13 +352,22 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       if (dictionaryValue.modIsCascader(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
         const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
-        mod.$runtime = {
-          gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
-          dictionaryList: dictionaryList,
-          observeList: observeList,
-          type: modName,
-          form: new FormValue(),
-          observe: observe
+        if (mod instanceof FormEdit) {
+          mod.$runtime = {
+            gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
+            dictionaryList: dictionaryList,
+            observeList: observeList,
+            type: modName,
+            form: new FormValue(),
+            observe: observe
+          }
+        } else if (mod instanceof ListEdit) {
+          mod.$runtime = {
+            gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
+            dictionaryList: dictionaryList,
+            observeList: observeList,
+            type: modName
+          }
         }
       }
     }

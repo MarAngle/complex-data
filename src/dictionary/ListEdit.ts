@@ -1,22 +1,23 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DefaultMod from "./DefaultMod"
-import DictionaryValue, { DictionaryModInitOption } from "../lib/DictionaryValue"
-import { ButtonValue } from "../../type"
+import CascaderEdit, { CascaderEditInitOption } from "./CascaderEdit"
+import DictionaryValue from "../lib/DictionaryValue"
+import { MenuValue } from "../../type"
 
 export interface ListEditOption {
-  build: boolean | ButtonValue // 头部新增按钮
-  delete: boolean | ButtonValue // 列表删除按钮
+  build: false | MenuValue // 头部新增按钮
+  delete: false | MenuValue // 列表删除按钮
   index: boolean // 列表是否展示序号
+  id?: PropertyKey // 列表id
+  tableProps?: Record<PropertyKey, any>
 }
 
-export interface ListEditInitOption extends DefaultEditInitOption {
+export interface ListEditInitOption extends CascaderEditInitOption {
   type: 'list'
-  list: (DictionaryModInitOption | DefaultMod)[]
   option?: Partial<ListEditOption>
 }
 
-class ListEdit extends DefaultEdit{
+class ListEdit extends CascaderEdit{
   static $name = 'ListEdit'
+  static $indexKey = Symbol('index')
   static $defaultOption = {
     build: {
       name: '新增',
@@ -32,18 +33,10 @@ class ListEdit extends DefaultEdit{
     index: true
   } as ListEditOption
   type: 'list'
-  $list: DefaultMod[]
   $option: ListEditOption
   constructor(initOption: ListEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
-    this.$list = []
-    initOption.list.forEach(item => {
-      const mod = DictionaryValue.$initMod(item)
-      if (mod) {
-        this.$list.push(mod)
-      }
-    })
     const $defaultOption = (this.constructor as typeof ListEdit).$defaultOption
     this.$option = {
       ...$defaultOption,
