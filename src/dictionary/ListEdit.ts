@@ -1,6 +1,8 @@
-import CascaderEdit, { CascaderEditInitOption } from "./CascaderEdit"
+import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { MenuValue } from "../../type"
+import ObserveList from "./ObserveList"
+import DictionaryData from "../module/DictionaryData"
 
 export interface ListEditOption {
   build: false | MenuValue // 头部新增按钮
@@ -10,12 +12,12 @@ export interface ListEditOption {
   tableProps?: Record<PropertyKey, any>
 }
 
-export interface ListEditInitOption extends CascaderEditInitOption {
+export interface ListEditInitOption extends DefaultEditInitOption {
   type: 'list'
   option?: Partial<ListEditOption>
 }
 
-class ListEdit extends CascaderEdit{
+class ListEdit extends DefaultEdit{
   static $name = 'ListEdit'
   static $indexKey = Symbol('index')
   static $defaultOption = {
@@ -33,10 +35,17 @@ class ListEdit extends CascaderEdit{
     index: true
   } as ListEditOption
   type: 'list'
+  $runtime: {
+    dictionary?: DictionaryData
+    dictionaryList?: DictionaryValue[]
+    observeList?: ObserveList
+    type?: string
+  }
   $option: ListEditOption
   constructor(initOption: ListEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
+    this.$runtime = {}
     const $defaultOption = (this.constructor as typeof ListEdit).$defaultOption
     this.$option = {
       ...$defaultOption,

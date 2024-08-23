@@ -24,7 +24,6 @@ import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
 import ListEdit, { ListEditInitOption } from '../dictionary/ListEdit'
-import CascaderEdit from '../dictionary/CascaderEdit'
 import FormValue from './FormValue'
 import config from '../../config'
 
@@ -352,8 +351,11 @@ class DictionaryValue extends DefaultData implements functions {
   modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
     return !!mod && mod instanceof DefaultEdit && mod.$editable
   }
-  modIsCascader(mod: DictionaryMod): mod is CascaderEdit {
-    return !!this.dictionary && mod instanceof CascaderEdit
+  modIsForm(mod: DictionaryMod): mod is FormEdit {
+    return !!this.dictionary && mod instanceof FormEdit
+  }
+  modIsList(mod: DictionaryMod): mod is ListEdit {
+    return !!this.dictionary && mod instanceof ListEdit
   }
   $parseValue (mod: DefaultInfo | DefaultEdit, payload: payloadType) {
     let targetValue
@@ -371,7 +373,7 @@ class DictionaryValue extends DefaultData implements functions {
   }
   protected _setParseValue(mod: DefaultEdit, payload: payloadType) {
     const targetValue = this.$parseValue(mod, payload)
-    if (!this.modIsCascader(mod)) {
+    if (!this.modIsForm(mod) && !this.modIsList(mod)) {
       config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
       return Promise.resolve({ status: 'success' })
     } else if (mod instanceof FormEdit) {
@@ -452,7 +454,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (mod.trim) {
         originValue = trimData(originValue)
       }
-      if (this.modIsCascader(mod) && mod instanceof FormEdit) {
+      if (this.modIsForm(mod)) {
         originValue = this.dictionary!.collectData(originValue, mod.$runtime.dictionaryList!, payload.type, mod.$runtime.observeList)
       }
       if (mod.collect) {

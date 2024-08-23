@@ -11,7 +11,7 @@ import FormEdit from "../dictionary/FormEdit"
 import ListEdit from "../dictionary/ListEdit"
 
 type propDataValueType = {
-  prop: string
+  prop: PropertyKey
   value: unknown
 }
 
@@ -349,7 +349,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         })
       }
       observeList.push(mod)
-      if (dictionaryValue.modIsCascader(mod)) {
+      if (dictionaryValue.modIsForm(mod) || dictionaryValue.modIsList(mod)) {
         const dictionaryList = dictionaryValue.dictionary!.getList(modName)
         const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
         if (mod instanceof FormEdit) {
@@ -363,7 +363,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
           }
         } else if (mod instanceof ListEdit) {
           mod.$runtime = {
-            gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
+            dictionary: dictionaryValue.dictionary!,
             dictionaryList: dictionaryList,
             observeList: observeList,
             type: modName
