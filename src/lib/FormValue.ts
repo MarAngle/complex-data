@@ -1,3 +1,5 @@
+import { isArray } from "complex-utils"
+
 class FormValue {
   static $name = 'FormValue'
   static clearValidate = function(_formValue: FormValue, ..._args: any[]) { console.error('未定义clearValidate函数') }
@@ -7,11 +9,10 @@ class FormValue {
   }
   ref: any
   data: Record<PropertyKey, any>
-  children: Record<PropertyKey, FormValue>
+  children?: Record<PropertyKey, FormValue | FormValue[]>
   constructor() {
     this.ref = null
     this.data = {}
-    this.children = {}
   }
   setRef(ref: any) {
     this.ref = ref
@@ -26,23 +27,38 @@ class FormValue {
     return this.data
   }
   pushChild(prop: PropertyKey, form: FormValue) {
+    if (!this.children) {
+      this.children = {}
+    }
     this.children[prop] = form
   }
   clearValidate(...args: any[]): void {
     const $constructor = (this.constructor as typeof FormValue)
     if (this.children) {
       for (const prop in this.children) {
-        return $constructor.clearValidate(this.children[prop], ...args)
+        const child = this.children[prop]
+        if (!isArray(child)) {
+          $constructor.clearValidate(child, ...args)
+        } else {
+          child.forEach(childItem => $constructor.clearValidate(childItem, ...args))
+        }
       }
     }
-    return $constructor.clearValidate(this, ...args)
+    $constructor.clearValidate(this, ...args)
   }
   validate(...args: any[]): Promise<any> {
     const $constructor = (this.constructor as typeof FormValue)
     if (this.children) {
       const promiseList: Promise<any>[] = []
       for (const prop in this.children) {
-        promiseList.push($constructor.validate(this.children[prop], ...args))
+        const child = this.children[prop]
+        if (!isArray(child)) {
+          promiseList.push($constructor.validate(child, ...args))
+        } else {
+          child.forEach(childItem => {
+            promiseList.push($constructor.validate(childItem, ...args))
+          })
+        }
       }
       return new Promise((resolve, reject) => {
         Promise.all(promiseList).then(() => {

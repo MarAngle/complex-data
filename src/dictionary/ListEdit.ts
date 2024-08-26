@@ -3,6 +3,7 @@ import DictionaryValue from "../lib/DictionaryValue"
 import { MenuValue } from "../../type"
 import ObserveList from "./ObserveList"
 import DictionaryData from "../module/DictionaryData"
+import FormValue from "../lib/FormValue"
 
 export interface ListEditOption {
   build: false | MenuValue // 头部新增按钮
@@ -10,6 +11,7 @@ export interface ListEditOption {
   index: boolean // 列表是否展示序号
   id?: PropertyKey // 列表id
   tableProps?: Record<PropertyKey, any>
+  observe?: boolean
 }
 
 export interface ListEditInitOption extends DefaultEditInitOption {
@@ -39,6 +41,7 @@ class ListEdit extends DefaultEdit{
     dictionary?: DictionaryData
     dictionaryList?: DictionaryValue[]
     observeList?: ObserveList
+    formList?: FormValue[]
     type?: string
   }
   $option: ListEditOption

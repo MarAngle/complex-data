@@ -392,12 +392,15 @@ class DictionaryValue extends DefaultData implements functions {
     } else {
       // ListEdit
       if (targetValue && isArray(targetValue)) {
+        mod.$runtime.formList = []
         if (!isArray(payload.targetData[mod.$prop])) {
           payload.targetData[mod.$prop] = []
         }
         return Promise.allSettled((targetValue as Record<PropertyKey, any>[]).map((targetItemValue, index) => {
           return new Promise((resolve, reject) => {
-            this.dictionary!.parseData(mod.$runtime.dictionaryList!, new FormValue(), payload.type, targetItemValue, payload.from).then(res => {
+            const form = new FormValue()
+            mod.$runtime.formList!.push(form)
+            this.dictionary!.parseData(mod.$runtime.dictionaryList!, form, payload.type, targetItemValue, payload.from).then(res => {
               config.nonEmptySetProp(payload.targetData[mod.$prop], index as unknown as string, res.data, true)
               resolve({ status: 'success' })
             }).catch(err => {

@@ -31,7 +31,7 @@ export interface ChoiceDataInitOption {
 class ChoiceData extends Data {
   static $name = 'ChoiceData'
   static $formatConfig = { name: 'ChoiceData', level: 50, recommend: true }
-  idProp: string
+  idProp: PropertyKey
   data: ChoiceDataData
   $resetOption: resetOption
   $local?: LocalValue

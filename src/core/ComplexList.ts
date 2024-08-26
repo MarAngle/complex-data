@@ -25,7 +25,7 @@ class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
     this.setPageCount(totalNum!)
     this._syncData(true, 'formatList')
   }
-  getValue (data: any, prop?: string) {
+  getValue (data: any, prop?: PropertyKey) {
     if (!prop) {
       prop = this.getDictionaryProp('id')
     }
