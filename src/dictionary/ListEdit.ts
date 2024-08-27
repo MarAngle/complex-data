@@ -6,10 +6,8 @@ import DictionaryData from "../module/DictionaryData"
 import FormValue from "../lib/FormValue"
 
 export interface ListEditOption {
-  build: false | MenuValue // 头部新增按钮
-  delete: false | MenuValue // 列表删除按钮
-  index: boolean // 列表是否展示序号
-  id?: PropertyKey // 列表id
+  header?: MenuValue[]
+  menu?: Record<string, MenuValue>
   tableProps?: Record<PropertyKey, any>
   observe?: boolean
 }
@@ -23,18 +21,21 @@ class ListEdit extends DefaultEdit{
   static $name = 'ListEdit'
   static $indexKey = Symbol('index')
   static $defaultOption = {
-    build: {
-      name: '新增',
-      prop: 'build',
-      type: 'primary',
-      icon: 'plus'
-    },
-    delete: {
-      name: '删除',
-      prop: 'delete',
-      type: 'danger',
-    },
-    index: true
+    header: [
+      {
+        name: '新增',
+        prop: 'build',
+        type: 'primary',
+        icon: 'plus'
+      }
+    ],
+    menu: {
+      delete: {
+        name: '删除',
+        prop: 'delete',
+        type: 'danger'
+      }
+    }
   } as ListEditOption
   type: 'list'
   $runtime: {

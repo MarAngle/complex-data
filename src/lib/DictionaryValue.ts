@@ -391,8 +391,8 @@ class DictionaryValue extends DefaultData implements functions {
       })
     } else {
       // ListEdit
+      mod.$runtime.formList = []
       if (targetValue && isArray(targetValue)) {
-        mod.$runtime.formList = []
         if (!isArray(payload.targetData[mod.$prop])) {
           payload.targetData[mod.$prop] = []
         }
