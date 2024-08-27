@@ -24,15 +24,15 @@ class ListEdit extends DefaultEdit{
     header: [
       {
         name: '新增',
-        prop: 'build',
+        prop: '$build',
         type: 'primary',
         icon: 'plus'
       }
     ],
     menu: {
-      delete: {
+      $delete: {
         name: '删除',
-        prop: 'delete',
+        prop: '$delete',
         type: 'danger'
       }
     }
