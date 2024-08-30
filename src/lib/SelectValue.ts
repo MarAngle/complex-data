@@ -5,10 +5,10 @@ export type filterType = string | number
 export type checkItem<D extends SelectValueType> = (item: D) => boolean
 
 export interface SelectValueType {
-  [prop: PropertyKey]: unknown
+  [prop: PropertyKey]: any
 }
 
-export interface DefaultSelectValueType<V = any> extends SelectValueType {
+export interface DefaultSelectValueType<V = any> {
   label: string
   value: V
   disabled?: boolean

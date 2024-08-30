@@ -12,6 +12,7 @@ export type fileDataType = {
 
 export interface defaultFileOption {
   accept?: string
+  image?: boolean
   size?: number
   layout?: string
   complex?: boolean
