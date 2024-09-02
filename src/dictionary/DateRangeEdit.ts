@@ -1,7 +1,7 @@
 import SimpleDateEdit, { SimpleDateEditInitOption } from "./SimpleDateEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface DateRangeEditInitOption extends SimpleDateEditInitOption {
+export interface DateRangeEditInitOption extends SimpleDateEditInitOption<true> {
   type: 'dateRange'
   endPlaceholder?: string
 }

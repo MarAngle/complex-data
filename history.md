@@ -23,6 +23,10 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.6.9
+- DefaultMod添加hidden/frozen属性，该属性与observer.hidden/frozen属性使用场景不同，用于本身一直是隐藏状态或者冻结状态的模块，避免隐藏状态需要开启监听
+- 修正DateRangeEditInitOption类型
+
 ### 4.6.8
 - SelectValueType类型不作为基类，避免赋值时需要额外进行类型断言的问题
 - defaultFileOption类型添加image属性，此属性标明此文件上传为图片类型，可通过组件模板实现图片查看机制

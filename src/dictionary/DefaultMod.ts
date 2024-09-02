@@ -32,6 +32,8 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   tip?: TipValueInitOption
   width?: number | string
   collapse?: collapseType
+  hidden?: boolean // 是否隐藏
+  frozen?: boolean // 是否冻结
   local?: LocalValueInitOption
   reactives?: Record<string, undefined | reactiveFunction>
   renders?: Record<string, undefined | renderType>
@@ -47,6 +49,8 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $tip?: TipValue
   $collapse?: collapseType
   $width?: number | string
+  $hidden?: boolean
+  $frozen?: boolean
   $local?: LocalValue
   $reactives?: Record<string, undefined | reactiveFunction>
   $renders?: Record<string, undefined | renderType>
@@ -72,6 +76,12 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     }
     if (initOption.width !== undefined) {
       this.$width = initOption.width
+    }
+    if (initOption.hidden !== undefined) {
+      this.$hidden = initOption.hidden
+    }
+    if (initOption.frozen !== undefined) {
+      this.$frozen = initOption.frozen
     }
     this.$local = createLocalValue(initOption.local)
     if (initOption.reactives !== undefined) {

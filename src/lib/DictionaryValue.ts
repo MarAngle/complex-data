@@ -449,6 +449,10 @@ class DictionaryValue extends DefaultData implements functions {
     const mod = this.$getMod(payload.type)
     if (this.modIsEditable(mod)) {
       // 收集数据仅限editable模块
+      if (mod.$frozen) {
+        // 冻结的模块不参与最终的生成数据逻辑
+        return
+      }
       if (observeList && observeList.isFrozen(mod.$prop)) {
         // 冻结的模块不参与最终的生成数据逻辑
         return
