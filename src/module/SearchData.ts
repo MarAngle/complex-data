@@ -64,7 +64,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '新增',
-          icon: 'plus',
+          icon: 'build',
           debounce: 100
         }
       }),
@@ -108,7 +108,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导入',
-          icon: 'upload',
+          icon: 'import',
           debounce: 100
         }
       }),
@@ -118,7 +118,7 @@ class SearchData extends DictionaryData {
         option: {
           type: 'primary',
           name: '导出',
-          icon: 'download',
+          icon: 'export',
           debounce: 200
         }
       })

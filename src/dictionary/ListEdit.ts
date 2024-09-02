@@ -26,14 +26,15 @@ class ListEdit extends DefaultEdit{
         name: '新增',
         prop: '$build',
         type: 'primary',
-        icon: 'plus'
+        icon: 'build'
       }
     ],
     menu: {
       $delete: {
         name: '删除',
         prop: '$delete',
-        type: 'danger'
+        type: 'danger',
+        icon: 'delete'
       }
     }
   } as ListEditOption
