@@ -94,7 +94,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     return Promise.reject({ status: 'fail', msg: '$deleteData未定义' })
   }
   $refreshData(_targetData: Record<PropertyKey, any>, ..._args: unknown[]): Promise<any> {
-    return Promise.reject({ status: 'fail', msg: '$refreshData未定义' })
+    return Promise.resolve({ status: 'success', msg: '$refreshData未定义' })
   }
   $multipleDeleteData(_choiceList: Record<PropertyKey, any>[], ..._args: unknown[]): Promise<any> {
     return Promise.reject({ status: 'fail', msg: '$multipleDeleteData未定义' })

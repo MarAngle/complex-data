@@ -6,7 +6,7 @@ export type observeType = (target: ObserveList, prop: PropertyKey, val: unknown,
 
 class ObserveList extends ArrayValue<DefaultInfo> {
   static $name = 'ObserveList'
-  $data!: null | Record<PropertyKey, any>
+  $data?: Record<PropertyKey, any>
   $watch!: Map<PropertyKey, Watcher>
   $type: string
   $deep: boolean
@@ -17,7 +17,7 @@ class ObserveList extends ArrayValue<DefaultInfo> {
       enumerable: false,
       configurable: false,
       writable: true,
-      value: null
+      value: undefined
     })
     Object.defineProperty(this, '$watch', {
       enumerable: false,
@@ -89,7 +89,7 @@ class ObserveList extends ArrayValue<DefaultInfo> {
     this.$frozen.clear()
     this.data = []
     this.$prop = []
-    this.$data = null
+    this.$data = undefined
     this.$type = ''
     this.$deep = false
   }
