@@ -20,6 +20,7 @@ export interface defaultFileOption {
   size?: number
   layout?: string
   complex?: boolean
+  isUrl?: boolean
   button?: {
     name?: string
     type?: string

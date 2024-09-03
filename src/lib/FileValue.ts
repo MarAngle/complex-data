@@ -7,10 +7,13 @@ export class FileValue {
   value: fileDataType['value']
   name: fileDataType['name']
   url?: fileDataType['url']
-  constructor(file: fileValueType) {
+  constructor(file: fileValueType, isUrl?: boolean) {
     if (typeof file === 'string') {
       this.value = file
       this.name = file
+      if (isUrl) {
+        this.url = file
+      }
     } else if (isFile(file)) {
       this.value = file
       this.name = file.name
@@ -20,11 +23,11 @@ export class FileValue {
       this.url = file.url
     }
   }
-  assign(file: fileValueType) {
+  assign(file: fileValueType, isUrl?: boolean) {
     if (typeof file === 'string') {
       this.value = file as string
       this.name = file as string
-      this.url = undefined
+      this.url = isUrl ? file as string : undefined
     } else if (isFile(file)) {
       this.value = file
       this.name = file.name
