@@ -9,14 +9,14 @@ import { DefaultBufferType } from "./DefaultData"
 import ChoiceData from "../module/ChoiceData"
 
 export type updateDataType = loadFunctionType
-export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<unknown>
-export type changeDataType = (targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]) => Promise<unknown>
+export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<any>
+export type changeDataType = (targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]) => Promise<any>
 export type editDataType = changeDataType
-export type deleteDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
-export type refreshDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<unknown>
-export type multipleDeleteDataType = (choiceList: Record<PropertyKey, any>[], ...args: unknown[]) => Promise<unknown>
+export type deleteDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<any>
+export type refreshDataType = (targetData: Record<PropertyKey, any>, ...args: unknown[]) => Promise<any>
+export type multipleDeleteDataType = (choiceList: Record<PropertyKey, any>[], ...args: unknown[]) => Promise<any>
 export type exportDataType = loadFunctionType
-export type importDataType = (file: File, ...args: unknown[]) => Promise<unknown>
+export type importDataType = (file: File, ...args: unknown[]) => Promise<any>
 
 export interface ComplexDataInitOption extends BaseDataInitOption {
   module: ModuleDataInitOption
@@ -31,18 +31,21 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
   importData?: importDataType
 }
 
-class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> {
+interface ComplexDataWithFunction {
+  $updateData: updateDataType
+  $buildData: buildDataType
+  $changeData: changeDataType
+  $editData: editDataType
+  $deleteData: deleteDataType
+  $refreshData: refreshDataType
+  $multipleDeleteData: multipleDeleteDataType
+  $exportData: exportDataType
+  $importData: importDataType
+}
+
+class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> implements ComplexDataWithFunction {
   static $name = 'ComplexData'
   declare $module: ModuleData
-  $updateData?: updateDataType
-  $buildData?: buildDataType
-  $changeData?: changeDataType
-  $editData?: editDataType
-  $deleteData?: deleteDataType
-  $refreshData?: refreshDataType
-  $multipleDeleteData?: multipleDeleteDataType
-  $exportData?: exportDataType
-  $importData?: importDataType
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', false, initOption)
@@ -74,6 +77,33 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       this.$importData = initOption.importData
     }
     this._triggerCreateLife('ComplexData', true, initOption)
+  }
+  $updateData(..._args: any[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$updateData未定义' })
+  }
+  $buildData(_targetData: Record<PropertyKey, any>, _type?: string, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$buildData未定义' })
+  }
+  $changeData(_targetData: Record<PropertyKey, any>, _originData: Record<PropertyKey, any>, _type: string, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$changeData未定义' })
+  }
+  $editData(_targetData: Record<PropertyKey, any>, _originData: Record<PropertyKey, any>, _type: string, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$editData未定义' })
+  }
+  $deleteData(_targetData: Record<PropertyKey, any>, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$deleteData未定义' })
+  }
+  $refreshData(_targetData: Record<PropertyKey, any>, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$refreshData未定义' })
+  }
+  $multipleDeleteData(_choiceList: Record<PropertyKey, any>[], ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$multipleDeleteData未定义' })
+  }
+  $exportData(..._args: any[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$exportData未定义' })
+  }
+  $importData(_file: File, ..._args: unknown[]): Promise<any> {
+    return Promise.reject({ status: 'fail', msg: '$importData未定义' })
   }
   /* --- update start --- */
   startUpdate(...args: Parameters<UpdateData['start']>) {

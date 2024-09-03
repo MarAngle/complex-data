@@ -257,7 +257,7 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     return this.triggerMethod('$triggerMethodWithStatus', [method, args, option] as Parameters<BaseData['$triggerMethodWithStatus']>, operateOption)
   }
   $getData(..._args: any[]): Promise<any> {
-    return Promise.reject({ status: 'fail', code: '$getData absent', msg: '$getData函数未定义' })
+    return Promise.reject({ status: 'fail', msg: '$getData未定义' })
   }
   protected _triggerLoadData(...args: any[]) {
     if (this.$active.auto) {
