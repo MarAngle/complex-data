@@ -32,6 +32,18 @@ export interface ComplexDataInitOption extends BaseDataInitOption {
 }
 
 interface ComplexDataWithFunction {
+  updateData: updateDataType
+  buildData: buildDataType
+  changeData: changeDataType
+  editData: editDataType
+  deleteData: deleteDataType
+  refreshData: refreshDataType
+  multipleDeleteData: multipleDeleteDataType
+  exportData: exportDataType
+  importData: importDataType
+}
+
+interface ComplexDataWithMainFunction {
   $updateData: updateDataType
   $buildData: buildDataType
   $changeData: changeDataType
@@ -43,7 +55,7 @@ interface ComplexDataWithFunction {
   $importData: importDataType
 }
 
-class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> implements ComplexDataWithFunction {
+class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> implements ComplexDataWithFunction, ComplexDataWithMainFunction {
   static $name = 'ComplexData'
   declare $module: ModuleData
   constructor(initOption: ComplexDataInitOption) {
@@ -104,6 +116,69 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   $importData(_file: File, ..._args: unknown[]): Promise<any> {
     return Promise.reject({ status: 'fail', msg: '$importData未定义' })
+  }
+  // 更新数据
+  updateData(...args: any[]): Promise<any> {
+    const promise = this.$updateData(...args)
+    return promise
+  }
+  // 新增数据
+  buildData(targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]): Promise<any> {
+    const promise = this.$buildData(targetData, type, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'buildData', targetData, type, ...args)
+    })
+    return promise
+  }
+  // 修改数据
+  changeData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(targetData, originData, type, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'changeData', targetData, originData, type, ...args)
+    })
+    return promise
+  }
+  // 编辑数据总方法
+  editData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(targetData, originData, type, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'editData', targetData, originData, type, ...args)
+    })
+    return promise
+  }
+  // 删除数据
+  deleteData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(targetData, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'deleteData', targetData, ...args)
+    })
+    return promise
+  }
+  // 刷新数据
+  refreshData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(targetData, ...args)
+    return promise
+  }
+  // 删除多选数据
+  multipleDeleteData(choiceList: Record<PropertyKey, any>[], ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(choiceList, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'multipleDeleteData', choiceList, ...args)
+    })
+    return promise
+  }
+  // 导出数据
+  exportData(...args: any[]): Promise<any> {
+    const promise = this.$updateData(...args)
+    return promise
+  }
+  // 导入数据
+  importData(file: File, ...args: unknown[]): Promise<any> {
+    const promise = this.$updateData(file, ...args)
+    promise.then(() => {
+      this.triggerLife('dataChange', this, 'importData', file, ...args)
+    })
+    return promise
   }
   /* --- update start --- */
   startUpdate(...args: Parameters<UpdateData['start']>) {
