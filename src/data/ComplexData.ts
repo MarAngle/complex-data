@@ -132,7 +132,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 修改数据
   changeData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(targetData, originData, type, ...args)
+    const promise = this.$changeData(targetData, originData, type, ...args)
     promise.then(() => {
       this.triggerLife('dataChange', this, 'changeData', targetData, originData, type, ...args)
     })
@@ -140,7 +140,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 编辑数据总方法
   editData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(targetData, originData, type, ...args)
+    const promise = this.$editData(targetData, originData, type, ...args)
     promise.then(() => {
       this.triggerLife('dataChange', this, 'editData', targetData, originData, type, ...args)
     })
@@ -148,7 +148,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 删除数据
   deleteData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(targetData, ...args)
+    const promise = this.$deleteData(targetData, ...args)
     promise.then(() => {
       this.triggerLife('dataChange', this, 'deleteData', targetData, ...args)
     })
@@ -156,12 +156,12 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 刷新数据
   refreshData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(targetData, ...args)
+    const promise = this.$refreshData(targetData, ...args)
     return promise
   }
   // 删除多选数据
   multipleDeleteData(choiceList: Record<PropertyKey, any>[], ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(choiceList, ...args)
+    const promise = this.$multipleDeleteData(choiceList, ...args)
     promise.then(() => {
       this.triggerLife('dataChange', this, 'multipleDeleteData', choiceList, ...args)
     })
@@ -169,12 +169,12 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 导出数据
   exportData(...args: any[]): Promise<any> {
-    const promise = this.$updateData(...args)
+    const promise = this.$exportData(...args)
     return promise
   }
   // 导入数据
   importData(file: File, ...args: unknown[]): Promise<any> {
-    const promise = this.$updateData(file, ...args)
+    const promise = this.$importData(file, ...args)
     promise.then(() => {
       this.triggerLife('dataChange', this, 'importData', file, ...args)
     })
