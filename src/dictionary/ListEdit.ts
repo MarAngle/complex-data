@@ -17,7 +17,7 @@ export interface ListEditInitOption extends DefaultEditInitOption {
   option?: Partial<ListEditOption>
 }
 
-class ListEdit extends DefaultEdit{
+class ListEdit extends DefaultEdit {
   static $name = 'ListEdit'
   static $indexKey = Symbol('index')
   static $defaultOption = {

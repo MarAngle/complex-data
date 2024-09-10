@@ -11,6 +11,7 @@ export interface FileEditInitOption extends DefaultEditInitOption {
 
 class FileEdit<M extends boolean = false> extends DefaultEdit<M> {
   static $name = 'FileEdit'
+  static $width = undefined
   static $defaultPlaceholder = function (name: string) {
     return `请上传${name}`
   }

@@ -9,8 +9,9 @@ export interface ButtonGroupEditInitOption extends DefaultSimpleEditInitOption {
   list: ButtonEditOption[]
 }
 
-class ButtonGroupEdit extends DefaultSimpleEdit{
+class ButtonGroupEdit extends DefaultSimpleEdit {
   static $name = 'ButtonGroupEdit'
+  static $width = undefined
   static $editable = false
   static $defaultOption = {
     interval: 16

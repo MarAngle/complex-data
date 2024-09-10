@@ -43,6 +43,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
 class DefaultMod extends SimpleData implements ArrayValueDataType {
   static $name = 'DefaultMod'
   static $formatConfig = { name: 'DefaultMod', level: 40, recommend: true }
+  static $width = 100 as undefined | number
   $prop: string
   $name: string
   parse?: false | functionType<any>
@@ -76,6 +77,8 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     }
     if (initOption.width !== undefined) {
       this.$width = initOption.width
+    } else {
+      this.$width = $constructor.$width
     }
     if (initOption.hidden !== undefined) {
       this.$hidden = initOption.hidden

@@ -11,8 +11,9 @@ export interface ButtonEditInitOption extends DefaultSimpleEditInitOption {
   option: ButtonEditOption
 }
 
-class ButtonEdit extends DefaultSimpleEdit{
+class ButtonEdit extends DefaultSimpleEdit {
   static $name = 'ButtonEdit'
+  static $width = undefined
   type: 'button'
   $option: ButtonEditOption
   constructor(initOption: ButtonEditInitOption, parent?: DictionaryValue, modName?: string) {

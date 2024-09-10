@@ -12,7 +12,7 @@ export interface TextAreaEditInitOption extends DefaultEditInitOption {
   option?: Partial<TextAreaEditOption>
 }
 
-class TextAreaEdit extends DefaultEdit{
+class TextAreaEdit extends DefaultEdit {
   static $name = 'TextAreaEdit'
   static $defaultOption = {
     size: 2048,

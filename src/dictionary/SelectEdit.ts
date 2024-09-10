@@ -33,7 +33,7 @@ export interface SelectEditInitOption<C extends PropertyKey | undefined = undefi
   pagination?: PaginationDataInitOption | PaginationData
 }
 
-class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit{
+class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultLoadEdit {
   static $name = 'SelectEdit'
   static $defaultPlaceholder = function (name: string) {
     return `请选择${name}`

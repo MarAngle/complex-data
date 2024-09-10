@@ -11,7 +11,7 @@ export interface CustomEditInitOption extends DefaultEditInitOption {
   custom?: Record<PropertyKey, any>
 }
 
-class CustomEdit extends DefaultEdit{
+class CustomEdit extends DefaultEdit {
   static $name = 'CustomEdit'
   type: 'custom'
   $model: {

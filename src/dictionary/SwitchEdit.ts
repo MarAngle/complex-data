@@ -5,8 +5,9 @@ export interface SwitchEditInitOption extends DefaultEditInitOption {
   type: 'switch'
 }
 
-class SwitchEdit extends DefaultEdit{
+class SwitchEdit extends DefaultEdit {
   static $name = 'SwitchEdit'
+  static $width = 50
   type: 'switch'
   constructor(initOption: SwitchEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)

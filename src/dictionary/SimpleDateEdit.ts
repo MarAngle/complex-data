@@ -95,8 +95,11 @@ const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[
   }
 } as functionType<string | string[]>
 
-class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
+class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit {
   static $name = 'SimpleDateEdit'
+  static $width = undefined
+  static $widthWithTime = 180
+  static $widthWithOutTime = 120
   static $range = false
   static $defaultPlaceholder = function (name: string) {
     return `请选择${name}`
@@ -195,6 +198,9 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit{
     }
     if (this.collect == undefined) {
       this.collect = $constructor.$range ? defaultRangeCollect as functionType<any> : defaultCollect as functionType<any>
+    }
+    if (this.$width === undefined) {
+      this.$width = this.$option.time ? $constructor.$widthWithTime : $constructor.$widthWithOutTime
     }
   }
 }

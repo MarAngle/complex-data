@@ -12,7 +12,7 @@ export interface InputEditInitOption extends DefaultEditInitOption {
   option?: Partial<InputEditOption>
 }
 
-class InputEdit extends DefaultEdit{
+class InputEdit extends DefaultEdit {
   static $name = 'InputEdit'
   static $defaultOption = {
     type: 'text',

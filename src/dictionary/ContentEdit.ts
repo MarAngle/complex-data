@@ -11,7 +11,7 @@ export interface ContentEditInitOption extends DefaultSimpleEditInitOption {
   option?: Partial<ContentEditOption>
 }
 
-class ContentEdit extends DefaultSimpleEdit{
+class ContentEdit extends DefaultSimpleEdit {
   static $name = 'ContentEdit'
   static $editable = false
   type: 'content'

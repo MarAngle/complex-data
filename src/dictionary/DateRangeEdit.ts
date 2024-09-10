@@ -8,6 +8,8 @@ export interface DateRangeEditInitOption extends SimpleDateEditInitOption<true> 
 
 class DateRangeEdit extends SimpleDateEdit<true>{
   static $name = 'DateRangeEdit'
+  static $widthWithTime = 345
+  static $widthWithOutTime = 225
   static $range = true
   static $defaultPlaceholder = function (_name: string) {
     return `开始日期`
@@ -22,6 +24,9 @@ class DateRangeEdit extends SimpleDateEdit<true>{
     const $constructor = (this.constructor as typeof DateRangeEdit)
     this.type = initOption.type
     this.endPlaceholder = initOption.endPlaceholder ? initOption.endPlaceholder : $constructor.$defaultEndPlaceholder(this.$name)
+    if (this.$width === undefined) {
+      this.$width = 345
+    }
   }
 }
 

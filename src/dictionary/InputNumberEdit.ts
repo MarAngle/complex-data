@@ -13,7 +13,7 @@ export interface InputNumberEditInitOption extends DefaultEditInitOption {
   option?: Partial<InputNumberEditOption>
 }
 
-class InputNumberEdit extends DefaultEdit{
+class InputNumberEdit extends DefaultEdit {
   static $name = 'InputNumberEdit'
   type: 'inputNumber'
   $option: InputNumberEditOption

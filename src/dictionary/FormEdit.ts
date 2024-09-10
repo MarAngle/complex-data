@@ -15,7 +15,7 @@ export interface FormEditInitOption extends DefaultEditInitOption {
   option?: Partial<FormEditOption>
 }
 
-class FormEdit extends DefaultEdit{
+class FormEdit extends DefaultEdit {
   static $name = 'FormEdit'
   type: 'form'
   $runtime: {
