@@ -200,28 +200,19 @@ class SearchData extends DictionaryData {
     }
   }
   $validate(): Promise<{ status: string }> {
-    return new Promise((resolve, reject) => {
-      if (this.$runtime) {
-        this.$runtime.form.validate().then(() => {
-          resolve({ status: 'success' })
-        }).catch(err => {
-          reject(err)
-        })
-      } else {
-        reject({ status: 'fail', code: 'not init' })
-      }
-    })
+    if (this.$runtime) {
+      return this.$runtime.form.validate()
+    } else {
+      return Promise.reject({ status: 'fail', code: 'not init' })
+    }
   }
   // 验证并同步值
   validateAndSyncData() {
-    return new Promise((resolve, reject) => {
-      this.$validate().then((res) => {
-        this.syncData()
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
+    const promise = this.$validate()
+    promise.then(() => {
+      this.syncData()
     })
+    return promise
   }
   // 同步值
   syncData(unTriggerSync?: boolean) {

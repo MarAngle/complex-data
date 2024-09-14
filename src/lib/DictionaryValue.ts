@@ -415,12 +415,12 @@ class DictionaryValue extends DefaultData implements functions {
     }
   }
   parseValue (payload: payloadType) {
-    return new Promise((resolve, reject) => {
-      const mod = this.$getMod(payload.type)
-      if (mod && mod instanceof DefaultInfo) {
-        // 解析数据解析DefaultInfo或者DefaultEdit.editable = true的数据
-        if (this.modIsEditable(mod)) {
-          if (mod instanceof DefaultLoadEdit) {
+    const mod = this.$getMod(payload.type)
+    if (mod && mod instanceof DefaultInfo) {
+      // 解析数据解析DefaultInfo或者DefaultEdit.editable = true的数据
+      if (this.modIsEditable(mod)) {
+        if (mod instanceof DefaultLoadEdit) {
+          return new Promise((resolve, reject) => {
             mod.loadData().finally(() => {
               this._setParseValue(mod, payload).then(res => {
                 resolve(res)
@@ -428,22 +428,18 @@ class DictionaryValue extends DefaultData implements functions {
                 reject(err)
               })
             })
-          } else {
-            this._setParseValue(mod, payload).then(res => {
-              resolve(res)
-            }).catch(err => {
-              reject(err)
-            })
-          }
+          })
         } else {
-          const targetValue = this.$parseValue(mod, payload)
-          config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
-          resolve({ status: 'success', code: 'not edit' })
+          return this._setParseValue(mod, payload)
         }
       } else {
-        resolve({ status: 'success' })
+        const targetValue = this.$parseValue(mod, payload)
+        config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+        return Promise.resolve({ status: 'success', code: 'not edit' })
       }
-    })
+    } else {
+      return Promise.resolve({ status: 'success' })
+    }
   }
   collectValue (payload: payloadType, option: DictionaryData['$option'], observeList?: ObserveList) {
     const mod = this.$getMod(payload.type)

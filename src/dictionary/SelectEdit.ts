@@ -94,25 +94,23 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
     }
   }
   $searchData(value?: string) {
-      return new Promise((resolve, reject) => {
-      if (this.$search) {
-        if (this.$search.limit && (!value || value.length < this.$search.limit)) {
-          reject({ status: 'fail', code: 'limit' })
-        } else {
-          this.$search.value = value
-          this.$search.operate = true
-          this.loadData(true).then(res => {
-            this.$search!.operate = false
-            resolve(res)
-          }).catch((err) => {
-            this.$search!.operate = false
-            reject(err)
-          })
-        }
+    if (this.$search) {
+      if (this.$search.limit && (!value || value.length < this.$search.limit)) {
+        return Promise.reject({ status: 'fail', code: 'limit' })
       } else {
-        reject({ status: 'fail', msg: '当前选择器不是检索选择器，无法调用$searchData函数！' })
+        this.$search.value = value
+        this.$search.operate = true
+        const promise = this.loadData(true)
+        promise.then(() => {
+          this.$search!.operate = false
+        }).catch(() => {
+          this.$search!.operate = false
+        })
+        return promise
       }
-    })
+    } else {
+      return Promise.reject({ status: 'fail', msg: '当前选择器不是检索选择器，无法调用$searchData函数！' })
+    }
   }
   $clearData() {
     this.$select.setList([])

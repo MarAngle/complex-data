@@ -210,33 +210,38 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     const statusItem = this.getStatusValue(option.status)
     if (statusItem) {
       if (statusItem.triggerChange('start', [], option)) {
-        return new Promise((resolve, reject) => {
-          const throttle = option.throttle
+        const throttle = option.throttle
+        const promise = this._runMethod(method, args)
+        if (!throttle) {
+          promise.then((res: any) => {
+            statusItem.triggerChange('success', [res], option)
+          }).catch(err => {
+            statusItem.triggerChange('fail', [err], option)
+          })
+          return promise
+        } else {
           const startTime = Date.now()
-          this._runMethod(method, args)!.then((res: any) => {
-            if (!throttle) {
-              // 不存在节流直接成功
-              statusItem.triggerChange('success', [res], option)
-              resolve(res)
-            } else {
+          return new Promise((resolve, reject) => {
+            promise.then((res: any) => {
+              // 存在节流延时处理
               setTimeout(() => {
                 statusItem.triggerChange('success', [res], option)
                 resolve(res)
               }, getThrottleOffset(throttle, startTime))
-            }
-          }).catch(err => {
-            if (!throttle || !throttle.fail) {
-              // 不存在节流或者存在节流但是失败不节流则直接失败
-              statusItem.triggerChange('fail', [err], option)
-              reject(err)
-            } else {
-              setTimeout(() => {
+            }).catch(err => {
+              if (!throttle.fail) {
+                // 存在节流但是失败不节流则直接失败
                 statusItem.triggerChange('fail', [err], option)
                 reject(err)
-              }, getThrottleOffset(throttle, startTime))
-            }
+              } else {
+                setTimeout(() => {
+                  statusItem.triggerChange('fail', [err], option)
+                  reject(err)
+                }, getThrottleOffset(throttle, startTime))
+              }
+            })
           })
-        })
+        }
       } else {
         statusItem.triggerChange('fail', [], option)
         this.$exportMsg(`当前${option.status}状态为:${statusItem.getCurrent()}，$triggerMethodWithStatus函数在严格校验下不允许被触发！`)
@@ -345,42 +350,23 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     this.triggerLife('beforeReload', this, force, ...args)
     // 同步判断值
     const promise = this.loadData(force, ...args)
-    if (force.sync) {
-      promise.then((res: unknown) => {
-        // 触发生命周期重载完成事件
-        this.triggerLife('reloaded', this, {
-          res: res,
-          args: args
-        })
-      }).catch(err => {
-        // eslint-disable-next-line no-console
-        console.error(err)
-        // 触发生命周期重载失败事件
-        this.triggerLife('reloadFail', this, {
-          res: err,
-          args: args
-        })
+    promise.then((res: unknown) => {
+      // 触发生命周期重载完成事件
+      this.triggerLife('reloaded', this, {
+        res: res,
+        args: args
       })
-    } else {
-      return new Promise((resolve, reject) => {
-        promise.then((res: unknown) => {
-          // 触发生命周期重载完成事件
-          this.triggerLife('reloaded', this, {
-            res: res,
-            args: args
-          })
-          resolve(res)
-        }).catch(err => {
-          // eslint-disable-next-line no-console
-          console.error(err)
-          // 触发生命周期重载失败事件
-          this.triggerLife('reloadFail', this, {
-            res: err,
-            args: args
-          })
-          reject(err)
-        })
+    }).catch(err => {
+      // eslint-disable-next-line no-console
+      console.error(err)
+      // 触发生命周期重载失败事件
+      this.triggerLife('reloadFail', this, {
+        res: err,
+        args: args
       })
+    })
+    if (!force.sync) {
+      return promise
     }
   }
   /* --- load end --- */

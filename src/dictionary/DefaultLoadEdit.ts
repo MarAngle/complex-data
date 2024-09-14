@@ -35,16 +35,14 @@ class DefaultLoadEdit extends DefaultEdit implements Partial<DataWithSimpleLoad>
         force = this.$reload
       }
       if (this.getLoad() !== StatusValue.success || force) {
-        return new Promise((resolve, reject) => {
-          this.setLoad(StatusValue.ing)
-          this.$getData!(...args).then(res => {
-            this.setLoad(StatusValue.success)
-            resolve(res)
-          }).catch(err => {
-            this.setLoad(StatusValue.fail)
-            reject(err)
-          })
+        this.setLoad(StatusValue.ing)
+        const promise = this.$getData!(...args)
+        promise.then(() => {
+          this.setLoad(StatusValue.success)
+        }).catch(() => {
+          this.setLoad(StatusValue.fail)
         })
+        return promise
       } else {
         return Promise.resolve({ status: this.getLoad() })
       }

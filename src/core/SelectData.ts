@@ -129,29 +129,27 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       }
     }
     if (getData) {
-      return new Promise((resolve, reject) => {
-        this.setLoad(StatusValue.ing)
-        this.triggerLife('beforeLoad', this, ...args)
-        this.$getData(...args).then((res: unknown) => {
-          // 触发生命周期重载完成事件
-          this.setLoad(StatusValue.success)
-          this.triggerLife('loaded', this, {
-            res: res,
-            args: args
-          })
-          resolve(res)
-        }).catch(err => {
-          this.setLoad(StatusValue.fail)
-          // eslint-disable-next-line no-console
-          console.error(err)
-          // 触发生命周期重载失败事件
-          this.triggerLife('loadFail', this, {
-            res: err,
-            args: args
-          })
-          reject(err)
+      this.setLoad(StatusValue.ing)
+      this.triggerLife('beforeLoad', this, ...args)
+      const promise = this.$getData(...args)
+      promise.then((res: unknown) => {
+        // 触发生命周期重载完成事件
+        this.setLoad(StatusValue.success)
+        this.triggerLife('loaded', this, {
+          res: res,
+          args: args
+        })
+      }).catch(err => {
+        this.setLoad(StatusValue.fail)
+        // eslint-disable-next-line no-console
+        console.error(err)
+        // 触发生命周期重载失败事件
+        this.triggerLife('loadFail', this, {
+          res: err,
+          args: args
         })
       })
+      return promise
     } else {
       return Promise.resolve({ status: 'success', code: loadStatus })
     }
