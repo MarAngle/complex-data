@@ -10,6 +10,7 @@ export interface ListEditOption {
   menu?: Record<string, MenuValue>
   tableProps?: Record<PropertyKey, any>
   observe?: boolean
+  simple?: boolean // 简单构建
 }
 
 export interface ListEditInitOption extends DefaultEditInitOption {
@@ -45,6 +46,7 @@ class ListEdit extends DefaultEdit {
     observeList?: ObserveList
     formList?: FormValue[]
     type?: string
+    observe?: boolean
   }
   $option: ListEditOption
   constructor(initOption: ListEditInitOption, parent?: DictionaryValue, modName?: string) {

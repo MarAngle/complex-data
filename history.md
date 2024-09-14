@@ -23,6 +23,10 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.6.21
+- FileEdit当option的image存在时，accept的默认值改为image/*
+- 优化FormEdit/ListEdit
+
 ### 4.6.20
 - 全局Promise返回逻辑优化
 

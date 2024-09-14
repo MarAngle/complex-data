@@ -349,25 +349,23 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
         })
       }
       observeList.push(mod)
-      if (dictionaryValue.modIsForm(mod) || dictionaryValue.modIsList(mod)) {
-        const dictionaryList = dictionaryValue.dictionary!.getList(modName)
-        const observeList = dictionaryValue.dictionary!.getObserveList(modName, dictionaryList, observe)
+      if (dictionaryValue.dictionary) {
+        const dictionaryList = dictionaryValue.dictionary.getList(modName)
+        const observeList = dictionaryValue.dictionary.getObserveList(modName, dictionaryList, observe)
         if (mod instanceof FormEdit) {
-          mod.$runtime = {
-            gridParse: dictionaryValue.dictionary!.$layout.grid.getValue(modName),
-            dictionaryList: dictionaryList,
-            observeList: observeList,
-            type: modName,
-            form: new FormValue(),
-            observe: observe
-          }
+          mod.$runtime.dictionary = dictionaryValue.dictionary
+          mod.$runtime.dictionaryList = dictionaryList
+          mod.$runtime.observeList = observeList
+          mod.$runtime.type = modName
+          mod.$runtime.form = new FormValue()
+          mod.$runtime.observe = mod.$option.observe === undefined ? observe : mod.$option.observe
         } else if (mod instanceof ListEdit) {
-          mod.$runtime = {
-            dictionary: dictionaryValue.dictionary!,
-            dictionaryList: dictionaryList,
-            observeList: observeList,
-            type: modName
-          }
+          mod.$runtime.dictionary = dictionaryValue.dictionary
+          mod.$runtime.dictionaryList = dictionaryList
+          mod.$runtime.observeList = observeList
+          mod.$runtime.type = modName
+          mod.$runtime.formList = []
+          mod.$runtime.observe = mod.$option.observe === undefined ? observe : mod.$option.observe
         }
       }
     }

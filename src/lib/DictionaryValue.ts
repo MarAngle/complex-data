@@ -351,12 +351,6 @@ class DictionaryValue extends DefaultData implements functions {
   modIsEditable(mod?: DictionaryMod): mod is DefaultEdit {
     return !!mod && mod instanceof DefaultEdit && mod.$editable
   }
-  modIsForm(mod: DictionaryMod): mod is FormEdit {
-    return !!this.dictionary && mod instanceof FormEdit
-  }
-  modIsList(mod: DictionaryMod): mod is ListEdit {
-    return !!this.dictionary && mod instanceof ListEdit
-  }
   $parseValue (mod: DefaultInfo | DefaultEdit, payload: payloadType) {
     let targetValue
     // 存在源数据则获取属性值并调用主要模块的parse方法格式化，否则通过模块的getValueData方法获取初始值
@@ -373,45 +367,44 @@ class DictionaryValue extends DefaultData implements functions {
   }
   protected _setParseValue(mod: DefaultEdit, payload: payloadType) {
     const targetValue = this.$parseValue(mod, payload)
-    if (!this.modIsForm(mod) && !this.modIsList(mod)) {
+    if (!this.dictionary) {
       config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
       return Promise.resolve({ status: 'success' })
     } else if (mod instanceof FormEdit) {
-      return new Promise((resolve, reject) => {
-        // 级联表单
-        this.dictionary!.parseData(mod.$runtime.dictionaryList!, mod.$runtime.form!, payload.type, targetValue, payload.from).then(res => {
-          if (mod.$runtime.observe) {
-            mod.$runtime.observeList!.startObserve(mod.$runtime.form!.getData(), mod.$runtime.type)
-          }
-          config.nonEmptySetProp(payload.targetData, mod.$prop, res.data, true)
-          resolve({ status: 'success' })
-        }).catch(err => {
-          reject(err)
-        })
-      })
-    } else {
-      // ListEdit
-      mod.$runtime.formList = []
-      if (targetValue && isArray(targetValue)) {
-        if (!isArray(payload.targetData[mod.$prop])) {
-          payload.targetData[mod.$prop] = []
+      const promise = this.dictionary.parseData(mod.$runtime.dictionaryList!, mod.$runtime.form!, payload.type, targetValue, payload.from)
+      promise.then(res => {
+        if (mod.$runtime.observe) {
+          mod.$runtime.observeList!.startObserve(mod.$runtime.form!.getData(), mod.$runtime.type)
         }
-        return Promise.allSettled((targetValue as Record<PropertyKey, any>[]).map((targetItemValue, index) => {
-          return new Promise((resolve, reject) => {
-            const form = new FormValue()
-            mod.$runtime.formList!.push(form)
-            this.dictionary!.parseData(mod.$runtime.dictionaryList!, form, payload.type, targetItemValue, payload.from).then(res => {
-              config.nonEmptySetProp(payload.targetData[mod.$prop], index as unknown as string, res.data, true)
-              resolve({ status: 'success' })
-            }).catch(err => {
-              reject(err)
-            })
-          })
-        }))
+        config.nonEmptySetProp(payload.targetData, mod.$prop, res.data, true)
+      })
+      return promise
+    } else if (mod instanceof ListEdit) {
+      // ListEdit
+      if (!isArray(targetValue)) {
+        if (targetValue === undefined || targetValue === null) {
+          config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+          return Promise.resolve({ status: 'success' })
+        } else {
+          this.$exportMsg(`模块${payload.type}为ListEdit类型，但传入数据为非数组类型，请检查传入数据！`)
+          config.nonEmptySetProp(payload.targetData, mod.$prop, [], true)
+          return Promise.reject({ status: 'fail', code: 'ListEdit value is not Array' })
+        }
       } else {
-        config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
-        return Promise.resolve({ status: 'success' })
+        payload.targetData[mod.$prop] = []
+        return Promise.allSettled((targetValue as Record<PropertyKey, any>[]).map((targetItemValue, index) => {
+          const form = new FormValue()
+          mod.$runtime.formList!.push(form)
+          const itemPromise = this.dictionary!.parseData(mod.$runtime.dictionaryList!, form, payload.type, targetItemValue, payload.from)
+          itemPromise.then(res => {
+            config.nonEmptySetProp(payload.targetData[mod.$prop], index as unknown as string, res.data, true)
+          })
+          return itemPromise
+        }))
       }
+    } else {
+      config.nonEmptySetProp(payload.targetData, mod.$prop, targetValue, true)
+      return Promise.resolve({ status: 'success' })
     }
   }
   parseValue (payload: payloadType) {
@@ -457,7 +450,7 @@ class DictionaryValue extends DefaultData implements functions {
       if (mod.trim) {
         originValue = trimData(originValue)
       }
-      if (this.modIsForm(mod)) {
+      if (this.dictionary && mod instanceof FormEdit) {
         originValue = this.dictionary!.collectData(originValue, mod.$runtime.dictionaryList!, payload.type, mod.$runtime.observeList)
       }
       if (mod.collect) {

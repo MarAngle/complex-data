@@ -25,6 +25,9 @@ class FileEdit<M extends boolean = false> extends DefaultEdit<M> {
       (option as multipleFileOption).multiple = {}
     }
     this.$option = option as FileEditOption<M>
+    if (this.$option.image && this.$option.accept === undefined) {
+      this.$option.accept = 'image/*'
+    }
   }
 }
 

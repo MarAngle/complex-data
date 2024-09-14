@@ -4,10 +4,12 @@ import DictionaryValue from "../lib/DictionaryValue"
 import GridParse from "../lib/GridParse"
 import ObserveList from "./ObserveList"
 import FormValue from "../lib/FormValue"
+import DictionaryData from "../module/DictionaryData"
 
 export interface FormEditOption {
   menu?: DefaultInfo[]
   gridParse?: false | GridParse
+  observe?: boolean
 }
 
 export interface FormEditInitOption extends DefaultEditInitOption {
@@ -19,7 +21,7 @@ class FormEdit extends DefaultEdit {
   static $name = 'FormEdit'
   type: 'form'
   $runtime: {
-    gridParse?: GridParse
+    dictionary?: DictionaryData
     dictionaryList?: DictionaryValue[]
     observeList?: ObserveList
     form?: FormValue
