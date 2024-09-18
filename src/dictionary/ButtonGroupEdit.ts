@@ -12,7 +12,6 @@ export interface ButtonGroupEditInitOption extends DefaultSimpleEditInitOption {
 class ButtonGroupEdit extends DefaultSimpleEdit {
   static $name = 'ButtonGroupEdit'
   static $width = undefined
-  static $editable = false
   static $defaultOption = {
     interval: 16
   }
