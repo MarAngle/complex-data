@@ -1,4 +1,4 @@
-import { hasProp } from "complex-utils"
+import { hasProp, isArray } from "complex-utils"
 import { SimpleType } from "complex-utils/src/type/getType"
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
@@ -47,6 +47,37 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
   static $defaultTrim = false
   static $defaultPlaceholder = function (name: string) {
     return `请输入${name}`
+  }
+  static $parseRuleList = function($constructor: typeof DefaultEdit<boolean>, target: DefaultEdit<boolean>, formData: Record<PropertyKey, any>, _type?: string) {
+    if (target.$rules) {
+      const ruleList = target.$rules.map(rule => {
+        const ruleValue = { ...rule }
+        if (ruleValue.required == undefined) {
+          ruleValue.required = target.required
+        }
+        if (ruleValue.message == undefined && target.placeholder) {
+          ruleValue.message = target.placeholder
+        }
+        return $constructor.$parseRule(ruleValue, formData)
+      })
+      return ruleList
+    } else {
+      if (target.multiple && target.required) {
+        // 多选且必选时
+        return [
+          $constructor.$parseRule({
+            required: true,
+            type: 'array',
+            message: target.placeholder,
+            validator(value) {
+              return isArray(value) && value.length > 0
+            }
+          }, formData)
+        ]
+      } else {
+        return undefined
+      }
+    }
   }
   static $parseRule = function<R = ruleOption>(ruleValue: ruleOption, _form: Record<PropertyKey, any>): R {
     return ruleValue as R
@@ -118,22 +149,9 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
       }
     }
   }
-  getRuleList(formData: Record<PropertyKey, any>, _type?: string): undefined | Record<PropertyKey, any>[] {
-    if (this.$rules) {
-      const $constructor = (this.constructor as typeof DefaultEdit)
-      return this.$rules.map(rule => {
-        const ruleValue = { ...rule }
-        if (ruleValue.required == undefined) {
-          ruleValue.required = this.required
-        }
-        if (ruleValue.message == undefined && this.placeholder) {
-          ruleValue.message = this.placeholder
-        }
-        return $constructor.$parseRule(ruleValue, formData)
-      })
-    } else {
-      return undefined
-    }
+  parseRuleList(formData: Record<PropertyKey, any>, type?: string): undefined | Record<PropertyKey, any>[] {
+    const $constructor = (this.constructor as typeof DefaultEdit)
+    return $constructor.$parseRuleList($constructor, this, formData, type)
   }
   setValue(value: any, prop = 'default') {
     this.$value[prop] = value

@@ -23,6 +23,11 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.6.23
+- DefaultEdit类添加静态函数$parseRuleList
+- DefaultEdit.getRuleList => parseRuleList
+- multiple && required时自动校验数据不为空数组
+
 ### 4.6.21/22
 - FileEdit当option的image存在时，accept的默认值改为image/*
 - 优化FormEdit/ListEdit
