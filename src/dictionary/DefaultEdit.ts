@@ -66,7 +66,7 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
         // 多选且必选时
         return [
           $constructor.$parseRule({
-            required: true,
+            required: target.required,
             type: 'array',
             message: target.placeholder,
             validator(value) {
