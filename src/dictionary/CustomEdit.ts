@@ -1,11 +1,14 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
+export type customModelHandler = (formdata: Record<PropertyKey, unknown>, prop: PropertyKey, args: unknown[]) => void
+
 export interface CustomEditInitOption extends DefaultEditInitOption {
   type: 'custom'
   model?: {
     init?: PropertyKey
-    change?: 'input' | 'select' | 'change'
+    change?: string
+    handler?: customModelHandler
   }
   option?: Record<PropertyKey, any>
   custom?: Record<PropertyKey, any>
@@ -16,7 +19,8 @@ class CustomEdit extends DefaultEdit {
   type: 'custom'
   $model: {
     init?: PropertyKey
-    change?: 'input' | 'select' | 'change'
+    change?: string
+    handler?: customModelHandler
   }
   $option: Record<PropertyKey, any>
   $custom: Record<PropertyKey, any>

@@ -5,8 +5,6 @@ import TipValue, { TipValueInitOption } from "../lib/TipValue"
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
 import { ArrayValueDataType } from "../lib/ArrayValue"
 
-export type reactiveFunction = (...args: any[]) => boolean
-
 export type collapseType = 0 | 1 | 2 // 折叠判断值,默认 0 不展示 1 推荐展示 2必须展示
 
 export interface DefaultModOffsetSort {
@@ -35,7 +33,6 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   hidden?: boolean // 是否隐藏
   frozen?: boolean // 是否冻结
   local?: LocalValueInitOption
-  reactives?: Record<string, undefined | reactiveFunction>
   renders?: Record<string, undefined | renderType>
   sort?: DefaultModSort
 }
@@ -53,7 +50,6 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $hidden?: boolean
   $frozen?: boolean
   $local?: LocalValue
-  $reactives?: Record<string, undefined | reactiveFunction>
   $renders?: Record<string, undefined | renderType>
   $sort?: DefaultModSort
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -87,9 +83,6 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
       this.$frozen = initOption.frozen
     }
     this.$local = createLocalValue(initOption.local)
-    if (initOption.reactives !== undefined) {
-      this.$reactives = initOption.reactives
-    }
     if (initOption.renders !== undefined) {
       this.$renders = initOption.renders
     }
