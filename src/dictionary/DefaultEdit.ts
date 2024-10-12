@@ -1,4 +1,4 @@
-import { hasProp, isArray } from "complex-utils"
+import { deepCloneData, hasProp, isArray, isComplex } from "complex-utils"
 import { SimpleType } from "complex-utils/src/type/getType"
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
@@ -22,6 +22,7 @@ export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
     placeholder?: boolean // 占位符不加载
     rules?: boolean // 规则判断简单逻辑:即不判断
   }
+  deepClone?: boolean
   trim?: boolean
   multiple?: boolean
   placeholder?: false | string
@@ -146,6 +147,12 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
       // rule
       if (initOption.rules) {
         this.$rules = initOption.rules
+      }
+    }
+    if (initOption.deepClone && this.parse === undefined) {
+      // 需要深拷贝且parse为空时自动创建深拷贝函数
+      this.parse = function(value) {
+        return isComplex(value) ? deepCloneData(value) : value
       }
     }
   }
