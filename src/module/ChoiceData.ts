@@ -12,11 +12,6 @@ type resetOption = {
   [prop: string]: boolean | resetOptionValue
 }
 
-export type resetFromOption = {
-  from: string
-  act?: string
-}
-
 export type ChoiceDataData = {
   id: PropertyKey[]
   list: Record<PropertyKey, any>[]
@@ -103,37 +98,32 @@ class ChoiceData extends Data {
     this.data.id = idList
     this.data.list = list
   }
-  $resetByFrom(option?: boolean | string | resetFromOption, from = 'load') {
-    let force: undefined | boolean
-    switch (typeof option) {
-      case 'object':
-        force = this._parseFrom(option.from, option.act)
-        break;
-      case 'string':
-        force = this._parseFrom(option)
-        break;
-      case 'boolean':
-        force = option
-        break;
-      // case 'undefined':
-      //   force = this._parseFrom(from)
-      //   break;
-      default:
-        force = this._parseFrom(from)
-        break;
+  $resetByFrom(force: ForceValue, from = 'load') {
+    if (force.module.choice === false) {
+      // module为否则不进行重置操作
+      return
+    } else if (force.module.choice === true) {
+      // module为真则进行重置操作
+      this.reset(true)
+    } else {
+      // 不传递则进行触发模块判断
+      if (!force.trigger) {
+        this.reset(this._parseFromOption(from))
+      } else {
+        this.reset(this._parseFromOption(force.trigger.from, force.trigger.action))
+      }
     }
-    this.reset(force)
   }
-  protected _parseFrom(from: string, act?: string) {
+  protected _parseFromOption(from: string, action?: string) {
     const targetOption = this.$resetOption[from]
     if (targetOption != undefined) {
       if (typeof targetOption === 'object') {
-        if (!act) {
-          this.$exportMsg(`$resetByFrom函数中对应的from:${from}未定义act,可定义:${Object.keys(targetOption)}`)
-        } else if (targetOption[act] != undefined) {
-          return targetOption[act]
+        if (!action) {
+          this.$exportMsg(`$resetByFrom函数中对应的from:${from}未定义action,可定义:${Object.keys(targetOption)}`)
+        } else if (targetOption[action] != undefined) {
+          return targetOption[action]
         } else {
-          this.$exportMsg(`$resetByFrom函数中对应的from:${from}中不存在act:${act},可定义:${Object.keys(targetOption)}`)
+          this.$exportMsg(`$resetByFrom函数中对应的from:${from}中不存在action:${action},可定义:${Object.keys(targetOption)}`)
         }
       } else {
         return targetOption as boolean
@@ -175,7 +165,7 @@ class ChoiceData extends Data {
       target.onLife('beforeReload', {
         id: this._getId('BeforeReload'),
         handler: (_lifeValue, _instantiater, force: ForceValue) => {
-          this.$resetByFrom(force.module.choice, 'reload')
+          this.$resetByFrom(force, 'reload')
         }
       })
     })

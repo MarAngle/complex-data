@@ -389,12 +389,12 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
         this.reloadData({
           data: true,
           ing: true,
+          from: {
+            module: 'search',
+            action: from
+          },
           module: {
-            pagination: true,
-            choice: {
-              from: 'search',
-              act: from
-            }
+            pagination: true
           }
         })!.then((res => {
           this.triggerLife('searched', this, from)
