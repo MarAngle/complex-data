@@ -321,7 +321,10 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     }))
   }
   loadData(forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
-    const force = new ForceValue(forceInitOption)
+    const force = new ForceValue(forceInitOption, {
+      from: 'data',
+      action: 'load'
+    })
     const loadStatus = this.getStatus('load')
     if ([StatusValue.un, StatusValue.fail].indexOf(loadStatus) > -1) {
       this.$triggerLoadData(...args)
@@ -346,7 +349,10 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     return this._triggerPromise('load', force.promise)
   }
   reloadData(forceInitOption: boolean | ForceValueInitOption | ForceValue = true, ...args: unknown[]) {
-    const force = new ForceValue(forceInitOption)
+    const force = new ForceValue(forceInitOption, {
+      from: 'data',
+      action: 'reload'
+    })
     this.triggerLife('beforeReload', this, force, ...args)
     // 同步判断值
     const promise = this.loadData(force, ...args)

@@ -1,72 +1,25 @@
-import Data from './../data/Data'
 import BaseData from '../data/BaseData'
-import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
-import ForceValue from '../lib/ForceValue'
-import { renderType } from '../../type'
-
-type resetOptionValue = {
-  [prop: string]: boolean
-}
-
-type resetOption = {
-  [prop: string]: boolean | resetOptionValue
-}
+import ResetData, { ResetDataInitOption } from './ResetData'
 
 export type ChoiceDataData = {
   id: PropertyKey[]
   list: Record<PropertyKey, any>[]
 }
 
-export interface ChoiceDataInitOption {
-  reset?: resetOption
-  local?: LocalValueInitOption
-  renders?: Record<string, undefined | renderType>
-}
+export interface ChoiceDataInitOption extends ResetDataInitOption {}
 
-class ChoiceData extends Data {
+class ChoiceData extends ResetData {
   static $name = 'ChoiceData'
   static $formatConfig = { name: 'ChoiceData', level: 50, recommend: true }
   idProp: PropertyKey
   data: ChoiceDataData
-  $resetOption: resetOption
-  $local?: LocalValue
-  $renders?: Record<string, undefined | renderType>
   constructor (initOption: ChoiceDataInitOption) {
-    super()
+    super(initOption, 'choice')
     this.idProp = 'id'
     this.data = {
       id: [],
       list: []
     }
-    this.$resetOption = {
-      load: false,
-      reload: false,
-      search: {
-        set: true,
-        reset: true
-      },
-      pagination: {
-        page: false,
-        size: false
-      }
-    }
-    if (initOption.reset) {
-      for (const n in initOption.reset) {
-        const resetInitValue = initOption.reset[n]
-        if (typeof resetInitValue === 'object') {
-          if (typeof this.$resetOption[n] !== 'object') {
-            this.$resetOption[n] = {}
-          }
-          for (const i in resetInitValue) {
-            (this.$resetOption[n] as resetOptionValue)[i] = resetInitValue[i]
-          }
-        } else {
-          this.$resetOption[n] = resetInitValue
-        }
-      }
-    }
-    this.$local = createLocalValue(initOption.local)
-    this.$renders = initOption.renders
   }
   /**
    * 获取数据
@@ -98,58 +51,18 @@ class ChoiceData extends Data {
     this.data.id = idList
     this.data.list = list
   }
-  $resetByFrom(force: ForceValue, from = 'load') {
-    if (force.module.choice === false) {
-      // module为否则不进行重置操作
-      return
-    } else if (force.module.choice === true) {
-      // module为真则进行重置操作
-      this.reset(true)
-    } else {
-      // 不传递则进行触发模块判断
-      if (!force.trigger) {
-        this.reset(this._parseFromOption(from))
-      } else {
-        this.reset(this._parseFromOption(force.trigger.from, force.trigger.action))
-      }
-    }
-  }
-  protected _parseFromOption(from: string, action?: string) {
-    const targetOption = this.$resetOption[from]
-    if (targetOption != undefined) {
-      if (typeof targetOption === 'object') {
-        if (!action) {
-          this.$exportMsg(`$resetByFrom函数中对应的from:${from}未定义action,可定义:${Object.keys(targetOption)}`)
-        } else if (targetOption[action] != undefined) {
-          return targetOption[action]
-        } else {
-          this.$exportMsg(`$resetByFrom函数中对应的from:${from}中不存在action:${action},可定义:${Object.keys(targetOption)}`)
-        }
-      } else {
-        return targetOption as boolean
-      }
-    } else {
-      this.$exportMsg(`$resetByFrom函数未找到对应的from:${from}`)
-    }
-    return undefined
-  }
   /**
    * 重置操作
    * @param {boolean} force 重置判断值
    */
-  $reset(force?: boolean) {
-    if (force) {
+  reset(force?: boolean) {
+    if (force !== false) {
       this.setData([], [])
     }
   }
-  reset(option?: boolean) {
-    if (option !== false) {
-      this.$reset(true)
-    }
-  }
-  destroy(option?: boolean) {
-    if (option !== false) {
-      this.reset(option)
+  destroy(force?: boolean) {
+    if (force !== false) {
+      this.reset(force)
     }
   }
   /**
@@ -162,21 +75,7 @@ class ChoiceData extends Data {
       if (target.$module && target.$module.dictionary) {
         this.idProp = target.$module.dictionary.getProp('id')
       }
-      target.onLife('beforeReload', {
-        id: this._getId('BeforeReload'),
-        handler: (_lifeValue, _instantiater, force: ForceValue) => {
-          this.$resetByFrom(force, 'reload')
-        }
-      })
     })
-  }
-  /**
-   * 模块卸载
-   * @param {object} target 卸载到的目标
-   */
-  _uninstall(target: BaseData) {
-    super._uninstall(target)
-    target.offLife('beforeReload', this._getId('BeforeReload'))
   }
 }
 

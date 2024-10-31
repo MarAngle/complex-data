@@ -223,7 +223,10 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     return this._setPromise('update', promise)
   }
   loadUpdateData (forceInitOption?: boolean | ForceValueInitOption | ForceValue, ...args: unknown[]) {
-    const force = new ForceValue(forceInitOption)
+    const force = new ForceValue(forceInitOption, {
+      from: 'data',
+      action: 'update'
+    })
     const updateStatus = this.getStatus('update')
     if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
       this._triggerUpdateData(...args)
@@ -382,29 +385,29 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       return {}
     }
   }
-  setSearch(from = 'set') {
+  setSearch(action = 'set') {
     return new Promise((resolve, reject) => {
-      this.triggerLife('beforeSearch', this, from)
+      this.triggerLife('beforeSearch', this, action)
       this.$module.search!.validateAndSyncData().then(() => {
         this.reloadData({
           data: true,
           ing: true,
-          from: {
-            module: 'search',
-            action: from
+          trigger: {
+            from: 'search',
+            action: action
           },
           module: {
             pagination: true
           }
         })!.then((res => {
-          this.triggerLife('searched', this, from)
+          this.triggerLife('searched', this, action)
           resolve(res)
         })).catch(err => {
-          this.triggerLife('searchFail', this, from, err)
+          this.triggerLife('searchFail', this, action, err)
           reject(err)
         })
       }).catch(err => {
-        this.triggerLife('searchFail', this, from, err)
+        this.triggerLife('searchFail', this, action, err)
         reject(err)
       })
     })

@@ -1,14 +1,16 @@
 import { PromiseOptionType } from "../module/PromiseData"
 
+export interface ForceValueTriggerType {
+  from: string
+  action: string
+}
+
 export interface ForceValueInitOption {
   data?: boolean
   ing?: boolean
   sync?: boolean
   promise?: PromiseOptionType
-  trigger?: {
-    from: string
-    action?: string
-  }
+  trigger?: ForceValueTriggerType
   module?: {
     [prop: string]: undefined | boolean | Record<string, any>
   }
@@ -19,18 +21,16 @@ class ForceValue {
   ing?: boolean
   sync?: boolean
   promise?: PromiseOptionType
-  trigger?: {
-    from: string
-    action?: string
-  }
+  trigger!: ForceValueTriggerType
   module!: {
     pagination?: boolean | { data: number, prop: 'page' | 'size', untriggerLife?: boolean } | { data: { page: number, size: number }, prop: 'pageAndSize', untriggerLife?: boolean }
     choice?: boolean
     [prop: string]: undefined | boolean | string | Record<string, any>
   }
-  constructor(initOption?: boolean | ForceValueInitOption | ForceValue) {
+  constructor(initOption: undefined | boolean | ForceValueInitOption | ForceValue, trigger: ForceValueTriggerType) {
     if (!initOption || initOption === true) {
       this.data = initOption
+      this.trigger = trigger
       this.module = {}
     } else if (initOption instanceof ForceValue) {
       return initOption
@@ -41,6 +41,8 @@ class ForceValue {
       this.promise = initOption.promise
       if (initOption.trigger) {
         this.trigger = initOption.trigger
+      } else {
+        this.trigger = trigger
       }
       this.module = initOption.module || {}
     }
