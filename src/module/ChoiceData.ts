@@ -14,7 +14,7 @@ class ChoiceData extends ResetData {
   idProp: PropertyKey
   data: ChoiceDataData
   constructor (initOption: ChoiceDataInitOption) {
-    super(initOption, 'choice')
+    super('choice', initOption)
     this.idProp = 'id'
     this.data = {
       id: [],

@@ -1,7 +1,7 @@
 import Data from './../data/Data'
 import BaseData from '../data/BaseData'
 import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
-import ForceValue from '../lib/ForceValue'
+import ForceValue, { ForceValueTriggerType } from '../lib/ForceValue'
 import { renderType } from '../../type'
 
 type resetType = Record<string, Record<string, boolean>>
@@ -17,7 +17,7 @@ abstract class ResetData extends Data {
   $option: resetType
   $local?: LocalValue
   $renders?: Record<string, undefined | renderType>
-  constructor (initOption: ResetDataInitOption, module: string) {
+  constructor (module: string, initOption: ResetDataInitOption) {
     super()
     this.$module = module
     this.$option = {
@@ -38,15 +38,11 @@ abstract class ResetData extends Data {
     if (initOption.option) {
       for (const n in initOption.option) {
         const optionValue = initOption.option[n]
-        if (typeof optionValue === 'object') {
-          if (typeof this.$option[n] !== 'object') {
-            this.$option[n] = {}
-          }
-          for (const i in optionValue) {
-            this.$option[n][i] = optionValue[i]
-          }
-        } else {
-          this.$option[n] = optionValue
+        if (typeof this.$option[n] !== 'object') {
+          this.$option[n] = {}
+        }
+        for (const i in optionValue) {
+          this.$option[n][i] = optionValue[i]
         }
       }
     }
@@ -56,34 +52,30 @@ abstract class ResetData extends Data {
     }
   }
   $resetByForce(force: ForceValue) {
-    const forceModuleValue = force.module[this.$module]
-    if (forceModuleValue === false) {
-      // module为否则不进行重置操作
+    const moduleValue = force.module[this.$module]
+    if (moduleValue === false) {
+      // moduleValue为否则不进行重置操作
       return
-    } else if (forceModuleValue === true) {
-      // module为真则进行重置操作
+    } else if (moduleValue === true) {
+      // moduleValue为真则进行重置操作
       this.reset(true)
     } else {
-      // 不传递则进行触发模块判断
-      this.reset(this._parseTrigger(force.trigger.from, force.trigger.action))
+      // 不传递则根据触发模块判断
+      this.reset(this._parseForceTrigger(force.trigger))
     }
   }
-  protected _parseTrigger(from: string, action: string) {
+  protected _parseForceTrigger(trigger: ForceValueTriggerType) {
+    const from = trigger.from
+    const action = trigger.action
     const targetOption = this.$option[from]
-    if (targetOption != undefined) {
-      if (typeof targetOption === 'object') {
-        if (!action) {
-          this.$exportMsg(`$resetByForce函数中对应的from:${from}未定义action,可定义:${Object.keys(targetOption)}`)
-        } else if (targetOption[action] != undefined) {
-          return targetOption[action]
-        } else {
-          this.$exportMsg(`$resetByForce函数中对应的from:${from}中不存在action:${action},可定义:${Object.keys(targetOption)}`)
-        }
+    if (targetOption) {
+      if (targetOption[action] !== undefined) {
+        return targetOption[action]
       } else {
-        return targetOption as boolean
+        this.$exportMsg(`resetOption中from:${from}中不存在action:${action}！存在的action如下:${Object.keys(targetOption)}`)
       }
     } else {
-      this.$exportMsg(`$resetByForce函数未找到对应的from:${from}`)
+      this.$exportMsg(`resetOption中不存在from:${from}！`)
     }
     return undefined
   }

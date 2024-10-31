@@ -17,16 +17,17 @@
 - 数据保存，array/object/map测试结果，内存占用array[593M]/object[882M]/map[982M]，保存速度array[958ms]/object[5084ms]/map[5161ms]，读取速度array[基于index速度最快基于循环查找超大数据量下内存溢出]/object[1872ms]/map[268ms]
 
 ### ToDo
-- 排序和筛选数据的逻辑实现
+- 筛选数据的逻辑实现
 
 ### Doing
 - 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
-### 4.6.28:ing
+### 4.6.28
 - 非兼容性更新:ForceValue初始化传参优化
 - 新增ResetDat数据，实现根据主数据状态自动reset的数据类型，设置为ChoiceData的父类
+- 添加SortData排序数据
 
 ### 4.6.27
 - utils依赖升级
