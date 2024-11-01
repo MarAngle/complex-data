@@ -7,6 +7,7 @@ import UpdateData from "../module/UpdateData"
 import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
 import { DefaultBufferType } from "./DefaultData"
 import ChoiceData from "../module/ChoiceData"
+import SortData from "../module/SortData"
 
 export type updateDataType = loadFunctionType
 export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<any>
@@ -274,6 +275,33 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     }
   }
   /* --- choice end --- */
+  /* --- sort start --- */
+  setSortData(...args: Parameters<SortData['setData']>) {
+    if (this.$module.sort) {
+      return this.$module.sort.setData(...args)
+    }
+  }
+  getSortData(...args: Parameters<SortData['getData']>) {
+    if (this.$module.sort) {
+      return this.$module.sort.getData(...args)
+    }
+  }
+  getSortValue(...args: Parameters<SortData['getValue']>) {
+    if (this.$module.sort) {
+      return this.$module.sort.getValue(...args)
+    }
+  }
+  getSortOrder(...args: Parameters<SortData['getOrder']>) {
+    if (this.$module.sort) {
+      return this.$module.sort.getOrder(...args)
+    }
+  }
+  resetSort(...args: Parameters<SortData['reset']>) {
+    if (this.$module.sort) {
+      return this.$module.sort.reset(...args)
+    }
+  }
+  /* --- sort end --- */
   /* --- pagination start --- */
   setPageCount(...args: Parameters<PaginationData['setCount']>) {
     if (this.$module.pagination) {

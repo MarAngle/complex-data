@@ -33,6 +33,9 @@ abstract class ResetData extends Data {
       pagination: {
         page: false,
         size: false
+      },
+      sort: {
+        order: false
       }
     }
     if (initOption.option) {

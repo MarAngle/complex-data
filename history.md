@@ -24,6 +24,11 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.6.30
+- SortData排序数据修正BUG,整体逻辑优化
+- ResetData添加sort配置项
+- ComplexData适配sort全局函数
+
 ### 4.6.28/29
 - 非兼容性更新:ForceValue初始化传参优化
 - 新增ResetDat数据，实现根据主数据状态自动reset的数据类型，设置为ChoiceData的父类

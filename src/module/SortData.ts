@@ -1,38 +1,56 @@
 import ResetData, { ResetDataInitOption } from './ResetData'
 
+export type compareFunction<T = any> = (a: T, b: T) => number
+
 export interface SortDataInitOption extends ResetDataInitOption {
   prop?: PropertyKey[]
-  sort?: (a: any, b: any) => boolean
+  sorter?: Record<PropertyKey, true | compareFunction>
 }
 
-type sortType = 'asc' | 'desc'
+export type orderType = 'asc' | 'desc'
 
 class SortData extends ResetData {
   static $name = 'SortData'
   static $formatConfig = { name: 'SortData', level: 50, recommend: true }
   prop: PropertyKey[]
-  sort?: (a: any, b: any) => boolean
+  sorter: Record<PropertyKey, true | compareFunction>
   data: {
     value: undefined | PropertyKey
-    sort: undefined | sortType
+    order: undefined | orderType
   }
   constructor (initOption: SortDataInitOption) {
     super('sort', initOption)
     this.prop = initOption.prop || []
-    this.sort = initOption.sort
+    this.sorter = initOption.sorter || {}
     this.data = {
       value: undefined,
-      sort: undefined
+      order: undefined
     }
   }
-  setData(value: undefined | PropertyKey, sort: undefined | sortType) {
+  hasProp(prop: PropertyKey) {
+    return this.prop.indexOf(prop) > -1
+  }
+  getConfig(prop: PropertyKey) {
+    if (this.hasProp(prop)) {
+      return this.sorter[prop]
+    } else {
+      return false
+    }
+  }
+  setData(value: undefined | PropertyKey, order: undefined | orderType) {
     this.data.value = value
-    this.data.sort = sort
+    this.data.order = order
+  }
+  getValue() {
+    return this.data.value
+  }
+  getOrder() {
+    return this.data.order
   }
   getData() {
     return {
-      value: this.data.value,
-      sort: this.data.sort
+      value: this.getValue(),
+      order: this.getOrder()
     }
   }
   /**
