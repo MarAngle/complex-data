@@ -25,6 +25,7 @@ import ModuleData from './src/module/ModuleData'
 import PaginationData from './src/module/PaginationData'
 import PromiseData from './src/module/PromiseData'
 import SearchData from './src/module/SearchData'
+import SortData from './src/module/SortData'
 import StatusData from './src/module/StatusData'
 import UpdateData from './src/module/UpdateData'
 
@@ -71,6 +72,7 @@ export {
   PaginationData,
   PromiseData,
   SearchData,
+  SortData,
   StatusData,
   UpdateData,
 

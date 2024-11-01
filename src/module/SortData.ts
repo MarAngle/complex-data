@@ -1,7 +1,7 @@
 import ResetData, { ResetDataInitOption } from './ResetData'
 
 export interface SortDataInitOption extends ResetDataInitOption {
-  prop: PropertyKey[]
+  prop?: PropertyKey[]
   sort?: (a: any, b: any) => boolean
 }
 
@@ -18,7 +18,7 @@ class SortData extends ResetData {
   }
   constructor (initOption: SortDataInitOption) {
     super('sort', initOption)
-    this.prop = initOption.prop
+    this.prop = initOption.prop || []
     this.sort = initOption.sort
     this.data = {
       value: undefined,
@@ -28,6 +28,12 @@ class SortData extends ResetData {
   setData(value: undefined | PropertyKey, sort: undefined | sortType) {
     this.data.value = value
     this.data.sort = sort
+  }
+  getData() {
+    return {
+      value: this.data.value,
+      sort: this.data.sort
+    }
   }
   /**
    * 重置操作

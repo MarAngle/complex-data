@@ -25,6 +25,7 @@ class ForceValue {
   module!: {
     pagination?: boolean | { data: number, prop: 'page' | 'size', untriggerLife?: boolean } | { data: { page: number, size: number }, prop: 'pageAndSize', untriggerLife?: boolean }
     choice?: boolean
+    sort?: boolean
     [prop: string]: undefined | boolean | string | Record<string, any>
   }
   constructor(initOption: undefined | boolean | ForceValueInitOption | ForceValue, trigger: ForceValueTriggerType) {
