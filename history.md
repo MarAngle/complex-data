@@ -24,6 +24,16 @@
 - 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
 - - 如禁用启用，选择后自动打开，前置限制等
 
+### 4.6.31
+- 非兼容性更新
+- - 类型
+- - - DefaultModOffsetSort=>删除
+- - - DefaultModBeforeSort=>DefaultModBeforeOrder
+- - - DefaultModAfterSort=>DefaultModAfterOrder
+- - - DefaultModSort=>DefaultModOrder
+- - 结构
+- - - DefaultMod.sort=>DefaultMod.order
+
 ### 4.6.30
 - SortData排序数据修正BUG,整体逻辑优化
 - ResetData添加sort配置项

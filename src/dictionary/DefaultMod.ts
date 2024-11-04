@@ -7,19 +7,15 @@ import { ArrayValueDataType } from "../lib/ArrayValue"
 
 export type collapseType = 0 | 1 | 2 // 折叠判断值,默认 0 不展示 1 推荐展示 2必须展示
 
-export interface DefaultModOffsetSort {
-  offset: number
-}
-
-export interface DefaultModBeforeSort {
+export interface DefaultModBeforeOrder {
   before: string
 }
 
-export interface DefaultModAfterSort {
+export interface DefaultModAfterOrder {
   after: string
 }
 
-export type DefaultModSort = DefaultModBeforeSort | DefaultModAfterSort
+export type DefaultModOrder = DefaultModBeforeOrder | DefaultModAfterOrder
 
 export interface DefaultModInitOption extends SimpleDataInitOption {
   $format?: string // 格式化类型
@@ -34,7 +30,7 @@ export interface DefaultModInitOption extends SimpleDataInitOption {
   frozen?: boolean // 是否冻结
   local?: LocalValueInitOption
   renders?: Record<string, undefined | renderType>
-  sort?: DefaultModSort
+  order?: DefaultModOrder
 }
 
 class DefaultMod extends SimpleData implements ArrayValueDataType {
@@ -51,7 +47,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
   $frozen?: boolean
   $local?: LocalValue
   $renders?: Record<string, undefined | renderType>
-  $sort?: DefaultModSort
+  $order?: DefaultModOrder
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(initOption: DefaultModInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption)
@@ -86,8 +82,8 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     if (initOption.renders !== undefined) {
       this.$renders = initOption.renders
     }
-    if (initOption.sort) {
-      this.$sort = initOption.sort
+    if (initOption.order) {
+      this.$order = initOption.order
     }
   }
 }
