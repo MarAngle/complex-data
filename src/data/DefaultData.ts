@@ -33,7 +33,7 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     })
     this._triggerCreateLife('DefaultData', false, initOption)
     if (initOption.storage) {
-      this.$storage = new StorageValue(initOption.storage, this._getRealName())
+      this.$storage = new StorageValue(initOption.storage, this._getProp())
       this.$storage.push('extra', {
         init: (value) => {
           const extra = this.$extra
@@ -140,7 +140,7 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       this.triggerLife('saveStoraged', this)
     }
   }
-  _getRealName() {
+  _getProp() {
     return `${this._getConstructorName}-${this.$prop}`
   }
   _getName(): string {

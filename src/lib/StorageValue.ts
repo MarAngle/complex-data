@@ -4,8 +4,8 @@ import Data from '../data/Data'
 
 export interface StorageValueInitOption {
   prop: string
-  float?: number // 时间间隔浮动偏移量[分钟]
-  offset?: number // 时间间隔基础偏移量[分钟]
+  float?: number // 定时刷新时间间隔浮动偏移量[分钟]
+  offset?: number // 定时刷新时间间隔基础偏移量[分钟]
   version?: number // 版本号
   validity?: number // 有效期[天]
   num?: number // 读取次数

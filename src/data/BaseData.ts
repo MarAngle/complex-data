@@ -425,6 +425,8 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       this.$module.destroy(destroyOption, ...args)
     }
     this.triggerLife('destroyed', this, destroyOption, ...args)
+    // 清空生命周期
+    this.$life.destroy()
   }
   /* --- reset end --- */
 }
