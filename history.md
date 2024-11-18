@@ -13,16 +13,16 @@
 - DefaultMod的formaters属性，考虑实现对AttrsValue的最终格式化，但是因renders函数本身能实现相关功能且需要对组件进行大量适配，放弃
 
 ### TIPS
+- 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
 - 删除属性测试结果，delete时间长但是后期内存占用小，设置undefined速度快但是有小内存占用
 - 数据保存，array/object/map测试结果，内存占用array[593M]/object[882M]/map[982M]，保存速度array[958ms]/object[5084ms]/map[5161ms]，读取速度array[基于index速度最快基于循环查找超大数据量下内存溢出]/object[1872ms]/map[268ms]
 
 ### ToDo
-- 筛选数据的逻辑实现
 
 ### Doing
-- 持续优化reset/destory，其中reset在能恢复的基础上尽可能的删除数据，destory不考虑恢复问题，尽可能的初始化数据
-- 考虑编辑数据数组数据的相关联，或者其他相关联数据的关联实现
-- - 如禁用启用，选择后自动打开，前置限制等
+
+### 4.6.36
+- utils依赖升级
 
 ### 4.6.32
 - utils依赖升级
