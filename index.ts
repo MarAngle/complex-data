@@ -1,6 +1,7 @@
 import ComplexInfo from './src/core/ComplexInfo'
 import ComplexList from './src/core/ComplexList'
 import SelectData from './src/core/SelectData'
+import TrackData from './src/core/TrackData'
 
 import Data from './src/data/Data'
 import SimpleData from './src/data/SimpleData'
@@ -48,6 +49,7 @@ export {
   ComplexInfo,
   ComplexList,
   SelectData,
+  TrackData,
 
   Data,
   SimpleData,
