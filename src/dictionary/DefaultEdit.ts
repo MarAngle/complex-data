@@ -15,7 +15,7 @@ export interface ruleOption {
 }
 // 考虑自定义校验参数，并实时构建，统一判断逻辑，构建函数由静态参数设置
 
-export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
+export interface DefaultEditInitOption<M extends boolean = boolean> extends DefaultSimpleEditInitOption {
   editable?: boolean // 是否为可编辑数据,不可编辑数据如按钮等控件为false,不可编辑在simple不传值的情况下,simple.value/rules为真
   simple?: { // 简单逻辑判断值
     value?: boolean // 值简单逻辑:即不加载
@@ -24,7 +24,7 @@ export interface DefaultEditInitOption extends DefaultSimpleEditInitOption {
   }
   deepClone?: boolean
   trim?: boolean
-  multiple?: boolean
+  multiple?: M
   placeholder?: false | string
   value?: {
     default?: any
@@ -98,7 +98,7 @@ class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
     reset?: any
     [prop: PropertyKey]: any
   }
-  constructor(initOption: DefaultEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: DefaultEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultEdit)
     this.$editable = initOption.editable == undefined ? $constructor.$editable : initOption.editable
