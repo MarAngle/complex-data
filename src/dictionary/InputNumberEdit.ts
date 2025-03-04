@@ -8,12 +8,12 @@ export interface InputNumberEditOption {
   step: number
 }
 
-export interface InputNumberEditInitOption extends DefaultEditInitOption {
+export interface InputNumberEditInitOption extends DefaultEditInitOption<false> {
   type: 'inputNumber'
   option?: Partial<InputNumberEditOption>
 }
 
-class InputNumberEdit extends DefaultEdit {
+class InputNumberEdit extends DefaultEdit<false> {
   static $name = 'InputNumberEdit'
   type: 'inputNumber'
   $option: InputNumberEditOption

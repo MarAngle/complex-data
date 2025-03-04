@@ -1,11 +1,11 @@
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
-export interface SwitchEditInitOption extends DefaultEditInitOption {
+export interface SwitchEditInitOption extends DefaultEditInitOption<false> {
   type: 'switch'
 }
 
-class SwitchEdit extends DefaultEdit {
+class SwitchEdit extends DefaultEdit<false> {
   static $name = 'SwitchEdit'
   static $width = 50
   type: 'switch'

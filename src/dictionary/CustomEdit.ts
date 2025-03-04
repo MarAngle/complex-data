@@ -18,7 +18,7 @@ export interface DefaultCustomEditInitOption<T> {
 }
 
 export const createCustomEdit = function<M extends boolean, T extends string>(type: T, parent: typeof DefaultEdit<M>) {
-  return class CustomEdit extends parent {
+  return class extends parent {
     static $name = `${upperCaseFirstChar(type)}Edit`
     type: T
     $model: customModelType

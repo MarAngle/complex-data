@@ -13,12 +13,12 @@ export interface ListEditOption {
   simple?: boolean // 简单构建
 }
 
-export interface ListEditInitOption extends DefaultEditInitOption {
+export interface ListEditInitOption<M extends boolean = boolean> extends DefaultEditInitOption<M> {
   type: 'list'
   option?: Partial<ListEditOption>
 }
 
-class ListEdit extends DefaultEdit {
+class ListEdit<M extends boolean = boolean> extends DefaultEdit<M> {
   static $name = 'ListEdit'
   static $indexKey = Symbol('index')
   static $defaultOption = {
@@ -49,7 +49,7 @@ class ListEdit extends DefaultEdit {
     observe?: boolean
   }
   $option: ListEditOption
-  constructor(initOption: ListEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: ListEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     this.$runtime = {}

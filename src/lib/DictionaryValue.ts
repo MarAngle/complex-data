@@ -19,6 +19,7 @@ import ButtonEdit, { ButtonEditInitOption } from '../dictionary/ButtonEdit'
 import ButtonGroupEdit, { ButtonGroupEditInitOption } from '../dictionary/ButtonGroupEdit'
 import ContentEdit, { ContentEditInitOption } from '../dictionary/ContentEdit'
 import CustomEdit, { CustomEditInitOption } from '../dictionary/CustomEdit'
+import CustomLoadEdit, { CustomLoadEditInitOption } from '../dictionary/CustomLoadEdit'
 import FormEdit, { FormEditInitOption } from '../dictionary/FormEdit'
 import DefaultLoadEdit from '../dictionary/DefaultLoadEdit'
 import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
@@ -66,9 +67,9 @@ const defaultCheck = function (data: unknown) {
   return isExist(data)
 }
 
-export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption | FormEditInitOption | ListEditInitOption
+export type DictionaryEditModInitOption = InputEditInitOption | InputNumberEditInitOption | SwitchEditInitOption | TextAreaEditInitOption | SelectEditInitOption | SelectEditInitOption<PropertyKey> | DateEditInitOption | DateRangeEditInitOption | FileEditInitOption | ButtonEditInitOption | ButtonGroupEditInitOption | ContentEditInitOption | CustomEditInitOption | CustomLoadEditInitOption | FormEditInitOption | ListEditInitOption
 
-export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit<boolean> | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | CustomEdit | FormEdit | ListEdit
+export type DictionaryEditMod = InputEdit | InputNumberEdit | SwitchEdit | TextAreaEdit | SelectEdit | SelectEdit<PropertyKey> | FileEdit<boolean> | DateEdit | DateRangeEdit | ButtonEdit | ButtonGroupEdit | ContentEdit | typeof CustomEdit | typeof CustomLoadEdit | FormEdit | ListEdit
 
 export type DictionaryModInitOption = DefaultListInitOption | DefaultInfoInitOption | DictionaryEditModInitOption | DefaultModInitOption
 
@@ -130,6 +131,7 @@ class DictionaryValue extends DefaultData implements functions {
     buttonGroup: ButtonGroupEdit,
     content: ContentEdit,
     custom: CustomEdit,
+    customLoad: CustomLoadEdit,
     form: FormEdit,
     list: ListEdit
   }

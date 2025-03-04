@@ -3,17 +3,17 @@ import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { DataWithSimpleLoad, StatusItem, StatusValue } from "../module/StatusData"
 
-export interface DefaultLoadEditInitOption extends DefaultEditInitOption {
+export interface DefaultLoadEditInitOption<M extends boolean = boolean> extends DefaultEditInitOption<M> {
   reload?: boolean
   getData?: loadFunctionType
 }
 
-class DefaultLoadEdit extends DefaultEdit implements Partial<DataWithSimpleLoad>{
+class DefaultLoadEdit<M extends boolean = boolean> extends DefaultEdit<M> implements Partial<DataWithSimpleLoad>{
   static $name = 'DefaultLoadEdit'
   $load?: StatusItem
   $reload?: boolean
   $getData?: loadFunctionType
-  constructor(initOption: DefaultLoadEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: DefaultLoadEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     if (initOption.getData) {
       this.$load = new StatusItem('load')

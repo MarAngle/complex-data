@@ -44,6 +44,7 @@ import ButtonEdit from './src/dictionary/ButtonEdit'
 import ButtonGroupEdit from './src/dictionary/ButtonGroupEdit'
 import ContentEdit from './src/dictionary/ContentEdit'
 import CustomEdit from './src/dictionary/CustomEdit'
+import CustomLoadEdit from './src/dictionary/CustomLoadEdit'
 
 export {
   ComplexInfo,
@@ -92,4 +93,5 @@ export {
   ButtonGroupEdit,
   ContentEdit,
   CustomEdit,
+  CustomLoadEdit,
 }

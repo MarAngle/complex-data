@@ -23,13 +23,13 @@ export interface searchOption extends searchInitOption {
   value: undefined | string
 }
 
-export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultSelectEditInitOption<C, D> {
+export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultSelectEditInitOption<C, D, M> {
   type: C extends undefined ? 'select' : 'cascader'
   option?: Partial<SelectEditOption>
   search?: searchInitOption
 }
 
-class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends DefaultSelectEdit<C, D> {
+class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultSelectEdit<C, D, M> {
   static $name = 'SelectEdit'
   static $defaultOption = {
     hideArrow: false,
@@ -40,7 +40,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   $option: SelectEditOption
   $search?: searchOption
   $pagination?: PaginationData
-  constructor(initOption: SelectEditInitOption<C>, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: SelectEditInitOption<C, D, M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}

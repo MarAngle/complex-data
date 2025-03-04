@@ -4,7 +4,7 @@ import { fileOption, multipleFileOption } from "../../type"
 
 export type FileEditOption<M extends boolean = false> = fileOption<M>
 
-export interface FileEditInitOption extends DefaultEditInitOption {
+export interface FileEditInitOption<M extends boolean = false> extends DefaultEditInitOption<M> {
   type: 'file'
   option?: FileEditOption<boolean>
 }
@@ -17,7 +17,7 @@ class FileEdit<M extends boolean = false> extends DefaultEdit<M> {
   }
   type: 'file'
   $option: FileEditOption<M>
-  constructor(initOption: FileEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: FileEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     const option = initOption.option || {}

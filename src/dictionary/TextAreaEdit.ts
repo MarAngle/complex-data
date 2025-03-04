@@ -7,12 +7,12 @@ export interface TextAreaEditOption {
   hideClear: boolean
 }
 
-export interface TextAreaEditInitOption extends DefaultEditInitOption {
+export interface TextAreaEditInitOption extends DefaultEditInitOption<false> {
   type: 'textArea'
   option?: Partial<TextAreaEditOption>
 }
 
-class TextAreaEdit extends DefaultEdit {
+class TextAreaEdit extends DefaultEdit<false> {
   static $name = 'TextAreaEdit'
   static $defaultOption = {
     size: 2048,

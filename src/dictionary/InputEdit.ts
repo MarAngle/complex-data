@@ -7,12 +7,12 @@ export interface InputEditOption {
   hideClear: boolean
 }
 
-export interface InputEditInitOption extends DefaultEditInitOption {
+export interface InputEditInitOption extends DefaultEditInitOption<false> {
   type?: 'input'
   option?: Partial<InputEditOption>
 }
 
-class InputEdit extends DefaultEdit {
+class InputEdit extends DefaultEdit<false> {
   static $name = 'InputEdit'
   static $defaultOption = {
     type: 'text',

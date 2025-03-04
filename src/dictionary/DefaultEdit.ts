@@ -38,7 +38,7 @@ function defaultMultipleValue() {
   return [] as any[]
 }
 
-class DefaultEdit<M extends boolean = false> extends DefaultSimpleEdit {
+class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   static $name = 'DefaultEdit'
   static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
   static $editable = true

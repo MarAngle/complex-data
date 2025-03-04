@@ -12,12 +12,12 @@ export interface FormEditOption {
   observe?: boolean
 }
 
-export interface FormEditInitOption extends DefaultEditInitOption {
+export interface FormEditInitOption<M extends boolean = boolean> extends DefaultEditInitOption<M> {
   type: 'form'
   option?: Partial<FormEditOption>
 }
 
-class FormEdit extends DefaultEdit {
+class FormEdit<M extends boolean = boolean> extends DefaultEdit<M> {
   static $name = 'FormEdit'
   type: 'form'
   $runtime: {
@@ -29,7 +29,7 @@ class FormEdit extends DefaultEdit {
     observe?: boolean
   }
   $option: Partial<FormEditOption>
-  constructor(initOption: FormEditInitOption, parent?: DictionaryValue, modName?: string) {
+  constructor(initOption: FormEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
     this.$runtime = {}

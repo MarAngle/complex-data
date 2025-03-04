@@ -46,7 +46,7 @@ export type SimpleDateEditOption<R extends Boolean = false> = BaseSimpleDateEdit
 
 export type PartialSimpleDateEditOption<R extends Boolean = false> = PartialBaseSimpleDateEditOption & (R extends true ? RangeSimpleDateEditOption : {})
 
-export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption {
+export interface SimpleDateEditInitOption<R extends Boolean = false> extends DefaultEditInitOption<false> {
   option?: PartialSimpleDateEditOption<R>
 }
 
@@ -95,7 +95,7 @@ const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[
   }
 } as functionType<string | string[]>
 
-class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit {
+class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
   static $name = 'SimpleDateEdit'
   static $width = undefined
   static $widthWithTime = 180
