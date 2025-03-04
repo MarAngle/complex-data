@@ -23,6 +23,7 @@
 
 ### 4.8.4
 - 优化DictionaryValue的_initEditMod函数逻辑
+- 添加DefaultSelectEdit数据，调整SelectEdit基于DefaultSelectEdit实现
 
 ### 4.8.2/3
 - 添加TrackData轨迹数据结构

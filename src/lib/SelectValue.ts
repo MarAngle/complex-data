@@ -14,6 +14,7 @@ export interface DefaultSelectValueType<V = any> {
   disabled?: boolean
   color?: string
   filter?: filterType[]
+  [prop: PropertyKey]: any
 }
 
 export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
