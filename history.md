@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.4
+- 优化DictionaryValue的_initEditMod函数逻辑
+
 ### 4.8.2/3
 - 添加TrackData轨迹数据结构
 

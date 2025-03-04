@@ -116,37 +116,27 @@ export type interfaceKeys = keyof DictionaryValue['$interface']
 
 class DictionaryValue extends DefaultData implements functions {
   static $name = 'DictionaryValue'
+  static $editModMap: Record<string, typeof DefaultSimpleEdit> = {
+    input: InputEdit,
+    inputNumber: InputNumberEdit,
+    textArea: TextAreaEdit,
+    select: SelectEdit,
+    cascader: SelectEdit,
+    switch: SwitchEdit,
+    date: DateEdit,
+    dateRange: DateRangeEdit,
+    file: FileEdit,
+    button: ButtonEdit,
+    buttonGroup: ButtonGroupEdit,
+    content: ContentEdit,
+    custom: CustomEdit,
+    form: FormEdit,
+    list: ListEdit
+  }
   static _initEditMod = function(editModInitOption: DictionaryEditModInitOption, parent?: DictionaryValue, modName?: string) {
-    if (!editModInitOption.type || editModInitOption.type === 'input') {
-      return new InputEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'inputNumber') {
-      return new InputNumberEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'textArea') {
-      return new TextAreaEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'select') {
-      return new SelectEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'cascader') {
-      return new SelectEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'switch') {
-      return new SwitchEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'date') {
-      return new DateEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'dateRange') {
-      return new DateRangeEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'file') {
-      return new FileEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'button') {
-      return new ButtonEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'buttonGroup') {
-      return new ButtonGroupEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'content') {
-      return new ContentEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'custom') {
-      return new CustomEdit(editModInitOption, parent, modName)
-    } else if (editModInitOption.type === 'form') {
-      return new FormEdit(editModInitOption, parent, modName)
-    }  else if (editModInitOption.type === 'list') {
-      return new ListEdit(editModInitOption, parent, modName)
+    const EditMod = DictionaryValue.$editModMap[editModInitOption.type || 'input']
+    if (EditMod) {
+      return new EditMod(editModInitOption, parent, modName)
     } else {
       exportMsg(`mod初始化错误，不存在${editModInitOption.type}的编辑类型，如需特殊构建请自行生成DefaultMod实例！`)
     }
