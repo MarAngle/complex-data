@@ -192,7 +192,11 @@ class SearchData extends DictionaryData {
         form: form
       }
       // 初始化form,因数据为空所以不需要关注结果？
-      this.parseData(dictionaryList, form, this.$type, undefined, 'init')
+      this.parseData(dictionaryList, form, this.$type, undefined, 'init').then(() => {
+        this.triggerLife('loaded', this)
+      }).catch((error) => {
+        this.triggerLife('loadFail', this, error)
+      })
       if (this.$observe) {
         observeList.startObserve(form.getData(), this.$type)
       }
@@ -283,6 +287,18 @@ class SearchData extends DictionaryData {
       id: target._getId('searchUpdated'),
       handler: (...args) => {
         target.triggerLife('searchUpdated', ...args)
+      }
+    })
+    this.onLife('loaded', {
+      id: target._getId('searchLoaded'),
+      handler: (...args) => {
+        target.triggerLife('searchLoaded', ...args)
+      }
+    })
+    this.onLife('loadFail', {
+      id: target._getId('searchLoadFail'),
+      handler: (...args) => {
+        target.triggerLife('searchLoadFail', ...args)
       }
     })
   }
