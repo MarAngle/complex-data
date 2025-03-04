@@ -36,6 +36,6 @@ export const createCustomEdit = function<M extends boolean, T extends string>(ty
 
 export type CustomEditInitOption = DefaultCustomEditInitOption<'custom'> & DefaultEditInitOption<boolean>
 
-const CustomEdit = createCustomEdit<boolean, 'custom'>('custom', DefaultEdit)
+class CustomEdit extends createCustomEdit<boolean, 'custom'>('custom', DefaultEdit) {}
 
 export default CustomEdit

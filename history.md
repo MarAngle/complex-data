@@ -26,6 +26,7 @@
 - 添加DefaultSelectEdit数据，调整SelectEdit基于DefaultSelectEdit实现
 - 添加createCustomEdit函数创建自定义组件，添加CustomLoadEdit组件
 - 全局添加DefaultEdit的泛型M
+- 优化createCustomEdit的返回值，修正类型报错
 
 ### 4.8.2/3
 - 添加TrackData轨迹数据结构
