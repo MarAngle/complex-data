@@ -450,6 +450,31 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       })
     })
   }
+  $onSearchInited(next: () => void) {
+    if (this.$module.search && (!this.$module.search.$runtime || (this.$module.search.$runtime && this.$module.search.$runtime.ing))) {
+      // 当存在检索数据且不存在运行时或存在运行时且正在运行时，等待运行结束再加载数据
+      this.onLife('searchInited', {
+        handler: (lifeValue) => {
+          // 仅触发一次
+          lifeValue.destroy()
+          next()
+        }
+      })
+    } else {
+      next()
+    }
+  }
+  loadDataBySearchInited(...args: Parameters<BaseData['loadData']>) {
+    return new Promise((resolve, reject) => {
+      this.$onSearchInited(() => {
+        this.loadData(...args).then(res => {
+          resolve(res)
+        }).catch(err => {
+          reject(err)
+        })
+      })
+    })
+  }
   /* --- search end --- */
 }
 

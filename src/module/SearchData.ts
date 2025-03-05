@@ -143,6 +143,7 @@ class SearchData extends DictionaryData {
   }
   $type: string
   $runtime?: {
+    ing?: true
     dictionary: DictionaryValue[]
     list: ObserveList
     form: FormValue
@@ -187,20 +188,25 @@ class SearchData extends DictionaryData {
       const observeList = this.getObserveList(this.$type, dictionaryList)
       const form = new FormValue()
       this.$runtime = {
+        ing: true,
         dictionary: dictionaryList,
         list: observeList,
         form: form
       }
-      // 初始化form,因数据为空所以不需要关注结果？
+      // 初始化form
       this.parseData(dictionaryList, form, this.$type, undefined, 'init').then(() => {
-        this.triggerLife('loaded', this)
+        delete this.$runtime?.ing
+        this.triggerLife('inited', this, true)
       }).catch((error) => {
-        this.triggerLife('loadFail', this, error)
+        delete this.$runtime?.ing
+        this.triggerLife('inited', this, false, error)
+      }).finally(() => {
+        // 因为检索不能作为强关联关系，因此失败也进行赋值操作
+        if (this.$observe) {
+          observeList.startObserve(form.getData(), this.$type)
+        }
+        this.syncData(true)
       })
-      if (this.$observe) {
-        observeList.startObserve(form.getData(), this.$type)
-      }
-      this.syncData(true)
     }
   }
   $validate(): Promise<{ status: string }> {
@@ -289,16 +295,11 @@ class SearchData extends DictionaryData {
         target.triggerLife('searchUpdated', ...args)
       }
     })
-    this.onLife('loaded', {
-      id: target._getId('searchLoaded'),
-      handler: (...args) => {
-        target.triggerLife('searchLoaded', ...args)
-      }
-    })
-    this.onLife('loadFail', {
-      id: target._getId('searchLoadFail'),
-      handler: (...args) => {
-        target.triggerLife('searchLoadFail', ...args)
+    this.onLife('inited', {
+      id: target._getId('searchInited'),
+      handler: (_lifeValue, ...args) => {
+        target.triggerLife('inited', ...args)
+        target.triggerLife('searchInited', ...args)
       }
     })
   }
