@@ -53,9 +53,8 @@ class ListEdit<M extends boolean = boolean> extends DefaultEdit<M> {
     super(initOption, parent, modName)
     this.type = initOption.type
     this.$runtime = {}
-    const $defaultOption = (this.constructor as typeof ListEdit).$defaultOption
     this.$option = {
-      ...$defaultOption,
+      ...(this.constructor as typeof ListEdit).$defaultOption,
       ...initOption.option
     }
   }

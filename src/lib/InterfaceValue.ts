@@ -29,7 +29,7 @@ class InterfaceValue<D> {
    * @param {*} value 值
    */
   setValue(prop: string, value: D, useSetData?: boolean) {
-    if (useSetData === true) {
+    if (useSetData) {
       setProp(this.value, prop, value, useSetData)
     } else {
       this.value[prop] = value

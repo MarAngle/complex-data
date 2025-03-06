@@ -1,11 +1,10 @@
 import { _Data } from 'complex-utils'
 import BaseData from './BaseData'
 
-let id = 0
+let idCounter = 0
 
-function createId(): string {
-  id++
-  return id.toString()
+function generateId(): string {
+  return (++idCounter).toString()
 }
 
 export interface BufferType {
@@ -17,7 +16,7 @@ export type formatInitOptionType<D> = (initOption: D, ...args: any[]) => D
 class Data<Buffer extends BufferType = BufferType> extends _Data {
   static $name = 'Data'
   static $formatConfig = { name: 'Data', level: 20, recommend: false }
-  static $formatInitOption = undefined as undefined | formatInitOptionType<any>
+  static $formatInitOption?: formatInitOptionType<any>
   readonly _id!: string
   _buffer!: Buffer
   constructor() {
@@ -27,14 +26,14 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
       enumerable: false,
       configurable: false,
       writable: false,
-      value: createId()
+      value: generateId()
     })
     // _buffer不可枚举，不可配置
     Object.defineProperty(this, '_buffer', {
       enumerable: false,
       configurable: false,
       writable: true,
-      value: {}
+      value: {} as Buffer
     })
   }
   /**
@@ -55,8 +54,8 @@ class Data<Buffer extends BufferType = BufferType> extends _Data {
   _syncData(_self: boolean, _act: string, ..._args: unknown[]) {
     // 基本逻辑：当自身刷新成功后不冒泡，否则网上递归到顶层数据进行判断
   }
-  _getId(prop = ''): string {
-    return this._id + prop
+  _getId(suffix = ''): string {
+    return this._id + suffix
   }
   _getName(): string {
     return `${super._getName()}-${this._getId()}`

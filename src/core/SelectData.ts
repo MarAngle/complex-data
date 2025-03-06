@@ -36,15 +36,13 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     if (initOption.pagination) {
       this.$pagination = new PaginationData(initOption.pagination)
     }
-    this.$reload = initOption.reload == undefined ? !!this.$pagination : initOption.reload
+    this.$reload = initOption.reload ?? !!this.$pagination
     this.$getData = initOption.getData
     if (initOption.storage) {
       this.$storage = new StorageValue(initOption.storage, this._getConstructorName())
       this.$storage.push('list', {
         init: (value) => {
-          this.list = [
-            ...value
-          ]
+          this.list = [...value]
         },
         save: () => {
           return this.list
@@ -88,22 +86,22 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     return this.$life.on(...args)
   }
   emitLife(...args: Parameters<Life['emit']>) {
-    this.$life.emit(...args)
+    return this.$life.emit(...args)
   }
   offLife(...args: Parameters<Life['off']>): boolean {
     return this.$life.off(...args)
   }
   triggerLife(...args: Parameters<Life['trigger']>) {
-    this.$life.trigger(...args)
+    return this.$life.trigger(...args)
   }
   clearLife(...args: Parameters<Life['clear']>) {
-    this.$life.clear(...args)
+    return this.$life.clear(...args)
   }
   resetLife() {
-    this.$life.reset()
+    return this.$life.reset()
   }
   destroyLife() {
-    this.$life.destroy()
+    return this.$life.destroy()
   }
   saveStorage() {
     if (this.$storage) {
@@ -119,7 +117,7 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
     // 强制加载或者需要reload的情况下，getData为真
     if (!force) {
       // 非强制获取情况下，进行状态判断
-      if ([StatusValue.un, StatusValue.fail].indexOf(loadStatus) > -1) {
+      if ([StatusValue.un, StatusValue.fail].includes(loadStatus)) {
         getData = true
       }
     } else {
@@ -135,19 +133,13 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       promise.then((res: unknown) => {
         // 触发生命周期重载完成事件
         this.setLoad(StatusValue.success)
-        this.triggerLife('loaded', this, {
-          res: res,
-          args: args
-        })
+        this.triggerLife('loaded', this, { res, args })
       }).catch(err => {
         this.setLoad(StatusValue.fail)
         // eslint-disable-next-line no-console
         console.error(err)
         // 触发生命周期重载失败事件
-        this.triggerLife('loadFail', this, {
-          res: err,
-          args: args
-        })
+        this.triggerLife('loadFail', this, { res: err, args })
       })
       return promise
     } else {

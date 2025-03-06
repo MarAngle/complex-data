@@ -40,13 +40,10 @@ abstract class ResetData extends Data {
     }
     if (initOption.option) {
       for (const n in initOption.option) {
-        const optionValue = initOption.option[n]
         if (typeof this.$option[n] !== 'object') {
           this.$option[n] = {}
         }
-        for (const i in optionValue) {
-          this.$option[n][i] = optionValue[i]
-        }
+        Object.assign(this.$option[n], initOption.option[n])
       }
     }
     this.$local = createLocalValue(initOption.local)
@@ -68,8 +65,7 @@ abstract class ResetData extends Data {
     }
   }
   protected _parseForceTrigger(trigger: ForceValueTriggerType) {
-    const from = trigger.from
-    const action = trigger.action
+    const { from, action } = trigger
     const targetOption = this.$option[from]
     if (targetOption) {
       if (targetOption[action] !== undefined) {

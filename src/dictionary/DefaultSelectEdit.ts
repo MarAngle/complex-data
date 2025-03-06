@@ -14,25 +14,19 @@ export interface DefaultSelectEditInitOption<C extends PropertyKey | undefined =
 
 class DefaultSelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultLoadEdit<M> {
   static $name = 'DefaultSelectEdit'
-  static $defaultPlaceholder = function (name: string) {
-    return `请选择${name}`
-  }
+  static $defaultPlaceholder = (name: string) => `请选择${name}`
   cascader: C
   $select: C extends undefined ? SelectValue<D> : CascaderValue<C, D>
   $pagination?: PaginationData
   constructor(initOption: DefaultSelectEditInitOption<C, D, M>, parent?: DictionaryValue, modName?: string) {
     if (initOption.select && initOption.select instanceof SelectData) {
       // 当select为SelectData时，额外初始化
-      if (initOption.reload == undefined) {
-        initOption.reload = initOption.select.$reload
-      }
+      initOption.reload ??= initOption.select.$reload
       if (initOption.pagination == undefined && initOption.select.$pagination) {
         initOption.pagination = initOption.select.$pagination
       }
-      if (initOption.getData == undefined) {
-        initOption.getData = function(...args) {
-          return (initOption.select as unknown as SelectData).loadData(...args)
-        }
+      initOption.getData ??= function(...args) {
+        return (initOption.select as unknown as SelectData).loadData(...args)
       }
     }
     super(initOption, parent, modName)
@@ -50,9 +44,7 @@ class DefaultSelectEdit<C extends PropertyKey | undefined = undefined, D extends
   }
   $clearData() {
     this.$select.setList([])
-    if (this.$pagination) {
-      this.$pagination.reset(true)
-    }
+    this.$pagination?.reset(true)
   }
 }
 

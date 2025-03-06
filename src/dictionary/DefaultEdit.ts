@@ -42,16 +42,12 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   static $name = 'DefaultEdit'
   static $formatConfig = { name: 'DefaultEdit', level: 50, recommend: true }
   static $editable = true
-  static $defaultValue = function(multiple: boolean) {
-    return !multiple ? undefined : defaultMultipleValue
-  }
+  static $defaultValue = (multiple: boolean) => !multiple ? undefined : defaultMultipleValue
   static $defaultTrim = false
-  static $defaultPlaceholder = function (name: string) {
-    return `请输入${name}`
-  }
+  static $defaultPlaceholder = (name: string) => `请输入${name}`
   static $parseRuleList = function($constructor: typeof DefaultEdit<boolean>, target: DefaultEdit<boolean>, formData: Record<PropertyKey, any>, _type?: string) {
     if (target.$rules) {
-      const ruleList = target.$rules.map(rule => {
+      return target.$rules.map(rule => {
         const ruleValue = { ...rule }
         if (ruleValue.required == undefined) {
           ruleValue.required = target.required
@@ -61,7 +57,6 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
         }
         return $constructor.$parseRule(ruleValue, formData)
       })
-      return ruleList
     } else {
       if (target.multiple && target.required) {
         // 多选且必选时
@@ -101,18 +96,14 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   constructor(initOption: DefaultEditInitOption<M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     const $constructor = (this.constructor as typeof DefaultEdit)
-    this.$editable = initOption.editable == undefined ? $constructor.$editable : initOption.editable
+    this.$editable = initOption.editable ?? $constructor.$editable
     this.simple = initOption.simple || {}
     if (!this.$editable) {
-      if (this.simple.value == undefined) {
-        this.simple.value = true
-      }
-      if (this.simple.rules == undefined) {
-        this.simple.rules = true
-      }
+      this.simple.value ??= true
+      this.simple.rules ??= true
     }
     this.multiple = !!initOption.multiple as M
-    this.trim = initOption.trim == undefined ? $constructor.$defaultTrim : initOption.trim
+    this.trim = initOption.trim ?? $constructor.$defaultTrim
     if (this.simple.placeholder !== true) {
       if (initOption.placeholder == undefined) {
         this.placeholder = $constructor.$defaultPlaceholder(this.$name!)
@@ -123,37 +114,20 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
     if (this.simple.value !== true) {
       const initOptionValue = initOption.value || {}
       const defaultValue = hasProp(initOptionValue, 'default') ? initOptionValue.default : $constructor.$defaultValue(this.multiple)
-      const resetValue = hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
-      if (defaultValue || resetValue) {
-        const valuePropList = [] as string[]
-        if (defaultValue !== null && typeof defaultValue === 'object') {
-          valuePropList.push('default')
-        }
-        if (resetValue !== null && typeof resetValue === 'object') {
-          valuePropList.push('reset')
-        }
-        if (valuePropList.length > 0) {
-          this.$exportMsg(`value属性[${valuePropList.join(',')}]为对象格式，可能会导致引用问题，请注意！`, 'warn')
-        }
-      }
       this.$value = {
         default: defaultValue,
-        reset: resetValue
+        reset: hasProp(initOptionValue, 'reset') ? initOptionValue.reset : defaultValue
       }
     } else {
       this.$value = {}
     }
-    if (this.simple.rules !== true) {
+    if (this.simple.rules !== true && initOption.rules) {
       // rule
-      if (initOption.rules) {
-        this.$rules = initOption.rules
-      }
+      this.$rules = initOption.rules
     }
     if (initOption.deepClone && this.parse === undefined) {
       // 需要深拷贝且parse为空时自动创建深拷贝函数
-      this.parse = function(value) {
-        return isComplex(value) ? deepCloneData(value) : value
-      }
+      this.parse = (value) => isComplex(value) ? deepCloneData(value) : value
     }
   }
   parseRuleList(formData: Record<PropertyKey, any>, type?: string): undefined | Record<PropertyKey, any>[] {
@@ -165,11 +139,7 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   }
   getValue(prop = 'default') {
     const value = this.$value[prop]
-    if (typeof value !== 'function') {
-      return value
-    } else {
-      return value()
-    }
+    return typeof value !== 'function' ? value : value()
   }
 }
 

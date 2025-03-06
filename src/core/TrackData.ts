@@ -233,9 +233,7 @@ abstract class TrackData<
       const minSize = (this.constructor as typeof TrackData).$minSize
       if (this.data.maxIndex >= minSize) {
         this.createIcons()
-        this.data.lnglat = this.data.list.map(lineValue => {
-          return this.createLnglat(lineValue)
-        })
+        this.data.lnglat = this.data.list.map(lineValue => this.createLnglat(lineValue))
         this.createPoints()
         let startIndex = 0
         for (let i = 0; i < this.data.dict.length; i++) {
@@ -268,27 +266,18 @@ abstract class TrackData<
   }
   $clearOverlay() {
     if (this.$map) {
-      if (this.$marker.line.data.length > 0) {
-        for (let i = 0; i < this.$marker.line.data.length; i++) {
-          const line = this.$marker.line.data[i]
-          this.clearOverlay(this.$map, line, 'line')
-        }
-        this.$marker.line.data = []
+      for (const line of this.$marker.line.data) {
+        this.clearOverlay(this.$map, line, 'line')
       }
-      if (this.$marker.line.current.length > 0) {
-        for (let i = 0; i < this.$marker.line.current.length; i++) {
-          const line = this.$marker.line.current[i]
-          this.clearOverlay(this.$map, line, 'line')
-        }
-        this.$marker.line.current = []
+      this.$marker.line.data = []
+      for (const line of this.$marker.line.current) {
+        this.clearOverlay(this.$map, line, 'line')
       }
-      if (this.$marker.connect.length > 0) {
-        for (let i = 0; i < this.$marker.connect.length; i++) {
-          const connect = this.$marker.connect[i]
-          this.clearOverlay(this.$map, connect, 'connect')
-        }
-        this.$marker.connect = []
+      this.$marker.line.current = []
+      for (const connect of this.$marker.connect) {
+        this.clearOverlay(this.$map, connect, 'connect')
       }
+      this.$marker.connect = []
       if (this.$marker.point.start) {
         this.clearOverlay(this.$map, this.$marker.point.start, 'point')
       }
@@ -343,7 +332,7 @@ abstract class TrackData<
   moveBackward() {
     const num = 1000 / this.speed.current
     const offset = num * 5
-    this.set1CurrentByOffset('backward', offset)
+    this.setCurrentByOffset('backward', offset)
     if (this.getStatus() === 'stop') {
       this.setStatus('pause')
     }
@@ -352,13 +341,13 @@ abstract class TrackData<
   moveForward() {
     const num = 1000 / this.speed.current
     const offset = num * 5
-    this.set1CurrentByOffset('forward', offset)
+    this.setCurrentByOffset('forward', offset)
     if (this.getStatus() === 'stop') {
       this.setStatus('pause')
     }
     this.$start()
   }
-  set1CurrentByOffset (direction: directionProp, offset: number) {
+  setCurrentByOffset (direction: directionProp, offset: number) {
     if (direction === 'backward') {
       this.setIndex(this.$index.current.data - offset)
     } else if (direction === 'forward') {

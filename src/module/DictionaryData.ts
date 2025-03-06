@@ -244,10 +244,9 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       }
     }
     if (initOption.list) {
-      for (let n = 0; n < initOption.list.length; n++) {
-        const dictionaryValueInitOption = initOption.list[n]
+      initOption.list.forEach(dictionaryValueInitOption => {
         this.$data.set(dictionaryValueInitOption.prop, new DictionaryValue(dictionaryValueInitOption, this))
-      }
+      })
     }
     this.$layout = new LayoutParse(initOption.layout)
     this.$option = createOption({ empty: DictionaryData.$option.empty, transformUndefined: DictionaryData.$option.transformUndefined }, initOption.option)
@@ -279,21 +278,16 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     if (option.clear) {
       this.$data.clear()
     }
-    for (let n = 0; n < dictionaryInitOptionList.length; n++) {
-      const dictionaryValueInitOption = dictionaryInitOptionList[n]
+    dictionaryInitOptionList.forEach(dictionaryValueInitOption => {
       const prop = dictionaryValueInitOption.prop
       if (!this.getValue(prop) || option.replace) {
         this.$data.set(prop, new DictionaryValue(dictionaryValueInitOption, this))
       }
-    }
+    })
     this.triggerLife('updated', this, dictionaryInitOptionList, option)
   }
   createList(originList: Record<PropertyKey, any>[] = [], originFrom = 'list', useSetData?: boolean, depth = 0) {
-    const targetList = []
-    for (let i = 0; i < originList.length; i++) {
-      targetList.push(this.createData(originList[i], originFrom, useSetData, depth))
-    }
-    return targetList
+    return originList.map(originData => this.createData(originData, originFrom, useSetData, depth))
   }
   // 格式化函数
   createData(originData: Record<PropertyKey, any>, originFrom = 'list', useSetData = false, depth = 0) {
@@ -307,29 +301,19 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     return ditem.$getMod(modName)
   }
   getList(modName: string) {
-    const list: DictionaryValue[] = []
-    for (const ditem of this.$data.values()) {
-      const mod = ditem.$getMod(modName)
-      if (mod) {
-        list.push(ditem)
-      }
-    }
-    return list
+    return Array.from(this.$data.values()).filter(ditem => ditem.$getMod(modName))
   }
   // 获取模块列表
   getPageList(modName: string, dictionaryValueList: DictionaryValue[]) {
     const pageList: DictionaryMod[] = []
     const orderList: DictionarySortOption[] = []
-    for (let n = 0; n < dictionaryValueList.length; n++) {
-      const mod = this.$getPageItem(modName, dictionaryValueList[n])!
+    dictionaryValueList.forEach(dictionaryValue => {
+      const mod = this.$getPageItem(modName, dictionaryValue)!
       if (mod.$order) {
-        orderList.push({
-          prop: mod.$prop,
-          option: mod.$order
-        })
+        orderList.push({ prop: mod.$prop, option: mod.$order })
       }
       pageList.push(mod)
-    }
+    })
     if (orderList.length > 0) {
       DictionaryData.sortPageList(pageList, orderList)
     }
@@ -343,10 +327,7 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
       const dictionaryValue = dictionaryValueList[n]
       const mod = this.$getPageItem(modName, dictionaryValue) as DefaultInfo
       if (mod.$order) {
-        orderList.push({
-          prop: mod.$prop,
-          option: mod.$order
-        })
+        orderList.push({ prop: mod.$prop, option: mod.$order })
       }
       observeList.push(mod)
       if (dictionaryValue.dictionary) {
@@ -376,19 +357,14 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
   }
   // 异步解析数据准备编辑
   parseData(dictionaryValueList: DictionaryValue[], formValue: FormValue, modName: string, defaultData?: Record<PropertyKey, any>, from?: string): Promise<{ status: string, data: Record<PropertyKey, any> }> {
+    const targetData = formValue.getData()
+    const promiseList = dictionaryValueList.map(dictionaryValue => dictionaryValue.parseValue({
+      targetData,
+      originData: defaultData,
+      type: modName,
+      from
+    }))
     return new Promise((resolve) => {
-      const targetData = formValue.getData()
-      const size = dictionaryValueList.length
-      const promiseList = []
-      for (let n = 0; n < size; n++) {
-        const dictionaryValue = dictionaryValueList[n]
-        promiseList.push(dictionaryValue.parseValue({
-          targetData: targetData,
-          originData: defaultData,
-          type: modName,
-          from: from
-        }))
-      }
       Promise.allSettled(promiseList).then(() => {
         resolve({ status: 'success', data: targetData })
       })

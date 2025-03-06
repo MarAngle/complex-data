@@ -29,6 +29,7 @@
 - 优化createCustomEdit的返回值，修正类型报错
 - SearchData添加inited生命周期，对应字典构建完成生命周期
 - ComplexData添加$onSearchInited=>在检索加载完成后触发回调函数,loadDataBySearchInited=>在检索加载完成后触发数据加载函数
+- 基于AI优化代码
 
 ### 4.8.2/3
 - 添加TrackData轨迹数据结构

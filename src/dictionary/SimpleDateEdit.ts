@@ -69,9 +69,7 @@ const defaultCollect = function(this: SimpleDateEdit<false>, value: any) {
 }
 
 const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string[]) {
-  if (!valueList) {
-    return undefined
-  }
+  if (!valueList) return undefined
   const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
   if ($constructor.$parse) {
     valueList = valueList.map(value => $constructor.$parse!(value, this.$option.format) as string)
@@ -80,9 +78,7 @@ const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string
 }
 
 const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[], payload: payloadType) {
-  if (!valueList) {
-    return undefined
-  }
+  if (!valueList) return undefined
   const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
   if ($constructor.$collect) {
     valueList = valueList.map(value => $constructor.$collect!(value, this.$option.format) as string)
@@ -99,11 +95,9 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
   static $name = 'SimpleDateEdit'
   static $width = undefined
   static $widthWithTime = 180
-  static $widthWithOutTime = 120
+  static $widthWithoutTime = 120
   static $range = false
-  static $defaultPlaceholder = function (name: string) {
-    return `请选择${name}`
-  }
+  static $defaultPlaceholder = (name: string) => `请选择${name}`
   static $parse: undefined | ((value: undefined | string, format: string) => undefined | any)
   static $collect: undefined | ((value: undefined | any, format: string) => undefined | string)
   static $parseDate = function(dateValue: dateConfigValue): any { return dateValue.value }
@@ -111,37 +105,24 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
   /**
    * @returns offset > 0 则other在target之后
    */
-  static $compareDate = function(target: any, other: any): number {
-    // 判断other相对于target的状态
-    const targetTime = (target as Date).getTime()
-    const otherTime = (other as Date).getTime()
-    return otherTime - targetTime
-  }
-  static $disabledDate = function(option: dateConfig) {
+  static $compareDate = (target: any, other: any) => (other as Date).getTime() - (target as Date).getTime()
+  static $disabledDate = (option: dateConfig) => (value: unknown) => {
     const start = option.start
     const end = option.end
-    return function(value: unknown) {
-      let disable = false
-      if (start) {
-        const startOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(start), value)
-        if (startOffset < 0) {
-          // 当前时间在开始时间之前则禁用
-          disable = true
-        } else if (startOffset === 0 && !start.eq) {
-          disable = true
-        }
+    let disable = false
+    if (start) {
+      const startOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(start), value)
+      if (startOffset < 0 || (startOffset === 0 && !start.eq)) {
+        disable = true
       }
-      if (!disable && end) {
-        const endOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(end), value)
-        if (endOffset > 0) {
-          // 当前时间在结束时间之后则禁用
-          disable = true
-        } else if (endOffset === 0 && !end.eq) {
-          disable = true
-        }
-      }
-      return disable
     }
+    if (!disable && end) {
+      const endOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(end), value)
+      if (endOffset > 0 || (endOffset === 0 && !end.eq)) {
+        disable = true
+      }
+    }
+    return disable
   }
   static $defaultOption = {
     format: 'YYYY-MM-DD',
@@ -164,7 +145,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
-      hideClear: option.hideClear == undefined ? $defaultOption.hideClear : option.hideClear
+      hideClear: option.hideClear ?? $defaultOption.hideClear
     }
     if ($constructor.$range) {
       (this.$option as SimpleDateEditOption<true>).separator = (option as Partial<SimpleDateEditOption<true>>).separator || $defaultOption.separator
@@ -187,21 +168,12 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
       }
     }
     if (option.disabledDate) {
-      if (typeof option.disabledDate === 'object') {
-        this.$option.disabledDate = $constructor.$disabledDate(option.disabledDate)
-      } else {
-        this.$option.disabledDate = option.disabledDate
-      }
+      this.$option.disabledDate = typeof option.disabledDate === 'object' ? $constructor.$disabledDate(option.disabledDate) : option.disabledDate
     }
-    if (this.parse == undefined) {
-      this.parse = $constructor.$range ? defaultRangeParse as functionType<any> : defaultParse as functionType<any>
-    }
-    if (this.collect == undefined) {
-      this.collect = $constructor.$range ? defaultRangeCollect as functionType<any> : defaultCollect as functionType<any>
-    }
-    if (this.$width === undefined) {
-      this.$width = this.$option.time ? $constructor.$widthWithTime : $constructor.$widthWithOutTime
-    }
+    this.parse = this.parse ?? ($constructor.$range ? defaultRangeParse : defaultParse) as functionType<any>
+
+    this.collect = this.collect ?? ($constructor.$range ? defaultRangeCollect : defaultCollect) as functionType<any>
+    this.$width = this.$width ?? (this.$option.time ? $constructor.$widthWithTime : $constructor.$widthWithoutTime)
   }
 }
 

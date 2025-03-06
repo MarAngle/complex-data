@@ -18,11 +18,8 @@ export interface triggerMethodOption extends triggerChangeOption {
 function getThrottleOffset(throttle: NonNullable<triggerMethodOption['throttle']>, startTime: number) {
   if (throttle.start) {
     // 从开始计时则计算开始到现在的插值
-    let offset = throttle.value - (Date.now() - startTime)
-    if (offset < 0) {
-      offset = 0
-    }
-    return offset
+    const offset = throttle.value - (Date.now() - startTime)
+    return offset < 0 ? 0 : offset
   } else {
     return throttle.value
   }
@@ -84,8 +81,6 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
         writable: true,
         value: new DependData(dependInitOption, this)
       })
-      // // 添加依赖状态，因依赖的加载理论上是成功一次即可，避免重复触发，暂不加载状态
-      // this.$status.addData('depend', 'operate')
       if (dependInitOption.created === true || (dependInitOption.created === undefined && DependData.$created)) {
         this.$onCreatedLife('created', (lifeValue) => {
           this.$loadDepend()
@@ -276,15 +271,9 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
         if (target === 'start') {
           this.triggerLife('beforeLoad', this, ...args)
         } else if (target === 'success') {
-          this.triggerLife('loaded', this, {
-            res: res,
-            args: args
-          })
+          this.triggerLife('loaded', this, { res, args })
         } else {
-          this.triggerLife('loadFail', this, {
-            res: res,
-            args: args
-          })
+          this.triggerLife('loadFail', this, { res, args })
         }
       }
     })
@@ -326,17 +315,8 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
       action: 'load'
     })
     const loadStatus = this.getStatus('load')
-    if ([StatusValue.un, StatusValue.fail].indexOf(loadStatus) > -1) {
+    if ([StatusValue.un, StatusValue.fail].includes(loadStatus) || (force.data && (loadStatus === StatusValue.success || loadStatus === StatusValue.ing && force.ing) )) {
       this.$triggerLoadData(...args)
-    } else if (loadStatus === StatusValue.ing) {
-      // 直接then
-      if (force.data && force.ing) {
-        this.$triggerLoadData(...args)
-      }
-    } else if (loadStatus === StatusValue.success) {
-      if (force.data) {
-        this.$triggerLoadData(...args)
-      }
     }
     const emptyMsg = this._createMsg(`promise模块无load数据(load状态:${loadStatus})`)
     if (!force.promise) {
@@ -358,18 +338,12 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     const promise = this.loadData(force, ...args)
     promise.then((res: unknown) => {
       // 触发生命周期重载完成事件
-      this.triggerLife('reloaded', this, {
-        res: res,
-        args: args
-      })
+      this.triggerLife('reloaded', this, { res, args })
     }).catch(err => {
       // eslint-disable-next-line no-console
       console.error(err)
       // 触发生命周期重载失败事件
-      this.triggerLife('reloadFail', this, {
-        res: err,
-        args: args
-      })
+      this.triggerLife('reloadFail', this, { res: err, args })
     })
     if (!force.sync) {
       return promise
@@ -384,21 +358,11 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
    */
   reset(resetOption: resetOptionType = {}, ...args: unknown[]) {
     this.triggerLife('beforeReset', this, resetOption, ...args)
-    if (parseResetOption(resetOption, 'status') !== false) {
-      this.$status.reset()
-    }
-    if (parseResetOption(resetOption, 'promise') === true) {
-      this.$promise.reset()
-    }
-    if (parseResetOption(resetOption, 'life') === true) {
-      this.resetLife()
-    }
-    if (parseResetOption(resetOption, 'extra') === true) {
-      this.clearExtra()
-    }
-    if (this.$module) {
-      this.$module.reset(resetOption, ...args)
-    }
+    if (parseResetOption(resetOption, 'status') !== false) this.$status.reset()
+    if (parseResetOption(resetOption, 'promise') === true) this.$promise.reset()
+    if (parseResetOption(resetOption, 'life') === true) this.resetLife()
+    if (parseResetOption(resetOption, 'extra') === true) this.clearExtra()
+    if (this.$module) this.$module.reset(resetOption, ...args)
     this.triggerLife('reseted', this, resetOption, ...args)
   }
   /**
@@ -408,22 +372,12 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
   destroy(destroyOption: resetOptionType = {}, ...args: unknown[]) {
     this.triggerLife('beforeDestroy', this, destroyOption, ...args)
     this.reset(destroyOption, ...args)
-    if (parseResetOption(destroyOption, 'status') !== false) {
-      this.$status.destroy()
-    }
-    if (parseResetOption(destroyOption, 'promise') !== false) {
-      this.$promise.destroy()
-    }
-    if (parseResetOption(destroyOption, 'life') === true) {
-      this.destroyLife()
-    }
-    if (parseResetOption(destroyOption, 'depend') === true && this.$depend) {
-      this.$depend.destroy(true)
-    }
+    if (parseResetOption(destroyOption, 'status') !== false) this.$status.destroy()
+    if (parseResetOption(destroyOption, 'promise') !== false) this.$promise.destroy()
+    if (parseResetOption(destroyOption, 'life') === true) this.destroyLife()
+    if (parseResetOption(destroyOption, 'depend') === true && this.$depend) this.$depend.destroy(true)
     // 额外数据不存在destroy，因此不做销毁,在reset中可能存在清空操作
-    if (this.$module) {
-      this.$module.destroy(destroyOption, ...args)
-    }
+    if (this.$module) this.$module.destroy(destroyOption, ...args)
     this.triggerLife('destroyed', this, destroyOption, ...args)
     // 清空生命周期
     this.$life.destroy()

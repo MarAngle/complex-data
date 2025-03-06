@@ -72,9 +72,9 @@ class PaginationData extends DefaultData {
       }
     } else {
       this.size = {
-        show: true,
+        show: initOption.size.show ?? true,
         data: initOption.size.data,
-        list: initOption.size.list ? initOption.size.list : [initOption.size.data]
+        list: initOption.size.list ?? [initOption.size.data]
       }
     }
     this.jumper = !!initOption.jumper
@@ -103,7 +103,7 @@ class PaginationData extends DefaultData {
    */
   protected _autoCountTotal(unCountCurrent?: boolean, unTriggerCurrentLife?: boolean) {
     const total = getNum(this.getCount() / this.getSize(), 'ceil', 0)
-    this.page.total = total < 1 ? 1 : total
+    this.page.total = Math.max(1, total)
     if (!unCountCurrent && this.getPage() > this.page.total) {
       this.setPage(this.page.total, unTriggerCurrentLife)
     }
@@ -239,14 +239,6 @@ class PaginationData extends DefaultData {
         }
       }
     })
-    // target.onLife('reseted', {
-    //   id: this._getId('Reseted'),
-    //   handler: (life, instantiater, resetOption) => {
-    //     if (target.$parseResetOption(resetOption, 'pagination') !== false) {
-    //       this.reset()
-    //     }
-    //   }
-    // })
     this.onLife('change', {
       id: target._getId('PaginationChange'),
       handler: (_lifeValue, instantiater, prop, current) => {
@@ -261,7 +253,6 @@ class PaginationData extends DefaultData {
   _uninstall(target: BaseData) {
     super._uninstall(target)
     target.offLife('beforeReload', this._getId('BeforeReload'))
-    // target.offLife('reseted', this._getId('Reseted'))
     this.offLife('change', target._getId('PaginationChange'))
   }
 }

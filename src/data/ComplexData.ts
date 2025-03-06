@@ -4,10 +4,11 @@ import SearchData, { resetOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
-import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
-import { DefaultBufferType } from "./DefaultData"
+import { StatusValue } from "../module/StatusData"
 import ChoiceData from "../module/ChoiceData"
 import SortData from "../module/SortData"
+import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
+import { DefaultBufferType } from "./DefaultData"
 
 export type updateDataType = loadFunctionType
 export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<any>
@@ -55,6 +56,7 @@ interface ComplexDataWithMainFunction {
   $exportData: exportDataType
   $importData: importDataType
 }
+const initFunctions = ['updateData', 'buildData', 'changeData', 'editData', 'deleteData', 'refreshData', 'multipleDeleteData', 'exportData', 'importData'] as const
 
 class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends BaseData<Buffer> implements ComplexDataWithFunction, ComplexDataWithMainFunction {
   static $name = 'ComplexData'
@@ -62,33 +64,11 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   constructor(initOption: ComplexDataInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexData', false, initOption)
-    if (initOption.updateData) {
-      this.$updateData = initOption.updateData
-    }
-    if (initOption.buildData) {
-      this.$buildData = initOption.buildData
-    }
-    if (initOption.changeData) {
-      this.$changeData = initOption.changeData
-    }
-    if (initOption.editData) {
-      this.$editData = initOption.editData
-    }
-    if (initOption.deleteData) {
-      this.$deleteData = initOption.deleteData
-    }
-    if (initOption.refreshData) {
-      this.$refreshData = initOption.refreshData
-    }
-    if (initOption.multipleDeleteData) {
-      this.$multipleDeleteData = initOption.multipleDeleteData
-    }
-    if (initOption.exportData) {
-      this.$exportData = initOption.exportData
-    }
-    if (initOption.importData) {
-      this.$importData = initOption.importData
-    }
+    initFunctions.forEach(func => {
+      if (initOption[func]) {
+        this[`$${func}`] = initOption[func] as any
+      }
+    })
     this._triggerCreateLife('ComplexData', true, initOption)
   }
   $updateData(..._args: any[]): Promise<any> {
@@ -123,50 +103,35 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     const promise = this.$updateData(...args)
     return promise
   }
-  // 新增数据
-  buildData(targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]): Promise<any> {
-    const promise = this.$buildData(targetData, type, ...args)
+  $triggerDataChange<P extends Promise<any> = Promise<any>>(promise: P, triggerName: string, ...args: any[]) {
     promise.then(() => {
-      this.triggerLife('dataChange', this, 'buildData', targetData, type, ...args)
+      this.triggerLife('dataChange', this, triggerName, ...args)
     })
     return promise
+  }
+  // 新增数据
+  buildData(targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]): Promise<any> {
+    return this.$triggerDataChange(this.$buildData(targetData, type, ...args), 'buildData', targetData, type, ...args)
   }
   // 修改数据
   changeData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
-    const promise = this.$changeData(targetData, originData, type, ...args)
-    promise.then(() => {
-      this.triggerLife('dataChange', this, 'changeData', targetData, originData, type, ...args)
-    })
-    return promise
+    return this.$triggerDataChange(this.$changeData(targetData, originData, type, ...args), 'changeData', targetData, originData, type, ...args)
   }
   // 编辑数据总方法
   editData(targetData: Record<PropertyKey, any>, originData: Record<PropertyKey, any>, type: string, ...args: unknown[]): Promise<any> {
-    const promise = this.$editData(targetData, originData, type, ...args)
-    promise.then(() => {
-      this.triggerLife('dataChange', this, 'editData', targetData, originData, type, ...args)
-    })
-    return promise
+    return this.$triggerDataChange(this.$editData(targetData, originData, type, ...args), 'editData', targetData, originData, type, ...args)
   }
   // 删除数据
   deleteData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
-    const promise = this.$deleteData(targetData, ...args)
-    promise.then(() => {
-      this.triggerLife('dataChange', this, 'deleteData', targetData, ...args)
-    })
-    return promise
+    return this.$triggerDataChange(this.$deleteData(targetData, ...args), 'deleteData', targetData, ...args)
   }
   // 刷新数据
   refreshData(targetData: Record<PropertyKey, any>, ...args: unknown[]): Promise<any> {
-    const promise = this.$refreshData(targetData, ...args)
-    return promise
+    return this.$triggerDataChange(this.$refreshData(targetData, ...args), 'refreshData', targetData, ...args)
   }
   // 删除多选数据
   multipleDeleteData(choiceList: Record<PropertyKey, any>[], ...args: unknown[]): Promise<any> {
-    const promise = this.$multipleDeleteData(choiceList, ...args)
-    promise.then(() => {
-      this.triggerLife('dataChange', this, 'multipleDeleteData', choiceList, ...args)
-    })
-    return promise
+    return this.$triggerDataChange(this.$multipleDeleteData(choiceList, ...args), 'multipleDeleteData', choiceList, ...args)
   }
   // 导出数据
   exportData(...args: any[]): Promise<any> {
@@ -175,11 +140,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   // 导入数据
   importData(file: File, ...args: unknown[]): Promise<any> {
-    const promise = this.$importData(file, ...args)
-    promise.then(() => {
-      this.triggerLife('dataChange', this, 'importData', file, ...args)
-    })
-    return promise
+    return this.$triggerDataChange(this.$importData(file, ...args), 'importData', file, ...args)
   }
   /* --- update start --- */
   startUpdate(...args: Parameters<UpdateData['start']>) {
@@ -209,15 +170,9 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
         if (target === 'start') {
           this.triggerLife('beforeUpdate', this, ...args)
         } else if (target === 'success') {
-          this.triggerLife('updated', this, {
-            res: res,
-            args: args
-          })
+          this.triggerLife('updated', this, { res, args })
         } else {
-          this.triggerLife('updateFail', this, {
-            res: res,
-            args: args
-          })
+          this.triggerLife('updateFail', this, { res, args })
         }
       }
     })
@@ -229,13 +184,8 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       action: 'update'
     })
     const updateStatus = this.getStatus('update')
-    if (['un', 'success', 'fail'].indexOf(updateStatus) > -1) {
+    if ([StatusValue.un, StatusValue.success, StatusValue.fail].includes(updateStatus) || (force.data && force.ing && updateStatus === StatusValue.ing)) {
       this._triggerUpdateData(...args)
-    } else { // ing
-      // 直接then'
-      if (force.data && force.ing) {
-        this._triggerUpdateData(...args)
-      }
     }
     const emptyMsg = this._createMsg(`promise模块无update数据(update状态:${updateStatus})`)
     if (!force.promise) {
@@ -441,14 +391,8 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     })
   }
   resetSearch(option?: resetOption) {
-    return new Promise((resolve, reject) => {
-      this.$module.search!.resetForm('reset', option)
-      this.setSearch('reset').then(res => {
-        resolve(res)
-      }).catch(err => {
-        reject(err)
-      })
-    })
+    this.$module.search!.resetForm('reset', option)
+    return this.setSearch('reset')
   }
   $onSearchInited(next: () => void) {
     if (this.$module.search && (!this.$module.search.$runtime || (this.$module.search.$runtime && this.$module.search.$runtime.ing))) {

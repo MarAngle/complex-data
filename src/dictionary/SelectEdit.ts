@@ -67,9 +67,7 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
         this.$search.value = value
         this.$search.operate = true
         const promise = this.loadData(true)
-        promise.then(() => {
-          this.$search!.operate = false
-        }).catch(() => {
+        promise.finally(() => {
           this.$search!.operate = false
         })
         return promise

@@ -17,10 +17,6 @@ export interface ModuleDataInitOption {
   sort?: boolean | SortDataInitOption
 }
 
-export type moduleKeys = keyof ModuleDataInitOption
-
-export const ModuleDataKeys: moduleKeys[] = ['update']
-
 const ModuleMap = {
   update: UpdateData,
   pagination: PaginationData,
@@ -29,6 +25,10 @@ const ModuleMap = {
   choice: ChoiceData,
   sort: SortData
 }
+
+export type moduleKeys = keyof typeof ModuleMap
+
+export const ModuleDataKeys = Object.keys(ModuleMap) as moduleKeys[]
 
 class ModuleData extends Data {
   static $name = 'ModuleData'
@@ -114,10 +114,8 @@ class ModuleData extends Data {
     ModuleDataKeys.forEach(modName => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
-      if (resetOption[modName] !== false) {
-        if (modData && modData.reset) {
-          modData.reset(resetOption[modName], ...args)
-        }
+      if (resetOption[modName] !== false && modData && modData.reset) {
+        modData.reset(resetOption[modName], ...args)
       }
     })
   }
@@ -126,10 +124,8 @@ class ModuleData extends Data {
     ModuleDataKeys.forEach(modName => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const modData = this.getData(modName) as any
-      if (destroyOption[modName] !== false) {
-        if (modData && modData.destroy) {
-          modData.destroy(destroyOption[modName], ...args)
-        }
+      if (destroyOption[modName] !== false && modData && modData.destroy) {
+        modData.destroy(destroyOption[modName], ...args)
       }
     })
   }

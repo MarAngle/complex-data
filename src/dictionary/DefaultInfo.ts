@@ -19,7 +19,7 @@ class DefaultInfo extends DefaultMod {
       initOption = {}
     }
     super(initOption, parent, modName)
-    this.colon = initOption.colon == undefined ? true : initOption.colon
+    this.colon = initOption.colon ?? true
     this.$grid = createGridOption(initOption.grid)
     if (initOption.observe) {
       this.$observe = initOption.observe

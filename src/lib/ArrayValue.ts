@@ -15,10 +15,7 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     this.data = []
     this.$prop = []
     if (list) {
-      for (let i = 0; i < list.length; i++) {
-        const item = list[i];
-        this.push(item)
-      }
+      list.forEach(item => this.push(item))
     }
   }
   protected _showByIndex(target: D, targetIndex: number) {
@@ -62,22 +59,28 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     this.$map.set(target.$prop, target)
   }
   pop() {
-    const value = this.data.pop()!
-    const prop = value.$prop
-    // 删除顺序，为避免结尾隐藏情况，单独判断
-    this.$prop.splice(this.$prop.indexOf(prop), 1)
-    this.$map.delete(prop)
-    this.$hidden.delete(prop)
-    this.$frozen.delete(prop)
+    const value = this.data.pop()
+    if (value) {
+      const prop = value.$prop
+      // 删除顺序，为避免结尾隐藏情况，单独判断
+      this.$prop.splice(this.$prop.indexOf(prop), 1)
+      this.$map.delete(prop)
+      this.$hidden.delete(prop)
+      this.$frozen.delete(prop)
+    }
+    return value
   }
   shift() {
-    const value = this.data.shift()!
-    const prop = value.$prop
+    const value = this.data.shift()
     // 删除顺序，为避免结尾隐藏情况，单独判断
-    this.$prop.splice(this.$prop.indexOf(prop), 1)
-    this.$map.delete(prop)
-    this.$hidden.delete(prop)
-    this.$frozen.delete(prop)
+    if (value) {
+      const prop = value.$prop
+      this.$prop.splice(this.$prop.indexOf(prop), 1)
+      this.$map.delete(prop)
+      this.$hidden.delete(prop)
+      this.$frozen.delete(prop)
+    }
+    return value
   }
   get(prop: PropertyKey) {
     return this.$map.get(prop)

@@ -36,20 +36,12 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
       this.$storage = new StorageValue(initOption.storage, this._getProp())
       this.$storage.push('extra', {
         init: (value) => {
-          const extra = this.$extra
-          this.$extra = {
-            ...value,
-            ...extra
-          }
+          this.$extra = { ...value, ...this.$extra }
         },
-        save: () => {
-          return this.$extra
-        }
+        save: () => this.$extra
       })
       this.onLife('created', {
-        handler: () => {
-          this.$storage!.init(this)
-        }
+        handler: () => this.$storage!.init(this)
       })
     }
     this._triggerCreateLife('DefaultData', true, initOption)
@@ -95,7 +87,7 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
    * @param  {...any} args 参数
    */
   emitLife(...args: Parameters<Life['emit']>) {
-    this.$life.emit(...args)
+    return this.$life.emit(...args)
   }
   /**
    * 删除生命周期指定函数
@@ -112,26 +104,26 @@ class DefaultData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
    * @param  {...any} args 参数
    */
   triggerLife(...args: Parameters<Life['trigger']>) {
-    this.$life.trigger(...args)
+    return this.$life.trigger(...args)
   }
   /**
    * 清除生命周期
    * @param {string} name 生命周期
    */
   clearLife(...args: Parameters<Life['clear']>) {
-    this.$life.clear(...args)
+    return this.$life.clear(...args)
   }
   /**
    * 生命周期重置
    */
   resetLife() {
-    this.$life.reset()
+    return this.$life.reset()
   }
   /**
    * 生命周期销毁
    */
   destroyLife() {
-    this.$life.destroy()
+    return this.$life.destroy()
   }
   saveStorage() {
     if (this.$storage) {

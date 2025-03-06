@@ -5,7 +5,7 @@ type  PromiseDataValueType = {
 }
 
 export type PromiseOptionType = {
-  correct?: 'reload'
+  correct?: 'reload' | 'reject' | ''
   emptySuccess?: boolean
   emptyMsg?: string
 }
@@ -71,18 +71,12 @@ class PromiseData extends Data {
           if (data === currentData || !option.correct) {
             resolve(res)
           } else if (option.correct === 'reload') {
-            this.triggerData(prop, option).then(res => {
-              resolve(res)
-            }).catch(err => {
-              reject(err)
-            })
+            this.triggerData(prop, option).then(resolve).catch(reject)
           } else {
             // reject
             reject({ status: 'fail', code: 'repeat' })
           }
-        }).catch(err => {
-          reject(err)
-        })
+        }).catch(reject)
       } else if (!option.emptySuccess) {
         if (option.emptyMsg) {
           console.error(option.emptyMsg)

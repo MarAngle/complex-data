@@ -29,12 +29,7 @@ class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
     if (!prop) {
       prop = this.getDictionaryProp('id')
     }
-    for (let i = 0; i < this.$list.length; i++) {
-      const item = this.$list[i]
-      if (item[prop!] == data) {
-        return item
-      }
-    }
+    return this.$list.find(item => item[prop!] == data)
   }
   getValueIndex(item: D) {
     return this.$list.indexOf(item)

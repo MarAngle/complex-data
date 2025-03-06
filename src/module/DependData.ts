@@ -102,7 +102,7 @@ class DependData {
     const currentStatus = simple ? depend.getLoad() : depend.getStatus(life)
     const unbind: dependUnbind = function(lifeList?: string[]) {
       for (const lifeName in lifeDict) {
-        if (lifeList == undefined || lifeList.indexOf(lifeName) > -1) {
+        if (lifeList == undefined || lifeList.includes(lifeName)) {
           depend.offLife(lifeName, lifeDict[lifeName])
         }
       }
@@ -136,38 +136,40 @@ class DependData {
     if (initOption.order) {
       this.order = initOption.order
     }
-    this.list = initOption.list ? initOption.list.map(valueInitOption => this._build(valueInitOption, target)) : []
+    this.list = initOption.list ? initOption.list.map(valueInitOption => this.buildDependValue(valueInitOption, target)) : []
     this.$init = false
   }
-  protected _build(valueInitOption: DependValueInitOption, target: BaseData): DependValue {
+  protected buildDependValue(valueInitOption: DependValueInitOption, target: BaseData): DependValue {
     return new DependValue(valueInitOption, target)
   }
-  $loadDepend() {
-    if (!this.order) {
-      return Promise.allSettled(this.list.map(item => {
-        return item.loadData()
-      }))
-    } else {
-      return new Promise((resolve) => {
-        let index = -1
-        const resList: unknown[] = []
-        const next = () => {
-          index++
-          if (index < this.list.length) {
-            this.list[index].loadData().then(res => {
-              resList.push(res)
-              next()
-            }).catch(err => {
-              resList.push(err)
-              next()
-            })
-          } else {
-            resolve(resList)
-          }
+  // 依序加载依赖
+  $loadDependSequentially() {
+    return new Promise((resolve) => {
+      let index = -1
+      const resList: unknown[] = []
+      const next = () => {
+        index++
+        if (index < this.list.length) {
+          this.list[index].loadData().then(res => {
+            resList.push(res)
+            next()
+          }).catch(err => {
+            resList.push(err)
+            next()
+          })
+        } else {
+          resolve(resList)
         }
-        next()
-      })
-    }
+      }
+      next()
+    })
+  }
+  // 并发加载依赖
+  $loadDependConcurrently() {
+    return Promise.allSettled(this.list.map(item => item.loadData()))
+  }
+  $loadDepend() {
+    return this.order ? this.$loadDependSequentially() : this.$loadDependConcurrently()
   }
   loadDepend() {
     // 存在promise则说明在加载中，直接返回即可

@@ -4,30 +4,17 @@ import { fileDataType } from "../../type"
 export type fileValueType = string | File | fileDataType
 
 export class FileValue {
-  value: fileDataType['value']
-  name: fileDataType['name']
+  value!: fileDataType['value']
+  name!: fileDataType['name']
   url?: fileDataType['url']
   constructor(file: fileValueType, isUrl?: boolean) {
-    if (typeof file === 'string') {
-      this.value = file
-      this.name = file
-      if (isUrl) {
-        this.url = file
-      }
-    } else if (isFile(file)) {
-      this.value = file
-      this.name = file.name
-    } else {
-      this.value = file.value
-      this.name = file.name
-      this.url = file.url
-    }
+    this.assign(file, isUrl)
   }
   assign(file: fileValueType, isUrl?: boolean) {
     if (typeof file === 'string') {
-      this.value = file as string
-      this.name = file as string
-      this.url = isUrl ? file as string : undefined
+      this.value = file
+      this.name = file
+      this.url = isUrl ? file : undefined
     } else if (isFile(file)) {
       this.value = file
       this.name = file.name
@@ -72,16 +59,16 @@ export class FileMultipleValue {
     const item = this.map.get(key)
     if (item) {
       const index = this.value.indexOf(item)
-      this.value.splice(index, 1)
+      if (index > -1) {
+        this.value.splice(index, 1)
+      }
       this.map.delete(key)
     }
   }
   truncation(size: number) {
     if (this.value.length > size) {
       const deletes = this.value.splice(size, this.value.length - size)
-      deletes.forEach(item => {
-        this.map.delete(item.value)
-      })
+      deletes.forEach(item => this.map.delete(item.value))
     }
   }
   reset() {

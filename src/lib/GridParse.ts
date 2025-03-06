@@ -26,9 +26,7 @@ export interface GridOption {
 
 export const createGridOption = function(gridValue?: number | GridOption) {
   if (typeof gridValue === 'number') {
-    return {
-      line: gridValue
-    }
+    return { line: gridValue }
   } else {
     return gridValue
   }
@@ -61,15 +59,9 @@ class GridParse {
     this.label = initOption.label / initOption.line
     this.content = 24 - this.label - this._offset
     this._default = {
-      main: {
-        span: this.getMain(this.line)
-      },
-      label: {
-        span: this.getLabel(this.line)
-      },
-      content: {
-        span: this.getContent(this.line)
-      }
+      main: { span: this.getMain(this.line) },
+      label: { span: this.getLabel(this.line) },
+      content: { span: this.getContent(this.line) }
     }
   }
   getMain(line: number) {

@@ -25,7 +25,7 @@ class UpdateData extends DefaultData {
   }
   index: number
   offset: number
-  timer: undefined | number
+  timer?: number
   trigger?: triggerType
   constructor(initOption: UpdateDataInitOption) {
     super(initOption)
@@ -44,7 +44,7 @@ class UpdateData extends DefaultData {
     if (initOption.check) {
       this.check = initOption.check
     }
-    this.offset = initOption.offset == undefined ? UpdateData.$offset : initOption.offset
+    this.offset = initOption.offset ?? UpdateData.$offset
     this.next = this.next.bind(this as UpdateData)
     this._triggerCreateLife('UpdateData', true)
   }
@@ -97,12 +97,8 @@ class UpdateData extends DefaultData {
    * @param {number} offset 指定间隔，不存在读取默认
    */
   start(force?: boolean, offset?: number) {
-    if (this.timer) {
-      if (!force) {
-        return
-      }
-      // this.clear(true)
-      // 在$start阶段会再次调用此函数，此处无需重复调用
+    if (this.timer && !force) {
+      return
     }
     if (offset == undefined) {
       offset = this.offset

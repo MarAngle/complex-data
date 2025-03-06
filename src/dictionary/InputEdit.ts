@@ -29,7 +29,7 @@ class InputEdit extends DefaultEdit<false> {
     this.$option = {
       type: option.type || $defaultOption.type,
       size: option.size || $defaultOption.size,
-      hideClear: option.hideClear == undefined ? $defaultOption.hideClear : option.hideClear
+      hideClear: option.hideClear ?? $defaultOption.hideClear
     }
   }
 }

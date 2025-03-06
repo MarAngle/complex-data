@@ -18,8 +18,7 @@ class ContentEdit extends DefaultSimpleEdit {
   constructor(initOption: ContentEditInitOption, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
-    const option = initOption.option || {}
-    this.$option = option
+    this.$option = initOption.option || {}
   }
 }
 

@@ -34,11 +34,7 @@ export function getFilter<D extends SelectValueType>(filter: undefined | checkIt
     if (typeof filter !== 'function') {
       const filterValue = filter
       filter = function(item: D) {
-        if(item[filterProp] && (item[filterProp] as filterType[]).indexOf(filterValue) > -1) {
-          return true
-        } else {
-          return false
-        }
+        return item[filterProp] && (item[filterProp] as filterType[]).includes(filterValue)
       }
     }
     if (!filterHidden) {
@@ -76,30 +72,13 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     }
   }
   protected _getItem (list: D[], value: any, prop: keyof D): undefined | D {
-    for (let n = 0; n < list.length; n++) {
-      const item = list[n]
-      if (this.check(value, item[prop])) {
-        return item
-      }
-    }
+    return list.find(item => this.check(value, item[prop]))
   }
   protected _getIndex (list: D[], value: any, prop: keyof D): number {
-    for (let n = 0; n < list.length; n++) {
-      const item = list[n]
-      if (this.check(value, item[prop])) {
-        return n
-      }
-    }
-    return -1
+    return list.findIndex(item => this.check(value, item[prop]))
   }
   protected _filterList(filter: checkItem<D>, list: D[]) {
-    const currentList: D[] = []
-    list.forEach(item => {
-      if (filter(item)) {
-        currentList.push(item)
-      }
-    })
-    return currentList
+    return list.filter(filter)
   }
   setList(list: D[]) {
     this.list = list || []
@@ -114,22 +93,16 @@ class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Da
     }
   }
   // 获取匹配数据，cascader为真则说明检索子类
-  getItem(value: any, prop?: keyof D) {
-    if (!prop) {
-      prop = 'value'
-    }
+  getItem(value: any, prop: keyof D = 'value') {
     return this._getItem(this.list, value, prop) || this.miss
   }
-  getIndex(value: any, prop?: keyof D) {
-    if (!prop) {
-      prop = 'value'
-    }
+  getIndex(value: any, prop: keyof D = 'value') {
     return this._getIndex(this.list, value, prop)
   }
   getItemByIndex(index: number): undefined | D {
     return this.list[index]
   }
-  getItemByOffset(value: any, offset = 1, prop?: keyof D) {
+  getItemByOffset(value: any, offset = 1, prop: keyof D = 'value') {
     return this.getItemByIndex(this.getIndex(value, prop) + offset)
   }
   check(value: any, itemValue: any) {

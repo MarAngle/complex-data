@@ -86,24 +86,15 @@ class CascaderValue<C extends PropertyKey | undefined = 'children', D extends (C
     }
   }
   // 获取匹配数据且检索子类
-  findItem(value: any, prop?: keyof D) {
-    if (!prop) {
-      prop = 'value'
-    }
+  findItem(value: any, prop: keyof D = 'value') {
     return this._findItem(this.list, value, prop) || this.miss
   }
   // 根据值数组获取匹配数组
-  findItemList(valueList: any[], prop?: keyof D) {
-    if (!prop) {
-      prop = 'value'
-    }
+  findItemList(valueList: any[], prop: keyof D = 'value') {
     return this._findItemList(this.list, valueList, prop, [])
   }
   // 根据值获取匹配相关数组
-  findList(value: any, prop?: keyof D) {
-    if (!prop) {
-      prop = 'value'
-    }
+  findList(value: any, prop: keyof D = 'value') {
     return this._findList(this.list, value, prop)
   }
 }

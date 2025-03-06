@@ -43,9 +43,7 @@ class AttrsValue {
   }
   protected _appendData(data: undefined | Record<PropertyKey, any>, prop: 'style' | 'attrs' | 'props') {
     if (data) {
-      for (const key in data) {
-        this[prop][key] = data[key]
-      }
+      Object.assign(this[prop], data)
       return true
     }
     return false
@@ -74,7 +72,7 @@ class AttrsValue {
   pushEvent(prop: string, event?: (...args: any[]) => any, type: 'before' | 'after' = 'after') {
     if (event) {
       if (this.on[prop]) {
-        const lastEvent = this.on[prop]!
+        const lastEvent = this.on[prop]
         this.on[prop] = type === 'after' ? function(...args) {
           lastEvent(...args)
           return event(...args)
@@ -89,24 +87,12 @@ class AttrsValue {
   }
   merge(targetData?: AttrsValue) {
     if (targetData) {
-      targetData.class.forEach(classStr => {
-        this.pushClass(classStr)
-      })
-      targetData.id.forEach(idStr => {
-        this.pushId(idStr)
-      })
-      for (const key in targetData.style) {
-        this.style[key] = targetData.style[key]
-      }
-      for (const key in targetData.attrs) {
-        this.attrs[key] = targetData.attrs[key]
-      }
-      for (const key in targetData.props) {
-        this.props[key] = targetData.props[key]
-      }
-      for (const key in targetData.on) {
-        this.on[key] = targetData.on[key]
-      }
+      targetData.class.forEach(classStr => this.pushClass(classStr))
+      targetData.id.forEach(idStr => this.pushId(idStr))
+      Object.assign(this.style, targetData.style)
+      Object.assign(this.attrs, targetData.attrs)
+      Object.assign(this.props, targetData.props)
+      Object.assign(this.on, targetData.on)
     }
     return this
   }

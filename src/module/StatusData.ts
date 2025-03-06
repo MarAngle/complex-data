@@ -158,11 +158,9 @@ export class StatusItem extends Data {
   triggerChange(target: keyof StatusTriggerType, args: unknown[] = [], option: triggerChangeOption = {}) {
     const current = this.getCurrent()
     const triggerDict = this.trigger[target]
-    if (option.strict) {
       // 当前状态不在目标周期的来源时，严格校验失败打断
-      if (triggerDict.from.indexOf(current) === -1) {
-        return false
-      }
+    if (option.strict && !triggerDict.from.includes(current)) {
+      return false
     }
     this.setCurrent(triggerDict.to)
     if (option.trigger) {
@@ -222,9 +220,7 @@ export type StatusDataInitOption = {
 class StatusData extends Data {
   static $name = 'StatusData'
   static $formatConfig = { name: 'StatusData', level: 50, recommend: true }
-  data: {
-    [prop: string]: StatusItem
-  }
+  data: Record<string, StatusItem>
   constructor(initOption?: StatusDataInitOption) {
     super()
     this.data = {
@@ -232,9 +228,9 @@ class StatusData extends Data {
       operate: new StatusItem('operate'),
       update: new StatusItem('load')
     }
-    if (initOption && initOption.data) {
-      for (const prop in initOption!.data) {
-        this.data[prop] = new StatusItem(initOption!.data[prop])
+    if (initOption?.data) {
+      for (const prop in initOption.data) {
+        this.data[prop] = new StatusItem(initOption.data[prop])
       }
     }
   }

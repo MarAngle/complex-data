@@ -61,15 +61,15 @@ class StorageValue extends Data {
   timer: undefined | number // 定时器
   constructor(initOption: StorageValueInitOption, prop: string) {
     super()
-    const $constructor = (this.constructor as typeof StorageValue)
+    const $constructor = this.constructor as typeof StorageValue
     this.prop = prop + '-' + initOption.prop
-    const float = initOption.float == undefined ? $constructor.$config.float : initOption.float
-    const offset = initOption.offset == undefined ? $constructor.$config.offset : initOption.offset
+    const float = initOption.float ?? $constructor.$config.float
+    const offset = initOption.offset ?? $constructor.$config.offset
     this.offset = (offset + getRandomNum(0, float * 10) / 10) * 60 * 1000
     this.version = initOption.version || 0
-    this.validity = (initOption.validity == undefined ? $constructor.$config.validity : initOption.validity) * 24 * 60 * 60 * 1000
-    this.num = initOption.num == undefined ? $constructor.$config.num : initOption.num
-    this.stability = initOption.stability == undefined ? $constructor.$config.stability : initOption.stability
+    this.validity = (initOption.validity ?? $constructor.$config.validity) * 24 * 60 * 60 * 1000
+    this.num = initOption.num ?? $constructor.$config.num
+    this.stability = initOption.stability ?? $constructor.$config.stability
     this.control = {}
   }
   push(prop: string, data: controlType, replace?: boolean) {

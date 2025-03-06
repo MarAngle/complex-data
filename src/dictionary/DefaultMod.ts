@@ -57,7 +57,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     }
     this.$setParent(parent)
     this.$prop = initOption.prop || (parent ? parent.$prop : '')
-    this.$name = initOption.name != undefined ? initOption.name : (parent ? parent.$getInterfaceValue('name', modName) : '')!
+    this.$name = initOption.name ?? (parent ? parent.$getInterfaceValue('name', modName) : '')!
     if (initOption.parse !== undefined) {
       this.parse = initOption.parse
     }
@@ -67,11 +67,7 @@ class DefaultMod extends SimpleData implements ArrayValueDataType {
     if (initOption.collapse !== undefined) {
       this.$collapse = initOption.collapse
     }
-    if (initOption.width !== undefined) {
-      this.$width = initOption.width
-    } else {
-      this.$width = $constructor.$width
-    }
+    this.$width = initOption.width ?? $constructor.$width
     if (initOption.hidden !== undefined) {
       this.$hidden = initOption.hidden
     }

@@ -249,18 +249,12 @@ class SearchData extends DictionaryData {
     }
   }
   getData(unClone?: boolean) {
-    if (unClone) {
-      return this.$current
-    } else {
-      return deepCloneData(this.$current)
-    }
+    return !unClone ? deepCloneData(this.$current) : this.$current
   }
   assignData(data: Record<PropertyKey, any>, { assign, force }: { assign?: boolean, force?: boolean } = {}) {
     if (this.$runtime) {
       const form = this.$runtime.form.getData()
-      for (const prop in data) {
-        form[prop] = data[prop]
-      }
+      Object.assign(form, data)
       if (assign == undefined || assign) {
         if (force) {
           this.syncData()
