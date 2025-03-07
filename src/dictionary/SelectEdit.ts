@@ -1,4 +1,3 @@
-import PaginationData from "../module/PaginationData"
 import DefaultSelectEdit, { DefaultSelectEditInitOption } from "./DefaultSelectEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { DefaultSelectValueType, SelectValueType } from "../lib/SelectValue"
@@ -39,7 +38,6 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
   type: C extends undefined ? 'select' : 'cascader'
   $option: SelectEditOption
   $search?: searchOption
-  $pagination?: PaginationData
   constructor(initOption: SelectEditInitOption<C, D, M>, parent?: DictionaryValue, modName?: string) {
     super(initOption, parent, modName)
     this.type = initOption.type
