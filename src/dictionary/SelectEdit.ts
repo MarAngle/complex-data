@@ -1,7 +1,7 @@
 import DefaultSelectEdit, { DefaultSelectEditInitOption } from "./DefaultSelectEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { DefaultSelectValueType, SelectValueType } from "../lib/SelectValue"
-import { CascaderValueType, DefaultCascaderValueType } from "../lib/CascaderValue"
+import { SelectValueType } from "../lib/SelectValue"
+import { CascaderValueType } from "../lib/CascaderValue"
 
 export interface SelectEditOption {
   hideArrow?: boolean
@@ -22,13 +22,13 @@ export interface searchOption extends searchInitOption {
   value: undefined | string
 }
 
-export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultSelectEditInitOption<C, D, M> {
+export interface SelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType), M extends boolean = boolean> extends DefaultSelectEditInitOption<C, D, M> {
   type: C extends undefined ? 'select' : 'cascader'
   option?: Partial<SelectEditOption>
   search?: searchInitOption
 }
 
-class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultSelectEdit<C, D, M> {
+class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType), M extends boolean = boolean> extends DefaultSelectEdit<C, D, M> {
   static $name = 'SelectEdit'
   static $defaultOption = {
     hideArrow: false,

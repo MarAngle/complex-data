@@ -4,11 +4,7 @@ export type filterType = string | number
 
 export type checkItem<D extends SelectValueType> = (item: D) => boolean
 
-export interface SelectValueType {
-  [prop: PropertyKey]: any
-}
-
-export interface DefaultSelectValueType<V = any> {
+export interface SelectValueType<V = any> {
   label: string
   value: V
   disabled?: boolean
@@ -17,7 +13,7 @@ export interface DefaultSelectValueType<V = any> {
   [prop: PropertyKey]: any
 }
 
-export interface SelectValueInitOption<D extends SelectValueType = DefaultSelectValueType> {
+export interface SelectValueInitOption<D extends SelectValueType = SelectValueType> {
   list?: D[]
   hidden?: string
   equal?: boolean
@@ -51,7 +47,7 @@ export function getFilter<D extends SelectValueType>(filter: undefined | checkIt
   }
 }
 
-class SelectValue<D extends SelectValueType = DefaultSelectValueType> extends Data {
+class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
   static $name = 'SelectValue'
   static $formatConfig = { name: 'SelectValue', level: 50, recommend: true }
   list: D[]

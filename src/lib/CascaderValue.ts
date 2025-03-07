@@ -1,18 +1,14 @@
-import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType, checkItem, filterType, getFilter } from "./SelectValue"
+import SelectValue, { SelectValueInitOption, SelectValueType, checkItem, filterType, getFilter } from "./SelectValue"
 
 export type CascaderValueType<C extends PropertyKey = 'children'> = SelectValueType & {
   [prop in C]?: CascaderValueType<C>[]
 }
 
-export type DefaultCascaderValueType<C extends PropertyKey = 'children', V = any> = DefaultSelectValueType<V> & {
-  [prop in C]?: DefaultCascaderValueType<C, V>[]
-}
-
-export interface CascaderValueInitOption<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends SelectValueInitOption<D> {
+export interface CascaderValueInitOption<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType)> extends SelectValueInitOption<D> {
   cascader: C
 }
 
-class CascaderValue<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType)> extends SelectValue<D> {
+class CascaderValue<C extends PropertyKey | undefined = 'children', D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType)> extends SelectValue<D> {
   static $name = 'CascaderValue'
   static $formatConfig = { name: 'CascaderValue', level: 50, recommend: true }
   cascader: C

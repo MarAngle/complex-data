@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.6
+- 简化SelectValue/CascaderValue数据类型，删除DefaultSelectValueType/DefaultCascaderValueType
+
 ### 4.8.4/5
 - 优化DictionaryValue的_initEditMod函数逻辑
 - 添加DefaultSelectEdit数据，调整SelectEdit基于DefaultSelectEdit实现

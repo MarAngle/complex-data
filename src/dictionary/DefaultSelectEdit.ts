@@ -1,18 +1,18 @@
 import PaginationData, { PaginationDataInitOption } from "../module/PaginationData"
 import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import SelectValue, { DefaultSelectValueType, SelectValueInitOption, SelectValueType } from "../lib/SelectValue"
-import CascaderValue, { CascaderValueInitOption, CascaderValueType, DefaultCascaderValueType } from "../lib/CascaderValue"
+import SelectValue, { SelectValueType, SelectValueInitOption } from "../lib/SelectValue"
+import CascaderValue, { CascaderValueInitOption, CascaderValueType } from "../lib/CascaderValue"
 import SelectData from "../core/SelectData"
 
 
-export interface DefaultSelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultLoadEditInitOption<M> {
+export interface DefaultSelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType), M extends boolean = boolean> extends DefaultLoadEditInitOption<M> {
   cascader: C
   select?: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascaderValueInitOption<C, D> | CascaderValue<C, D>)
   pagination?: PaginationDataInitOption | PaginationData
 }
 
-class DefaultSelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? DefaultCascaderValueType<C> : DefaultSelectValueType), M extends boolean = boolean> extends DefaultLoadEdit<M> {
+class DefaultSelectEdit<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType), M extends boolean = boolean> extends DefaultLoadEdit<M> {
   static $name = 'DefaultSelectEdit'
   static $defaultPlaceholder = (name: string) => `请选择${name}`
   cascader: C
