@@ -5,7 +5,7 @@ export interface ComplexInfoInitOption extends ComplexDataInitOption {}
 
 class ComplexInfo<D extends Record<PropertyKey, any> = Record<PropertyKey, any>, O extends Record<PropertyKey, any> = Record<PropertyKey, any>, Buffer extends DefaultBufferType = DefaultBufferType> extends ComplexData<Buffer> {
   static $name = 'ComplexInfo'
-  $info: object | D
+  $info: Partial<D>
   constructor(initOption: ComplexInfoInitOption) {
     super(initOption)
     this._triggerCreateLife('ComplexInfo', false, initOption)
@@ -23,7 +23,7 @@ class ComplexInfo<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
   formatInfo (originData: O, originFrom = 'list', useSetData?: boolean) {
     this.$info = {
       ...this.updateDataByDictionary(this.$info as D, originData, originFrom, useSetData)
-    }
+    } as D
     this._syncData(true, 'formatInfo')
   }
 }

@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.7
+- 优化ComplexInfo.$info的类型
+
 ### 4.8.6
 - 简化SelectValue/CascaderValue数据类型，删除DefaultSelectValueType/DefaultCascaderValueType
 
