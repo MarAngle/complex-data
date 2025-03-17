@@ -39,7 +39,7 @@ export type payloadType = {
   payload?: Record<PropertyKey, any>
 }
 
-export type functionType<R> = (data: unknown, payload: payloadType) => R
+export type functionType<R> = (value: unknown, payload: payloadType) => R
 
 interface functions {
   assign?: functionType<unknown> // 来源=>本地 赋值函数

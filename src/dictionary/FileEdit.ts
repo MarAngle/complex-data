@@ -2,14 +2,14 @@ import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 import { fileOption, multipleFileOption } from "../../type"
 
-export type FileEditOption<M extends boolean = false> = fileOption<M>
+export type FileEditOption<M extends boolean = boolean> = fileOption<M>
 
-export interface FileEditInitOption<M extends boolean = false> extends DefaultEditInitOption<M> {
+export interface FileEditInitOption<M extends boolean = boolean> extends DefaultEditInitOption<M> {
   type: 'file'
   option?: FileEditOption<boolean>
 }
 
-class FileEdit<M extends boolean = false> extends DefaultEdit<M> {
+class FileEdit<M extends boolean = boolean> extends DefaultEdit<M> {
   static $name = 'FileEdit'
   static $width = undefined
   static $defaultPlaceholder = function (name: string) {

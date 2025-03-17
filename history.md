@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.8
+- 修正FileEdit的multiple被错误的传递为false的BUG
+
 ### 4.8.7
 - 优化ComplexInfo.$info的类型
 
