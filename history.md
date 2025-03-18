@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.9
+- 修正SelectValue初始化时未正确赋值equal/hidden/miss的BUG
+
 ### 4.8.8
 - 修正FileEdit的multiple被错误的传递为false的BUG
 

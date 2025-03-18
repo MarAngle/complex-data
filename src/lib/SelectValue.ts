@@ -57,13 +57,13 @@ class SelectValue<D extends SelectValueType = SelectValueType> extends Data {
   constructor(initOption: SelectValueInitOption<D>) {
     super()
     this.list = initOption.list || []
-    if (this.equal) {
+    if (initOption.equal) {
       this.equal = initOption.equal
     }
-    if (this.hidden) {
+    if (initOption.hidden) {
       this.hidden = initOption.hidden
     }
-    if (this.miss) {
+    if (initOption.miss) {
       this.miss = initOption.miss
     }
   }
