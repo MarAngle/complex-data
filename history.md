@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.10
+- DefaultSelectEdit添加filter函数，实现自定义加载list的逻辑
+
 ### 4.8.9
 - 修正SelectValue初始化时未正确赋值equal/hidden/miss的BUG
 
