@@ -21,7 +21,7 @@
 
 ### Doing
 
-### 4.8.10
+### 4.8.10/11
 - DefaultSelectEdit添加filter函数，实现自定义加载list的逻辑
 
 ### 4.8.9

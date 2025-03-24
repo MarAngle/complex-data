@@ -6,7 +6,7 @@ import CascaderValue, { CascaderValueInitOption, CascaderValueType } from "../li
 import SelectData from "../core/SelectData"
 import ObserveList from "./ObserveList"
 
-export type SelectEditFilterType<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType)> = (select: C extends undefined ? (SelectValueInitOption<D> | SelectValue<D>) : (CascaderValueInitOption<C, D> | CascaderValue<C, D>), observe: ObserveList) => D[]
+export type SelectEditFilterType<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType)> = (select: C extends undefined ? SelectValue<D> : CascaderValue<C, D>, observe: ObserveList) => D[]
 
 export interface DefaultSelectEditInitOption<C extends PropertyKey | undefined = undefined, D extends (C extends PropertyKey ? CascaderValueType<C> : SelectValueType) = (C extends PropertyKey ? CascaderValueType<C> : SelectValueType), M extends boolean = boolean> extends DefaultLoadEditInitOption<M> {
   cascader: C
