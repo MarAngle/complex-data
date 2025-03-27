@@ -21,8 +21,12 @@
 
 ### Doing
 
+### 4.8.12
+- fix:SelectEdit将$searchData函数并入loadData函数中实现，避免加载时的错误调用
+- fix:SelectEdit在每次检索时都保存当前检索值，避免BUG
+
 ### 4.8.10/11
-- DefaultSelectEdit添加filter函数，实现自定义加载list的逻辑
+- feat:DefaultSelectEdit添加filter函数，实现自定义加载list的逻辑
 
 ### 4.8.9
 - 修正SelectValue初始化时未正确赋值equal/hidden/miss的BUG

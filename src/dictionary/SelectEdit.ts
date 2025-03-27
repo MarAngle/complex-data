@@ -57,21 +57,23 @@ class SelectEdit<C extends PropertyKey | undefined = undefined, D extends (C ext
       }
     }
   }
-  $searchData(value?: string) {
-    if (this.$search) {
-      if (this.$search.limit && (!value || value.length < this.$search.limit)) {
+  loadData(force?: boolean, ...args: unknown[]) {
+    const search = this.$search
+    if (search) {
+      const value = args[0] as undefined | string
+      search.value = value
+      if (search.limit && (!value || value.length < search.limit)) {
         return Promise.reject({ status: 'fail', code: 'limit' })
       } else {
-        this.$search.value = value
-        this.$search.operate = true
-        const promise = this.loadData(true)
+        search.operate = true
+        const promise = super.loadData(force, ...args)
         promise.finally(() => {
-          this.$search!.operate = false
+          search.operate = false
         })
         return promise
       }
     } else {
-      return Promise.reject({ status: 'fail', msg: '当前选择器不是检索选择器，无法调用$searchData函数！' })
+      return super.loadData(force, ...args)
     }
   }
 }
