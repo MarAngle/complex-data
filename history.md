@@ -22,6 +22,7 @@
 ### Doing
 
 ### 4.8.12
+- feat:BaseData的triggerMethodOption的throttle=>debounce，更贴近实际功能防抖
 - fix:SelectEdit将$searchData函数并入loadData函数中实现，避免加载时的错误调用
 - fix:SelectEdit在每次检索时都保存当前检索值，避免BUG
 

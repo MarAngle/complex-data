@@ -8,20 +8,20 @@ import ForceValue, { ForceValueInitOption } from '../lib/ForceValue'
 import Data from './Data'
 
 export interface triggerMethodOption extends triggerChangeOption {
-  throttle?: {
-    value: number // 节流时间：毫秒
-    fail?: boolean // 失败是否节流（失败仅指调用函数的失败，校验失败可能不做处理）
-    start?: boolean // 节流时间从开始计算
+  debounce?: {
+    value: number // 防抖时间：毫秒
+    fail?: boolean // 失败是否防抖（失败仅指调用函数的失败，校验失败可能不做处理）
+    start?: boolean // 防抖时间从开始计算
   }
 }
 
-function getThrottleOffset(throttle: NonNullable<triggerMethodOption['throttle']>, startTime: number) {
-  if (throttle.start) {
+function getDebounceOffset(debounce: NonNullable<triggerMethodOption['debounce']>, startTime: number) {
+  if (debounce.start) {
     // 从开始计时则计算开始到现在的插值
-    const offset = throttle.value - (Date.now() - startTime)
+    const offset = debounce.value - (Date.now() - startTime)
     return offset < 0 ? 0 : offset
   } else {
-    return throttle.value
+    return debounce.value
   }
 }
 
@@ -205,9 +205,9 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     const statusItem = this.getStatusValue(option.status)
     if (statusItem) {
       if (statusItem.triggerChange('start', [], option)) {
-        const throttle = option.throttle
+        const debounce = option.debounce
         const promise = this._runMethod(method, args)
-        if (!throttle) {
+        if (!debounce) {
           promise.then((res: any) => {
             statusItem.triggerChange('success', [res], option)
           }).catch(err => {
@@ -218,21 +218,21 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
           const startTime = Date.now()
           return new Promise((resolve, reject) => {
             promise.then((res: any) => {
-              // 存在节流延时处理
+              // 存在防抖延时处理
               setTimeout(() => {
                 statusItem.triggerChange('success', [res], option)
                 resolve(res)
-              }, getThrottleOffset(throttle, startTime))
+              }, getDebounceOffset(debounce, startTime))
             }).catch(err => {
-              if (!throttle.fail) {
-                // 存在节流但是失败不节流则直接失败
+              if (!debounce.fail) {
+                // 存在防抖但是失败不防抖则直接失败
                 statusItem.triggerChange('fail', [err], option)
                 reject(err)
               } else {
                 setTimeout(() => {
                   statusItem.triggerChange('fail', [err], option)
                   reject(err)
-                }, getThrottleOffset(throttle, startTime))
+                }, getDebounceOffset(debounce, startTime))
               }
             })
           })
