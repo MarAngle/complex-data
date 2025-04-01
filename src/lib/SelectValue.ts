@@ -9,6 +9,7 @@ export interface SelectValueType<V = any> {
   value: V
   disabled?: boolean
   color?: string
+  $color?: string
   filter?: filterType[]
   [prop: PropertyKey]: any
 }

@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.13
+- feat:扩展SelectValue数据，添加$color属性，此属性存在时取全局color值进行动态赋值
+
 ### 4.8.12
 - feat:BaseData的triggerMethodOption的throttle=>debounce，更贴近实际功能防抖
 - fix:SelectEdit将$searchData函数并入loadData函数中实现，避免加载时的错误调用
