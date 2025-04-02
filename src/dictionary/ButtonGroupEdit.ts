@@ -1,6 +1,6 @@
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import config from "../../config"
+import { dataConfig } from "../../index"
 import { ButtonEditOption } from "./ButtonEdit"
 
 export interface ButtonGroupEditInitOption extends DefaultSimpleEditInitOption {
@@ -23,7 +23,7 @@ class ButtonGroupEdit extends DefaultSimpleEdit {
     this.type = initOption.type
     const $defaultOption = (this.constructor as typeof ButtonGroupEdit).$defaultOption
     const interval = initOption.interval ?? $defaultOption.interval
-    this.interval = typeof interval === 'number' ? config.formatPixel(interval) : interval
+    this.interval = typeof interval === 'number' ? dataConfig.formatPixel(interval) : interval
     this.$list = initOption.list
   }
 }

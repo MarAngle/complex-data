@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.8.14
+- feat:config=>dataConfig,dataConfig添加style属性,输出dataConfig
+
 ### 4.8.13
 - feat:扩展SelectValue数据，添加$color属性，此属性存在时取全局color值进行动态赋值
 

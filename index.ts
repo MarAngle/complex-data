@@ -46,6 +46,8 @@ import ContentEdit from './src/dictionary/ContentEdit'
 import CustomEdit from './src/dictionary/CustomEdit'
 import CustomLoadEdit from './src/dictionary/CustomLoadEdit'
 
+import dataConfig from './dataConfig'
+
 export {
   ComplexInfo,
   ComplexList,
@@ -94,4 +96,6 @@ export {
   ContentEdit,
   CustomEdit,
   CustomLoadEdit,
+
+  dataConfig
 }
