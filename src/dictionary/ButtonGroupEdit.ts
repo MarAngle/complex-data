@@ -1,7 +1,7 @@
 import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { dataConfig } from "../../index"
 import { ButtonEditOption } from "./ButtonEdit"
+import dataConfig from "../../dataConfig"
 
 export interface ButtonGroupEditInitOption extends DefaultSimpleEditInitOption {
   type: 'buttonGroup'

@@ -26,7 +26,7 @@ import DefaultSimpleEdit from '../dictionary/DefaultSimpleEdit'
 import ObserveList from '../dictionary/ObserveList'
 import ListEdit, { ListEditInitOption } from '../dictionary/ListEdit'
 import FormValue from './FormValue'
-import { dataConfig } from "../../index"
+import dataConfig from '../../dataConfig'
 
 export type payloadType = {
   targetData: Record<PropertyKey, any>

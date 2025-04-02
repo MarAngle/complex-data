@@ -21,7 +21,7 @@
 
 ### Doing
 
-### 4.8.14
+### 4.8.14/15
 - feat:config=>dataConfig,dataConfig添加style属性,输出dataConfig
 
 ### 4.8.13
