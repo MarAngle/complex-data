@@ -567,6 +567,9 @@ class EditData extends BaseData {
   }
   getValueData(prop = 'defaultdata', deep) {
     let valueData = this.value[prop]
+    if (typeof valueData === 'function') {
+      valueData = valueData()
+    }
     if (deep && _func.checkComplex(valueData)) {
       valueData = _func.deepCloneData(valueData)
     }
