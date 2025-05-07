@@ -6,13 +6,14 @@ export type trackStatus = 'stop' | 'pause' | 'moving'
 export type trackPointProp = 'start' | 'current' | 'end'
 export type trackLineProp = 'total' | 'current'
 export type directionProp = 'forward' | 'backward'
+export type connectProp = 'data' | 'current'
 export type lnglatType = {
   lng: number
   lat: number
 }
 
 export interface TrackDataInitOption {
-  speed: number
+  speed: number // 基础定时器时间间隔
 }
 
 // 需要检测在前进后退时的connect是否正确
@@ -58,7 +59,10 @@ abstract class TrackData<
       data: LINE[]
       current: LINE[]
     }
-    connect: CONNECT[]
+    connect: {
+      data: CONNECT[]
+      current: CONNECT[]
+    }
     icon: Record<trackPointProp, undefined | ICON>
     point: Record<trackPointProp, undefined | POINT>
   }
@@ -110,21 +114,28 @@ abstract class TrackData<
       current: initOption.speed
     }
     this.$marker = {
+      // 图标
       icon: {
         start: undefined,
         end: undefined,
         current: undefined
       },
+      // 点
       point: {
         start: undefined,
         end: undefined,
         current: undefined
       },
+      // 路线
       line: {
         data: [],
         current: []
       },
-      connect: [],
+      // 连接点：仅限全轨迹
+      connect: {
+        data: [],
+        current: []
+      },
     }
     this.percent = 0
     this.data = {
@@ -136,17 +147,16 @@ abstract class TrackData<
   }
   abstract hasPoint(value: VALUE): boolean
   abstract resetMap(map: MAP): void
-  abstract clearOverlay(map: MAP, marker: LINE | POINT | CONNECT, type: 'point' | 'line' | 'connect'): LINE
+  abstract clearOverlay(map: MAP, marker: LINE | POINT | CONNECT, type: 'point' | 'line' | 'connect'): void
   abstract autoView(map: MAP, lnglatList: LNGLAT[]): void
   abstract parseLnglat(lnglat: LNGLAT): lnglatType
   abstract createIcon(prop: trackPointProp): ICON
   abstract createLnglat(value: VALUE): LNGLAT
   abstract createPoint(prop: trackPointProp, map: MAP, icon: ICON, lnglat: LNGLAT): POINT
   abstract createLine(prop: trackLineProp, map: MAP, lnglat: LNGLAT[]): LINE
-  abstract createConnect(option: { start: LNGLAT, startIndex: number, end: LNGLAT, endIndex: number }): CONNECT
+  abstract createConnect(option: { start: LNGLAT, startIndex: number, end: LNGLAT, endIndex: number }, prop: connectProp): CONNECT
   abstract movePoint(point: POINT, lnglat: LNGLAT, angle: undefined | number, option: { lastIndex: number, index: number, nextIndex: number, nextLnglat: LNGLAT }): void
   abstract moveLine(direction: directionProp, line: LINE, list: LNGLAT[]): void
-  abstract moveConnect(direction: directionProp, connect: CONNECT): void
   setMap(map: MAP, unCreate?: boolean) {
     this.$map = map
     if (!unCreate) {
@@ -186,6 +196,18 @@ abstract class TrackData<
       this.create()
     }
   }
+  // pushData(value: VALUE, target: 'last' | 'create' = 'last') {
+  //   if (this.hasPoint(value)) {
+  //     this.data.list.push(value)
+  //     this.data.lnglat.push(this.createLnglat(value))
+  //     const lastSize = this.data.dict[this.data.dict.length - 1]
+  //     if (target === 'last') {
+  //       this.data.dict[this.data.dict.length - 1] = lastSize + 1
+  //     } else {
+  //       this.data.dict.push(lastSize + 1)
+  //     }
+  //   }
+  // }
   resetData() {
     this.status.data = false
     this.data.dict = []
@@ -248,12 +270,12 @@ abstract class TrackData<
             const endIndex = startIndex - 1
             const endPoint = this.data.lnglat[endIndex]
             const startPoint = this.data.lnglat[startIndex]
-            this.$marker.connect.push(this.createConnect({
+            this.$marker.connect.data.push(this.createConnect({
               end: endPoint,
               start: startPoint,
               endIndex: endIndex,
               startIndex: startIndex
-            }))
+            }, 'data'))
           }
           startIndex = currentIndex + 1
         }
@@ -274,10 +296,14 @@ abstract class TrackData<
         this.clearOverlay(this.$map, line, 'line')
       }
       this.$marker.line.current = []
-      for (const connect of this.$marker.connect) {
+      for (const connect of this.$marker.connect.data) {
         this.clearOverlay(this.$map, connect, 'connect')
       }
-      this.$marker.connect = []
+      this.$marker.connect.data = []
+      for (const connect of this.$marker.connect.current) {
+        this.clearOverlay(this.$map, connect, 'connect')
+      }
+      this.$marker.connect.current = []
       if (this.$marker.point.start) {
         this.clearOverlay(this.$map, this.$marker.point.start, 'point')
       }
@@ -431,8 +457,8 @@ abstract class TrackData<
             this.moveLine(direction, this.$marker.line.current[i], this.getLineList(i, currentIndex))
           } else {
             this.moveLine(direction, this.$marker.line.current[i], this.getLineList(i))
-            // 前进操作，对连接点进行操作
-            this.moveConnect(direction, this.$marker.connect[i])
+            // 前进操作，对连接点进行操作:创建连接点:需要遍历可能存在的多个连接点
+            // this.createConnect(direction, this.$marker.connect[i])
           }  
         }
       } else {
@@ -443,9 +469,9 @@ abstract class TrackData<
             this.moveLine(direction, this.$marker.line.current[i], [])
           }
           if (i != lastLineIndex) {
-            // 后退操作，对连接点进行操作
-            this.moveConnect(direction, this.$marker.connect[i])
-          }        
+            // 后退操作，对连接点进行操作:删除连接点:需要遍历可能存在的多个连接点
+            // this.clearOverlay(direction, this.$marker.connect[i])
+          }
         }
       }
     }
