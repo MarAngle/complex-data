@@ -21,6 +21,10 @@
 
 ### Doing
 
+### 4.9.3
+- feat:TrackData添加pushData方法
+- fix:修正TrackData.$setIndex在未传递currentIndex时，在结束时错误将this.$index.next.data设置为溢出index的BUG
+
 ### 4.9.2
 - feat:优化TrackData轨迹数据
 

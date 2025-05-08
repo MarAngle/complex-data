@@ -196,18 +196,28 @@ abstract class TrackData<
       this.create()
     }
   }
-  // pushData(value: VALUE, target: 'last' | 'create' = 'last') {
-  //   if (this.hasPoint(value)) {
-  //     this.data.list.push(value)
-  //     this.data.lnglat.push(this.createLnglat(value))
-  //     const lastSize = this.data.dict[this.data.dict.length - 1]
-  //     if (target === 'last') {
-  //       this.data.dict[this.data.dict.length - 1] = lastSize + 1
-  //     } else {
-  //       this.data.dict.push(lastSize + 1)
-  //     }
-  //   }
-  // }
+  pushData(value: VALUE, target: 'last' | 'create' = 'last') {
+    if (this.hasPoint(value)) {
+      this.data.list.push(value)
+      this.data.lnglat.push(this.createLnglat(value))
+      const lastSize = this.data.dict[this.data.dict.length - 1]
+      if (target === 'last') {
+        this.data.dict[this.data.dict.length - 1] = lastSize + 1
+        if (this.$map) {
+          const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
+          const lastLine = this.$marker.line.data[this.$marker.line.data.length - 1]
+          this.moveLine('forward', lastLine, lineList)
+        }
+      } else {
+        this.data.dict.push(lastSize + 1)
+        if (this.$map) {
+          const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
+          const line = this.createLine('total', this.$map, lineList)
+          this.$marker.line.data.push(line)
+        }
+      }
+    }
+  }
   resetData() {
     this.status.data = false
     this.data.dict = []
@@ -408,33 +418,32 @@ abstract class TrackData<
     this.$setIndex(index)
     this.countPercent()
   }
+  protected _setIndex(currentIndex: number, currentLine?: number) {
+    this.$index.current.data = currentIndex
+    this.$index.current.line = currentLine !== undefined ? currentLine : this._getLineIndex(currentIndex)
+    if (!this.$isEnd(currentIndex)) {
+      this.$index.next.data = currentIndex + 1
+      this.$index.next.line = this._getLineIndex(this.$index.next.data)
+    } else if (currentLine !== undefined) {
+      // 结束状态 存在currentLine时不需要进行赋值，因为currentLine的来源就是next的值
+      this.$index.next.data = currentIndex
+      this.$index.next.line = this.$index.current.line
+    }
+    return currentIndex
+  }
   protected $setIndex(currentIndex?: number) {
     const lastIndex = this.$index.current.data
     const lastLineIndex = this.$index.current.line
     if (currentIndex === undefined) {
       // 未传递时直接获取下一步数据
-      this.$index.current.data = this.$index.next.data
-      this.$index.current.line = this.$index.next.line
-      this.$index.next.data = this.$index.current.data + 1
-      this.$index.next.line = this._getLineIndex(this.$index.next.data)
-      currentIndex = this.$index.current.data
-    } else if (this.$isEnd(currentIndex)) {
-      // 当前index值超过或为结束值时，直接进行结束赋值操作
-      currentIndex = this.data.maxIndex
-      this.$index.current.data = currentIndex
-      this.$index.current.line = this._getLineIndex(currentIndex)
-      // 结束后的下一个点同最后点避免BUG
-      this.$index.next.data = currentIndex
-      this.$index.next.line = this.$index.current.line
+      currentIndex = this._setIndex(this.$index.next.data, this.$index.next.line)
     } else {
       if (currentIndex < 0) {
         currentIndex = 0
+      } else if (this.$isEnd(currentIndex)) {
+        currentIndex = this.data.maxIndex
       }
-      // 存在index且未结束时
-      this.$index.current.data = currentIndex
-      this.$index.current.line = this._getLineIndex(this.$index.current.data)
-      this.$index.next.data = currentIndex + 1
-      this.$index.next.line = this._getLineIndex(this.$index.next.data)
+      currentIndex = this._setIndex(currentIndex)
     }
     this.$onIndexChange(currentIndex, lastIndex, lastLineIndex)
   }
