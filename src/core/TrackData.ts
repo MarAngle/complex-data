@@ -201,6 +201,7 @@ abstract class TrackData<
       this.data.list.push(value)
       this.data.lnglat.push(this.createLnglat(value))
       const lastSize = this.data.dict[this.data.dict.length - 1]
+      this.data.maxIndex++
       if (target === 'last') {
         this.data.dict[this.data.dict.length - 1] = lastSize + 1
         if (this.$map) {
@@ -413,6 +414,12 @@ abstract class TrackData<
   $next() {
     this.setIndex()
     this.$start()
+  }
+  getCurrentIndex() {
+    return this.$index.current.data
+  }
+  getCurrentValue() {
+    return this.data.list[this.getCurrentIndex()]
   }
   setIndex(index?: number) {
     this.$setIndex(index)
