@@ -6,14 +6,37 @@ export type trackStatus = 'stop' | 'pause' | 'moving'
 export type trackPointProp = 'start' | 'current' | 'end'
 export type trackLineProp = 'total' | 'current'
 export type directionProp = 'forward' | 'backward'
-export type connectProp = 'data' | 'current'
+export type connectProp = 'total' | 'current'
 export type lnglatType = {
   lng: number
   lat: number
 }
 
+export interface TrackDataOptions {
+  autoView: boolean
+  icon?: {
+    start?: Record<PropertyKey, any>
+    end?: Record<PropertyKey, any>
+    current?: Record<PropertyKey, any>
+  }
+  point?: {
+    start?: Record<PropertyKey, any>
+    end?: Record<PropertyKey, any>
+    current?: Record<PropertyKey, any>
+  }
+  line?: {
+    total?: Record<PropertyKey, any>
+    current?: Record<PropertyKey, any>
+  }
+  connect?: {
+    total?: Record<PropertyKey, any>
+    current?: Record<PropertyKey, any>
+  }
+}
+
 export interface TrackDataInitOption {
   speed: number // 基础定时器时间间隔
+  options: TrackDataOptions
 }
 
 // 需要检测在前进后退时的connect是否正确
@@ -28,7 +51,7 @@ abstract class TrackData<
 > extends Data {
   static $name = 'TrackData'
   static $formatConfig = { name: 'TrackData', level: 50, recommend: true }
-  static $minSize = 3
+  static $minSize = 2
   static parseAngle (currentLnglat: lnglatType, nextLnglat: lnglatType) {
     if (currentLnglat && nextLnglat) {
       const rad = Math.PI / 180
@@ -54,13 +77,14 @@ abstract class TrackData<
     value: trackStatus
   }
   $map?: MAP
+  $options: TrackDataOptions
   $marker: {
     line: {
-      data: LINE[]
+      total: LINE[]
       current: LINE[]
     }
     connect: {
-      data: CONNECT[]
+      total: CONNECT[]
       current: CONNECT[]
     }
     icon: Record<trackPointProp, undefined | ICON>
@@ -113,6 +137,7 @@ abstract class TrackData<
       rate: 1,
       current: initOption.speed
     }
+    this.$options = initOption.options
     this.$marker = {
       // 图标
       icon: {
@@ -128,12 +153,12 @@ abstract class TrackData<
       },
       // 路线
       line: {
-        data: [],
+        total: [],
         current: []
       },
       // 连接点：仅限全轨迹
       connect: {
-        data: [],
+        total: [],
         current: []
       },
     }
@@ -162,6 +187,9 @@ abstract class TrackData<
     if (!unCreate) {
       this.create()
     }
+  }
+  getMap() {
+    return this.$map
   }
   $resetMap() {
     if (this.$map) {
@@ -202,19 +230,20 @@ abstract class TrackData<
       this.data.lnglat.push(this.createLnglat(value))
       const lastSize = this.data.dict[this.data.dict.length - 1]
       this.data.maxIndex++
+      const map = this.getMap()
       if (target === 'last') {
         this.data.dict[this.data.dict.length - 1] = lastSize + 1
-        if (this.$map) {
+        if (map) {
           const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
-          const lastLine = this.$marker.line.data[this.$marker.line.data.length - 1]
+          const lastLine = this.$marker.line.total[this.$marker.line.total.length - 1]
           this.moveLine('forward', lastLine, lineList)
         }
       } else {
         this.data.dict.push(lastSize + 1)
-        if (this.$map) {
+        if (map) {
           const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
-          const line = this.createLine('total', this.$map, lineList)
-          this.$marker.line.data.push(line)
+          const line = this.createLine('total', map, lineList)
+          this.$marker.line.total.push(line)
         }
       }
     }
@@ -256,12 +285,14 @@ abstract class TrackData<
   createPoints() {
     const startLnglat = this.data.lnglat[0]
     const endLnglat = this.data.lnglat[this.data.maxIndex]
-    this.$marker.point.end = this.createPoint('end', this.$map!, this.$marker.icon.end!, endLnglat)
-    this.$marker.point.start = this.createPoint('start', this.$map!, this.$marker.icon.start!, startLnglat)
-    this.$marker.point.current = this.createPoint('current', this.$map!, this.$marker.icon.current!, startLnglat)
+    const map = this.getMap()!
+    this.$marker.point.end = this.createPoint('end', map, this.$marker.icon.end!, endLnglat)
+    this.$marker.point.start = this.createPoint('start', map, this.$marker.icon.start!, startLnglat)
+    this.$marker.point.current = this.createPoint('current', map, this.$marker.icon.current!, startLnglat)
   }
   create() {
-    if (this.$map && this.status.data) {
+    const map = this.getMap()
+    if (map && this.status.data) {
       this.$reset()
       const minSize = (this.constructor as typeof TrackData).$minSize
       if (this.data.maxIndex >= minSize) {
@@ -272,57 +303,60 @@ abstract class TrackData<
         for (let i = 0; i < this.data.dict.length; i++) {
           const currentIndex = this.data.dict[i]
           const lineList = this.getLineList(i, currentIndex)
-          const line = this.createLine('total', this.$map, lineList)
-          this.$marker.line.data.push(line)
-          const currentLine = this.createLine('current', this.$map, [])
+          const line = this.createLine('total', map, lineList)
+          this.$marker.line.total.push(line)
+          const currentLine = this.createLine('current', map, [])
           this.$marker.line.current.push(currentLine)
           if (i != 0) {
             // 开始轨迹中间的连接操作
             const endIndex = startIndex - 1
             const endPoint = this.data.lnglat[endIndex]
             const startPoint = this.data.lnglat[startIndex]
-            this.$marker.connect.data.push(this.createConnect({
+            this.$marker.connect.total.push(this.createConnect({
               end: endPoint,
               start: startPoint,
               endIndex: endIndex,
               startIndex: startIndex
-            }, 'data'))
+            }, 'total'))
           }
           startIndex = currentIndex + 1
         }
         this.status.init = true
-        this.autoView(this.$map, this.data.lnglat)
+        if (this.$options.autoView) {
+          this.autoView(map, this.data.lnglat)
+        }
       } else {
         this.shortMsg(this.data.maxIndex + 1, minSize)
       }
     }
   }
   $clearOverlay() {
-    if (this.$map) {
-      for (const line of this.$marker.line.data) {
-        this.clearOverlay(this.$map, line, 'line')
+    const map = this.getMap()
+    if (map) {
+      for (const line of this.$marker.line.total) {
+        this.clearOverlay(map, line, 'line')
       }
-      this.$marker.line.data = []
+      this.$marker.line.total = []
       for (const line of this.$marker.line.current) {
-        this.clearOverlay(this.$map, line, 'line')
+        this.clearOverlay(map, line, 'line')
       }
       this.$marker.line.current = []
-      for (const connect of this.$marker.connect.data) {
-        this.clearOverlay(this.$map, connect, 'connect')
+      for (const connect of this.$marker.connect.total) {
+        this.clearOverlay(map, connect, 'connect')
       }
-      this.$marker.connect.data = []
+      this.$marker.connect.total = []
       for (const connect of this.$marker.connect.current) {
-        this.clearOverlay(this.$map, connect, 'connect')
+        this.clearOverlay(map, connect, 'connect')
       }
       this.$marker.connect.current = []
       if (this.$marker.point.start) {
-        this.clearOverlay(this.$map, this.$marker.point.start, 'point')
+        this.clearOverlay(map, this.$marker.point.start, 'point')
       }
       if (this.$marker.point.end) {
-        this.clearOverlay(this.$map, this.$marker.point.end, 'point')
+        this.clearOverlay(map, this.$marker.point.end, 'point')
       }
       if (this.$marker.point.current) {
-        this.clearOverlay(this.$map, this.$marker.point.current, 'point')
+        this.clearOverlay(map, this.$marker.point.current, 'point')
       }
     }
   }
@@ -500,6 +534,7 @@ abstract class TrackData<
     this.$index.current.line = 0
     this.$index.next.data = 1
     this.$index.next.line = 0
+    this.percent = 0
   }
   countPercent() {
     this.percent = getNum(this.$index.current.data * 100 / ( this.data.maxIndex), 'round', 0)
@@ -509,9 +544,6 @@ abstract class TrackData<
     const index = getNum(this.percent / 100 * ( this.data.maxIndex), 'round', 0)
     this.$setIndex(index)
   }
-  resetPercent() {
-    this.percent = 0
-  }
   start() {
     if (this.getStatus() === 'stop') {
       this.$setIndex(0)
@@ -520,10 +552,14 @@ abstract class TrackData<
     this.$start()
   }
   pause() {
+    this.clearNextTimer()
     this.setStatus('pause')
   }
   stop() {
-    this.setStatus('stop')
+    // 重置index,percent,speed,status，终止计时
+    this.clearNextTimer()
+    this.resetIndex()
+    this.resetStatus()
   }
 
   setSpeed (rate: number) {
@@ -541,14 +577,11 @@ abstract class TrackData<
     return index >= this.data.maxIndex
   }
   $reset() {
-    // 清除地图覆盖物,重置index,percent,speed,status，终止计时
+    // 清除地图覆盖物
     // 此重置保存当前数据，作为基础重置使用
-    this.$clearOverlay()
-    this.clearNextTimer()
-    this.resetIndex()
-    this.resetPercent()
     this.resetSpeed()
-    this.resetStatus()
+    this.stop()
+    this.$clearOverlay()
   }
   reset() {
     // $reset的基础上重置数据

@@ -21,6 +21,10 @@
 
 ### Doing
 
+### 4.9.5
+- feat:TrackData的line/connect的变量名优化
+- fix:修正TrackData.stop
+
 ### 4.9.4
 - fix:修正TrackData.pushData未重新计算maxIndex的BUG
 
