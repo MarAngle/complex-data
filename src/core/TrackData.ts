@@ -108,7 +108,7 @@ abstract class TrackData<
   nextTimer?: number
   percent: number
   data: {
-    dict: number[]
+    dict: number[] // 记录的是每条线的最后一个点的索引即 maxIndex
     list: VALUE[]
     lnglat: LNGLAT[]
     maxIndex: number
@@ -224,26 +224,32 @@ abstract class TrackData<
       this.create()
     }
   }
-  pushData(value: VALUE, target: 'last' | 'create' = 'last') {
+  pushData(value: VALUE) {
     if (this.hasPoint(value)) {
-      this.data.list.push(value)
-      this.data.lnglat.push(this.createLnglat(value))
-      const lastSize = this.data.dict[this.data.dict.length - 1]
-      this.data.maxIndex++
-      const map = this.getMap()
-      if (target === 'last') {
-        this.data.dict[this.data.dict.length - 1] = lastSize + 1
-        if (map) {
-          const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
-          const lastLine = this.$marker.line.total[this.$marker.line.total.length - 1]
-          this.moveLine('forward', lastLine, lineList)
-        }
+      if (!this.status.data) {
+        // 未进行数据加载则进行数据初始化
+        this.setData([[value]])
       } else {
-        this.data.dict.push(lastSize + 1)
+        this.data.list.push(value)
+        this.data.maxIndex++
+        if (this.data.dict.length > 0) {
+          // 这里应该直接赋值为当前maxIndex
+          this.data.dict[this.data.dict.length - 1] = this.data.maxIndex
+        } else {
+          this.data.dict = [this.data.maxIndex]
+        }
+        const map = this.getMap()
         if (map) {
-          const lineList = this.getLineList(this.data.dict.length - 1, lastSize + 1)
-          const line = this.createLine('total', map, lineList)
-          this.$marker.line.total.push(line)
+          if (this.status.init) {
+            // 已加载则进行push数据
+            this.data.lnglat.push(this.createLnglat(value))
+            const lineList = this.getLineList(this.data.dict.length - 1, this.data.dict[this.data.dict.length - 1] + 1)
+            const lastLine = this.$marker.line.total[this.$marker.line.total.length - 1]
+            this.moveLine('forward', lastLine, lineList)
+          } else {
+            // 可能存在未创建的情况，未创建则创建
+            this.$create(map, true)
+          }
         }
       }
     }
@@ -290,44 +296,47 @@ abstract class TrackData<
     this.$marker.point.start = this.createPoint('start', map, this.$marker.icon.start!, startLnglat)
     this.$marker.point.current = this.createPoint('current', map, this.$marker.icon.current!, startLnglat)
   }
-  create() {
+  $create(map: MAP, unShortMsg?: boolean) {
+    const minSize = (this.constructor as typeof TrackData).$minSize
+    if (this.data.maxIndex >= minSize) {
+      this.createIcons()
+      this.data.lnglat = this.data.list.map(lineValue => this.createLnglat(lineValue))
+      this.createPoints()
+      let startIndex = 0
+      for (let i = 0; i < this.data.dict.length; i++) {
+        const currentIndex = this.data.dict[i]
+        const lineList = this.getLineList(i, currentIndex)
+        const line = this.createLine('total', map, lineList)
+        this.$marker.line.total.push(line)
+        const currentLine = this.createLine('current', map, [])
+        this.$marker.line.current.push(currentLine)
+        if (i != 0) {
+          // 开始轨迹中间的连接操作
+          const endIndex = startIndex - 1
+          const endPoint = this.data.lnglat[endIndex]
+          const startPoint = this.data.lnglat[startIndex]
+          this.$marker.connect.total.push(this.createConnect({
+            end: endPoint,
+            start: startPoint,
+            endIndex: endIndex,
+            startIndex: startIndex
+          }, 'total'))
+        }
+        startIndex = currentIndex + 1
+      }
+      this.status.init = true
+      if (this.$options.autoView) {
+        this.autoView(map, this.data.lnglat)
+      }
+    } else if (!unShortMsg) {
+      this.shortMsg(this.data.maxIndex + 1, minSize)
+    } 
+  }
+  create(unShortMsg?: boolean) {
     const map = this.getMap()
     if (map && this.status.data) {
       this.$reset()
-      const minSize = (this.constructor as typeof TrackData).$minSize
-      if (this.data.maxIndex >= minSize) {
-        this.createIcons()
-        this.data.lnglat = this.data.list.map(lineValue => this.createLnglat(lineValue))
-        this.createPoints()
-        let startIndex = 0
-        for (let i = 0; i < this.data.dict.length; i++) {
-          const currentIndex = this.data.dict[i]
-          const lineList = this.getLineList(i, currentIndex)
-          const line = this.createLine('total', map, lineList)
-          this.$marker.line.total.push(line)
-          const currentLine = this.createLine('current', map, [])
-          this.$marker.line.current.push(currentLine)
-          if (i != 0) {
-            // 开始轨迹中间的连接操作
-            const endIndex = startIndex - 1
-            const endPoint = this.data.lnglat[endIndex]
-            const startPoint = this.data.lnglat[startIndex]
-            this.$marker.connect.total.push(this.createConnect({
-              end: endPoint,
-              start: startPoint,
-              endIndex: endIndex,
-              startIndex: startIndex
-            }, 'total'))
-          }
-          startIndex = currentIndex + 1
-        }
-        this.status.init = true
-        if (this.$options.autoView) {
-          this.autoView(map, this.data.lnglat)
-        }
-      } else {
-        this.shortMsg(this.data.maxIndex + 1, minSize)
-      }
+      this.$create(map, unShortMsg)
     }
   }
   $clearOverlay() {
