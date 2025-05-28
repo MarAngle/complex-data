@@ -21,6 +21,9 @@
 
 ### Doing
 
+### 4.9.7
+- feat:优化轨迹数据的整体逻辑
+
 ### 4.9.6
 - fix:修正TrackData.pushData在无数据和无地图覆盖物的初始状态修正，以及未正确计算maxIndex和dict的BUG
 

@@ -298,7 +298,7 @@ abstract class TrackData<
   }
   $create(map: MAP, unShortMsg?: boolean) {
     const minSize = (this.constructor as typeof TrackData).$minSize
-    if (this.data.maxIndex >= minSize) {
+    if (this.data.maxIndex + 1 >= minSize) {
       this.createIcons()
       this.data.lnglat = this.data.list.map(lineValue => this.createLnglat(lineValue))
       this.createPoints()
