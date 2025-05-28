@@ -292,9 +292,14 @@ abstract class TrackData<
     const startLnglat = this.data.lnglat[0]
     const endLnglat = this.data.lnglat[this.data.maxIndex]
     const map = this.getMap()!
-    this.$marker.point.end = this.createPoint('end', map, this.$marker.icon.end!, endLnglat)
-    this.$marker.point.start = this.createPoint('start', map, this.$marker.icon.start!, startLnglat)
-    this.$marker.point.current = this.createPoint('current', map, this.$marker.icon.current!, startLnglat)
+    // 增加判空，防止无数据时报错
+    if (startLnglat) {
+      this.$marker.point.start = this.createPoint('start', map, this.$marker.icon.start!, startLnglat)
+      this.$marker.point.current = this.createPoint('current', map, this.$marker.icon.current!, startLnglat)
+    }
+    if (endLnglat) {
+      this.$marker.point.end = this.createPoint('end', map, this.$marker.icon.end!, endLnglat)
+    }
   }
   $create(map: MAP, unShortMsg?: boolean) {
     const minSize = (this.constructor as typeof TrackData).$minSize
@@ -360,12 +365,15 @@ abstract class TrackData<
       this.$marker.connect.current = []
       if (this.$marker.point.start) {
         this.clearOverlay(map, this.$marker.point.start, 'point')
+        this.$marker.point.start = undefined
       }
       if (this.$marker.point.end) {
         this.clearOverlay(map, this.$marker.point.end, 'point')
+        this.$marker.point.end = undefined
       }
       if (this.$marker.point.current) {
         this.clearOverlay(map, this.$marker.point.current, 'point')
+        this.$marker.point.current = undefined
       }
     }
   }
