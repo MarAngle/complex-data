@@ -396,6 +396,8 @@ abstract class TrackData<
   resetStatus() {
     this.setStatus('stop')
     this.status.last = ''
+  }
+  resetInit() {
     this.status.init = false
   }
   // drag start ---
@@ -599,6 +601,7 @@ abstract class TrackData<
     this.resetSpeed()
     this.stop()
     this.$clearOverlay()
+    this.resetInit()
   }
   reset() {
     // $reset的基础上重置数据

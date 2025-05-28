@@ -21,7 +21,8 @@
 
 ### Doing
 
-### 4.9.7
+### 4.9.7/8
+- fix:修正TrackData.resetStatus错误的将init设置为false导致在pushData时判断错误出现额外生成icon的BUG
 - feat:优化轨迹数据的整体逻辑
 
 ### 4.9.6
