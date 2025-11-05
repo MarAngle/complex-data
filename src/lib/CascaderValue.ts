@@ -62,13 +62,12 @@ class CascaderValue<C extends PropertyKey | undefined = 'children', D extends (C
     if (this.cascader) {
       list.forEach(item => {
         if (filter(item)) {
-          const children = item[this.cascader!] as undefined | D[]
+          const currentItem = { ...item } as CascaderValueType<NonNullable<C>>
+          const children = currentItem[this.cascader!] as undefined | D[]
           if (children && children.length > 0) {
-            const currentItem = { ...item } as CascaderValueType<NonNullable<C>>
-            currentItem[this.cascader as NonNullable<C>] = this._filterCascaderList(filter, children as D[]) as CascaderValueType<NonNullable<C>>[]
-          } else {
-            currentList.push(item)
+            (currentItem as any)[this.cascader!] = this._filterCascaderList(filter, children)
           }
+          currentList.push(currentItem as D)
         }
       })
     }

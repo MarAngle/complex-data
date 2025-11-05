@@ -72,8 +72,8 @@ class ChoiceData extends ResetData {
   _install (target: BaseData) {
     super._install(target)
     target.$onCreatedLife('BaseDataCreated', () => {
-      if (target.$module && target.$module.dictionary) {
-        this.idProp = target.$module.dictionary.getProp('id')
+      if (target.$module?.dictionary) {
+        this.idProp = target.$module.dictionary.getProp('id') || 'id'
       }
     })
   }

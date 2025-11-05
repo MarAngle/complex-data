@@ -38,6 +38,12 @@ const parseDict = {
   content: 'getContent',
 } as const
 
+/**
+ * 栅格布局计算类
+ * 核心思想：基于“一行总24栅格”的原则，根据一行计划排列的元素总数(line)，
+ * 以及所有元素的label和content计划占用的总栅格数，
+ * 计算出单个元素的label、content和offset各应占多少栅格。
+ */
 class GridParse {
   static $name = 'GridParse'
   static $defaultOption = {
@@ -47,7 +53,6 @@ class GridParse {
   } as GridParseInitOption
   line: number
   label: number
-  content: number
   _offset: number
   _default: GridMainValue
   constructor(initOption?: GridParseInitOption) {
@@ -55,9 +60,12 @@ class GridParse {
       initOption = (this.constructor as typeof GridParse).$defaultOption
     }
     this.line = initOption.line
+    // 核心计算1：计算单个元素的左侧间距(offset)
+    // 原理：(总宽度24 - 所有label总宽度 - 所有content总宽度) / 元素个数
     this._offset = (24 - initOption.label - initOption.content) / initOption.line
+    // 核心计算2：计算单个元素的label宽度
+    // 原理：所有label总宽度 / 元素个数
     this.label = initOption.label / initOption.line
-    this.content = 24 - this.label - this._offset
     this._default = {
       main: { span: this.getMain(this.line) },
       label: { span: this.getLabel(this.line) },
@@ -71,6 +79,7 @@ class GridParse {
     return this.label * line
   }
   getContent(line: number) {
+    // 实时计算所有content的总宽度
     return 24 - this.getLabel(line) - this._offset * line
   }
   parseData(gridValue: undefined | GridOption, position: keyof GridMainValue, payload: any) {

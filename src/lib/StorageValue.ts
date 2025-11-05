@@ -97,7 +97,7 @@ class StorageValue extends Data {
     return storage.setData(this.prop, storageData)
   }
   sync(storageData: storageDataType) {
-    storageData.time++
+    storageData.num++
     return storage.setData(this.prop, storageData)
   }
   init(parent: DataWithLife) {

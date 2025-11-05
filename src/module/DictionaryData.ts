@@ -260,14 +260,14 @@ class DictionaryData<Buffer extends DefaultBufferType = DefaultBufferType> exten
     this._syncData(true, 'setProp')
   }
   getProp(prop: propDataKeys = 'id') {
-    return this.$propData![prop].prop
+    return this.$propData?.[prop].prop
   }
   setPropValue(value: unknown, prop: propDataKeys = 'id') {
     this.$propData![prop].value = value
     this._syncData(true, 'setPropValue')
   }
   getPropValue(prop: propDataKeys = 'id') {
-    return this.$propData![prop].value
+    return this.$propData?.[prop].value
   }
   getValue(prop: string) {
     return this.$data.get(prop)

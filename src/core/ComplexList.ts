@@ -22,14 +22,19 @@ class ComplexList<D extends Record<PropertyKey, any> = Record<PropertyKey, any>,
   }
   formatList (originList: O[] = [], totalNum?: number, originFrom?: string, useSetData?: boolean) {
     this.$list = this.createListByDictionary(originList, originFrom, useSetData) as D[]
-    this.setPageCount(totalNum!)
+    if (totalNum !== undefined) {
+      this.setPageCount(totalNum)
+    }
     this._syncData(true, 'formatList')
   }
   getValue (data: any, prop?: PropertyKey) {
     if (!prop) {
       prop = this.getDictionaryProp('id')
     }
-    return this.$list.find(item => item[prop!] == data)
+    if (!prop) {
+      return
+    }
+    return this.$list.find(item => item[prop] === data)
   }
   getValueIndex(item: D) {
     return this.$list.indexOf(item)

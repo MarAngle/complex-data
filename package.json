@@ -1,6 +1,6 @@
 {
   "name": "complex-data",
-  "version": "4.9.9-ing",
+  "version": "4.10.1",
   "description": "a complex data",
   "type": "module",
   "main": "index.ts",
@@ -10,10 +10,11 @@
   },
   "scripts": {
     "check": "tsc --noEmit",
-    "test": "vitest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
-    "complex-utils": "2.9.1 - 2.9.99"
+    "complex-utils": "2.10.2 - 2.10.99"
   },
   "devDependencies": {
     "jsdom": "^27.1.0",

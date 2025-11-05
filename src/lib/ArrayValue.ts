@@ -8,6 +8,10 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
   $map: Map<PropertyKey, D> // 所有数据
   $hidden: Map<PropertyKey, D> // 隐藏数据
   $frozen: Map<PropertyKey, D> // 冻结数据
+  /**
+   * 构造函数
+   * @param {D[]} list - 初始数据列表
+   */
   constructor(list?: D[]) {
     this.$map = new Map()
     this.$hidden = new Map()
@@ -18,7 +22,13 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
       list.forEach(item => this.push(item))
     }
   }
-  protected _showByIndex(target: D, targetIndex: number) {
+  /**
+   * 根据在完整列表($prop)中的位置，将一个项目插入到可见列表(data)的正确位置
+   * @param {D} target - 目标项目
+   * @param {number} targetIndex - 目标项目在 $prop 数组中的索引
+   * @returns {number} 插入后在 data 数组中的索引
+   */
+  protected _insertItemByIndex(target: D, targetIndex: number) {
     let preIndex = -1
     for (let index = targetIndex - 1; index >= 0; index--) {
       // 寻找目标index前的最后一个未隐藏的index
@@ -31,12 +41,27 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     this.data.splice(preIndex + 1, 0, target)
     return preIndex + 1
   }
+  /**
+   * 检查项目是否被隐藏
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {boolean}
+   */
   isHide(prop: PropertyKey) {
     return this.$hidden.has(prop)
   }
+  /**
+   * 检查项目是否被冻结
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {boolean}
+   */
   isFrozen(prop: PropertyKey) {
     return this.$frozen.has(prop)
   }
+  /**
+   * 获取项目的状态 ('show', 'hide', 'frozen', '')
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {('show' | 'hide' | 'frozen' | '')}
+   */
   getStatus(prop: PropertyKey) {
     if (this.isHide(prop)) {
       return 'hide'
@@ -48,16 +73,28 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
       return ''
     }
   }
+  /**
+   * 在列表末尾添加一个新项目
+   * @param {D} value - 要添加的项目
+   */
   push(value: D) {
     this.data.push(value)
     this.$prop.push(value.$prop)
     this.$map.set(value.$prop, value)
   }
+  /**
+   * 在列表开头添加一个新项目
+   * @param {D} target - 要添加的项目
+   */
   unshift(target: D) {
     this.data.unshift(target)
     this.$prop.unshift(target.$prop)
     this.$map.set(target.$prop, target)
   }
+  /**
+   * 从列表末尾移除一个项目
+   * @returns {D | undefined} 被移除的项目
+   */
   pop() {
     const value = this.data.pop()
     if (value) {
@@ -70,6 +107,10 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     }
     return value
   }
+  /**
+   * 从列表开头移除一个项目
+   * @returns {D | undefined} 被移除的项目
+   */
   shift() {
     const value = this.data.shift()
     // 删除顺序，为避免结尾隐藏情况，单独判断
@@ -82,10 +123,19 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     }
     return value
   }
+  /**
+   * 通过 $prop 获取一个项目
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {D | undefined}
+   */
   get(prop: PropertyKey) {
     return this.$map.get(prop)
   }
-  // 删除
+  /**
+   * 通过 $prop 删除一个项目
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {D | undefined} 被删除的项目
+   */
   delete(prop: PropertyKey) {
     const value = this.get(prop)
     if (value) {
@@ -101,17 +151,29 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
     }
     return value
   }
-  // 基于实际index插入
+  /**
+   * 在指定索引处插入一个新项目
+   * @param {D} value - 要插入的项目
+   * @param {number} index - 要插入的索引位置
+   * @warning [严重 Bug] 此方法存在严重错误，splice的第三个参数应为 value.$prop，而不是数字 1。
+   */
   pushByIndex(value: D, index: number) {
-    this.$prop.splice(index, 0, 1)
+    this.$prop.splice(index, 0, value.$prop)
     this.$map.set(value.$prop, value)
-    this._showByIndex(value, index)
+    this._insertItemByIndex(value, index)
   }
-  // 获取实际index
+  /**
+   * 获取项目在完整列表($prop)中的索引
+   * @param {PropertyKey} prop - 项目的 $prop
+   * @returns {number}
+   */
   getIndex(prop: PropertyKey) {
     return this.$prop.indexOf(prop)
   }
-  // 隐藏
+  /**
+   * 隐藏一个项目
+   * @param {PropertyKey} prop - 要隐藏的项目的 $prop
+   */
   hide(prop: PropertyKey) {
     if (this.getStatus(prop) === 'show') {
       const value = this.get(prop)!
@@ -120,18 +182,24 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
       this.$hidden.set(prop, value)
     }
   }
-  // 显示
+  /**
+   * 显示一个被隐藏的项目
+   * @param {PropertyKey} prop - 要显示的项目的 $prop
+   */
   show(prop: PropertyKey) {
     if (this.isHide(prop)) {
       const value = this.$hidden.get(prop)
       if (value) {
         this.$hidden.delete(prop)
         const index = this.getIndex(prop)
-        this._showByIndex(value, index)
+        this._insertItemByIndex(value, index)
       }
     }
   }
-  // 冻结
+  /**
+   * 冻结一个项目
+   * @param {PropertyKey} prop - 要冻结的项目的 $prop
+   */
   freeze(prop: PropertyKey) {
     if (this.getStatus(prop) === 'show') {
       const value = this.get(prop)!
@@ -140,14 +208,17 @@ class ArrayValue<D extends ArrayValueDataType = ArrayValueDataType> {
       this.$frozen.set(prop, value)
     }
   }
-  // 解冻
+  /**
+   * 解冻一个项目
+   * @param {PropertyKey} prop - 要解冻的项目的 $prop
+   */
   thaw(prop: PropertyKey) {
     if (this.isFrozen(prop)) {
       const value = this.$frozen.get(prop)
       if (value) {
         this.$frozen.delete(prop)
         const index = this.getIndex(prop)
-        this._showByIndex(value, index)
+        this._insertItemByIndex(value, index)
       }
     }
   }

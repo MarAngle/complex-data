@@ -21,459 +21,466 @@
 
 ### Doing
 
-### 4.9.7/8
-- fix:修正TrackData.resetStatus错误的将init设置为false导致在pushData时判断错误出现额外生成icon的BUG
-- feat:优化轨迹数据的整体逻辑
+### 4.10.1
+- refactor(build): 移除项目的所有构建配置，回归到纯源码模式。
+- feat(test): 完善 `Vitest` 单元测试流程，并实现了基础的单元测试架构。
+- docs(readme): 优化 `README.md` 文件。
+- chore(history): 全面优化和重构 `history.md` 的格式。
+- fix(cache): 修正 `StorageValue` 中基于读取次数的缓存过期机制未正确计数导致无法过期的 BUG。
+- refactor(grid): 移除 `GridParse` 中未使用的冗余代码。
+
+### 4.9.8
+- fix(track): 修正 `TrackData.resetStatus` 错误的将 `init` 设置为 `false` 的 BUG。
+- feat(track): 优化轨迹数据的整体逻辑。
 
 ### 4.9.6
-- fix:修正TrackData.pushData在无数据和无地图覆盖物的初始状态修正，以及未正确计算maxIndex和dict的BUG
-
+- fix(track): 修正 `TrackData.pushData` 在无数据和无地图覆盖物的初始状态修正，以及未正确计算 `maxIndex` 和 `dict` 的 BUG。
 
 ### 4.9.5
-- feat:TrackData的line/connect的变量名优化
-- fix:修正TrackData.stop
+- refactor(track): `TrackData` 的 `line/connect` 的变量名优化。
+- fix(track): 修正 `TrackData.stop`。
 
 ### 4.9.4
-- fix:修正TrackData.pushData未重新计算maxIndex的BUG
+- fix(track): 修正 `TrackData.pushData` 未重新计算 `maxIndex` 的 BUG。
 
 ### 4.9.3
-- feat:TrackData添加pushData方法
-- fix:修正TrackData.$setIndex在未传递currentIndex时，在结束时错误将this.$index.next.data设置为溢出index的BUG
+- feat(track): `TrackData` 添加 `pushData` 方法。
+- fix(track): 修正 `TrackData.$setIndex` 在未传递 `currentIndex` 时，在结束时错误将 `this.$index.next.data` 设置为溢出 `index` 的 BUG。
 
 ### 4.9.2
-- feat:优化TrackData轨迹数据
+- feat(track): 优化 `TrackData` 轨迹数据。
 
 ### 4.9.1
-- feat:修改模块加载逻辑为ES2020
+- feat(module): 修改模块加载逻辑为 ES2020。
 
-### 4.8.14/15
-- feat:config=>dataConfig,dataConfig添加style属性,输出dataConfig
+### 4.8.15
+- feat(config): `config` => `dataConfig`, `dataConfig` 添加 `style` 属性, 输出 `dataConfig`。
 
 ### 4.8.13
-- feat:扩展SelectValue数据，添加$color属性，此属性存在时取全局color值进行动态赋值
+- feat(select): 扩展 `SelectValue` 数据，添加 `$color` 属性，此属性存在时取全局 `color` 值进行动态赋值。
 
 ### 4.8.12
-- feat:BaseData的triggerMethodOption的throttle=>debounce，更贴近实际功能防抖
-- fix:SelectEdit将$searchData函数并入loadData函数中实现，避免加载时的错误调用
-- fix:SelectEdit在每次检索时都保存当前检索值，避免BUG
+- feat(events): `BaseData` 的 `triggerMethodOption` 的 `throttle` => `debounce`，更贴近实际功能防抖。
+- fix(select): `SelectEdit` 将 `$searchData` 函数并入 `loadData` 函数中实现，避免加载时的错误调用。
+- fix(select): `SelectEdit` 在每次检索时都保存当前检索值，避免 BUG。
 
-### 4.8.10/11
-- feat:DefaultSelectEdit添加filter函数，实现自定义加载list的逻辑
+### 4.8.11
+- feat(select): `DefaultSelectEdit` 添加 `filter` 函数，实现自定义加载 `list` 的逻辑。
 
 ### 4.8.9
-- 修正SelectValue初始化时未正确赋值equal/hidden/miss的BUG
+- fix(select): 修正 `SelectValue` 初始化时未正确赋值 `equal/hidden/miss` 的 BUG。
 
 ### 4.8.8
-- 修正FileEdit的multiple被错误的传递为false的BUG
+- fix(file): 修正 `FileEdit` 的 `multiple` 被错误的传递为 `false` 的 BUG。
 
 ### 4.8.7
-- 优化ComplexInfo.$info的类型
+- refactor(types): 优化 `ComplexInfo.$info` 的类型。
 
 ### 4.8.6
-- 简化SelectValue/CascaderValue数据类型，删除DefaultSelectValueType/DefaultCascaderValueType
+- refactor(types): 简化 `SelectValue/CascaderValue` 数据类型，删除 `DefaultSelectValueType/DefaultCascaderValueType`。
 
-### 4.8.4/5
-- 优化DictionaryValue的_initEditMod函数逻辑
-- 添加DefaultSelectEdit数据，调整SelectEdit基于DefaultSelectEdit实现
-- 添加createCustomEdit函数创建自定义组件，添加CustomLoadEdit组件
-- 全局添加DefaultEdit的泛型M
-- 优化createCustomEdit的返回值，修正类型报错
-- SearchData添加inited生命周期，对应字典构建完成生命周期
-- ComplexData添加$onSearchInited=>在检索加载完成后触发回调函数,loadDataBySearchInited=>在检索加载完成后触发数据加载函数
-- 基于AI优化代码
+### 4.8.5
+- refactor(dictionary): 优化 `DictionaryValue` 的 `_initEditMod` 函数逻辑。
+- feat(select): 添加 `DefaultSelectEdit` 数据，调整 `SelectEdit` 基于 `DefaultSelectEdit` 实现。
+- feat(custom): 添加 `createCustomEdit` 函数创建自定义组件，添加 `CustomLoadEdit` 组件。
+- refactor(types): 全局添加 `DefaultEdit` 的泛型 `M`。
+- refactor(custom): 优化 `createCustomEdit` 的返回值，修正类型报错。
+- feat(events): `SearchData` 添加 `inited` 生命周期，对应字典构建完成生命周期。
+- feat(events): `ComplexData` 添加 `$onSearchInited` => 在检索加载完成后触发回调函数, `loadDataBySearchInited` => 在检索加载完成后触发数据加载函数。
+- refactor(code): 基于 AI 优化代码。
 
-### 4.8.2/3
-- 添加TrackData轨迹数据结构
+### 4.8.3
+- feat(track): 添加 `TrackData` 轨迹数据结构。
 
 ### 4.8.1
-- 稳定版
+- chore: 稳定版。
 
 ### 4.6.36
-- utils依赖升级
+- chore(deps): `utils` 依赖升级。
 
 ### 4.6.32
-- utils依赖升级
-- 非兼容性更新:DefaultData._getRealName => DefaultData._getProp
+- chore(deps): `utils` 依赖升级。
+- refactor(data)!: **[非兼容性更新]** `DefaultData._getRealName` => `DefaultData._getProp`。
 
 ### 4.6.31
-- 非兼容性更新
-- - 类型
-- - - DefaultModOffsetSort=>删除
-- - - DefaultModBeforeSort=>DefaultModBeforeOrder
-- - - DefaultModAfterSort=>DefaultModAfterOrder
-- - - DefaultModSort=>DefaultModOrder
-- - 结构
-- - - DefaultMod.sort=>DefaultMod.order
+- refactor(sort)!: **[非兼容性更新]**
+  - **类型**:
+    - `DefaultModOffsetSort` => 删除
+    - `DefaultModBeforeSort` => `DefaultModBeforeOrder`
+    - `DefaultModAfterSort` => `DefaultModAfterOrder`
+    - `DefaultModSort` => `DefaultModOrder`
+  - **结构**:
+    - `DefaultMod.sort` => `DefaultMod.order`
 
 ### 4.6.30
-- SortData排序数据修正BUG,整体逻辑优化
-- ResetData添加sort配置项
-- ComplexData适配sort全局函数
+- fix(sort): `SortData` 排序数据修正 BUG, 整体逻辑优化。
+- feat(reset): `ResetData` 添加 `sort` 配置项。
+- feat(sort): `ComplexData` 适配 `sort` 全局函数。
 
-### 4.6.28/29
-- 非兼容性更新:ForceValue初始化传参优化
-- 新增ResetDat数据，实现根据主数据状态自动reset的数据类型，设置为ChoiceData的父类
-- 添加SortData排序数据
+### 4.6.29
+- refactor(choice)!: **[非兼容性更新]** `ForceValue` 初始化传参优化。
+- feat(reset): 新增 `ResetData` 数据，实现根据主数据状态自动 `reset` 的数据类型，设置为 `ChoiceData` 的父类。
+- feat(sort): 添加 `SortData` 排序数据。
 
 ### 4.6.27
-- utils依赖升级
-- 非兼容性更新:ForceValue添加trigger属性,优化choice触发数据
-- 优化ChoiceData
+- chore(deps): `utils` 依赖升级。
+- refactor(choice)!: **[非兼容性更新]** `ForceValue` 添加 `trigger` 属性, 优化 `choice` 触发数据。
+- refactor(choice): 优化 `ChoiceData`。
 
 ### 4.6.26
-- utils依赖升级
-- DefaultEdit添加deepClone初始化参数，当为真时，对传入数据为复杂数据时编辑进行深拷贝：暂不进行自动判断逻辑，仅自动生成parse函数
+- chore(deps): `utils` 依赖升级。
+- feat(edit): `DefaultEdit` 添加 `deepClone` 初始化参数，当为真时，对传入数据为复杂数据时编辑进行深拷贝。
 
 ### 4.6.25
-- CustomEdit的model配置项优化，change字段可配置其他字段，设置双向绑定参数；handler可配置指定双向绑定函数
-- DefaultMod删除reactives相关配置项
+- feat(custom): `CustomEdit` 的 `model` 配置项优化，`change` 字段可配置其他字段，设置双向绑定参数；`handler` 可配置指定双向绑定函数。
+- refactor(mod): `DefaultMod` 删除 `reactives` 相关配置项。
 
-### 4.6.23/24
-- utils依赖升级
-- DefaultEdit类添加静态函数$parseRuleList
-- DefaultEdit.getRuleList => parseRuleList
-- multiple && required时自动校验数据不为空数组
+### 4.6.24
+- chore(deps): `utils` 依赖升级。
+- refactor(edit): `DefaultEdit.getRuleList` => `parseRuleList`。
+- feat(validation): `multiple && required` 时自动校验数据不为空数组。
 
-### 4.6.21/22
-- FileEdit当option的image存在时，accept的默认值改为image/*
-- 优化FormEdit/ListEdit
+### 4.6.22
+- feat(file): `FileEdit` 当 `option` 的 `image` 存在时，`accept` 的默认值改为 `image/*`。
+- refactor(edit): 优化 `FormEdit/ListEdit`。
 
 ### 4.6.20
-- 全局Promise返回逻辑优化
+- refactor(promise): 全局 Promise 返回逻辑优化。
 
 ### 4.6.19
-- 添加默认宽度
+- feat(layout): 添加默认宽度。
 
-### 4.6.17/18
-- 非兼容性更新：ComplexData的常见方法去除$符,添加全局拦截,实现基础的dataChange生命周期
+### 4.6.18
+- refactor(api)!: **[非兼容性更新]** `ComplexData` 的常见方法去除 `$` 符, 添加全局拦截, 实现基础的 `dataChange` 生命周期。
 
 ### 4.6.16
-- 非兼容性更新：DefaultSimpleEdit.disabled作为高频率的差异化值更改为InterfaceValue结构
+- refactor(edit)!: **[非兼容性更新]** `DefaultSimpleEdit.disabled` 作为高频率的差异化值更改为 `InterfaceValue` 结构。
 
 ### 4.6.15
-- 文件上传扩展isUrl配置项,为真则说明值为url
+- feat(file): 文件上传扩展 `isUrl` 配置项, 为真则说明值为 url。
 
-### 4.6.12/13
-- 因ts类型报错:不能将扩展类的实例成员函数覆盖到类的属性与实例成员属性上,优化ComplexData的常见函数到类实例成员属性上,实现可继承赋值可改写
+### 4.6.13
+- refactor(data): 因 ts 类型报错, 优化 `ComplexData` 的常见函数到类实例成员属性上, 实现可继承赋值可改写。
 
 ### 4.6.11
-- defaultFileOption的image属性扩展
+- feat(file): `defaultFileOption` 的 `image` 属性扩展。
 
 ### 4.6.10
-- icon:plus=>build/upload=>import/download=>export
+- refactor(icon): `icon:plus` => `build/upload` => `import/download` => `export`。
 
 ### 4.6.9
-- DefaultMod添加hidden/frozen属性，该属性与observer.hidden/frozen属性使用场景不同，用于本身一直是隐藏状态或者冻结状态的模块，避免隐藏状态需要开启监听
-- 修正DateRangeEditInitOption类型
+- feat(mod): `DefaultMod` 添加 `hidden/frozen` 属性，用于本身一直是隐藏/冻结状态的模块。
+- fix(types): 修正 `DateRangeEditInitOption` 类型。
 
 ### 4.6.8
-- SelectValueType类型不作为基类，避免赋值时需要额外进行类型断言的问题
-- defaultFileOption类型添加image属性，此属性标明此文件上传为图片类型，可通过组件模板实现图片查看机制
+- refactor(types): `SelectValueType` 类型不作为基类，避免赋值时需要额外进行类型断言的问题。
+- feat(file): `defaultFileOption` 类型添加 `image` 属性，标明此文件上传为图片类型。
 
-### 4.6.2/3/4/5/6/7
-- utils依赖升级
-- 添加列表编辑ListEdit
-- 优化MenuValue数据，添加hidden隐藏配置项，添加confirm确认配置项
+### 4.6.7
+- chore(deps): `utils` 依赖升级。
+- feat(edit): 添加列表编辑 `ListEdit`。
+- feat(menu): 优化 `MenuValue` 数据，添加 `hidden` 隐藏配置项，添加 `confirm` 确认配置项。
 
 ### 4.6.1
-- utils依赖升级
-- 优化排序相关逻辑
+- chore(deps): `utils` 依赖升级。
+- refactor(sort): 优化排序相关逻辑。
 
 ### 4.4.6
-- DefaultMod添加排序参数
-- DictionaryData添加排序静态函数，getPageList/getObserveList时基于DefaultMod.$sort进行额外排序
+- feat(sort): `DefaultMod` 添加排序参数。
+- feat(dictionary): `DictionaryData` 添加排序静态函数，`getPageList/getObserveList` 时基于 `DefaultMod.$sort` 进行额外排序。
 
 ### 4.4.5
-- utils依赖升级
-- SearchData在reset时重置formData
+- chore(deps): `utils` 依赖升级。
+- fix(search): `SearchData` 在 `reset` 时重置 `formData`。
 
 ### 4.4.4
-- SelectValue添加getIndex/getItemByIndex/getItemByOffset函数，实现快速获取相关联数据逻辑
-- 修正DictionaryValue调用$formatInitOption的类型标注错误
+- feat(select): `SelectValue` 添加 `getIndex/getItemByIndex/getItemByOffset` 函数。
+- fix(types): 修正 `DictionaryValue` 调用 `$formatInitOption` 的类型标注错误。
 
-### 4.4.2/3
-- 优化依赖相关功能，依赖实现创建时加载和数据加载前加载
-- 优化search的加载顺序，在依赖加载完成后再进行加载，避免依赖前加载导致的数据不全的问题
+### 4.4.3
+- feat(depend): 优化依赖相关功能，依赖实现创建时加载和数据加载前加载。
+- feat(search): 优化 `search` 的加载顺序，在依赖加载完成后再进行加载。
 
 ### 4.4.1
-- 依赖升级，生命周期优化
+- chore(deps): 依赖升级，生命周期优化。
 
-### 4.3.42/43
-- 优化triggerMethod相关函数的传参
-- triggerMethod实现节流
+### 4.3.43
+- refactor(events): 优化 `triggerMethod` 相关函数的传参。
+- feat(events): `triggerMethod` 实现节流。
 
 ### 4.3.41
-- 添加depth作为可能存在的深度的额外判断条件
+- feat(data): 添加 `depth` 作为可能存在的深度的额外判断条件。
 
-### 4.3.39/40
-- DictionaryData/DefaultMod添加collapse折叠判断值
+### 4.3.40
+- feat(mod): `DictionaryData/DefaultMod` 添加 `collapse` 折叠判断值。
 
-### 4.3.37/38
-- SelectEdit添加search相关设置项
+### 4.3.38
+- feat(select): `SelectEdit` 添加 `search` 相关设置项。
 
-### 4.3.34/35/36
-- ComplexData的默认函数添加editData，优化函数赋值和类型
+### 4.3.36
+- feat(data): `ComplexData` 的默认函数添加 `editData`，优化函数赋值和类型。
 
-### 4.3.32/33
-- DefaultEdit的rule相关参数优化
+### 4.3.33
+- refactor(edit): `DefaultEdit` 的 `rule` 相关参数优化。
 
-### 4.3.29/30/31
-- CustomEdit添加model属性
-- SearchData优化Button初始化参数
+### 4.3.31
+- feat(custom): `CustomEdit` 添加 `model` 属性。
+- feat(search): `SearchData` 优化 `Button` 初始化参数。
 
 ### 4.3.28
-- 优化undefined校验
+- refactor(code): 优化 `undefined` 校验。
 
-### 4.3.20/21/22/23/24/25/26/27
-- 优化FileEdit组件，统一上传插件的整体逻辑
+### 4.3.27
+- feat(file): 优化 `FileEdit` 组件，统一上传插件的整体逻辑。
 
-### 4.3.16/17/18/19
-- 日期范围接收endProp字段，直接解析
-- 添加rangeLimit范围限制，模板根据具体情况解析
-- 优化fileOption类型
+### 4.3.19
+- feat(date): 日期范围接收 `endProp` 字段，直接解析。
+- feat(date): 添加 `rangeLimit` 范围限制，模板根据具体情况解析。
+- refactor(types): 优化 `fileOption` 类型。
 
 ### 4.3.15
-- 统一Cascader名称
+- refactor(cascader): 统一 `Cascader` 名称。
 
-### 4.3.12/13/14
-- 优化SelectEdit对SelectData的适配
-- MenuValue实现防抖参数添加
+### 4.3.14
+- refactor(select): 优化 `SelectEdit` 对 `SelectData` 的适配。
+- feat(menu): `MenuValue` 实现防抖参数添加。
 
-### 4.3.10/11
-- 优化SearchData/FormEdit
+### 4.3.11
+- refactor(edit): 优化 `SearchData/FormEdit`。
 
-### 4.3.7/8/9
-- ObserveList添加reset
-- 优化整体逻辑，DictionaryValue.parseValue解析DefaultInfo模块
-- 修正GridParse整体逻辑
+### 4.3.9
+- feat(observe): `ObserveList` 添加 `reset`。
+- refactor(dictionary): 优化整体逻辑，`DictionaryValue.parseValue` 解析 `DefaultInfo` 模块。
+- fix(grid): 修正 `GridParse` 整体逻辑。
 
-### 4.3.4/5/6
-- 级联表单适配完成，准备测试
+### 4.3.6
+- feat(form): 级联表单适配完成，准备测试。
 
 ### 4.3.3
-- 添加FormEdit
-- DictionaryValue接收添加dictionary(DictionaryData)
+- feat(form): 添加 `FormEdit`。
+- feat(dictionary): `DictionaryValue` 接收添加 `dictionary(DictionaryData)`。
 
 ### 4.3.2
-- 修正DictionaryValue错误引用
-- 修正DictionaryValue.parseValue未正确resolve的BUG
+- fix(dictionary): 修正 `DictionaryValue` 错误引用。
+- fix(dictionary): 修正 `DictionaryValue.parseValue` 未正确 `resolve` 的 BUG。
 
 ### 4.3.1
-- 重点非兼容性更新
-- 依赖升级，优化setProp/getProp相关逻辑
-- 添加Symbol('empty')值和nonEmptySetProp/nonEmptySetComplexProp函数，实现当值为Symbol('empty')时不进行赋值和传递
-- 优化字典赋值格式化相关逻辑
-- 更改整体逻辑，由之前基于源数据生成新数据后保存更改为源数据直接进行格式化处理后保存，减少添加非展示性字段的对接工作以及忘记对接后的排查工作
-- 删除DefaultList.auto
-- 删除DefaultEdit.value.init
-- 删除SearchData.$form
-- DictionaryValue赋值默认直接使用setProp赋值，不考虑级联属性a.b的赋值逻辑，减少性能消耗
-- DictionaryValue
-- - 添加complex.assignProp设置项
-- - 删除$setTargetData函数
-- - 添加$assignData函数，基于原$formatData函数，实现赋值相关逻辑
-- - 更改$formatData函数，由原来的赋值逻辑更改为格式化逻辑
-- DictionaryData
-- - 添加complex.assign设置项
-- - createEditData => parseData
-- - createPostData => collectData
-- SearchData
-- - $resetFormData => resetFormData,删除observe重新构建逻辑
-- - $syncFormData => validateAndSyncData
-- - syncFormData => syncData
-- - resetFormData => resetForm
-- - - resetOption.copy = > resetOption.sync
-- - setForm => assignData
-- ComplexData
-- - createEditDataByDictionary => parseDataByDictionary
-- - createPostDataByDictionary => collectDataByDictionary
+- refactor(data)!: **[重点非兼容性更新]**
+  - 依赖升级，优化 `setProp/getProp` 相关逻辑。
+  - 添加 `Symbol('empty')` 值和 `nonEmptySetProp/nonEmptySetComplexProp` 函数，实现当值为 `Symbol('empty')` 时不进行赋值和传递。
+  - 优化字典赋值格式化相关逻辑。
+  - 更改整体逻辑，由之前基于源数据生成新数据后保存更改为源数据直接进行格式化处理后保存。
+  - 删除 `DefaultList.auto`。
+  - 删除 `DefaultEdit.value.init`。
+  - 删除 `SearchData.$form`。
+  - `DictionaryValue` 赋值默认直接使用 `setProp` 赋值，不考虑级联属性 `a.b` 的赋值逻辑。
+  - `DictionaryValue`:
+    - 添加 `complex.assignProp` 设置项。
+    - 删除 `$setTargetData` 函数。
+    - 添加 `$assignData` 函数，基于原 `$formatData` 函数，实现赋值相关逻辑。
+    - 更改 `$formatData` 函数，由原来的赋值逻辑更改为格式化逻辑。
+  - `DictionaryData`:
+    - 添加 `complex.assign` 设置项。
+    - `createEditData` => `parseData`
+    - `createPostData` => `collectData`
+  - `SearchData`:
+    - `$resetFormData` => `resetFormData`, 删除 `observe` 重新构建逻辑。
+    - `$syncFormData` => `validateAndSyncData`
+    - `syncFormData` => `syncData`
+    - `resetFormData` => `resetForm`
+    - `resetOption.copy` => `resetOption.sync`
+    - `setForm` => `assignData`
+  - `ComplexData`:
+    - `createEditDataByDictionary` => `parseDataByDictionary`
+    - `createPostDataByDictionary` => `collectDataByDictionary`
 
 ### 4.2.23
-- 依赖升级
-- 添加DataWithSimpleLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型
-- 减少unknow 类型
+- chore(deps): 依赖升级。
+- refactor(types): 添加 `DataWithSimpleLoad` 类型，优化 `BaseData/SelectData/DefaultLoadEdit` 类型。
+- refactor(types): 减少 `unknow` 类型。
 
 ### 4.2.22
-- 添加DataWithLoad类型，优化BaseData/SelectData/DefaultLoadEdit类型
-- 优化RelationData的数据类型要求，扩展适配性
+- refactor(types): 添加 `DataWithLoad` 类型，优化 `BaseData/SelectData/DefaultLoadEdit` 类型。
+- refactor(types): 优化 `RelationData` 的数据类型要求，扩展适配性。
 
 ### 4.2.21
-- 修正ModuleData的reset/destory
-- 优化SearchData的reset/destory
+- fix(module): 修正 `ModuleData` 的 `reset/destory`。
+- fix(search): 优化 `SearchData` 的 `reset/destory`。
 
 ### 4.2.20
-- CascaderData=>SelectData
+- refactor(select): `CascaderData` => `SelectData`。
 
 ### 4.2.19
-- 简化SelectValue设置项，删除dict相关参数直接使用默认值，特殊项目可单独生成SelectValue类适配，减少内存占用
-- 拆分CascaderValue和SelectValue
-- SelectData=>CascaderData
-- SelectEdit初始化接收SelectValue参数，删除dict相关字段，如需额外操作则提前格式化或者由模板处理
+- refactor(select): 简化 `SelectValue` 设置项，删除 `dict` 相关参数直接使用默认值。
+- refactor(select): 拆分 `CascaderValue` 和 `SelectValue`。
+- refactor(select): `SelectData` => `CascaderData`。
+- refactor(select): `SelectEdit` 初始化接收 `SelectValue` 参数，删除 `dict` 相关字段。
 
 ### 4.2.18
-- SearchData的getData默认深拷贝，避免在获取数据后改变数据导致问题
-- 修正SelectData未正确触发创建生命周期的BUG
-- 优化SelectData的storage的加载
-- Data添加静态函数$formatInitOption格式化加载参数
+- feat(search): `SearchData` 的 `getData` 默认深拷贝。
+- fix(select): 修正 `SelectData` 未正确触发创建生命周期的 BUG。
+- feat(select): 优化 `SelectData` 的 `storage` 的加载。
+- feat(data): `Data` 添加静态函数 `$formatInitOption` 格式化加载参数。
 
-### 4.2.15/16/17
-- BaseData的loadDepend整体逻辑优化，避免主数据先于依赖数据加载完成
-- RelationData类型修正
-- 依赖升级，未使用参数前缀加_
+### 4.2.17
+- refactor(depend): `BaseData` 的 `loadDepend` 整体逻辑优化，避免主数据先于依赖数据加载完成。
+- fix(types): `RelationData` 类型修正。
+- chore(deps): 依赖升级，未使用参数前缀加 `_`。
 
-### 4.2.13/14
-- ComplexData添加choice相关函数
-- 依赖升级
+### 4.2.14
+- feat(choice): `ComplexData` 添加 `choice` 相关函数。
+- chore(deps): 依赖升级。
 
 ### 4.2.12
-- 优化type位置
-- 修正DictionaryData类型BUG
-- DictionaryData.createPostData适配ObserveList的冻结功能
+- refactor(types): 优化 `type` 位置。
+- fix(types): 修正 `DictionaryData` 类型 BUG。
+- feat(observe): `DictionaryData.createPostData` 适配 `ObserveList` 的冻结功能。
 
 ### 4.2.11
-- SearchData添加Info详情按钮
-- ComplexData添加refreshData详情接口
+- feat(search): `SearchData` 添加 `Info` 详情按钮。
+- feat(data): `ComplexData` 添加 `refreshData` 详情接口。
 
 ### 4.2.10
-- 删除DefaultInfo/DefaultSimpleMod => DefaultMod/DefaultMod=>DefaultInfo，优化编辑数据链，edit作为一个可编辑的info子类实现
+- refactor(dictionary)!: **[非兼容性更新]** `DefaultInfo/DefaultSimpleMod` => `DefaultMod`, `DefaultMod` => `DefaultInfo`，优化编辑数据链。
 
-### 4.2.8/9
-- 删除MenuValue/ButtonValue，改为类型
-- 修正SimpleDateEdit的默认值问题
+### 4.2.9
+- refactor(types): `MenuValue/ButtonValue` 删除，改为类型。
+- fix(date): 修正 `SimpleDateEdit` 的默认值问题。
 
 ### 4.2.7
-- DateRangeEdit添加endPlaceholder属性
-- 编辑数据的$defaultPlaceholder函数优化
-- 优化DictionaryValue属性originProp为可选不赋值
-- 优化DictionaryValue/DefaultSimpleMod，fetch=>collect
+- feat(date): `DateRangeEdit` 添加 `endPlaceholder` 属性。
+- refactor(edit): 编辑数据的 `$defaultPlaceholder` 函数优化。
+- refactor(dictionary): 优化 `DictionaryValue` 属性 `originProp` 为可选不赋值。
+- refactor(api): 优化 `DictionaryValue/DefaultSimpleMod`，`fetch` => `collect`。
 
 ### 4.2.6
-- 合并Date/DateRange相关功能
+- refactor(date): 合并 `Date/DateRange` 相关功能。
 
-### 4.2.3/4/5
-- 优化字典模块，DefaultSimpleMod => DefaultMod，简化DefaultSimpleMod
-- class extends null弃用
-- 修正生命周期调用BUG
+### 4.2.5
+- refactor(dictionary): 优化字典模块，`DefaultSimpleMod` => `DefaultMod`，简化 `DefaultSimpleMod`。
+- refactor(code): `class extends null` 弃用。
+- fix(events): 修正生命周期调用 BUG。
 
 ### 4.2.2
-- DefaultSimpleMod弃用InterfaceData结构，简化构建，对于类似数据仅通过initoption的merge实现，适时考虑在DictionaryValue加载时提供一个特殊的默认值作为各个基准默认值，避免在initoption中重复设置
-- GridParse输出值格式优化
+- refactor(dictionary): `DefaultSimpleMod` 弃用 `InterfaceData` 结构，简化构建。
+- refactor(grid): `GridParse` 输出值格式优化。
 
 ### 4.2.1
-- 修复index导出
+- fix(build): 修复 `index` 导出。
 
 ### 4.2.0
-- 优化函数名称，_为私有属性，理论上不对外使用，$为功能函数，理论上可对外使用，但可能存在更改逻辑的情况
-- 优化整个按钮相关逻辑，统一调用链
-- 优化SelectValue，适配级联数据
-- 添加StorageValue本地缓存数据控制器，持续优化中
-- 修正DefaultEdit在multiple时默认值为[]导致的引用问题
-- 布局通过解析器加值实现，基础布局通过解析器解析基础数据，个体设置通过值来解析，实现页面的整体和个体设置
-- 优化Edit的rule属性整体逻辑
-- 优化DictionaryValue/DefaultSimpleMod，format=>assign,show/edit=>parse，post=>collect
-- 优化ObserveList的响应式逻辑，仅监控需要的属性，减少性能消耗
-- Observe添加额外逻辑，实现冻结和解冻，隐藏参与逻辑判断，冻结的不进行逻辑判断，冻结的属性的响应式也不会被触发，由其他属性变更后解冻可触发
-- 合并select/cascader
+- refactor(code)!: **[核心重构]**
+  - 优化函数名称，`_` 为私有属性，`$` 为功能函数。
+  - 优化整个按钮相关逻辑，统一调用链。
+  - 优化 `SelectValue`，适配级联数据。
+  - 添加 `StorageValue` 本地缓存数据控制器。
+  - 修正 `DefaultEdit` 在 `multiple` 时默认值为 `[]` 导致的引用问题。
+  - 布局通过解析器加值实现。
+  - 优化 `Edit` 的 `rule` 属性整体逻辑。
+  - 优化 `DictionaryValue/DefaultSimpleMod`，`format` => `assign`, `show/edit` => `parse`，`post` => `collect`。
+  - 优化 `ObserveList` 的响应式逻辑，仅监控需要的属性。
+  - `Observe` 添加额外逻辑，实现冻结和解冻。
+  - 合并 `select/cascader`。
 
 ### 4.1.18
-- 修正$triggerMethodWithStatus无函数时的状态回滚
+- fix(events): 修正 `$triggerMethodWithStatus` 无函数时的状态回滚。
 
-### 4.1.15/16/17
-- ComplexData修正getSize/setSize => getPageSize/setPageSize
-- ButtonGroupEditOption类型修正
-- Default添加editable判断是否是需要编辑的数据
-- Status类型优化
-- 依赖升级
+### 4.1.17
+- refactor(api): `ComplexData` 修正 `getSize/setSize` => `getPageSize/setPageSize`。
+- fix(types): `ButtonGroupEditOption` 类型修正。
+- feat(data): `Default` 添加 `editable` 判断是否是需要编辑的数据。
+- refactor(types): `Status` 类型优化。
+- chore(deps): 依赖升级。
 
-### 4.1.13/14
-- EditData添加simple设置项
-- DefaultMod基类由Data切换为SimpleData,实现extra
-- 优化PureButtonValue类型
-- 修正错误icon
+### 4.1.14
+- feat(edit): `EditData` 添加 `simple` 设置项。
+- refactor(mod): `DefaultMod` 基类由 `Data` 切换为 `SimpleData`, 实现 `extra`。
+- refactor(types): 优化 `PureButtonValue` 类型。
+- fix(icon): 修正错误 `icon`。
 
 ### 4.1.12
-- SearchData的Button提前生成
+- feat(search): `SearchData` 的 `Button` 提前生成。
 
 ### 4.1.11
-- 优化ButtonValue类型
+- refactor(types): 优化 `ButtonValue` 类型。
 
 ### 4.1.10
-- 优化SearchData的observe传参
-- 重要：FormValue由抽象类转换为实体类，避免加载顺序导致的BUG
+- refactor(search): 优化 `SearchData` 的 `observe` 传参。
+- refactor(form)!: **[重要]** `FormValue` 由抽象类转换为实体类，避免加载顺序导致的 BUG。
 
 ### 4.1.9
-- 优化加载编辑数据逻辑
+- refactor(edit): 优化加载编辑数据逻辑。
 
 ### 4.1.8
-- 升级依赖
-- 实现disabledDate相关逻辑
+- chore(deps): 升级依赖。
+- feat(date): 实现 `disabledDate` 相关逻辑。
 
-### 4.1.4/5/6/7
-- 优化检索
-- 将配置项集成在类静态属性中
-- 优化文件上传相关参数
+### 4.1.7
+- refactor(search): 优化检索。
+- refactor(config): 将配置项集成在类静态属性中。
+- refactor(file): 优化文件上传相关参数。
 
 ### 4.1.3
-- 按钮加载/禁用接收函数
-- 扩展检索菜单默认值
+- feat(button): 按钮加载/禁用接收函数。
+- feat(search): 扩展检索菜单默认值。
 
 ### 4.1.2
-- 优化字典构建函数
-- 修正检索menu.name被非预期赋值
+- refactor(dictionary): 优化字典构建函数。
+- fix(search): 修正检索 `menu.name` 被非预期赋值。
 
 ### 4.1.1
-- 修正BaseData的triggerMethod相关逻辑BUG
-- 优化检索函数的菜单默认为独立模块
+- fix(events): 修正 `BaseData` 的 `triggerMethod` 相关逻辑 BUG。
+- refactor(search): 优化检索函数的菜单默认为独立模块。
 
 ### 4.1.0
-- 优化函数命名规则：外部函数以字母开头，内部函数以$开头，私有函数以_开头
+- refactor(code): 优化函数命名规则：外部函数以字母开头，内部函数以 `$` 开头，私有函数以 `_` 开头。
 
 ### 4.0.20
-- 优化创建生命周期函数，通过$onCreatedLife实现生命周期创建完成回调
+- feat(events): 优化创建生命周期函数，通过 `$onCreatedLife` 实现生命周期创建完成回调。
 
-### 4.0.18/19
-- SearchData菜单默认参数优化
-- config添加formatPixel函数
-- ButtonGroupEdit添加间隔设置项
+### 4.0.19
+- refactor(search): `SearchData` 菜单默认参数优化。
+- feat(config): `config` 添加 `formatPixel` 函数。
+- feat(button): `ButtonGroupEdit` 添加间隔设置项。
 
 ### 4.0.17
-- 非兼容性更新:DependData=>RelationData，位置由ModuleData转换为BaseData的不可枚举属性
-- 简化依赖相关函数，删除once等设置项，改为bind函数中传递解绑函数
+- refactor(depend)!: **[非兼容性更新]** `DependData` => `RelationData`，位置由 `ModuleData` 转换为 `BaseData` 的不可枚举属性。
+- refactor(depend): 简化依赖相关函数，删除 `once` 等设置项，改为 `bind` 函数中传递解绑函数。
 
-### 4.0.15/16
-- 非兼容性更新:DictionaryData:$createEditData=>$createEditData，后续相关调用名称优化
-- 实现DateEdit/DateRangeEdit的数据转换
-- 扩展ComplexData的常用函数，减少后期自定义类
+### 4.0.16
+- refactor(api)!: **[非兼容性更新]** `DictionaryData:$createEditData` => `$createEditData`，后续相关调用名称优化。
+- feat(date): 实现 `DateEdit/DateRangeEdit` 的数据转换。
+- feat(data): 扩展 `ComplexData` 的常用函数，减少后期自定义类。
 
 ### 4.0.14
-- 优化字段加载和文件目录，修正组件构建BUG
+- refactor(build): 优化字段加载和文件目录，修正组件构建 BUG。
 
 ### 4.0.13
-- 升级依赖，适配formatConfig
+- chore(deps): 升级依赖，适配 `formatConfig`。
 
 ### 4.0.12
-- BUG:修正DefaultMod相关类的初始化未正确传递parent的BUG
-- BUG:修正SelectValue的初始化类型中dict错误的被标记为必填项的BUG
+- fix(mod): 修正 `DefaultMod` 相关类的初始化未正确传递 `parent` 的 BUG。
+- fix(select): 修正 `SelectValue` 的初始化类型中 `dict` 错误的被标记为必填项的 BUG。
 
-### 4.0.10/11
-- 添加基础的Data构建格式化函数，适配不同环境
-- 升级依赖，修正类型报错
+### 4.0.11
+- feat(data): 添加基础的 `Data` 构建格式化函数，适配不同环境。
+- chore(deps): 升级依赖，修正类型报错。
 
 ### 4.0.9
-- 优化AttrsValue/ContentEdit/DateEdit/DateRangeEdit
+- refactor(edit): 优化 `AttrsValue/ContentEdit/DateEdit/DateRangeEdit`。
 
 ### 4.0.8
-- 非兼容性更新:添加LayoutValue/InterfaceLayoutValue，优化组件的width到$layout中
-- 修正DefaultDate=>DateEdit.
-- 添加DateRangeEdit
-- 升级依赖
+- refactor(layout)!: **[非兼容性更新]** 添加 `LayoutValue/InterfaceLayoutValue`，优化组件的 `width` 到 `$layout` 中。
+- refactor(date): 修正 `DefaultDate` => `DateEdit`.
+- feat(date): 添加 `DateRangeEdit`。
+- chore(deps): 升级依赖。
 
-### 4.0.4/5/6/7
-- 非兼容性更新: AttributeValue => AttrsValue
-- 统一$local/$attrs属性
+### 4.0.7
+- refactor(attrs)!: **[非兼容性更新]** `AttributeValue` => `AttrsValue`。
+- refactor(attrs): 统一 `$local/$attrs` 属性。
 
-### 4.0.2/3
-- 优化Attribute/Render相关逻辑
+### 4.0.3
+- refactor(render): 优化 `Attribute/Render` 相关逻辑。
 
 ### 4.0.1
-- 基于complex-data简化逻辑，实现基本的功能
+- feat: 基于 `complex-data` 简化逻辑，实现基本的功能。

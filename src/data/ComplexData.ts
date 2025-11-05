@@ -144,19 +144,19 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   }
   /* --- update start --- */
   startUpdate(...args: Parameters<UpdateData['start']>) {
-    return this.$module.update!.start(...args)
+    return this.$module.update?.start(...args)
   }
   updateImmerdiate(...args: Parameters<UpdateData['immerdiate']>) {
-    return this.$module.update!.immerdiate(...args)
+    return this.$module.update?.immerdiate(...args)
   }
   clearUpdate(...args: Parameters<UpdateData['clear']>) {
-    return this.$module.update!.clear(...args)
+    return this.$module.update?.clear(...args)
   }
   resetUpdate(...args: Parameters<UpdateData['reset']>) {
-    return this.$module.update!.reset(...args)
+    return this.$module.update?.reset(...args)
   }
   destroyUpdate(...args: Parameters<UpdateData['destroy']>) {
-    return this.$module.update!.destroy(...args)
+    return this.$module.update?.destroy(...args)
   }
   protected _triggerUpdateData (...args: unknown[]) {
     if (this.$active.auto) {
@@ -200,173 +200,129 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
   /* --- update end --- */
   /* --- choice start --- */
   getChoiceData(...args: Parameters<ChoiceData['getData']>) {
-    if (this.$module.choice) {
-      return this.$module.choice.getData(...args)
-    }
+    return this.$module.choice?.getData(...args)
   }
   getChoiceId(...args: Parameters<ChoiceData['getId']>) {
-    if (this.$module.choice) {
-      return this.$module.choice.getId(...args)
-    }
+    return this.$module.choice?.getId(...args)
   }
   getChoiceList(...args: Parameters<ChoiceData['getList']>) {
-    if (this.$module.choice) {
-      return this.$module.choice.getList(...args)
-    }
+    return this.$module.choice?.getList(...args)
   }
   setChoice(...args: Parameters<ChoiceData['setData']>) {
-    if (this.$module.choice) {
-      return this.$module.choice.setData(...args)
-    }
+    return this.$module.choice?.setData(...args)
   }
   resetChoice(...args: Parameters<ChoiceData['reset']>) {
-    if (this.$module.choice) {
-      return this.$module.choice.reset(...args)
-    }
+    return this.$module.choice?.reset(...args)
   }
   /* --- choice end --- */
   /* --- sort start --- */
   setSortData(...args: Parameters<SortData['setData']>) {
-    if (this.$module.sort) {
-      return this.$module.sort.setData(...args)
-    }
+    return this.$module.sort?.setData(...args)
   }
   getSortData(...args: Parameters<SortData['getData']>) {
-    if (this.$module.sort) {
-      return this.$module.sort.getData(...args)
-    }
+    return this.$module.sort?.getData(...args)
   }
   getSortValue(...args: Parameters<SortData['getValue']>) {
-    if (this.$module.sort) {
-      return this.$module.sort.getValue(...args)
-    }
+    return this.$module.sort?.getValue(...args)
   }
   getSortOrder(...args: Parameters<SortData['getOrder']>) {
-    if (this.$module.sort) {
-      return this.$module.sort.getOrder(...args)
-    }
+    return this.$module.sort?.getOrder(...args)
   }
   resetSort(...args: Parameters<SortData['reset']>) {
-    if (this.$module.sort) {
-      return this.$module.sort.reset(...args)
-    }
+    return this.$module.sort?.reset(...args)
   }
   /* --- sort end --- */
   /* --- pagination start --- */
   setPageCount(...args: Parameters<PaginationData['setCount']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.setCount(...args)
-    }
+    return this.$module.pagination?.setCount(...args)
   }
   getPageCount(...args: Parameters<PaginationData['getCount']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getCount(...args)
-    }
+    return this.$module.pagination?.getCount(...args)
   }
   getTotalPage(...args: Parameters<PaginationData['getTotal']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getTotal(...args)
-    }
+    return this.$module.pagination?.getTotal(...args)
   }
   setPage(...args: Parameters<PaginationData['setPage']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.setPage(...args)
-    }
+    return this.$module.pagination?.setPage(...args)
   }
   getPage(...args: Parameters<PaginationData['getPage']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getPage(...args)
-    }
+    return this.$module.pagination?.getPage(...args)
   }
   setPageSize(...args: Parameters<PaginationData['setSize']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.setSize(...args)
-    }
+    return this.$module.pagination?.setSize(...args)
   }
   getPageSize(...args: Parameters<PaginationData['getSize']>) {
-    if (this.$module.pagination) {
-      return this.$module.pagination.getSize(...args)
-    }
+    return this.$module.pagination?.getSize(...args)
   }
   setPageAndSize(...args: Parameters<PaginationData['setPageAndSize']>) {
-    if (this.$module.pagination) {
-      this.$module.pagination.setPageAndSize(...args)
-    }
+    this.$module.pagination?.setPageAndSize(...args)
   }
   resetPagination(option?: boolean) {
-    if (this.$module.pagination) {
-      this.$module.pagination.reset(option)
-    }
+    this.$module.pagination?.reset(option)
   }
   destroyPagination(option?: boolean) {
-    if (this.$module.pagination) {
-      this.$module.pagination.destroy(option)
-    }
+    this.$module.pagination?.destroy(option)
   }
   /* --- pagination end --- */
 
   /* --- dictionary start --- */
   updateDictionary (...args: Parameters<DictionaryData['updateDictionary']>) {
-    this.$module.dictionary!.updateDictionary(...args)
+    this.$module.dictionary?.updateDictionary(...args)
     this._syncData(true, 'updateDictionary')
   }
   getDictionaryValue (...args: Parameters<DictionaryData['getValue']>) {
-    return this.$module.dictionary!.getValue(...args)
+    return this.$module.dictionary?.getValue(...args)
   }
   setDictionaryProp (...args: Parameters<DictionaryData['setProp']>) {
-    this.$module.dictionary!.setProp(...args)
+    this.$module.dictionary?.setProp(...args)
     this._syncData(true, 'setDictionaryProp')
   }
   getDictionaryProp (...args: Parameters<DictionaryData['getProp']>) {
-    return this.$module.dictionary!.getProp(...args)
+    return this.$module.dictionary?.getProp(...args)
   }
   setDictionaryPropValue (...args: Parameters<DictionaryData['setPropValue']>) {
-    this.$module.dictionary!.setPropValue(...args)
+    this.$module.dictionary?.setPropValue(...args)
     this._syncData(true, 'setDictionaryPropValue')
   }
   getDictionaryPropValue (...args: Parameters<DictionaryData['getPropValue']>) {
-    return this.$module.dictionary!.getPropValue(...args)
+    return this.$module.dictionary?.getPropValue(...args)
   }
   createListByDictionary (...args: Parameters<DictionaryData['createList']>) {
-    return this.$module.dictionary!.createList(...args)
+    return this.$module.dictionary?.createList(...args)
   }
   createDataByDictionary (...args: Parameters<DictionaryData['createData']>) {
-    return this.$module.dictionary!.createData(...args)
+    return this.$module.dictionary?.createData(...args)
   }
   updateDataByDictionary (...args: Parameters<DictionaryData['updateData']>) {
-    return this.$module.dictionary!.updateData(...args)
+    return this.$module.dictionary?.updateData(...args)
   }
   getDictionaryList (...args: Parameters<DictionaryData['getList']>) {
-    return this.$module.dictionary!.getList(...args)
+    return this.$module.dictionary?.getList(...args)
   }
   getDictionaryPageList (...args: Parameters<DictionaryData['getPageList']>) {
-    return this.$module.dictionary!.getPageList(...args)
+    return this.$module.dictionary?.getPageList(...args)
   }
   getDictionaryObserveList (...args: Parameters<DictionaryData['getObserveList']>) {
-    return this.$module.dictionary!.getObserveList(...args)
+    return this.$module.dictionary?.getObserveList(...args)
   }
   parseDataByDictionary (...args: Parameters<DictionaryData['parseData']>) {
-    return this.$module.dictionary!.parseData(...args)
+    return this.$module.dictionary?.parseData(...args)
   }
   collectDataByDictionary (...args: Parameters<DictionaryData['collectData']>) {
-    return this.$module.dictionary!.collectData(...args)
+    return this.$module.dictionary?.collectData(...args)
   }
   /* --- dictionary end --- */
   /* --- search start --- */
   assignSearch(...args: Parameters<SearchData['assignData']>) {
-    return this.$module.search!.assignData(...args)
+    return this.$module.search?.assignData(...args)
   }
   getSearch(...args: Parameters<SearchData['getData']>) {
-    if (this.$module.search) {
-      return this.$module.search.getData(...args)
-    } else {
-      return {}
-    }
+    return this.$module.search?.getData(...args) || {}
   }
   setSearch(action = 'set') {
     return new Promise((resolve, reject) => {
       this.triggerLife('beforeSearch', this, action)
-      this.$module.search!.validateAndSyncData().then(() => {
+      this.$module.search?.validateAndSyncData().then(() => {
         this.reloadData({
           data: true,
           ing: true,
@@ -391,7 +347,7 @@ class ComplexData<Buffer extends DefaultBufferType = DefaultBufferType> extends 
     })
   }
   resetSearch(option?: resetOption) {
-    this.$module.search!.resetForm('reset', option)
+    this.$module.search?.resetForm('reset', option)
     return this.setSearch('reset')
   }
   $onSearchInited(next: () => void) {

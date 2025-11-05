@@ -89,7 +89,7 @@ class SearchData extends DictionaryData {
         type: 'button',
         prop: '$info',
         option: {
-          type: 'primay',
+          type: 'primary',
           name: '详情',
           icon: 'info',
           debounce: 100,
