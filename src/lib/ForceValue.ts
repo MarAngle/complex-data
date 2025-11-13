@@ -41,6 +41,9 @@ class ForceValue {
     } else {
       this.data = initOption.data
       this.ing = initOption.ing
+      if (this.ing && this.data === undefined) {
+        this.data = true
+      }
       this.sync = initOption.sync
       this.promise = initOption.promise
       if (initOption.trigger) {
