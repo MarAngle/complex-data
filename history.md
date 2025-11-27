@@ -18,8 +18,16 @@
 - 数据保存，array/object/map测试结果，内存占用array[593M]/object[882M]/map[982M]，保存速度array[958ms]/object[5084ms]/map[5161ms]，读取速度array[基于index速度最快基于循环查找超大数据量下内存溢出]/object[1872ms]/map[268ms]
 
 ### ToDo
+- 优化全局类型
+- 实现List表单
+- SearchMenu实现完成后联动刷新机制
+- 简化整体代码
+- 优化代码结构
 
 ### Doing
+
+### `4.10.3`
+- feat(menu): `MenuValue` 添加modifiers事件修饰符。
 
 ### `4.10.2`
 - feat(force): `ForceValue` 在 `ing=true` 时，若 `data` 不存在则默认为 `true`，确保 `ing` 判断逻辑在 `data` 为空时依然有效。

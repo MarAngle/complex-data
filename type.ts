@@ -58,6 +58,7 @@ export interface MenuValue<E = MouseEvent, A extends unknown[] = unknown[]> {
   loading?: boolean | ((...args: A) => boolean)
   disabled?: boolean | ((...args: A) => boolean)
   hidden?: boolean | ((...args: A) => boolean)
+  modifiers?: string // 事件修饰符，链式传递，理论上存在.stop.self，实际上.self因为判断问题暂不实现
   click?: (e: E) => void | Promise<unknown> // 返回Promise则根据状态切换loading
   render?: renderType
 }
