@@ -11,7 +11,8 @@
   "scripts": {
     "check": "tsc --noEmit",
     "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "coverage": "vitest run --coverage",
+    "release": "npm publish --registry=https://registry.npmjs.org"
   },
   "dependencies": {
     "complex-utils": "2.10.2 - 2.10.99"
