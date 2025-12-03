@@ -1,4 +1,5 @@
 import { getComplexProp, isPromise } from 'complex-utils'
+import { LifeValueInitOptionWithExtra } from 'complex-utils/src/class/LifeData'
 import DefaultData, { DefaultBufferType, DefaultDataInitOption } from './DefaultData'
 import StatusData, { DataWithLoad, StatusDataInitOption, StatusDataLoadValueType, StatusDataOperateValueType, StatusDataValueType, StatusValue, triggerChangeOption } from '../module/StatusData'
 import PromiseData, { PromiseDataInitData } from '../module/PromiseData'
@@ -347,6 +348,14 @@ class BaseData<Buffer extends DefaultBufferType = DefaultBufferType> extends Def
     })
     if (!force.sync) {
       return promise
+    }
+  }
+  onLoaded(lifeValueInitOption: LifeValueInitOptionWithExtra) {
+    const loadStatus = this.getStatus('load')
+    const id = this.onLife('loaded', lifeValueInitOption)!
+    if (loadStatus === StatusValue.success) {
+      const lifeValue = this.$life.get('loaded')!.get(id)!
+      lifeValueInitOption.handler(lifeValue)
     }
   }
   /* --- load end --- */

@@ -1,5 +1,6 @@
 import { Life } from 'complex-utils'
 import { DataWithLife, LifeInitOption } from 'complex-utils/src/class/Life'
+import { LifeValueInitOptionWithExtra } from 'complex-utils/src/class/LifeData'
 import { DataWithSimpleLoad, StatusItem, StatusValue } from '../module/StatusData'
 import PaginationData, { PaginationDataInitOption } from '../module/PaginationData'
 import CascaderValue, { CascaderValueInitOption, CascaderValueType } from "../lib/CascaderValue"
@@ -108,6 +109,14 @@ class SelectData<C extends PropertyKey | undefined = undefined, D extends (C ext
       this.triggerLife('beforeSaveStorage', this)
       this.$storage.save()
       this.triggerLife('saveStoraged', this)
+    }
+  }
+  onLoaded(lifeValueInitOption: LifeValueInitOptionWithExtra) {
+    const loadStatus = this.getLoad()
+    const id = this.onLife('loaded', lifeValueInitOption)!
+    if (loadStatus === StatusValue.success) {
+      const lifeValue = this.$life.get('loaded')!.get(id)!
+      lifeValueInitOption.handler(lifeValue)
     }
   }
   /* --- life end --- */

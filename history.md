@@ -26,6 +26,9 @@
 
 ### Doing
 
+### `4.10.4`
+- feat(load): `SelectData` 和 `BaseData` 添加 `onLoaded` 方法，用于注册加载成功的回调。该方法会判断当前加载状态：若已加载，则立即执行回调；若未加载，则等待加载完成后执行。
+
 ### `4.10.3`
 - feat(menu): `MenuValue` 添加modifiers事件修饰符。
 
