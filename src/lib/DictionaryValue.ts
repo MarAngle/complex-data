@@ -106,7 +106,6 @@ export interface DictionaryValueInitOption extends DefaultDataInitOption, functi
     assignProp?: boolean
   }
   originProp?: InterfaceValueInitOption<string> // 来源属性
-  label?: InterfaceValueInitOption<string> // 名称
   showProp?: InterfaceValueInitOption<string> // 展示的属性
   type?: InterfaceValueInitOption<ComplexType> // 值类型
   mod?: DictionaryModDataInitOption

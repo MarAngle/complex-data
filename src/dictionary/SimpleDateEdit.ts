@@ -13,29 +13,31 @@ export interface BaseSimpleDateEditOption {
   format: string
   showFormat: string
   hideClear: boolean
+  complexDisabledDate: boolean
+  disabledDate?: (value: any, payload?: any, rangeLimit?: number) => boolean
   time?: {
     format: string
     showFormat: string
     defaultValue: string
   }
-  disabledDate?: (value: any) => boolean
 }
 
 export interface PartialBaseSimpleDateEditOption {
   format?: string
   showFormat?: string
   hideClear?: boolean
+  complexDisabledDate?: boolean
+  disabledDate?: dateConfig | ((value: any, payload?: any, rangeLimit?: number) => boolean)
   time?: {
     format?: string
     showFormat?: string
     defaultValue?: string
   }
-  disabledDate?: dateConfig | ((value: any) => boolean)
 }
 
 export interface RangeSimpleDateEditOption {
   separator?: string
-  rangeLimit?: number // 时间范围限制时间字段，仅range模式下生效
+  rangeLimit?: number // 时间范围时间间隔字段，仅range模式下生效，按照秒限制时间范围选择
   endProp?: string // 结束时间字段，存在则将数组解析，仅range模式下生效
   time?: {
     defaultEndValue?: string
@@ -106,7 +108,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
    * @returns offset > 0 则other在target之后
    */
   static $compareDate = (target: any, other: any) => (other as Date).getTime() - (target as Date).getTime()
-  static $disabledDate = (option: dateConfig) => (value: unknown) => {
+  static $disabledDate = (option: dateConfig) => (value: unknown, _payload?: any, _rangeLimit?: number) => {
     const start = option.start
     const end = option.end
     let disable = false
@@ -129,6 +131,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
     separator: '-',
     formatWithTime: 'YYYY-MM-DD HH:mm:ss',
     hideClear: false,
+    complexDisabledDate: false,
     time: {
       format: 'HH:mm:ss',
       defaultValue: '00:00:00',
@@ -145,7 +148,8 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
     this.$option = {
       format: format,
       showFormat: option.showFormat || format,
-      hideClear: option.hideClear ?? $defaultOption.hideClear
+      hideClear: option.hideClear ?? $defaultOption.hideClear,
+      complexDisabledDate: option.complexDisabledDate ?? $defaultOption.complexDisabledDate
     }
     if ($constructor.$range) {
       (this.$option as SimpleDateEditOption<true>).separator = (option as Partial<SimpleDateEditOption<true>>).separator || $defaultOption.separator

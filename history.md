@@ -26,6 +26,12 @@
 
 ### Doing
 
+### `4.10.6`
+- feat(SimpleDateEdit): 添加`complexDisabledDate`配置项，协调`rangeLimit`一起，存在其中一个参数时`disabledDate`禁用时间判断函数将额外传递参数实现复杂判断。
+
+### `4.10.5`
+- fix(dictionary): 删除 `DictionaryValue` 的冗余属性 `label` 。
+
 ### `4.10.4`
 - feat(load): `SelectData` 和 `BaseData` 添加 `onLoaded` 方法，用于注册加载成功的回调。该方法会判断当前加载状态：若已加载，则立即执行回调；若未加载，则等待加载完成后执行。
 
