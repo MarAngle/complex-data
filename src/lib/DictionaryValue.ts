@@ -28,7 +28,7 @@ import ListEdit, { ListEditInitOption } from '../dictionary/ListEdit'
 import FormValue from './FormValue'
 import dataConfig from '../../dataConfig'
 
-export type payloadType = {
+export interface payloadType {
   targetData: Record<PropertyKey, any>
   originData?: Record<PropertyKey, any>
   type: string
@@ -37,6 +37,16 @@ export type payloadType = {
   index?: number
   choice?: number
   payload?: Record<PropertyKey, any>
+}
+
+export interface editPayloadType extends payloadType {
+  prop: string
+  type: string
+  index: number
+  list: ObserveList
+  choice?: number
+  disabled?: boolean
+  loading?: boolean
 }
 
 export type functionType<R> = (value: unknown, payload: payloadType) => R

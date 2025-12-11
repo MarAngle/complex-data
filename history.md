@@ -28,6 +28,7 @@
 
 ### `4.10.6`
 - feat(SimpleDateEdit): 添加`complexDisabledDate`配置项，协调`rangeLimit`一起，存在其中一个参数时`disabledDate`禁用时间判断函数将额外传递参数实现复杂判断。
+- feat(type): 添加`editPayloadType`类型。
 
 ### `4.10.5`
 - fix(dictionary): 删除 `DictionaryValue` 的冗余属性 `label` 。

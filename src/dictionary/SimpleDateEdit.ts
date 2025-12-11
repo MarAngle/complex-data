@@ -1,4 +1,4 @@
-import { payloadType } from './../lib/DictionaryValue';
+import { editPayloadType } from './../lib/DictionaryValue';
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
 
@@ -14,7 +14,7 @@ export interface BaseSimpleDateEditOption {
   showFormat: string
   hideClear: boolean
   complexDisabledDate: boolean
-  disabledDate?: (value: any, payload?: any, rangeLimit?: number) => boolean
+  disabledDate?: (value: any, payload?: editPayloadType, rangeLimit?: number) => boolean
   time?: {
     format: string
     showFormat: string
@@ -27,7 +27,7 @@ export interface PartialBaseSimpleDateEditOption {
   showFormat?: string
   hideClear?: boolean
   complexDisabledDate?: boolean
-  disabledDate?: dateConfig | ((value: any, payload?: any, rangeLimit?: number) => boolean)
+  disabledDate?: dateConfig | ((value: any, payload?: editPayloadType, rangeLimit?: number) => boolean)
   time?: {
     format?: string
     showFormat?: string
@@ -79,7 +79,7 @@ const defaultRangeParse = function(this: SimpleDateEdit<true>, valueList: string
   return valueList
 }
 
-const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[], payload: payloadType) {
+const defaultRangeCollect = function(this: SimpleDateEdit<true>, valueList: any[], payload: editPayloadType) {
   if (!valueList) return undefined
   const $constructor = (this.constructor as typeof SimpleDateEdit<true>)
   if ($constructor.$collect) {
@@ -108,7 +108,7 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
    * @returns offset > 0 则other在target之后
    */
   static $compareDate = (target: any, other: any) => (other as Date).getTime() - (target as Date).getTime()
-  static $disabledDate = (option: dateConfig) => (value: unknown, _payload?: any, _rangeLimit?: number) => {
+  static $disabledDate = (option: dateConfig) => (value: unknown, payload?: editPayloadType, rangeLimit?: number) => {
     const start = option.start
     const end = option.end
     let disable = false
@@ -122,6 +122,20 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
       const endOffset = SimpleDateEdit.$compareDate(SimpleDateEdit.$parseDate(end), value)
       if (endOffset > 0 || (endOffset === 0 && !end.eq)) {
         disable = true
+      }
+    }
+    if (!disable && payload && rangeLimit) {
+      // 时间范围选择器
+      const currentRangeValue = payload.targetData[payload.prop]
+      if (currentRangeValue) {
+        const [startValue, endValue] = currentRangeValue
+        const targetValue = startValue && endValue ? undefined : (startValue || endValue)
+        if (targetValue) {
+          const offset = Math.abs(SimpleDateEdit.$compareDate(targetValue, value))
+          if (offset > rangeLimit * 1000) {
+            disable = true
+          }
+        }
       }
     }
     return disable
@@ -175,7 +189,6 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
       this.$option.disabledDate = typeof option.disabledDate === 'object' ? $constructor.$disabledDate(option.disabledDate) : option.disabledDate
     }
     this.parse = this.parse ?? ($constructor.$range ? defaultRangeParse : defaultParse) as functionType<any>
-
     this.collect = this.collect ?? ($constructor.$range ? defaultRangeCollect : defaultCollect) as functionType<any>
     this.$width = this.$width ?? (this.$option.time ? $constructor.$widthWithTime : $constructor.$widthWithoutTime)
   }
