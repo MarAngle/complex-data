@@ -1,3 +1,4 @@
+import { isArray } from 'complex-utils'
 import { editPayloadType } from './../lib/DictionaryValue';
 import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue, { functionType } from "../lib/DictionaryValue"
@@ -139,6 +140,23 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
       }
     }
     return disable
+  }
+  static $parseRuleList = function($constructor: typeof DefaultEdit<boolean>, target: DefaultEdit<boolean>, formData: Record<PropertyKey, any>, _type?: string) {
+    let ruleList = DefaultEdit.$parseRuleList($constructor, target, formData, _type)
+    if (!ruleList && ($constructor as typeof SimpleDateEdit<boolean>).$range) {
+      // 时间范围选择器
+      ruleList = [
+        $constructor.$parseRule({
+          required: target.required,
+          type: 'array',
+          message: target.placeholder,
+          validator(value) {
+            return isArray(value) && !!value[0] && !!value[1]
+          }
+        }, formData)
+      ]
+    }
+    return ruleList
   }
   static $defaultOption = {
     format: 'YYYY-MM-DD',
