@@ -26,6 +26,10 @@
 
 ### Doing
 
+### `4.10.7`
+- feat(SimpleDateEdit): `rangeLimit`配置扩展，添加相等判断和信息提示，并优化修正相关功能。
+- feat(DefaultEdit): 添加`ruleMessage`配置项以及相关的默认值，实现快速定义ruleMessage的功能。
+
 ### `4.10.6`
 - feat(SimpleDateEdit): 添加`complexDisabledDate`配置项，协调`rangeLimit`一起，存在其中一个参数时`disabledDate`禁用时间判断函数将额外传递参数实现复杂判断。
 - feat(SimpleDateEdit): 优化`$parseRuleList`函数，当前是范围时间选择器时，则需要额外判断数据的开始结束时间都不为空。

@@ -8,6 +8,12 @@ export type dateConfigValue = {
   eq?: boolean
 }
 
+export type rangeLimitType = {
+  value: number
+  eq?: boolean
+  message?: (offset: number, payload: editPayloadType) => undefined | string
+}
+
 export type dateConfig = { start?: dateConfigValue, end?: dateConfigValue }
 
 export interface BaseSimpleDateEditOption {
@@ -15,7 +21,7 @@ export interface BaseSimpleDateEditOption {
   showFormat: string
   hideClear: boolean
   complexDisabledDate: boolean
-  disabledDate?: (value: any, payload?: editPayloadType, rangeLimit?: number) => boolean
+  disabledDate?: (value: any, payload?: editPayloadType, rangeLimit?: rangeLimitType) => boolean
   time?: {
     format: string
     showFormat: string
@@ -28,7 +34,7 @@ export interface PartialBaseSimpleDateEditOption {
   showFormat?: string
   hideClear?: boolean
   complexDisabledDate?: boolean
-  disabledDate?: dateConfig | ((value: any, payload?: editPayloadType, rangeLimit?: number) => boolean)
+  disabledDate?: dateConfig | ((value: any, payload?: editPayloadType, rangeLimit?: rangeLimitType) => boolean)
   time?: {
     format?: string
     showFormat?: string
@@ -38,7 +44,7 @@ export interface PartialBaseSimpleDateEditOption {
 
 export interface RangeSimpleDateEditOption {
   separator?: string
-  rangeLimit?: number // 时间范围时间间隔字段，仅range模式下生效，按照秒限制时间范围选择
+  rangeLimit?: rangeLimitType // 时间范围时间间隔字段，仅range模式下生效，按照秒限制时间范围选择
   endProp?: string // 结束时间字段，存在则将数组解析，仅range模式下生效
   time?: {
     defaultEndValue?: string
@@ -109,7 +115,24 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
    * @returns offset > 0 则other在target之后
    */
   static $compareDate = (target: any, other: any) => (other as Date).getTime() - (target as Date).getTime()
-  static $disabledDate = (option: dateConfig) => (value: unknown, payload?: editPayloadType, rangeLimit?: number) => {
+  static $parseDisabledDateByRangeLimit = function(disable: boolean, value: unknown, payload?: editPayloadType, rangeLimit?: rangeLimitType) {
+    if (payload && rangeLimit) {
+      // 时间范围选择器
+      const currentRangeValue = payload.targetData[payload.prop]
+      if (currentRangeValue) {
+        const [startValue, endValue] = currentRangeValue
+        const targetValue = startValue && endValue ? undefined : (startValue || endValue)
+        if (targetValue) {
+          const offset = Math.abs(SimpleDateEdit.$compareDate(targetValue, value))
+          if (!rangeLimit.eq ? offset >= (rangeLimit.value * 1000) : offset > (rangeLimit.value * 1000)) {
+            disable = true
+          }
+        }
+      }
+    }
+    return disable
+  }
+  static $disabledDate = (option: dateConfig) => (value: unknown, payload?: editPayloadType, rangeLimit?: rangeLimitType) => {
     const start = option.start
     const end = option.end
     let disable = false
@@ -125,33 +148,25 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
         disable = true
       }
     }
-    if (!disable && payload && rangeLimit) {
-      // 时间范围选择器
-      const currentRangeValue = payload.targetData[payload.prop]
-      if (currentRangeValue) {
-        const [startValue, endValue] = currentRangeValue
-        const targetValue = startValue && endValue ? undefined : (startValue || endValue)
-        if (targetValue) {
-          const offset = Math.abs(SimpleDateEdit.$compareDate(targetValue, value))
-          if (offset > rangeLimit * 1000) {
-            disable = true
-          }
-        }
-      }
+    if (!disable) {
+      disable = SimpleDateEdit.$parseDisabledDateByRangeLimit(disable, value, payload, rangeLimit)
     }
     return disable
   }
+  static $rangeLimitDisabledDate = (value: unknown, payload?: editPayloadType, rangeLimit?: rangeLimitType) => {
+    return SimpleDateEdit.$parseDisabledDateByRangeLimit(false, value, payload, rangeLimit)
+  }
   static $parseRuleList = function($constructor: typeof DefaultEdit<boolean>, target: DefaultEdit<boolean>, formData: Record<PropertyKey, any>, _type?: string) {
     let ruleList = DefaultEdit.$parseRuleList($constructor, target, formData, _type)
-    if (!ruleList && ($constructor as typeof SimpleDateEdit<boolean>).$range) {
+    if (!ruleList && ($constructor as typeof SimpleDateEdit<boolean>).$range && target.required) {
       // 时间范围选择器
       ruleList = [
         $constructor.$parseRule({
           required: target.required,
           type: 'array',
-          message: target.placeholder,
+          message: target.ruleMessage,
           validator(value) {
-            return isArray(value) && !!value[0] && !!value[1]
+            return isArray(value)
           }
         }, formData)
       ]
@@ -205,6 +220,8 @@ class SimpleDateEdit<R extends Boolean = false> extends DefaultEdit<false> {
     }
     if (option.disabledDate) {
       this.$option.disabledDate = typeof option.disabledDate === 'object' ? $constructor.$disabledDate(option.disabledDate) : option.disabledDate
+    } else if((this.$option as SimpleDateEditOption<true>).rangeLimit) {
+      this.$option.disabledDate = $constructor.$rangeLimitDisabledDate
     }
     this.parse = this.parse ?? ($constructor.$range ? defaultRangeParse : defaultParse) as functionType<any>
     this.collect = this.collect ?? ($constructor.$range ? defaultRangeCollect : defaultCollect) as functionType<any>

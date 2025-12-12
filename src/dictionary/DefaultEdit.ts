@@ -26,6 +26,7 @@ export interface DefaultEditInitOption<M extends boolean = boolean> extends Defa
   trim?: boolean
   multiple?: M
   placeholder?: false | string
+  ruleMessage?: string
   value?: {
     default?: any
     reset?: any
@@ -45,15 +46,17 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   static $defaultValue = (multiple: boolean) => !multiple ? undefined : defaultMultipleValue
   static $defaultTrim = false
   static $defaultPlaceholder = (name: string) => `请输入${name}`
+  static $defaultRuleMessage = ''
   static $parseRuleList = function($constructor: typeof DefaultEdit<boolean>, target: DefaultEdit<boolean>, formData: Record<PropertyKey, any>, _type?: string) {
+    const ruleMessage = target.ruleMessage || target.placeholder
     if (target.$rules) {
       return target.$rules.map(rule => {
         const ruleValue = { ...rule }
         if (ruleValue.required == undefined) {
           ruleValue.required = target.required
         }
-        if (ruleValue.message == undefined && target.placeholder) {
-          ruleValue.message = target.placeholder
+        if (ruleValue.message == undefined && ruleMessage) {
+          ruleValue.message = ruleMessage
         }
         return $constructor.$parseRule(ruleValue, formData)
       })
@@ -64,7 +67,7 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
           $constructor.$parseRule({
             required: target.required,
             type: 'array',
-            message: target.placeholder,
+            message: ruleMessage,
             validator(value) {
               return isArray(value) && value.length > 0
             }
@@ -87,6 +90,7 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
   trim: boolean
   multiple: M
   placeholder?: string
+  ruleMessage?: string
   $rules?: ruleOption[]
   $value: {
     default?: any
@@ -121,9 +125,15 @@ class DefaultEdit<M extends boolean = boolean> extends DefaultSimpleEdit {
     } else {
       this.$value = {}
     }
-    if (this.simple.rules !== true && initOption.rules) {
+    if (this.simple.rules !== true) {
       // rule
-      this.$rules = initOption.rules
+      if (initOption.rules) {
+        this.$rules = initOption.rules
+      }
+      const ruleMessage = initOption.ruleMessage || $constructor.$defaultRuleMessage
+      if (ruleMessage) {
+        this.ruleMessage = ruleMessage
+      }
     }
     if (initOption.deepClone && this.parse === undefined) {
       // 需要深拷贝且parse为空时自动创建深拷贝函数

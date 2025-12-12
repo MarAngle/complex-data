@@ -11,6 +11,7 @@ class DateRangeEdit extends SimpleDateEdit<true>{
   static $widthWithTime = 345
   static $widthWithoutTime = 225
   static $range = true
+  static $defaultRuleMessage = '请正确选择开始结束时间'
   static $defaultPlaceholder = function (_name: string) {
     return `开始日期`
   }
