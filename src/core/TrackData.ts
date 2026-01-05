@@ -52,21 +52,34 @@ abstract class TrackData<
   static $name = 'TrackData'
   static $formatConfig = { name: 'TrackData', level: 50, recommend: true }
   static $minSize = 2
-  static parseAngle (currentLnglat: lnglatType, nextLnglat: lnglatType) {
-    if (currentLnglat && nextLnglat) {
-      const rad = Math.PI / 180
-      const lat1 = currentLnglat.lat * rad
-      const lat2 = nextLnglat.lat * rad
-      const lng1 = currentLnglat.lng * rad
-      const lng2 = nextLnglat.lng * rad
-      const x = Math.sin(lng2 - lng1) * Math.cos(lat2)
-      const y = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(lng2 - lng1)
-      const radians = Math.atan2(x, y)
-      let angle = radians % (2 * Math.PI)
-      angle = (180 * radians) / Math.PI
+  /**
+   * 
+   * @param current 当前经纬度
+   * @param next 目标经纬度
+   * @param jitterCm 抖动值（单位cm，低于抖动值则返回undefined）
+   * @returns 
+   */
+  static parseAngle( current: lnglatType, next: lnglatType, jitterCm?: number): number | undefined {
+    if (current && next) {
+      const dx = next.lng - current.lng
+      const dy = next.lat - current.lat
+      // ===== 抖动过滤（可选）=====
+      if (typeof jitterCm === 'number' && jitterCm > 0) {
+        // 将厘米换算为“近似经纬度距离”
+        const latMeter = dy * 111000
+        const lngMeter = dx * 111000 * Math.cos(current.lat * Math.PI / 180)
+        const distanceMeter = Math.sqrt(latMeter * latMeter + lngMeter * lngMeter)
+        if (distanceMeter * 100 < jitterCm) {
+          return undefined
+        }
+      }
+      // ===== 正常角度计算（永远可算）=====
+      // 正东 = 0°，逆时针
+      let angle = Math.atan2(dy, dx) * 180 / Math.PI
+      angle = (angle + 360) % 360
+      // 转换为：正北 = 0°，顺时针（地图语义）
+      angle = (90 - angle + 360) % 360
       return angle
-    } else {
-      return undefined
     }
   }
   status: {
@@ -400,14 +413,16 @@ abstract class TrackData<
   resetInit() {
     this.status.init = false
   }
+  changeStatusByMove() {
+    if (this.getStatus() === 'stop') {
+      this.setStatus('pause')
+    }
+  }
   // drag start ---
   triggerDrag(percent: number, drag: boolean) {
     if (drag) {
       if (!this.status.drag) {
         this.status.drag = true
-        if (this.getStatus() === 'stop') {
-          this.setStatus('pause')
-        }
       }
       this.setPercent(percent)
     } else {
@@ -423,18 +438,12 @@ abstract class TrackData<
     const num = 1000 / this.speed.current
     const offset = num * 5
     this.setCurrentByOffset('backward', offset)
-    if (this.getStatus() === 'stop') {
-      this.setStatus('pause')
-    }
     this.$start()
   }
   moveForward() {
     const num = 1000 / this.speed.current
     const offset = num * 5
     this.setCurrentByOffset('forward', offset)
-    if (this.getStatus() === 'stop') {
-      this.setStatus('pause')
-    }
     this.$start()
   }
   setCurrentByOffset (direction: directionProp, offset: number) {
@@ -506,6 +515,7 @@ abstract class TrackData<
       currentIndex = this._setIndex(currentIndex)
     }
     this.$onIndexChange(currentIndex, lastIndex, lastLineIndex)
+    this.changeStatusByMove()
   }
   protected $onIndexChange(currentIndex: number, lastIndex: number, lastLineIndex: number) {
     if (this.$marker.point.current && this.$marker.line.current.length > 0) {

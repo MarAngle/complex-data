@@ -26,6 +26,10 @@
 
 ### Doing
 
+### `4.10.8`
+- fix(track): 修正 `parseAngle` 角度计算错误的情况，并添加抖动值参数支持。
+- fix(track): 修正轨迹初始状态在函数改变初始位置时未自动转换为暂停状态导致点击开始按钮会回到初始位置的 BUG。
+
 ### `4.10.7`
 - feat(SimpleDateEdit): `rangeLimit`配置扩展，添加相等判断和信息提示，并优化修正相关功能。
 - feat(DefaultEdit): 添加`ruleMessage`配置项以及相关的默认值，实现快速定义ruleMessage的功能。
