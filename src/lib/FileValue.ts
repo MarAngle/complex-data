@@ -1,5 +1,5 @@
 import { isFile } from "complex-utils"
-import { fileDataType } from "../../type"
+import type { fileDataType } from "../../type"
 
 export type fileValueType = string | File | fileDataType
 

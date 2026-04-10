@@ -1,4 +1,5 @@
-import ResetData, { ResetDataInitOption } from './ResetData'
+import ResetData from './ResetData'
+import type { ResetDataInitOption } from './ResetData'
 
 export type compareFunction<T = any> = (a: T, b: T) => number
 

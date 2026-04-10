@@ -1,4 +1,4 @@
-import { PromiseOptionType } from "../module/PromiseData"
+import type { PromiseOptionType } from "../module/PromiseData"
 
 export interface ForceValueTriggerType {
   from: string

@@ -1,4 +1,5 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import DefaultEdit from "./DefaultEdit"
+import type { DefaultEditInitOption } from "./DefaultEdit"
 import DefaultInfo from "./DefaultInfo"
 import DictionaryValue from "../lib/DictionaryValue"
 import GridParse from "../lib/GridParse"

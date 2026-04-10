@@ -1,8 +1,10 @@
 import Data from './../data/Data'
 import BaseData from '../data/BaseData'
-import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
-import ForceValue, { ForceValueTriggerType } from '../lib/ForceValue'
-import { renderType } from '../../type'
+import type { LocalValue, LocalValueInitOption } from "../lib/AttrsValue"
+import { createLocalValue } from "../lib/AttrsValue"
+import ForceValue from '../lib/ForceValue'
+import type { ForceValueTriggerType } from '../lib/ForceValue'
+import type { renderType } from '../../type'
 
 type resetType = Record<string, Record<string, boolean>>
 

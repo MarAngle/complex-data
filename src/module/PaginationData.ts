@@ -1,9 +1,11 @@
 import { getNum } from 'complex-utils'
-import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
+import DefaultData from '../data/DefaultData'
+import type { DefaultDataInitOption } from '../data/DefaultData'
 import BaseData from '../data/BaseData'
-import AttrsValue, { AttrsValueInitOption } from '../lib/AttrsValue'
+import AttrsValue from '../lib/AttrsValue'
+import type { AttrsValueInitOption } from '../lib/AttrsValue'
 import ForceValue from '../lib/ForceValue'
-import { renderType } from '../../type'
+import type { renderType } from '../../type'
 
 export interface PaginationDataInitOption extends DefaultDataInitOption {
   size?: boolean | number | {

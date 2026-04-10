@@ -1,6 +1,9 @@
-import DefaultInfo, { DefaultInfoInitOption } from "./DefaultInfo"
-import DictionaryValue, { functionType } from "../lib/DictionaryValue"
-import InterfaceValue, { InterfaceValueInitOption } from "../lib/InterfaceValue"
+import DefaultInfo from "./DefaultInfo"
+import type { DefaultInfoInitOption } from "./DefaultInfo"
+import DictionaryValue from "../lib/DictionaryValue"
+import type { functionType } from "../lib/DictionaryValue"
+import InterfaceValue from "../lib/InterfaceValue"
+import type { InterfaceValueInitOption } from "../lib/InterfaceValue"
 
 export interface DefaultSimpleEditInitOption extends DefaultInfoInitOption {
   required?: boolean

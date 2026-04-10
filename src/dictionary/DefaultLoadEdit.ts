@@ -1,7 +1,8 @@
-import { loadFunctionType } from "../data/BaseData"
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import type { loadFunctionType } from "../data/BaseData"
+import DefaultEdit from "./DefaultEdit"
+import type { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { DataWithSimpleLoad, StatusItem, StatusValue } from "../module/StatusData"
+import { StatusItem, type DataWithSimpleLoad, StatusValue } from "../module/StatusData"
 
 export interface DefaultLoadEditInitOption<M extends boolean = boolean> extends DefaultEditInitOption<M> {
   reload?: boolean

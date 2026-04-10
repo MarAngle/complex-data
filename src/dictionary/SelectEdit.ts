@@ -1,7 +1,8 @@
-import DefaultSelectEdit, { DefaultSelectEditInitOption } from "./DefaultSelectEdit"
+import DefaultSelectEdit from "./DefaultSelectEdit"
+import type { DefaultSelectEditInitOption } from "./DefaultSelectEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { SelectValueType } from "../lib/SelectValue"
-import { CascaderValueType } from "../lib/CascaderValue"
+import type { SelectValueType } from "../lib/SelectValue"
+import type { CascaderValueType } from "../lib/CascaderValue"
 
 export interface SelectEditOption {
   hideArrow?: boolean

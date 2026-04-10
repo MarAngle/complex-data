@@ -1,6 +1,7 @@
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import DefaultEdit from "./DefaultEdit"
+import type { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
-import { fileOption, multipleFileOption } from "../../type"
+import type { fileOption, multipleFileOption } from "../../type"
 
 export type FileEditOption<M extends boolean = boolean> = fileOption<M>
 

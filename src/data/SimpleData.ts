@@ -1,5 +1,6 @@
 import { getType } from 'complex-utils'
-import Data, { BufferType } from './Data'
+import Data from './Data'
+import type { BufferType } from './Data'
 
 export interface SimpleDataInitOption {
   extra?: Record<PropertyKey, any>

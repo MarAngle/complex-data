@@ -1,6 +1,7 @@
 import { deepCloneData, hasProp, isArray, isComplex } from "complex-utils"
-import { SimpleType } from "complex-utils/src/type/getType"
-import DefaultSimpleEdit, { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
+import type { SimpleType } from "complex-utils/src/type/getType"
+import DefaultSimpleEdit from "./DefaultSimpleEdit"
+import type { DefaultSimpleEditInitOption } from "./DefaultSimpleEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface ruleOption {

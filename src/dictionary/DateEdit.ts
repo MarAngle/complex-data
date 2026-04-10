@@ -1,4 +1,5 @@
-import SimpleDateEdit, { SimpleDateEditInitOption } from "./SimpleDateEdit"
+import SimpleDateEdit from "./SimpleDateEdit"
+import type { SimpleDateEditInitOption } from "./SimpleDateEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export interface DateEditInitOption extends SimpleDateEditInitOption {

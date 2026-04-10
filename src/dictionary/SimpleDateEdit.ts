@@ -1,7 +1,9 @@
 import { isArray } from 'complex-utils'
-import { editPayloadType } from './../lib/DictionaryValue';
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
-import DictionaryValue, { functionType } from "../lib/DictionaryValue"
+import type { editPayloadType } from './../lib/DictionaryValue';
+import DefaultEdit from "./DefaultEdit"
+import type { DefaultEditInitOption } from "./DefaultEdit"
+import DictionaryValue from "../lib/DictionaryValue"
+import type { functionType } from "../lib/DictionaryValue"
 
 export type dateConfigValue = {
   value: any

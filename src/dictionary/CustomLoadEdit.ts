@@ -1,5 +1,7 @@
-import { createCustomEdit, DefaultCustomEditInitOption } from "./CustomEdit"
-import DefaultLoadEdit, { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
+import type { DefaultCustomEditInitOption } from "./CustomEdit"
+import { createCustomEdit } from "./CustomEdit"
+import DefaultLoadEdit from "./DefaultLoadEdit"
+import type { DefaultLoadEditInitOption } from "./DefaultLoadEdit"
 
 export type CustomLoadEditInitOption = DefaultCustomEditInitOption<'customLoad'> & DefaultLoadEditInitOption<boolean>
 

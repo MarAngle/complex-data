@@ -1,5 +1,6 @@
 import BaseData from '../data/BaseData'
-import ResetData, { ResetDataInitOption } from './ResetData'
+import ResetData from './ResetData'
+import type { ResetDataInitOption } from './ResetData'
 
 export type ChoiceDataData = {
   id: PropertyKey[]

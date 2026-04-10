@@ -1,9 +1,13 @@
-import SimpleData, { SimpleDataInitOption } from "../data/SimpleData"
-import { renderType } from "../../type"
-import DictionaryValue, { functionType } from "../lib/DictionaryValue"
-import TipValue, { TipValueInitOption } from "../lib/TipValue"
-import { LocalValue, LocalValueInitOption, createLocalValue } from "../lib/AttrsValue"
-import { ArrayValueDataType } from "../lib/ArrayValue"
+import SimpleData from "../data/SimpleData"
+import type { SimpleDataInitOption } from "../data/SimpleData"
+import type { renderType } from "../../type"
+import DictionaryValue from "../lib/DictionaryValue"
+import type { functionType } from "../lib/DictionaryValue"
+import TipValue from "../lib/TipValue"
+import type { TipValueInitOption } from "../lib/TipValue"
+import type { LocalValue, LocalValueInitOption } from "../lib/AttrsValue"
+import { createLocalValue } from "../lib/AttrsValue"
+import type { ArrayValueDataType } from "../lib/ArrayValue"
 
 export type collapseType = 0 | 1 | 2 // 折叠判断值,默认 0 不展示 1 推荐展示 2必须展示
 

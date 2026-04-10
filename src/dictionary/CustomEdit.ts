@@ -1,5 +1,6 @@
 import { upperCaseFirstChar } from "complex-utils"
-import DefaultEdit, { DefaultEditInitOption } from "./DefaultEdit"
+import DefaultEdit from "./DefaultEdit"
+import type { DefaultEditInitOption } from "./DefaultEdit"
 import DictionaryValue from "../lib/DictionaryValue"
 
 export type customModelHandler = (formdata: Record<PropertyKey, unknown>, prop: PropertyKey, args: unknown[]) => void

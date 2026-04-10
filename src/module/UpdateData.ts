@@ -1,5 +1,6 @@
 import { isPromise } from 'complex-utils'
-import DefaultData, { DefaultDataInitOption } from '../data/DefaultData'
+import DefaultData from '../data/DefaultData'
+import type { DefaultDataInitOption } from '../data/DefaultData'
 import ComplexData from '../data/ComplexData'
 
 export type triggerType = (next: UpdateData["next"], index: number) => void

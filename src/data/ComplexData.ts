@@ -1,14 +1,18 @@
-import BaseData, { BaseDataInitOption, loadFunctionType } from "./BaseData"
-import ModuleData, { ModuleDataInitOption } from "../module/ModuleData"
-import SearchData, { resetOption } from "../module/SearchData"
+import BaseData from "./BaseData"
+import type { BaseDataInitOption, loadFunctionType } from "./BaseData"
+import ModuleData from "../module/ModuleData"
+import type { ModuleDataInitOption } from "../module/ModuleData"
+import SearchData from "../module/SearchData"
+import type { resetOption } from "../module/SearchData"
 import DictionaryData from "../module/DictionaryData"
 import PaginationData from "../module/PaginationData"
 import UpdateData from "../module/UpdateData"
 import { StatusValue } from "../module/StatusData"
 import ChoiceData from "../module/ChoiceData"
 import SortData from "../module/SortData"
-import ForceValue, { ForceValueInitOption } from "../lib/ForceValue"
-import { DefaultBufferType } from "./DefaultData"
+import ForceValue from "../lib/ForceValue"
+import type { ForceValueInitOption } from "../lib/ForceValue"
+import type { DefaultBufferType } from "./DefaultData"
 
 export type updateDataType = loadFunctionType
 export type buildDataType = (targetData: Record<PropertyKey, any>, type?: string, ...args: unknown[]) => Promise<any>

@@ -1,8 +1,9 @@
 import { upperCaseFirstChar } from "complex-utils"
-import { DataWithLife } from "complex-utils/src/class/Life"
-import BaseData, { loadFunctionType } from "../data/BaseData"
+import type { DataWithLife } from "complex-utils/src/class/Life"
+import BaseData from "../data/BaseData"
+import type { loadFunctionType } from "../data/BaseData"
 import Data from "../data/Data"
-import { DataWithLoad, DataWithSimpleLoad, StatusValue } from "./StatusData"
+import { type DataWithLoad, type DataWithSimpleLoad, StatusValue } from "./StatusData"
 
 export type bindLife = 'load' | 'update'
 

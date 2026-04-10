@@ -1,5 +1,6 @@
-import { DefaultBufferType } from "../data/DefaultData"
-import ComplexData, { ComplexDataInitOption } from "./../data/ComplexData"
+import type { DefaultBufferType } from "../data/DefaultData"
+import ComplexData from "./../data/ComplexData"
+import type { ComplexDataInitOption } from "./../data/ComplexData"
 
 export interface ComplexInfoInitOption extends ComplexDataInitOption {}
 

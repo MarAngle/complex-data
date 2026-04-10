@@ -1,4 +1,5 @@
-import DefaultMod, { DefaultModInitOption } from "./DefaultMod"
+import DefaultMod from "./DefaultMod"
+import type { DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue from "../lib/DictionaryValue"
 
 type alignType = 'center' | 'left' | 'right'

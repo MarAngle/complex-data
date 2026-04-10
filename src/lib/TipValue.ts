@@ -1,4 +1,5 @@
-import AttrsValue, { AttrsValueInitOption } from "./AttrsValue"
+import AttrsValue from "./AttrsValue"
+import type { AttrsValueInitOption } from "./AttrsValue"
 
 export type locationType = 'top' | 'left' | 'right' | 'bottom' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight' | 'leftTop' | 'leftBottom' | 'rightTop' | 'rightBottom'
 

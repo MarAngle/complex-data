@@ -1,5 +1,7 @@
-import GridParse, { GridParseInitOption } from "./GridParse"
-import InterfaceValue, { InterfaceValueInitOption } from "./InterfaceValue"
+import GridParse from "./GridParse"
+import type { GridParseInitOption } from "./GridParse"
+import InterfaceValue from "./InterfaceValue"
+import type { InterfaceValueInitOption } from "./InterfaceValue"
 
 export interface LayoutParseInitOption {
   grid?: InterfaceValueInitOption<undefined | GridParseInitOption>

@@ -1,5 +1,5 @@
 import { exportMsg, getRandomNum, storage } from 'complex-utils'
-import { DataWithLife } from 'complex-utils/src/class/Life'
+import type { DataWithLife } from 'complex-utils/src/class/Life'
 import Data from '../data/Data'
 
 export interface StorageValueInitOption {

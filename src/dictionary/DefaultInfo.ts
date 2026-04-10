@@ -1,7 +1,9 @@
-import DefaultMod ,{ DefaultModInitOption } from "./DefaultMod"
+import DefaultMod from "./DefaultMod"
+import type { DefaultModInitOption } from "./DefaultMod"
 import DictionaryValue from "../lib/DictionaryValue"
-import { GridOption, createGridOption } from "../lib/GridParse"
-import { observeType } from "./ObserveList"
+import type { GridOption } from "../lib/GridParse"
+import { createGridOption } from "../lib/GridParse"
+import type { observeType } from "./ObserveList"
 
 export interface DefaultInfoInitOption extends DefaultModInitOption {
   colon?: boolean

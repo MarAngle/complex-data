@@ -1,4 +1,6 @@
-import SelectValue, { SelectValueInitOption, SelectValueType, checkItem, filterType, getFilter } from "./SelectValue"
+import SelectValue from "./SelectValue"
+import type { SelectValueInitOption, SelectValueType, checkItem, filterType } from "./SelectValue"
+import { getFilter } from "./SelectValue"
 
 export type CascaderValueType<C extends PropertyKey = 'children'> = SelectValueType & {
   [prop in C]?: CascaderValueType<C>[]
